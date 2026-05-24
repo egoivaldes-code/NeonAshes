@@ -12,6 +12,22 @@
 
 ---
 
+## v56v7 — Consolidación del vertical slice + limpieza estructural *(versión actual)*
+
+- Revisión general de estabilidad del vertical slice.
+- Ajustes menores de flujo y consistencia narrativa entre escenas.
+- Limpieza incremental del archivo principal para mejorar mantenibilidad sin rehacer arquitectura.
+- Refinados varios textos y transiciones para reforzar el tono noir/melancólico.
+- Mejorada coherencia visual entre HUD, tránsito y zonas.
+- Consolidación de sistemas persistentes ya existentes:
+  - reputación
+  - herencia
+  - memoria
+  - tiempo diegético
+  - eventos aleatorios
+- Preparación interna para futuras expansiones narrativas de Strata I.
+- Continúa la estrategia de refactor incremental sin frameworks ni rewrite completo.
+
 ## v56v3 — Botón "─ ASUMIR" en herencia *(versión actual en GitHub como `index.html`)*
 
 - El albarán de herencia tiene un botón discreto abajo a la derecha.
@@ -159,7 +175,7 @@
 - **Tránsito libre** entre zonas con eventos aleatorios propios.
 - **Reputación por zona** que evoluciona según tus acciones.
 - **Panel CONTACTOS reorganizado en 3 secciones**: contactos personales, reputación por zona, facciones expandibles.
-- **8 facciones implementadas** con efectos cascada entre aliados y rivales: HELIX, Sindicatos del Lower Stack, Archivistas, División ORPHEUS, Drifters, Iglesia del Eco, Restos Militares, Células Autónomas de IA.
+- **8 facciones implementadas** con efectos cascada entre aliados y rivales: HELIX, Sindicatos del Lower Stack, Archivistas, División ORPHEUS, Drifters, Iglesia del Eco, Restos Militares, Células Au[...]
 
 ## v35 — PRESIÓN → HAMBRE *(cambio gordo)*
 
@@ -206,7 +222,7 @@
 
 No hay registro detallado de estas versiones en el historial accesible. Cuando empieza la documentación (mayo 2026), el proyecto ya estaba en v31 con un vertical slice funcional. Lo que ya existía:
 
-- Flujo completo: intro cinematográfica (5 frames) → carga → pantalla de nombre → apartamento → terminal con mensaje cifrado → tránsito al bar → diálogo con Mara Vex → aparición de CERO → pantalla final.
+- Flujo completo: intro cinematográfica (5 frames) → carga → pantalla de nombre → apartamento → terminal con mensaje cifrado → tránsito al bar → diálogo con Mara Vex → aparición de C[...]
 - HUD con créditos (1200 iniciales), reputación, inventario.
 - Eventos aleatorios durante el tránsito (probabilidad 1/4).
 - Árbol de diálogo con Mara: 14 nodos + nodo de IA viva conectado a la API de Claude (`claude-sonnet-4-20250514`).
