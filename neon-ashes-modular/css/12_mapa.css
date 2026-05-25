@@ -1,0 +1,258 @@
+/* ============================================================
+   BLOQUE CSS-17 — MAPA DEL MUNDO — exploración libre
+   Mapa SVG con zonas, marcadores y detalle de cada zona.
+   ============================================================ */
+
+/* ========== MAPA MUNDO — EXPLORACIÓN LIBRE ========== */
+#mapa-escena { z-index: 30; }
+.mapa-wrapper {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 5; display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start; padding: 0; overflow: hidden;
+}
+.mapa-header {
+  width: 100%; padding: 3.2rem 5rem 0.6rem;
+  display: flex; flex-direction: column; align-items: center;
+  background: linear-gradient(180deg, rgba(3,5,8,0.98) 0%, rgba(3,5,8,0.8) 100%);
+  z-index: 10; flex-shrink: 0;
+}
+.mapa-titulo {
+  font-family: 'Orbitron', sans-serif; font-size: 0.6rem;
+  letter-spacing: 0.55em; color: var(--cyan); opacity: 0.7;
+  margin-bottom: 0.2rem; text-transform: uppercase;
+}
+.mapa-subtitulo {
+  font-family: 'Share Tech Mono', monospace; font-size: 0.5rem;
+  letter-spacing: 0.25em; color: rgba(200,216,224,0.3);
+}
+.mapa-canvas-wrap { flex: 1; width: 100%; position: relative; overflow: hidden; }
+#mapa-svg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+.zona-punto { cursor: pointer; transition: all 0.2s ease; }
+.zona-punto:active { transform: scale(0.95); }
+
+/* === MAPA STRATA I (imagen + marcadores anclados) === */
+/* El marco mantiene la proporción exacta de la imagen (900x1600 = 9:16)
+   y se centra dentro del área disponible. Los marcadores hijos usan
+   porcentaje relativo a este marco, así NUNCA se descolocan. */
+.mapa-frame {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  aspect-ratio: 9 / 16;
+  /* Cabe en la altura disponible o el ancho, lo que sea menor.
+     min() asegura que la imagen siempre se vea entera. */
+  height: min(100%, calc(100vw * 16 / 9));
+  max-height: 100%;
+  max-width: 100%;
+}
+.mapa-img {
+  position: absolute;
+  inset: 0;
+  /* background-image se asigna abajo en el bloque dedicado al base64 */
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+/* Marcador de zona: botón anclado con position:absolute en %.
+   El left/top se ponen inline (cada zona tiene su sitio). El
+   transform centra el marcador exactamente sobre la coordenada. */
+.zona-marker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  z-index: 3;
+  /* Importante: NO touch-action manipulation, sino none, para que
+     el navegador no haga ajustes raros que descoloquen el botón. */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  /* Anti-jitter: forzar capa propia de composición. */
+  will-change: transform;
+}
+.zona-marker:focus { outline: none; }
+.zona-marker:focus-visible {
+  outline: 1px solid rgba(0,229,255,0.6);
+  outline-offset: 4px;
+}
+/* La etiqueta del nombre va sobre el dot */
+.zm-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.45rem;
+  letter-spacing: 0.25em;
+  color: rgba(200,216,224,0.95);
+  background: rgba(3,5,8,0.85);
+  border: 1px solid rgba(255,0,110,0.5);
+  padding: 0.25rem 0.5rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 0 6px rgba(255,0,110,0.4);
+  transition: all 0.2s ease;
+}
+.zm-rep {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.4rem;
+  letter-spacing: 0.18em;
+  color: rgba(200,216,224,0.4);
+  background: rgba(3,5,8,0.7);
+  padding: 0.1rem 0.35rem;
+  min-height: 0.7rem;
+  display: block;
+  transition: color 0.2s ease;
+}
+.zm-rep:empty { display: none; }
+.zm-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #ff006e;
+  box-shadow:
+    0 0 8px #ff006e,
+    0 0 14px rgba(255,0,110,0.6),
+    inset 0 0 3px rgba(255,255,255,0.5);
+  position: relative;
+  margin-top: 0.15rem;
+  animation: zonaPulso 2.4s ease-in-out infinite;
+}
+@keyframes zonaPulso {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.75; }
+}
+/* Hover/active: feedback suave SIN mover el botón. Solo cambia
+   el color y un leve glow extra. NO scale ni translate adicionales. */
+.zona-marker:hover .zm-label,
+.zona-marker:focus .zm-label {
+  border-color: rgba(0,229,255,0.7);
+  color: var(--cyan);
+  text-shadow: 0 0 8px rgba(0,229,255,0.6);
+}
+.zona-marker:hover .zm-dot,
+.zona-marker:focus .zm-dot {
+  background: #00e5ff;
+  box-shadow:
+    0 0 10px #00e5ff,
+    0 0 18px rgba(0,229,255,0.7),
+    inset 0 0 3px rgba(255,255,255,0.6);
+}
+/* Estado activo (mientras pulsas): no escalamos, solo bajamos
+   un poco la opacidad. Cualquier transform aquí causaría el
+   salto que el usuario notaba. */
+.zona-marker:active .zm-label { opacity: 0.85; }
+.zona-marker:active .zm-dot   { opacity: 0.85; }
+/* Por reputación */
+.zona-marker.rep-pos .zm-label { border-color: rgba(0,229,255,0.6); color: var(--cyan); }
+.zona-marker.rep-pos .zm-dot   { background: #00e5ff; box-shadow: 0 0 8px #00e5ff, 0 0 14px rgba(0,229,255,0.6), inset 0 0 3px rgba(255,255,255,0.5); }
+.zona-marker.rep-pos .zm-rep   { color: rgba(0,229,255,0.85); }
+.zona-marker.rep-neg .zm-rep   { color: rgba(255,0,110,0.85); }
+/* Tamaños escalados para pantallas más grandes */
+@media (min-width: 600px) {
+  .zm-label { font-size: 0.55rem; padding: 0.3rem 0.6rem; }
+  .zm-rep   { font-size: 0.45rem; }
+  .zm-dot   { width: 12px; height: 12px; }
+}
+.zona-detalle {
+  position: absolute; bottom: 56px; left: 0; right: 0;
+  background: linear-gradient(0deg, rgba(3,5,8,0.99) 0%, rgba(3,5,8,0.92) 100%);
+  border-top: 1px solid rgba(0,229,255,0.2);
+  padding: 1rem 1.2rem 1.2rem; z-index: 36;
+  transform: translateY(calc(100% + 56px)); transition: transform 0.35s ease;
+  max-height: 55%; overflow-y: auto;
+}
+.zona-detalle.visible { transform: translateY(0); }
+.zd-faccion {
+  font-size: 0.48rem; letter-spacing: 0.45em;
+  margin-bottom: 0.35rem; text-transform: uppercase;
+}
+.zd-nombre {
+  font-family: 'Orbitron', sans-serif; font-size: 0.85rem;
+  font-weight: 700; letter-spacing: 0.15em; margin-bottom: 0.5rem;
+}
+.zd-desc {
+  font-family: 'Rajdhani', sans-serif; font-size: 0.82rem;
+  line-height: 1.7; color: rgba(200,216,224,0.75); margin-bottom: 0.8rem;
+}
+.zd-reputacion {
+  font-family: 'Share Tech Mono', monospace; font-size: 0.52rem;
+  letter-spacing: 0.2em; padding: 0.4rem 0.6rem;
+  border: 1px solid; margin-bottom: 0.8rem; display: inline-block;
+}
+.zd-reputacion.positiva { border-color: rgba(0,229,255,0.3); color: var(--cyan); }
+.zd-reputacion.neutra   { border-color: rgba(200,216,224,0.2); color: rgba(200,216,224,0.5); }
+.zd-reputacion.negativa { border-color: rgba(255,0,110,0.3); color: var(--magenta); }
+.zd-peligro {
+  font-family: 'Share Tech Mono', monospace; font-size: 0.5rem;
+  letter-spacing: 0.2em; color: rgba(255,107,0,0.8); margin-bottom: 0.9rem;
+}
+.zd-acciones { display: flex; flex-direction: column; gap: 0.4rem; }
+.btn-viajar {
+  background: transparent; border: 1px solid;
+  font-family: 'Share Tech Mono', monospace; font-size: 0.6rem;
+  letter-spacing: 0.2em; padding: 0.7rem 1rem;
+  cursor: pointer; text-align: left; transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+.btn-viajar::before { content: 'â–¶ '; font-size: 0.4rem; opacity: 0.6; margin-right: 0.3rem; }
+.btn-viajar:hover { opacity: 0.8; }
+.btn-cerrar-detalle {
+  background: transparent; border: none; color: rgba(200,216,224,0.35);
+  font-family: 'Share Tech Mono', monospace; font-size: 0.5rem;
+  letter-spacing: 0.3em; cursor: pointer; padding: 0.5rem 0;
+  margin-top: 0.3rem; text-transform: uppercase;
+}
+.btn-volver-apt-mapa {
+  position: absolute; top: 0.8rem; right: 1rem;
+  background: transparent; border: 1px solid rgba(0,229,255,0.18);
+  color: rgba(0,229,255,0.5);
+  font-family: 'Share Tech Mono', monospace; font-size: 0.5rem;
+  letter-spacing: 0.25em; padding: 0.4rem 0.6rem;
+  cursor: pointer; z-index: 15; transition: all 0.2s; text-transform: uppercase;
+}
+.btn-volver-apt-mapa:hover { border-color: rgba(0,229,255,0.5); color: var(--cyan); }
+
+#transito-libre-escena { z-index: 30; }
+.tl-inner { position: absolute; bottom: 0; left: 0; right: 0; padding: 1.2rem; z-index: 5; }
+.tl-zona-destino {
+  font-family: 'Orbitron', sans-serif; font-size: 0.5rem;
+  letter-spacing: 0.5em; color: rgba(200,216,224,0.3);
+  margin-bottom: 0.3rem; text-transform: uppercase;
+}
+#zona-escena { z-index: 30; }
+.zona-inner {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  /* padding-bottom amplio para que la barra permanente (z-index 35,
+     ~3rem de alto) nunca tape la última opción de la zona. */
+  padding: 1.2rem 1.4rem;
+  padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0));
+  z-index: 5;
+  background: linear-gradient(0deg, rgba(3,5,8,0.97) 0%, rgba(3,5,8,0.5) 100%);
+  /* Permitir scroll vertical cuando haya muchas opciones y no quepan. */
+  max-height: 100%;
+  overflow-y: auto;
+}
+.zona-llegada-nombre {
+  font-family: 'Orbitron', sans-serif; font-size: 0.75rem;
+  font-weight: 700; letter-spacing: 0.3em;
+  margin-bottom: 0.3rem; text-transform: uppercase;
+}
+.zona-llegada-faccion {
+  font-size: 0.48rem; letter-spacing: 0.4em; opacity: 0.6;
+  margin-bottom: 1rem; text-transform: uppercase;
+  font-family: 'Share Tech Mono', monospace;
+}
+.zona-llegada-desc {
+  font-family: 'Rajdhani', sans-serif; font-size: 0.88rem;
+  line-height: 1.75; color: rgba(200,216,224,0.8);
+  margin-bottom: 1rem; border-left: 2px solid; padding-left: 0.8rem;
+}
+.zona-rep-display {
+  font-family: 'Share Tech Mono', monospace; font-size: 0.52rem;
+  letter-spacing: 0.2em; margin-bottom: 1rem; opacity: 0.75;
+}
+.zona-opciones { display: flex; flex-direction: column; gap: 0.4rem; }
+
+
+/* ============================================================

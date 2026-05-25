@@ -1,0 +1,144 @@
+/* ============================================================
+   BLOQUE CSS-31 — PANTALLA DE DEPURACIÓN (Ctrl+D)
+   Panel solo de desarrollo. Se activa con Ctrl+D o 4 taps rápidos
+   en la esquina superior derecha.
+   ============================================================ */
+
+/* ========== PANTALLA DE DEPURACIÓN — SOLO DESARROLLO ========== */
+/* Visible solo con Ctrl+D (o 4 taps rápidos en esquina superior derecha).
+   No la ve el jugador. Es para nosotros mientras iteramos. */
+#debug-panel {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  width: 280px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: rgba(8, 12, 18, 0.95);
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: rgba(200, 216, 224, 0.85);
+  padding: 0.8rem;
+  display: none;
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.12);
+}
+#debug-panel.visible { display: block; }
+/* Cuando el panel debug está abierto, ocultamos el audio mini
+   y todo lo que esté en su misma esquina, para no solapar. */
+#debug-panel.visible ~ .audio-mini { display: none; }
+body.debug-abierto .audio-mini { display: none; }
+.debug-titulo {
+  color: var(--cyan);
+  font-size: 0.55rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(0,229,255,0.2);
+  padding-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.debug-cerrar {
+  background: none;
+  border: 1px solid rgba(255,80,80,0.4);
+  color: rgba(255,140,140,0.8);
+  font-family: inherit;
+  font-size: 0.5rem;
+  padding: 0.15rem 0.4rem;
+  cursor: pointer;
+  letter-spacing: 0.2em;
+}
+.debug-cerrar:hover { background: rgba(255,80,80,0.15); }
+.debug-seccion {
+  margin-bottom: 0.7rem;
+}
+.debug-seccion-label {
+  color: var(--magenta);
+  font-size: 0.5rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+  opacity: 0.85;
+}
+.debug-fila {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.15rem 0;
+  border-bottom: 1px dotted rgba(200,216,224,0.08);
+  font-size: 0.62rem;
+}
+.debug-fila .clave {
+  color: rgba(200,216,224,0.6);
+}
+.debug-fila .valor {
+  color: rgba(255,255,255,0.9);
+  font-weight: bold;
+}
+.debug-fila .valor.bajo { color: rgba(120,255,160,0.85); }
+.debug-fila .valor.medio { color: rgba(255,220,120,0.85); }
+.debug-fila .valor.alto { color: rgba(255,160,120,0.85); }
+.debug-fila .valor.extremo { color: rgba(255,100,120,0.95); }
+.debug-fila .valor.null { color: rgba(150,150,150,0.6); font-style: italic; }
+.debug-fila .valor.true { color: rgba(120,255,160,0.95); }
+.debug-fila .valor.false { color: rgba(255,140,140,0.7); }
+.debug-barra-mini {
+  display: inline-block;
+  width: 60px;
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  position: relative;
+}
+.debug-barra-mini::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: var(--w, 0%);
+  background: var(--c, var(--cyan));
+}
+.debug-acciones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+}
+.debug-btn {
+  background: rgba(0,229,255,0.06);
+  border: 1px solid rgba(0,229,255,0.25);
+  color: var(--cyan);
+  font-family: inherit;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  padding: 0.35rem 0.4rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+.debug-btn:hover {
+  background: rgba(0,229,255,0.15);
+  border-color: var(--cyan);
+}
+.debug-btn.peligro {
+  border-color: rgba(255,80,80,0.3);
+  color: rgba(255,140,140,0.85);
+  background: rgba(255,80,80,0.05);
+}
+.debug-btn.peligro:hover {
+  background: rgba(255,80,80,0.15);
+}
+.debug-hint {
+  font-size: 0.5rem;
+  color: rgba(200,216,224,0.4);
+  text-align: center;
+  margin-top: 0.5rem;
+  letter-spacing: 0.2em;
+}
+
+
+/* ============================================================

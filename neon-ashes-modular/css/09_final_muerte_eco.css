@@ -1,0 +1,121 @@
+/* ============================================================
+   BLOQUE CSS-09 — ESCENA: FINAL del capítulo
+   Cierre cinematográfico tras decidir con Mara.
+   ============================================================ */
+
+.final-titulo{font-family:'Orbitron',sans-serif;font-size:clamp(0.8rem,3vw,1rem);letter-spacing:0.5em;color:var(--cyan);margin-bottom:1.5rem;opacity:0;animation:aparecer 1s ease 0.5s forwards;}
+.final-texto{font-family:'Rajdhani',sans-serif;font-size:clamp(0.9rem,3vw,1.1rem);line-height:1.8;color:rgba(200,216,224,0.7);margin-bottom:2rem;opacity:0;animation:aparecer 1s ease 1.5s forwards;}
+.final-cero{font-size:0.6rem;letter-spacing:0.4em;color:rgba(0,229,255,0.28);margin-bottom:2.5rem;opacity:0;animation:aparecer 1s ease 2.5s forwards;line-height:2;}
+.btn-reiniciar{background:transparent;border:1px solid rgba(0,229,255,0.25);color:var(--cyan-dim);font-family:'Orbitron',sans-serif;font-size:0.6rem;letter-spacing:0.4em;padding:0.8rem 2rem;cursor:pointer;opacity:0;animation:aparecer 1s ease 3.5s forwards;transition:all 0.3s ease;}
+.btn-reiniciar:hover{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 20px rgba(0,229,255,0.15);}
+
+
+/* ============================================================
+
+/* ============================================================
+   BLOQUE CSS-10 — ESCENA: MUERTE — pantalla terminal del personaje
+   Negro absoluto. Lo que ves cuando un stat humano llega a 100.
+   Sin reloj, sin HUD: solo el texto y la causa.
+   ============================================================ */
+
+/* ========== MUERTE — pantalla terminal del personaje ========== */
+/* Negro absoluto. Sin reloj, sin HUD, sin barras, sin nada.
+   Texto sobrio en el centro. Tres segundos de silencio. Después
+   un único botón. La ciudad sigue. Tú no. */
+#muerte-escena{background:#000;}
+#muerte-escena::before{
+  /* Sutil ruido de scanlines, pero muy tenue para no romper el silencio. */
+  content:'';
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(0deg,
+    rgba(255,255,255,0.015) 0,
+    rgba(255,255,255,0.015) 1px,
+    transparent 1px,
+    transparent 4px);
+  pointer-events:none;
+}
+.muerte-interior{
+  position:relative;
+  z-index:5;
+  text-align:center;
+  padding:2rem;
+  max-width:520px;
+  width:100%;
+}
+.muerte-texto{
+  font-family:'Rajdhani',sans-serif;
+  font-size:clamp(0.95rem,3vw,1.2rem);
+  line-height:2;
+  color:rgba(200,216,224,0.7);
+  letter-spacing:0.04em;
+  margin-bottom:4rem;
+  opacity:0;
+  animation:aparecer-lento 2.5s ease 0.8s forwards;
+}
+.muerte-btn{
+  background:transparent;
+  border:1px solid rgba(200,216,224,0.18);
+  color:rgba(200,216,224,0.45);
+  font-family:'Orbitron',sans-serif;
+  font-size:0.55rem;
+  letter-spacing:0.5em;
+  padding:0.9rem 2.2rem;
+  cursor:pointer;
+  opacity:0;
+  /* 3 segundos de silencio antes de que aparezca el botón. */
+  animation:aparecer-lento 1.5s ease 4.5s forwards;
+  transition:all 0.6s ease;
+}
+.muerte-btn:hover{
+  border-color:rgba(200,216,224,0.5);
+  color:rgba(200,216,224,0.85);
+}
+@keyframes aparecer-lento{
+  from{opacity:0;}
+  to{opacity:1;}
+}
+
+
+/* ============================================================
+
+/* ============================================================
+   BLOQUE CSS-11 — ESCENA: ECO — apartamento tras el final
+   El jugador vuelve a casa. El terminal pita con un mensaje
+   que depende de lo que hizo en la misión.
+   ============================================================ */
+
+/* ========== ECO — APARTAMENTO TRAS EL FINAL ========== */
+/* Escena íntima: el jugador ha vuelto a casa. El terminal pita. */
+.eco-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(180deg,rgba(3,5,8,0.92) 0%,rgba(3,5,8,0.75) 50%,rgba(3,5,8,0.95) 100%);z-index:1;}
+.eco-interior{position:relative;z-index:10;width:100%;max-width:520px;padding:2rem 1.5rem;text-align:center;}
+.eco-ambient{font-family:'Share Tech Mono',monospace;font-size:clamp(0.5rem,1.3vw,0.6rem);letter-spacing:0.45em;color:rgba(0,229,255,0.35);margin-bottom:0.6rem;text-transform:uppercase;opacity:0;animation:aparecer 1.2s ease 0.3s forwards;}
+.eco-hora{font-family:'Share Tech Mono',monospace;font-size:clamp(0.45rem,1.1vw,0.55rem);letter-spacing:0.5em;color:rgba(200,216,224,0.35);margin-bottom:2.5rem;opacity:0;animation:aparecer 1.2s ease 0.6s forwards;}
+.eco-prologo{font-family:'Rajdhani',sans-serif;font-weight:300;font-size:clamp(0.85rem,2.6vw,1rem);line-height:1.8;color:rgba(200,216,224,0.55);margin-bottom:2rem;opacity:0;animation:aparecer 1.5s ease 1.4s forwards;font-style:italic;}
+.eco-terminal{background:rgba(0,0,0,0.7);border:1px solid rgba(0,229,255,0.25);padding:1.2rem 1.1rem;text-align:left;opacity:0;transform:translateY(8px);transition:all 0.8s ease;margin-bottom:1.8rem;position:relative;}
+.eco-terminal.visible{opacity:1;transform:translateY(0);}
+.eco-terminal-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,229,255,0.18);padding-bottom:0.5rem;margin-bottom:0.8rem;}
+.eco-terminal-titulo{font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.35em;color:rgba(0,229,255,0.65);}
+.eco-terminal-estado{font-family:'Share Tech Mono',monospace;font-size:0.45rem;letter-spacing:0.3em;color:var(--magenta);}
+.eco-terminal-estado::before{content:'●';margin-right:0.3rem;animation:parpadeoMsg 1.6s ease infinite;}
+@keyframes parpadeoMsg{0%,100%{opacity:1}50%{opacity:0.3}}
+.eco-msg-from{font-family:'Share Tech Mono',monospace;font-size:0.55rem;letter-spacing:0.25em;color:rgba(200,216,224,0.45);margin-bottom:0.3rem;text-transform:uppercase;}
+.eco-msg-from .quien{color:var(--cyan);}
+.eco-msg-from .quien.anom{color:var(--magenta);}
+.eco-msg-from .quien.helix{color:#ffb347;}
+.eco-msg-from .quien.cero{color:rgba(255,255,255,0.7);letter-spacing:0.5em;}
+.eco-msg-body{font-family:'Share Tech Mono',monospace;font-size:clamp(0.62rem,1.8vw,0.72rem);line-height:1.9;color:rgba(200,216,224,0.85);letter-spacing:0.05em;min-height:1.5em;}
+.eco-msg-body.glitch{color:rgba(255,180,200,0.8);text-shadow:0 0 4px rgba(255,0,110,0.3);letter-spacing:0.08em;}
+.eco-cursor{display:inline-block;width:0.5em;height:0.9em;background:var(--cyan);margin-left:2px;vertical-align:middle;animation:cursorBlink 0.9s steps(2) infinite;}
+@keyframes cursorBlink{0%,50%{opacity:1}51%,100%{opacity:0}}
+.eco-firma{font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.3em;color:rgba(200,216,224,0.3);margin-top:0.8rem;text-align:right;opacity:0;transition:opacity 0.8s ease;}
+.eco-firma.visible{opacity:1;}
+.eco-acciones{display:flex;flex-direction:column;gap:0.6rem;opacity:0;transition:opacity 0.8s ease;align-items:center;}
+.eco-acciones.visible{opacity:1;}
+.eco-btn{background:transparent;border:1px solid rgba(0,229,255,0.22);color:var(--cyan-dim);font-family:'Share Tech Mono',monospace;font-size:0.55rem;letter-spacing:0.4em;padding:0.7rem 1.8rem;cursor:pointer;transition:all 0.3s ease;text-transform:uppercase;min-width:200px;}
+.eco-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,0.04);}
+.eco-btn.tenue{border-color:rgba(200,216,224,0.15);color:rgba(200,216,224,0.4);}
+.eco-btn.tenue:hover{border-color:rgba(200,216,224,0.4);color:rgba(200,216,224,0.7);}
+
+
+/* ============================================================
