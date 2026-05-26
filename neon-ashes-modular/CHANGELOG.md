@@ -11,6 +11,13 @@
 
 ---
 
+## [0.64] - 2026-05-26
+### Fixed
+- Navegación de zonas: al terminar una acción dentro de una zona (ej. hablar con un contacto), el botón "Volver" llevaba al mapa de ciudad en vez de a la plaza/centro de la zona.
+### Changed
+- El botón al terminar una acción ahora dice "← Volver a {NOMBRE_ZONA}" y lleva a la plaza de la zona.
+- En la plaza de cada zona, el botón de salida ahora dice "← Volver al centro de la ciudad" (antes decía "Volver al centro de {NOMBRE_ZONA}", que era contradictorio porque ya estabas en el centro).
+
 ## [0.63] - 2026-05-26
 ### Fixed
 - Ambiente sonoro no arrancaba cuando el autoplay estaba bloqueado y el usuario activaba el audio pulsando el botón de mute (en vez de hacer clic en la página).
