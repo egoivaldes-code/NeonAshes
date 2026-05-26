@@ -1,0 +1,146 @@
+/* ============================================================
+   BLOQUE CSS-27 — INDICADOR "TOCA PARA CONTINUAR"
+   Pequeño aviso parpadeante que sugiere tocar la pantalla.
+   ============================================================ */
+
+/* Indicador 'toca para continuar' */
+.tap-hint {
+  position: absolute;
+  bottom: 14%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(0.45rem, 1.3vw, 0.6rem);
+  letter-spacing: 0.4em;
+  color: rgba(0, 229, 255, 0.85);
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 30;
+  opacity: 0;
+  animation: tapPulse 2s ease-in-out infinite;
+  transition: opacity 0.5s ease;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
+}
+.tap-hint.visible { opacity: 1; }
+@keyframes tapPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+.tap-hint::before { content: '▸ '; opacity: 0.8; }
+.tap-hint::after { content: ' ▸'; opacity: 0.8; }
+
+
+/* ============================================================
+
+/* ============================================================
+   BLOQUE CSS-28 — CURSOR POINTER en zonas tocables
+   Para que el cursor cambie a "manita" en zonas con interacción.
+   ============================================================ */
+
+/* Cursor pointer en zonas tappables */
+.tap-zone { cursor: pointer; }
+
+
+/* ============================================================
+
+/* ============================================================
+   BLOQUE CSS-29 — RELOJ DIEGÉTICO (esquina sup. izquierda)
+   Fecha y hora del universo del juego. Cyan tenue, fuente mono.
+   ============================================================ */
+
+/* ========== RELOJ DIEGÉTICO — esquina superior izquierda ========== */
+/* Fecha y hora del universo del juego. Tipografía mono, color cyan tenue,
+   estilo "HUD ambiental". Siempre visible una vez el jugador entra al
+   apartamento, durante todo el juego. */
+#reloj-diegetico {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 520;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  color: rgba(0,229,255,0.5);
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(0,229,255,0.18);
+  padding: 0.35rem 0.7rem;
+  white-space: nowrap;
+  text-transform: uppercase;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+#reloj-diegetico.visible { opacity: 1; }
+/* Cuando un panel del hub está activo, el reloj se atenúa para no
+   solaparse con el contenido del panel (que es más importante en
+   ese momento). Mismo trato para el modal de inventario. */
+body.panel-abierto #reloj-diegetico { opacity: 0; pointer-events: none; }
+#reloj-diegetico::before {
+  content: '◉ ';
+  color: rgba(0,229,255,0.7);
+  margin-right: 0.3rem;
+}
+
+
+/* ============================================================
+
+/* ============================================================
+   BLOQUE CSS-30 — BANNER DE RETORNO (al cargar partida)
+   Mensaje sutil que se muestra al volver de una partida guardada.
+   ============================================================ */
+
+/* ========== BANNER DE RETORNO — cuando se carga una partida ========== */
+/* Mensaje sutil en la pantalla de identidad cuando el jugador vuelve
+   tras haber jugado antes. No invasivo. */
+.retorno-banner {
+  background: rgba(0,229,255,0.06);
+  border: 1px solid rgba(0,229,255,0.25);
+  padding: 0.9rem 1rem;
+  margin-bottom: 1.5rem;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: rgba(0,229,255,0.75);
+  line-height: 1.7;
+  text-align: center;
+}
+.retorno-banner .nombre-prev {
+  color: var(--cyan);
+  font-weight: 700;
+  letter-spacing: 0.25em;
+}
+.retorno-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+.btn-retorno {
+  background: transparent;
+  border: 1px solid rgba(0,229,255,0.3);
+  color: var(--cyan);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.35em;
+  padding: 0.65rem 0.8rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.25s ease;
+}
+.btn-retorno:hover {
+  background: rgba(0,229,255,0.08);
+  border-color: var(--cyan);
+}
+.btn-retorno.tenue {
+  border-color: rgba(200,216,224,0.18);
+  color: rgba(200,216,224,0.5);
+  font-size: 0.5rem;
+}
+.btn-retorno.tenue:hover {
+  border-color: rgba(200,216,224,0.4);
+  color: rgba(200,216,224,0.75);
+  background: transparent;
+}
+
+
+/* ============================================================

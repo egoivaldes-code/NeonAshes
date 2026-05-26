@@ -1,0 +1,237 @@
+/* ============================================================
+   BLOQUE CSS-38 — BARRA PERMANENTE INFERIOR
+   La barra fija de abajo: créditos a la izquierda, audio (mute +
+   volumen) en el centro, y botones contextuales.
+   ============================================================ */
+
+/* ============================================================
+   BARRA PERMANENTE (visible en TODAS las escenas)
+   ============================================================
+   Abajo del todo. Contiene: créditos, estado, inventario, audio.
+   Estos son siempre accesibles, en cualquier momento del juego.
+   ============================================================ */
+
+.barra-permanente {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 35; /* por encima de las escenas mapa/tránsito/zona (z 30)
+                  y por debajo de modales (650+). Antes era 25, pero
+                  quedaba tapada en transito-libre, mapa y zona. */
+  display: none; /* aparece tras confirmar identidad */
+  align-items: center;
+  background: linear-gradient(180deg, rgba(3,5,8,0.55) 0%, rgba(3,5,8,0.95) 60%, rgba(3,5,8,0.99) 100%);
+  border-top: 1px solid rgba(0,229,255,0.25);
+  padding: 0.6rem 0.5rem;
+  gap: 0.4rem;
+}
+.barra-permanente.visible {
+  display: flex;
+}
+
+.perm-btn {
+  flex: 1;
+  background: rgba(0,40,50,0.3);
+  border: 1px solid rgba(0,229,255,0.18);
+  color: rgba(160,200,210,0.65);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.25em;
+  padding: 0.55rem 0.4rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  position: relative;
+  min-height: 48px;
+}
+.perm-btn:hover {
+  background: rgba(0,229,255,0.1);
+  border-color: rgba(0,229,255,0.4);
+  color: var(--cyan);
+}
+.perm-btn .icono {
+  font-size: 0.9rem;
+  line-height: 1;
+  letter-spacing: 0;
+}
+.perm-btn .etiqueta {
+  font-size: 0.45rem;
+  letter-spacing: 0.3em;
+}
+
+
+/* ============================================================
+
+/* ============================================================
+   BLOQUE CSS-39 — BARRA PERMANENTE — bloque CRÉDITOS
+   Solo info, no es un botón. Muestra los CR actuales.
+   ============================================================ */
+
+/* Bloque créditos: info pasiva, no es botón */
+.perm-creditos {
+  flex: 1;
+  background: rgba(0,40,50,0.2);
+  border: 1px solid rgba(0,229,255,0.12);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  padding: 0.55rem 0.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  min-height: 48px;
+  cursor: default;
+}
+.perm-creditos .label {
+  color: rgba(0,229,255,0.5);
+  font-size: 0.45rem;
+  letter-spacing: 0.3em;
+}
+.perm-creditos .valor {
+  color: var(--cyan);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
+
+/* ============================================================
+
+/* ============================================================
+   BLOQUE CSS-40 — BARRA PERMANENTE — bloque AUDIO
+   Botón de mute y slider de volumen.
+   ============================================================ */
+
+/* Bloque audio: contiene mute + slider */
+.perm-audio {
+  flex: 1.3; /* un poco más ancho para que quepa el slider */
+  background: rgba(0,40,50,0.25);
+  border: 1px solid rgba(0,229,255,0.15);
+  padding: 0.4rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  min-height: 48px;
+}
+.perm-audio-mute {
+  background: transparent;
+  border: none;
+  color: var(--cyan);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+.perm-audio-mute:hover { color: #fff; }
+.perm-audio-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  max-width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(0,229,255,0.6) 55%, rgba(255,255,255,0.1) 55%);
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+.perm-audio-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 6px var(--cyan);
+  cursor: pointer;
+}
+.perm-audio-slider::-moz-range-thumb {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+  border: none;
+  cursor: pointer;
+}
+
+
+/* ============================================================
+
+/* ============================================================
+   BLOQUE CSS-42 — AUDIO MINI (esquina inferior derecha)
+   Versión miniatura del control de audio para escenas donde
+   la barra permanente no se muestra.
+   ============================================================ */
+
+/* ===== AUDIO MINI ===== */
+/* Abajo derecha. Solo visible cuando la barra permanente no lo está.
+   Se oculta automáticamente cuando la barra permanente aparece. */
+.audio-mini {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 540;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: rgba(3,5,8,0.6);
+  border: 1px solid rgba(0,229,255,0.18);
+  transition: opacity 0.4s ease;
+}
+/* Cuando la barra permanente está activa, escondemos el mini.
+   No tiene sentido tener dos controles de audio a la vez. */
+.barra-permanente.visible ~ .audio-mini,
+body.barra-permanente-activa .audio-mini {
+  display: none;
+}
+.audio-mini-mute {
+  background: transparent;
+  border: none;
+  color: var(--cyan);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+.audio-mini-mute:hover { color: #fff; }
+.audio-mini-slider {
+  -webkit-appearance: none;
+  width: 70px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(0,229,255,0.6) 55%, rgba(255,255,255,0.1) 55%);
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+.audio-mini-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 6px var(--cyan);
+  cursor: pointer;
+}
+.audio-mini-slider::-moz-range-thumb {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+  border: none;
+  cursor: pointer;
+}
+
+
+/* ============================================================

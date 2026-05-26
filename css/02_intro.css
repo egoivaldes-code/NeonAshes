@@ -1,0 +1,26 @@
+/* ============================================================
+   BLOQUE CSS-02 — ESCENA: INTRO CINEMATOGRÁFICA
+   Los 5 frames de la intro: textos flashback, glitch, binarios
+   y la atmósfera de apertura del juego.
+   ============================================================ */
+
+#intro-escena{background:#000;z-index:200;overflow:hidden;}
+.intro-frame{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 1s ease;}
+.intro-frame.visible{opacity:1;}
+.binary-overlay{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;pointer-events:none;z-index:15;}
+.binary-stream{position:absolute;top:0;font-family:'Share Tech Mono',monospace;font-size:clamp(0.38rem,1vw,0.5rem);line-height:1.4;color:rgba(0,229,255,0.07);letter-spacing:0.05em;white-space:pre;animation:streamFall var(--spd,8s) linear infinite var(--dly,0s);}
+@keyframes streamFall{0%{transform:translateY(-100%);opacity:0}5%{opacity:1}95%{opacity:0.4}100%{transform:translateY(100vh);opacity:0}}
+.frame-bg{position:absolute;top:0;left:0;width:100%;height:100%;background-size:cover;background-position:center;z-index:5;filter:brightness(1.4) contrast(1.1) saturate(1.05);}
+.frame-overlay{position:absolute;top:0;left:0;width:100%;height:100%;z-index:6;}
+.flashback-text{position:relative;z-index:20;text-align:center;padding:2rem;max-width:560px;}
+.flashback-label{font-size:clamp(0.48rem,1.4vw,0.62rem);letter-spacing:0.6em;color:rgba(0,229,255,0.55);margin-bottom:1.4rem;text-transform:uppercase;}
+.flashback-corrupted{font-size:clamp(0.62rem,1.8vw,0.78rem);color:rgba(0,229,255,0.38);letter-spacing:0.12em;line-height:2;margin-bottom:1.8rem;}
+.flashback-main{font-family:'Rajdhani',sans-serif;font-weight:300;font-size:clamp(1.55rem,5vw,2.6rem);color:var(--blanco-suave);letter-spacing:0.06em;line-height:1.45;text-shadow:0 2px 40px rgba(0,0,0,0.95),0 0 24px rgba(0,229,255,0.08);}
+.flashback-main em{font-style:normal;color:var(--cyan);font-weight:500;text-shadow:0 0 18px rgba(0,229,255,0.45),0 0 36px rgba(0,229,255,0.2);}
+.time-stamp{position:absolute;bottom:11%;left:50%;transform:translateX(-50%);font-size:clamp(0.38rem,1.1vw,0.52rem);letter-spacing:0.5em;color:rgba(0,229,255,0.25);text-align:center;z-index:20;}
+.glitch-frame{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:25;opacity:0;}
+.glitch-frame.active{animation:glitchFlash 0.18s steps(1) forwards;}
+@keyframes glitchFlash{0%{opacity:1;background:rgba(0,229,255,0.05);clip-path:inset(28% 0 52% 0);transform:translateX(-2px)}33%{clip-path:inset(62% 0 12% 0);background:rgba(255,0,110,0.06);transform:translateX(3px)}66%{clip-path:inset(10% 0 78% 0);background:rgba(0,229,255,0.04);transform:translateX(-1px)}100%{opacity:0;transform:translateX(0)}}
+
+
+/* ============================================================

@@ -1,0 +1,64 @@
+/* ============================================================
+   BLOQUE CSS-21 — HUD VIEJO (oculto)
+   La barra de créditos antigua. Ya no se ve: ahora la info vive
+   en la barra permanente inferior.
+   ============================================================ */
+
+/* Barra de estado del jugador (créditos + inventario) */
+/* HUD viejo: oculto. La info se muestra en la barra-permanente nueva.
+   Lo dejamos en el DOM porque hay funciones JS que referencian #hud-cr,
+   #btn-mute, #slider-vol, #btn-skip, etc. Esos elementos siguen existiendo
+   pero invisibles; los valores se "espejan" a la barra nueva con JS. */
+#hud-estado {
+  display: none;
+}
+#hud-estado.visible { display: none; }
+.hud-creditos {
+  background: rgba(0,0,0,0.7);
+  border: 1px solid rgba(0,229,255,0.25);
+  color: var(--cyan);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  padding: 0.4rem 0.7rem;
+  white-space: nowrap;
+}
+.hud-creditos .label { color: rgba(0,229,255,0.5); margin-right: 0.4rem; }
+.hud-creditos .valor { color: var(--cyan); font-weight: 700; }
+.hud-btn {
+  background: rgba(0,0,0,0.7);
+  border: 1px solid rgba(255,0,110,0.3);
+  color: var(--magenta);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.hud-btn:hover {
+  background: rgba(255,0,110,0.12);
+  border-color: var(--magenta);
+}
+.hud-rep-cambio {
+  background: rgba(0,0,0,0.85);
+  border: 1px solid rgba(255,107,0,0.4);
+  color: var(--naranja);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  padding: 0.4rem 0.7rem;
+  position: fixed;
+  bottom: 4.5rem;
+  left: 1.2rem;
+  z-index: 490;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.5s ease;
+  pointer-events: none;
+}
+.hud-rep-cambio.visible { opacity: 1; transform: translateY(0); }
+
+
+/* ============================================================

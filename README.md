@@ -1,17 +1,34 @@
 # NEON ASHES
 
-Atmospheric cyberpunk narrative experience.
+Vertical slice de juego cyberpunk noir en HTML modular.
 
-NEON ASHES is a grounded science fiction project focused on emotional realism, atmospheric storytelling and immersive worldbuilding.
+## Ejecutar
 
-## Core Pillars
+Abrir `index.html` con doble clic en cualquier navegador moderno.
 
-- Atmospheric storytelling
-- Grounded hard sci-fi
-- Emotional realism
-- Slow progression
-- AI-assisted immersion
+Sin servidor. Sin instalación. Sin dependencias externas.
 
-## Current Development Phase
+## Estructura
 
-Mobile-first singleplayer vertical slice.
+```
+NeonAshes/
+├── index.html          ← Punto de entrada
+├── 00_LAUNCHER.js      ← Configuración única
+├── css/                ← Hojas de estilo modulares (23 archivos)
+├── js/                 ← Lógica modular (36 archivos)
+├── docs/               ← Documentación viva del proyecto
+│   └── 00_contexto.md  ← Pegar esto primero al trabajar con IA
+└── assets/             ← Imágenes, audio, fuentes
+```
+
+## Filosofía
+
+Ver `docs/00_contexto.md` para tono, restricciones y arquitectura.
+
+## Trabajar con IA
+
+Antes de pedir nada a una IA sobre este proyecto, pegarle `docs/00_contexto.md`.
+
+## Estado
+
+Vertical slice funcional. Sistema narrativo IA en diseño (bloques JS-50+ reservados).

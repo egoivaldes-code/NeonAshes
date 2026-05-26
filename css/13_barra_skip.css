@@ -1,0 +1,43 @@
+/* ============================================================
+   BLOQUE CSS-18 — BARRA DE CONTROLES ANTIGUA (skip intro)
+   La barra vieja. Solo queda el botón "saltar intro" porque el
+   mute y el slider ahora viven en la barra permanente.
+   ============================================================ */
+
+#barra-controles{position:fixed;bottom:1.2rem;left:1.2rem;z-index:550;display:none;align-items:center;gap:0.6rem;opacity:0;transition:opacity 0.6s ease;pointer-events:none;}
+#barra-controles.visible{display:flex;opacity:1;pointer-events:auto;}
+/* En la barra vieja solo queremos el SALTAR INTRO. El mute y el slider ya viven
+   en la barra permanente / audio-mini, así que los ocultamos aquí. */
+#barra-controles #btn-mute,#barra-controles #slider-vol{display:none !important;}
+/* Cuando la barra permanente entra en escena, ocultamos la barra-controles
+   completa para no duplicar nada. */
+body.barra-permanente-activa #barra-controles{display:none !important;}
+#btn-skip{background:transparent;border:1px solid rgba(200,216,224,0.18);color:rgba(200,216,224,0.55);font-family:'Share Tech Mono',monospace;font-size:0.52rem;letter-spacing:0.3em;padding:0.4rem 0.7rem;cursor:pointer;transition:all 0.3s ease;display:none;white-space:nowrap;}
+#btn-skip:hover{color:rgba(200,216,224,0.95);border-color:rgba(200,216,224,0.45);}
+#btn-skip.activo{display:inline-block;}
+#btn-mute{background:transparent;border:1px solid rgba(0,229,255,0.25);color:rgba(0,229,255,0.6);font-family:'Share Tech Mono',monospace;font-size:0.55rem;letter-spacing:0.2em;padding:0.4rem 0.7rem;cursor:pointer;transition:all 0.3s ease;white-space:nowrap;}
+#btn-mute:hover{border-color:rgba(0,229,255,0.7);color:rgba(0,229,255,1);}
+#slider-vol{-webkit-appearance:none;width:60px;height:2px;background:linear-gradient(90deg,rgba(0,229,255,0.5) 55%,rgba(255,255,255,0.1) 55%);outline:none;border:none;cursor:pointer;}
+#slider-vol::-webkit-slider-thumb{-webkit-appearance:none;width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 6px var(--cyan);cursor:pointer;}
+#slider-vol::-moz-range-thumb{width:8px;height:8px;border-radius:50%;background:var(--cyan);border:none;cursor:pointer;}
+
+
+
+/* ============================================================
+
+/* ============================================================
+   BLOQUE CSS-41 — BARRA PERMANENTE — botón SALTAR INTRO
+   Solo visible durante la intro.
+   ============================================================ */
+
+/* Botón SALTAR INTRO (sólo visible durante la intro) */
+.perm-btn-skip {
+  display: none;
+  flex: 0.8;
+}
+.perm-btn-skip.activo {
+  display: flex;
+}
+
+
+/* ============================================================
