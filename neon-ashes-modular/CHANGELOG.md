@@ -11,6 +11,12 @@
 
 ---
 
+## [0.65] - 2026-05-26
+### Fixed
+- Bucle del terminal tras completar la misión de Mara: al encender el terminal solo aparecía "Abrir el mensaje cifrado" y no había forma de salir sin entrar en el terminal otra vez. Ahora el apartamento reconoce correctamente que la misión está completada.
+### Added
+- Botón "← Cerrar terminal" junto a "Abrir el mensaje cifrado", como red de seguridad para evitar quedarse atrapado en cualquier flujo futuro.
+
 ## [0.64] - 2026-05-26
 ### Fixed
 - Navegación de zonas: al terminar una acción dentro de una zona (ej. hablar con un contacto), el botón "Volver" llevaba al mapa de ciudad en vez de a la plaza/centro de la zona.
