@@ -32,11 +32,11 @@ body.barra-permanente-activa #barra-controles{display:none !important;}
 
 /* Botón SALTAR INTRO (sólo visible durante la intro) */
 .perm-btn-skip {
-  display: none;
+  display: none !important;
   flex: 0.8;
 }
 .perm-btn-skip.activo {
-  display: flex;
+  display: flex !important;
 }
 
 
