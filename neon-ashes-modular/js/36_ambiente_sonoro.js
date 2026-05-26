@@ -38,8 +38,12 @@ const _amb = {
   arrancado: false
 };
 
-function crearAudioAmbiente(idDataUri, etiqueta){
-  const a = new Audio(idDataUri);
+function crearAudioAmbiente(src, etiqueta){
+  if(!src) {
+    console.info('[ambiente] pista no configurada:', etiqueta);
+    return null;
+  }
+  const a = new Audio(src);
   a.loop = true;
   a.volume = 0;
   a.preload = 'auto';
@@ -258,8 +262,10 @@ if(typeof llegarAZona === 'function'){
   };
 }
 
-// === DATOS DE AUDIO EN BASE64 ===
-// Estas constantes pesan ~960 KB en total. Son las 3 pistas en bucle.
-const _AMBIENTE_STORM_DATA = '';
-const _AMBIENTE_INDUSTRIAL_DATA = '';
-const _AMBIENTE_CROWD_DATA = '';
+// === RUTAS DE AUDIO AMBIENTAL ===
+// Pon aquí los archivos MP3/OGG de cada pista ambiental.
+// Si una ruta está vacía (''), esa pista simplemente no suena
+// y el juego continúa sin errores.
+const _AMBIENTE_STORM_DATA      = 'assets/audio/storm.mp3';
+const _AMBIENTE_INDUSTRIAL_DATA = 'assets/audio/industrial.mp3';
+const _AMBIENTE_CROWD_DATA      = 'assets/audio/crowd.mp3';
