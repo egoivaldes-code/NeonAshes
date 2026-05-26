@@ -221,6 +221,14 @@ if(typeof toggleMute === 'function'){
   const _toggleMuteOriginal = toggleMute;
   toggleMute = function(){
     _toggleMuteOriginal();
+    // Aprovechamos el gesto del botón mute para arrancar el ambiente
+    // si todavía no se ha iniciado (caso: autoplay bloqueado y el usuario
+    // activa el audio pulsando el botón en vez de hacer clic en la página).
+    if(!_amb.arrancado){
+      arrancarAmbiente();
+      const activa = document.querySelector('.escena.activa');
+      if(activa && activa.id) aplicarAmbienteEscena(activa.id);
+    }
     // Damos un instante a que toggleMute actualice temaMuted, y entonces
     // sincronizamos el ambiente con el nuevo estado.
     setTimeout(()=>{
@@ -233,20 +241,23 @@ if(typeof toggleMute === 'function'){
 
 // === Arranque al primer tap ===
 // Los navegadores no dejan reproducir audio antes del primer gesto.
-// Enganchamos un listener una sola vez al primer clic / touch.
+// Enganchamos listeners al document Y a los botones de interacción
+// más habituales para no perdernos el primer gesto del usuario.
 (function(){
   function _primerGestoAmbiente(){
+    if(_amb.arrancado) return;
     arrancarAmbiente();
     // Aplicar el perfil de la escena activa ahora mismo
     const activa = document.querySelector('.escena.activa');
     if(activa && activa.id){
       aplicarAmbienteEscena(activa.id);
     }
-    document.removeEventListener('click', _primerGestoAmbiente);
-    document.removeEventListener('touchstart', _primerGestoAmbiente);
   }
+  // Listener genérico en el documento (captura cualquier clic)
   document.addEventListener('click', _primerGestoAmbiente, {once:true});
-  document.addEventListener('touchstart', _primerGestoAmbiente, {once:true});
+  document.addEventListener('touchstart', _primerGestoAmbiente, {once:true, passive:true});
+  // Backup: si por algún motivo el listener del document no dispara,
+  // intentamos arrancar en cada cambio de escena con perfil no nulo.
 })();
 
 // === Hook al sistema de zonas ===

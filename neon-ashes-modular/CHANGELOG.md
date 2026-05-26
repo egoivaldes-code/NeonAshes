@@ -11,6 +11,13 @@
 
 ---
 
+## [0.63] - 2026-05-26
+### Fixed
+- Ambiente sonoro no arrancaba cuando el autoplay estaba bloqueado y el usuario activaba el audio pulsando el botón de mute (en vez de hacer clic en la página).
+- Hook `toggleMute` ahora también inicializa y arranca el ambiente si todavía no se había iniciado.
+- Guard `if(_amb.arrancado) return` en `_primerGestoAmbiente` para evitar doble inicialización.
+- Listener `touchstart` del primer gesto ahora usa `passive:true` (mejor rendimiento en móviles).
+
 ## [0.62] - 2026-05-26
 ### Added
 - Pistas de audio ambiental externas: storm.mp3, industrial.mp3 y crowd.mp3 añadidas en assets/audio/.
