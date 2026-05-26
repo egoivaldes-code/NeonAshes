@@ -177,7 +177,7 @@ function opcionApt(idx){
 
   // Detectamos si el jugador ya volvió de la misión Mara.
   // En ese caso "Dormir" tiene un sentido distinto: cierra el día.
-  const misionCerrada = Estado.mision === 'volvioApartamento';
+  const misionCerrada = Estado.mision === 'volvioApartamento' || Estado.mision === 'completada';
 
   // Contexto para las variantes: franja horaria + día de la semana.
   const franja = franjaHoraria();
@@ -250,7 +250,13 @@ function opcionApt(idx){
       setTimeout(()=>{ regenerarOpcionesAptCierre(); }, 600);
     } else {
       // Terminal — lleva al mensaje cifrado / HELIX según contexto.
-      opc.innerHTML = `<button class="opcion-btn" onclick="irATerminal()">Abrir el mensaje cifrado</button>`;
+      // Añadimos también un botón "Cerrar terminal" como red de seguridad:
+      // si por algún motivo el jugador no quiere abrir el mensaje (o el
+      // sistema le ha dejado este botón único en un estado inesperado),
+      // siempre puede volver al menú base sin quedarse atrapado.
+      opc.innerHTML =
+        `<button class="opcion-btn" onclick="irATerminal()">Abrir el mensaje cifrado</button>` +
+        `<button class="opcion-btn" onclick="regenerarOpcionesAptCierre()">← Cerrar terminal</button>`;
     }
   } else if(idx === 0){
     // Ventana — devolverse al menú base con las 4 opciones.
@@ -507,7 +513,7 @@ function textosSalir(misionCerrada, m, h, franja, dia){
 function regenerarOpcionesAptCierre(){
   const opc = document.getElementById('opciones-apt');
   if(!opc) return;
-  const misionCerrada = Estado.mision === 'volvioApartamento';
+  const misionCerrada = Estado.mision === 'volvioApartamento' || Estado.mision === 'completada';
   if(misionCerrada){
     // Versión post-misión: textos más cansados.
     opc.innerHTML = `

@@ -79,7 +79,7 @@ const ZONAS_MUNDO = [
       { txt:'Buscar a Mano Roja (augmentaciones)', accion:'contacto_mano_roja' },
       { txt:'Explorar el mercado negro', accion:'mercado_negro' },
       { txt:'Esperar y observar', accion:'observar' },
-      { txt:'Volver al centro de {NOMBRE_ZONA}', accion:'volver_mapa' }
+      { txt:'← Volver al centro de la ciudad', accion:'volver_mapa_ciudad' }
     ]
   },
   {
@@ -119,7 +119,7 @@ const ZONAS_MUNDO = [
       { txt:'Buscar a la Hermana Vael', accion:'contacto_vael' },
       { txt:'Explorar el templo interior', accion:'templo_interior' },
       { txt:'Escuchar el sermón principal', accion:'sermon' },
-      { txt:'Volver al centro de {NOMBRE_ZONA}', accion:'volver_mapa' }
+      { txt:'← Volver al centro de la ciudad', accion:'volver_mapa_ciudad' }
     ]
   },
   {
@@ -157,7 +157,7 @@ const ZONAS_MUNDO = [
       { txt:'Buscar a Cero-Ocho', accion:'contacto_ceroocho' },
       { txt:'Consultar el tablón de filtraciones', accion:'tablon' },
       { txt:'Ofrecer información a cambio de créditos', accion:'vender_info' },
-      { txt:'Volver al centro de {NOMBRE_ZONA}', accion:'volver_mapa' }
+      { txt:'← Volver al centro de la ciudad', accion:'volver_mapa_ciudad' }
     ]
   },
   {
@@ -196,7 +196,7 @@ const ZONAS_MUNDO = [
       { txt:'Buscar a Don Vasek', accion:'contacto_vasek' },
       { txt:'Comprar en el mercado legal', accion:'mercado_ferro' },
       { txt:'Pasear y observar el orden', accion:'observar_ferro' },
-      { txt:'Volver al centro de {NOMBRE_ZONA}', accion:'volver_mapa' }
+      { txt:'← Volver al centro de la ciudad', accion:'volver_mapa_ciudad' }
     ]
   }
 ];
@@ -533,7 +533,16 @@ function accionZona(accion){
   const zona = _zonaActual;
   if(!zona) return;
 
+  // Volver a la plaza/centro de la zona actual (desde una acción).
+  // Reaprovecha llegarAZona() que es quien pinta la plaza con el menú
+  // de opciones de la zona. NO consume tiempo de juego ni avanza nada.
   if(accion === 'volver_mapa'){
+    llegarAZona();
+    return;
+  }
+
+  // Salir de la zona y volver al mapa de ciudad (desde la plaza).
+  if(accion === 'volver_mapa_ciudad'){
     if(typeof cambiarEscena === 'function'){
       cambiarEscena('zona-escena', 'mapa-escena');
     } else {
@@ -552,69 +561,69 @@ function accionZona(accion){
       narr: 'Mano Roja opera desde el fondo de una tienda de repuestos. Un tío con el brazo derecho completamente mecánico, hasta el puto hombro. Te mira sin sorpresa. "¿Qué traes, hostia? ¿Pasta o cotilleos? Porque sin una de las dos cosas, ya estás saliendo por donde has entrado."',
       rep: 5,
       faccion: 'sindicatos',
-      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver al centro de {NOMBRE_ZONA}</button>'
+      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     mercado_negro: {
       narr: 'Compras raciones de fábrica. Saben a plástico y proteína sintética. El hambre afloja un poco.',
       cambios: { creditos: -25, humano: { hambre: -20 } },
       rep: 2, faccion: 'sindicatos',
-      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver al centro de {NOMBRE_ZONA}</button>'
+      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     observar: {
       narr: 'Te quedas en una esquina, mirando. El Arrabal Carmesí nunca para. Peleas, negocios, fugas, reuniones. Ves cómo funciona esto por dentro. Y algo en tu cabeza lo archiva sin pedirte permiso.',
       cambios: { humano: { disociacion: 4, aislamiento: -3 } },
-      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver al centro de {NOMBRE_ZONA}</button>'
+      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     contacto_vael: {
       narr: 'Hermana Vael lleva una túnica blanca y tiene un ojo artificial con iris en espiral. Te recibe con calma perturbadora. "Bienvenido al umbral. Algunos cruzan estas puertas buscando un firmware espiritual. Otros, solo una pieza de recambio para el alma. ¿Cuál es tu protocolo hoy: fe o necesidad?"',
       rep: 5, faccion: 'iglesia_eco',
-      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver al centro de {NOMBRE_ZONA}</button>'
+      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     templo_interior: {
       narr: 'El interior del templo es oscuro y tranquilo. Hay gente meditando con partes mecánicas expuestas, cables visibles. El silencio aquí es diferente al silencio de tu apartamento. Más denso. Más lleno.',
       cambios: { humano: { disociacion: 7, fatiga: -4 } },
       rep: 3, faccion: 'iglesia_eco',
-      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver al centro de {NOMBRE_ZONA}</button>'
+      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     sermon: {
       narr: 'El líder del Culto habla durante veinte minutos sobre el umbral de la carne. Su voz tiene una cadencia que hace que escuchar sea fácil. Demasiado fácil. Cuando termina, no estás seguro de cuánto has asentido.',
       cambios: { humano: { disociacion: 10, aislamiento: -8 } },
       rep: 5, faccion: 'iglesia_eco',
-      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver al centro de {NOMBRE_ZONA}</button>'
+      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     contacto_ceroocho: {
       narr: 'Cero-Ocho es joven. Demasiado. Lleva tres pantallas en órbita craneal como un HUD heredado. "¿Qué bit me traes que no esté ya en mi caché? Porque si es ruido sin firmar, esto te va a costar ancho de banda del caro."',
       rep: 5, faccion: 'ia_autonomas',
-      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver al centro de {NOMBRE_ZONA}</button>'
+      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     tablon: {
       narr: 'El tablón digital tiene 47 entradas activas. La mayoría son rumores. Pero tres de ellas mencionan CERO en el asunto. Y tu corazón hace algo raro al leerlo.',
       cambios: { humano: { disociacion: 3 } },
       rep: 2, faccion: 'archivistas',
-      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver al centro de {NOMBRE_ZONA}</button>'
+      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     vender_info: {
       narr: 'Le cuentas lo poco que sabes. Cero-Ocho lo escucha con cara de aburrimiento. Luego te transfiere 40 créditos. Esto lo sabía. Pero el gesto vale algo.',
       cambios: { creditos: 40, humano: { disociacion: 4 } },
       rep: 5, faccion: 'ia_autonomas',
-      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver al centro de {NOMBRE_ZONA}</button>'
+      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     contacto_vasek: {
       narr: 'Don Vasek lleva un traje. De lana de verdad, no celulosa reciclada. Tiene setenta años y la mirada serena de quien hace mucho que no necesita levantar la voz. "Tome asiento, por favor. En esta sala nunca ocurre nada desagradable, le doy mi palabra. Las cosas desagradables, cuando son necesarias, las gestiono yo en otra parte."',
       rep: 5, faccion: 'sindicatos',
-      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver al centro de {NOMBRE_ZONA}</button>'
+      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     mercado_ferro: {
       narr: 'El mercado del Ferro tiene comida real. Cara, pero real. Comes de pie, mirando pasar a la gente. Por veinte minutos, nada te necesita.',
       cambios: { creditos: -35, humano: { hambre: -25, fatiga: -5 } },
       rep: 2, faccion: 'sindicatos',
-      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver al centro de {NOMBRE_ZONA}</button>'
+      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     observar_ferro: {
       narr: 'Paseas sin rumbo por las calles del Ferro. Ves a un cobrador saludar a una anciana con un beso en la mejilla. Ves a tres hombres con trajes idénticos compartir un café en silencio. Ves a una niña jugar sola en una plaza limpia, sin miedo. Todo aquí funciona. Y nadie te explica por qué.',
       cambios: { humano: { disociacion: 3, aislamiento: -2, fatiga: -2 } },
       rep: 1, faccion: 'sindicatos',
-      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver al centro de {NOMBRE_ZONA}</button>'
+      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     }
   };
 
@@ -622,7 +631,7 @@ function accionZona(accion){
   const _nz = zona.nombreCorto || zona.nombre;
   if(!r){
     narr.innerHTML = '[CONTENIDO EN DESARROLLO]';
-    opcEl.innerHTML = '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver al centro de '+_nz+'</button>';
+    opcEl.innerHTML = '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a '+_nz+'</button>';
     return;
   }
 
