@@ -11,6 +11,11 @@
 
 ---
 
+## [0.62] - 2026-05-26
+### Added
+- Pistas de audio ambiental externas: storm.mp3, industrial.mp3 y crowd.mp3 añadidas en assets/audio/.
+- El sistema de ambiente sonoro (js/36_ambiente_sonoro.js) ya estaba configurado con los perfiles por escena; ahora las pistas suenan correctamente.
+
 ## [0.61] - 2026-05-26
 ### Changed
 - Assets externalizados: las 33 imágenes y el audio principal ya no van embebidos como base64 dentro de js/01_recursos.js. Ahora se cargan como archivos físicos desde assets/images/ y assets/audio/.
