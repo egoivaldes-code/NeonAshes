@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "rLDJ5q-Djyr8KG_FENkAg"
+uri = "file://attached_assets/NeonAshes_v067_fix.zip"
+type = "unspecified"
+title = "NeonAshes v0.67 — fix IA OpenRouter"
