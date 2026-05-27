@@ -11,6 +11,14 @@
 
 ---
 
+## [0.67] - 2026-05-26
+### Added
+- Sistema IA narrativa (primera iteración): módulo `37_ia_cliente.js` con soporte para OpenRouter (principal), Gemini y Groq. Despachador con fallback configurable, telemetría local (llamadas y tokens) y parseo robusto de JSON.
+- Panel de depuración IA (`Ctrl+I`): permite pegar API key, ver telemetría, lanzar una llamada de prueba con el system prompt v1 y revisar la última respuesta (parseada / cruda / petición).
+- Campos IA en el LAUNCHER: `API_PROVEEDOR_PRINCIPAL`, `API_MODELO_OPENROUTER`, `API_TEMPERATURA`, etc.
+### Fixed
+- Errores de llamada del fix original (Mikel): LAUNCHER no tenía los campos IA requeridos. Añadidos todos. OpenRouter añadido como proveedor (el fix original solo tenía Gemini y Groq).
+
 ## [0.66] - 2026-05-26
 ### Fixed
 - Estructura del repo: los fixes de v0.64 y v0.65 estaban dentro de la subcarpeta neon-ashes-modular/, mientras que GitHub Pages servía la versión vieja monolítica desde la raíz. Ahora la versión modular es la única, en la raíz.

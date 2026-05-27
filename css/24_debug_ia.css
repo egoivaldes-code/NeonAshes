@@ -1,0 +1,195 @@
+/* ============================================================
+   BLOQUE CSS-46 — PANEL DE DEPURACIÓN DEL SISTEMA IA (Ctrl+I)
+   Panel solo de desarrollo. Se activa con Ctrl+I.
+   Imita el lenguaje visual del panel debug general (CSS-31) pero
+   es más ancho porque tiene inputs, botones y visor de respuestas.
+   ============================================================ */
+
+#ia-debug-panel {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 9999;
+  width: 420px;
+  max-width: calc(100vw - 2rem);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  background: rgba(8, 12, 18, 0.96);
+  border: 1px solid rgba(192, 132, 252, 0.45);   /* magenta del set */
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  color: rgba(200, 216, 224, 0.88);
+  padding: 0.9rem;
+  display: none;
+  box-shadow: 0 0 30px rgba(192, 132, 252, 0.15);
+}
+#ia-debug-panel.visible { display: block; }
+
+.ia-debug-titulo {
+  color: rgba(192, 132, 252, 0.95);
+  font-size: 0.6rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(192, 132, 252, 0.25);
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.7rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ia-debug-cerrar {
+  background: none;
+  border: 1px solid rgba(255, 80, 80, 0.4);
+  color: rgba(255, 140, 140, 0.85);
+  font-family: inherit;
+  font-size: 0.5rem;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  letter-spacing: 0.2em;
+}
+.ia-debug-cerrar:hover { background: rgba(255, 80, 80, 0.15); }
+
+.ia-debug-seccion {
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px dotted rgba(192, 132, 252, 0.12);
+}
+.ia-debug-seccion:last-child { border-bottom: none; }
+
+.ia-debug-seccion-label {
+  color: var(--cyan, #00e5ff);
+  font-size: 0.55rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+}
+
+.ia-debug-fila {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2rem 0;
+  font-size: 0.68rem;
+}
+.ia-debug-fila .clave { color: rgba(200, 216, 224, 0.65); }
+.ia-debug-fila .valor { color: rgba(255, 255, 255, 0.92); font-weight: bold; }
+
+/* Inputs */
+.ia-debug-key-row {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+#ia-key-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(192, 132, 252, 0.3);
+  color: rgba(220, 230, 240, 0.95);
+  font-family: inherit;
+  font-size: 0.65rem;
+  padding: 0.4rem 0.5rem;
+  outline: none;
+  letter-spacing: 0.05em;
+}
+#ia-key-input:focus {
+  border-color: rgba(192, 132, 252, 0.7);
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.ia-debug-key-estado {
+  font-size: 0.6rem;
+  padding: 0.3rem 0;
+  letter-spacing: 0.1em;
+}
+.ia-debug-key-estado.ok { color: rgba(120, 255, 160, 0.9); }
+.ia-debug-key-estado.fallo { color: rgba(255, 140, 140, 0.85); }
+
+.ia-debug-hint {
+  font-size: 0.55rem;
+  color: rgba(200, 216, 224, 0.45);
+  margin-top: 0.3rem;
+  letter-spacing: 0.08em;
+  font-style: italic;
+}
+
+/* Botones */
+.ia-btn {
+  background: rgba(0, 229, 255, 0.06);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  color: var(--cyan, #00e5ff);
+  font-family: inherit;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.15s ease;
+}
+.ia-btn:hover {
+  background: rgba(0, 229, 255, 0.18);
+  border-color: var(--cyan, #00e5ff);
+}
+.ia-btn:disabled {
+  opacity: 0.4;
+  cursor: wait;
+}
+.ia-btn-ancho { width: 100%; margin-top: 0.4rem; }
+.ia-btn.peligro {
+  border-color: rgba(255, 80, 80, 0.35);
+  color: rgba(255, 140, 140, 0.9);
+  background: rgba(255, 80, 80, 0.05);
+}
+.ia-btn.peligro:hover { background: rgba(255, 80, 80, 0.17); }
+
+/* Estado de la última prueba */
+.ia-debug-estado {
+  font-size: 0.62rem;
+  padding: 0.4rem 0;
+  letter-spacing: 0.08em;
+  min-height: 1.2em;
+}
+.ia-debug-estado.ok { color: rgba(120, 255, 160, 0.95); }
+.ia-debug-estado.fallo { color: rgba(255, 140, 140, 0.95); }
+.ia-debug-estado.pendiente { color: rgba(255, 220, 120, 0.9); }
+
+/* Tabs */
+.ia-debug-tabs {
+  display: flex;
+  gap: 0.2rem;
+  margin-bottom: 0.4rem;
+}
+.ia-tab {
+  background: none;
+  border: 1px solid rgba(200, 216, 224, 0.15);
+  color: rgba(200, 216, 224, 0.5);
+  font-family: inherit;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.ia-tab:hover { color: rgba(200, 216, 224, 0.85); }
+.ia-tab.activa {
+  color: rgba(192, 132, 252, 0.95);
+  border-color: rgba(192, 132, 252, 0.45);
+  background: rgba(192, 132, 252, 0.06);
+}
+
+/* Visor de la última respuesta */
+.ia-debug-pre {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(192, 132, 252, 0.15);
+  color: rgba(220, 230, 240, 0.85);
+  font-family: inherit;
+  font-size: 0.62rem;
+  padding: 0.6rem 0.7rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  max-height: 280px;
+  overflow-y: auto;
+  margin: 0;
+  letter-spacing: 0.02em;
+  line-height: 1.45;
+}

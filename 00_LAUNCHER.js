@@ -58,6 +58,31 @@ const LAUNCHER = {
   // musical. Recomendado: 0.4–0.7.
   VOLUMEN_AMBIENTE: 0.55,
 
+  // ─── SISTEMA IA — NARRATIVA DINÁMICA ───────────────────────────
+  // Proveedor principal y fallback: 'openrouter' | 'gemini' | 'groq'
+  API_PROVEEDOR_PRINCIPAL:       'openrouter',
+  API_PROVEEDOR_FALLBACK:        null,           // null = sin fallback
+
+  // API keys (se pueden sobreescribir desde el panel Ctrl+I)
+  API_KEY_OPENROUTER:            '',             // pega aquí o usa el panel
+  API_KEY_GEMINI:                '',
+  API_KEY_GROQ:                  '',
+
+  // Modelo por proveedor
+  API_MODELO_OPENROUTER:         'qwen/qwen3-8b:free',
+  API_MODELO_GEMINI:             'gemini-2.0-flash',
+  API_MODELO_GROQ:               'llama-3.3-70b-versatile',
+
+  // Parámetros de generación
+  API_TEMPERATURA:               0.85,
+  API_MAX_TOKENS_RESPUESTA:      800,
+  API_TIMEOUT_MS:                10000,
+  API_REINTENTOS_POR_PROVEEDOR:  1,
+
+  // Telemetría local (contadores en localStorage)
+  API_LOG_LLAMADAS:              true,
+  API_LOG_TOKENS:                true,
+
   // ─── CLAVES DE GUARDADO ────────────────────────────────────────
   // Son los nombres con los que el juego guarda los datos en el navegador.
   // Si los cambias, todas las partidas antiguas se considerarán "no existen".
