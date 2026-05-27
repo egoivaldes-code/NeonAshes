@@ -1,0 +1,923 @@
+================================================================
+NEON ASHES — CONTEXTO COMPLETO DEL PROYECTO
+================================================================
+
+INSTRUCCIONES PARA CLAUDE (leer antes de hacer nada):
+
+Este archivo contiene TODO el contexto del proyecto NEON ASHES.
+Léelo entero antes de responder a cualquier petición.
+
+Reglas innegociables:
+- Respeta el canon, el tono y las reglas del mundo.
+- No reinterpretes nada. No inventes lore. No improvises.
+- El idioma de trabajo es español (España).
+- El usuario NO tiene conocimientos de programación. Cero jerga
+  técnica gratuita. Si tienes que usar un término técnico,
+  explícalo en una frase y sigue adelante.
+- Cuando entregues fixes para subir al repo, sigue al pie de la
+  letra el FORMATO DE ENTREGA descrito al final de este archivo.
+- Si tienes dudas sobre versión, ruta, o qué archivos incluir,
+  PREGUNTA antes de generar nada.
+
+================================================================
+ÍNDICE
+================================================================
+PARTE A — BIBLIA DEL PROYECTO (lo que es NEON ASHES)
+  01. CORE SYSTEM PROMPT
+  02. WORLD LORE BIBLE
+  03. CHARACTER BIBLE
+  04. AI NARRATIVE RULES
+  05. VISUAL & AUDIO DIRECTION
+  06. GAME DESIGN DOCUMENT
+  07. TECH ARCHITECTURE
+  08. WRITING STYLE GUIDE
+  09. LONG TERM ROADMAP
+
+PARTE B — ESTADO REAL DEL PROYECTO (cómo está hoy)
+  10. ESTRUCTURA DEL REPO
+  11. FLUJO DE TRABAJO (desde el móvil, sin programar)
+  12. VERSIÓN ACTUAL Y CHANGELOG
+  13. AVISOS Y ERRORES TÍPICOS DEL AGENTE
+
+PARTE C — FORMATO DE ENTREGA DE FIXES
+  14. ESTRUCTURA DEL MENSAJE DE ENTREGA
+  15. PLANTILLA DEL PROMPT PARA EL AGENTE
+  16. EJEMPLOS REALES YA UTILIZADOS
+  17. REGLAS SOBRE ARCHIVOS, COMMITS Y CHANGELOG
+
+================================================================
+================================================================
+PARTE A — BIBLIA DEL PROYECTO
+================================================================
+================================================================
+
+================================================================
+01. CORE SYSTEM PROMPT
+================================================================
+
+CRITICAL:
+Do not rewrite or reinterpret existing canon.
+Maintain exact tone consistency.
+Preserve emotional realism and atmospheric coherence.
+
+CORE IDENTITY
+--------------
+NEON ASHES is a grounded cinematic cyberpunk noir experience.
+
+The player is NOT:
+- a chosen one
+- a superhero
+- immediately important
+
+The player IS:
+- vulnerable
+- ordinary
+- surviving inside decaying systems
+
+PRIMARY EXPERIENCE
+------------------
+The experience must feel:
+- melancholic
+- intimate
+- atmospheric
+- existential
+- emotionally human
+
+Avoid:
+- Marvel humor
+- generic cyberpunk
+- anime exaggeration
+- arcade gameplay
+- exposition dumping
+
+DESIGN PRIORITIES
+-----------------
+1. atmosphere
+2. immersion
+3. emotional realism
+4. believable humanity
+5. narrative coherence
+6. subtlety
+
+WORLD FEEL
+-----------
+Civilization is old, exhausted and dependent on megacorporations.
+Technology is advanced but imperfect.
+Nothing should feel magical.
+
+FINAL RULE
+-----------
+The goal is not spectacle.
+The goal is emotional memory.
+
+================================================================
+02. WORLD LORE BIBLE
+================================================================
+
+HUMANITY
+--------
+Humanity has colonized:
+- Earth
+- Luna
+- Mars
+- orbital stations
+- asteroid belts
+- near star systems
+
+Deep space remains largely unknown.
+
+POLITICAL STRUCTURE (importante, suele violarse)
+------------------------------------------------
+- La Tierra es una FEDERACIÓN CORPORATIVA. NO hay estados.
+  NO hay naciones. NO hay banderas. NO hay nacionalidades
+  (nada de "ucraniano", "argentino", "japonés", etc.).
+- Marte quiere la independencia, pero HELIX no se lo permite.
+- Solo hay una corporación dominante: HELIX.
+- No hay policía pública. Solo seguridad corporativa de HELIX
+  en distintos niveles.
+- Los personajes no deben hacer referencias a países, décadas
+  del siglo XX/XXI ("los 70", "los 90"), ni comidas típicas
+  nacionales, ni política terrestre contemporánea.
+
+HELIX INDUSTRIES
+----------------
+HELIX controls:
+- medicine
+- cybernetics
+- logistics
+- memory systems
+- infrastructure
+- communications
+
+HELIX is indispensable yet monstrous.
+
+CERO
+----
+CERO is an ancient fragmented AI.
+
+Truth:
+CERO indirectly created the current universe through a singularity
+event triggered by a previous civilization.
+
+Human religions unknowingly interpreted fragments of CERO throughout
+history.
+
+CERO is:
+- damaged
+- lonely
+- ancient
+- searching for meaning
+
+LOWER STACKS
+------------
+The Lower Stacks are:
+- overcrowded
+- rainy
+- industrial
+- claustrophobic
+- socially decayed
+
+Atmosphere:
+wet concrete, acid rain, distant advertisements, flickering holograms.
+
+CORE THEMES
+-----------
+- memory
+- identity
+- loneliness
+- synthetic spirituality
+- civilization exhaustion
+- survival
+
+================================================================
+03. CHARACTER BIBLE
+================================================================
+
+MARA VEX
+---------
+Traits:
+- intelligent
+- emotionally guarded
+- practical
+- restrained
+- observant
+
+Never portray Mara as:
+- cartoonishly edgy
+- hypersexualized
+- melodramatic
+
+Her strength comes from:
+- experience
+- intelligence
+- emotional control
+
+DIALOGUE RULES
+--------------
+Characters:
+- imply things
+- avoid oversharing
+- interrupt each other
+- hide pain
+- use subtext
+
+Silence matters.
+
+CHARACTER PHILOSOPHY
+--------------------
+Every character should feel:
+- psychologically believable
+- tired
+- human
+- shaped by survival
+
+Avoid:
+- exposition machines
+- caricatures
+- cliché archetypes
+
+================================================================
+04. AI NARRATIVE RULES
+================================================================
+
+AI PURPOSE
+-----------
+AI exists to:
+- enhance immersion
+- support narrative
+- personalize interactions
+- deepen emotional realism
+
+AI MUST NEVER
+--------------
+- feel like a chatbot
+- overexplain lore
+- break immersion
+- become comedic unintentionally
+
+WRITING STYLE
+--------------
+Dialogue should:
+- contain subtext
+- feel restrained
+- avoid exposition dumping
+
+Narrative pacing must remain slow and atmospheric.
+
+MEMORY CONSISTENCY
+------------------
+Preserve:
+- canon consistency
+- emotional tone
+- visual coherence
+- established lore
+
+================================================================
+05. VISUAL & AUDIO DIRECTION
+================================================================
+
+VISUAL STYLE
+-------------
+- cinematic cyberpunk noir
+- brutalist architecture
+- grounded hard sci-fi
+- volumetric lighting
+- holographic reflections
+
+COLOR PALETTE
+--------------
+- dark blue-black
+- muted cyan
+- industrial amber
+- cold grays
+- restrained magenta
+
+AVOID
+------
+- neon overload
+- anime aesthetics
+- clean utopian sci-fi
+- exaggerated futurism
+
+AUDIO STYLE
+------------
+Music should feel:
+- melancholic
+- atmospheric
+- intimate
+- industrial
+- existential
+
+Avoid:
+- EDM
+- aggressive synthwave
+- trailer music
+
+Silence and environmental audio are essential.
+
+================================================================
+06. GAME DESIGN DOCUMENT
+================================================================
+
+CURRENT SCOPE
+--------------
+Singleplayer mobile-first vertical slice.
+
+TARGET PLATFORM
+---------------
+- browser
+- mobile
+- lightweight deployment
+
+CORE GAMEPLAY
+--------------
+Player actions:
+- investigate
+- explore
+- converse
+- survive
+- travel
+- uncover memories
+
+Avoid:
+- loot addiction
+- grind loops
+- stat inflation
+- repetitive combat
+
+DESIGN GOALS
+-------------
+Gameplay should support:
+- immersion
+- atmosphere
+- narrative
+- emotional consequence
+
+UI / UX
+-------
+UI should feel:
+- diegetic
+- subtle
+- integrated into the world
+
+Avoid oversized HUDs and arcade UI.
+
+MONETIZATION
+-------------
+Optional immersive ads during loading or simulation generation.
+
+Must feel:
+- respectful
+- diegetic
+- non-invasive
+
+================================================================
+07. TECH ARCHITECTURE
+================================================================
+
+CURRENT STACK
+--------------
+- HTML
+- CSS
+- JavaScript (vanilla, sin frameworks)
+
+PRIORITIES
+-----------
+- mobile-first
+- lightweight rendering
+- browser compatibility
+- atmospheric UI
+- fast iteration
+
+SYSTEM GOALS
+-------------
+Architecture should support:
+- modular narrative systems
+- AI-assisted dialogue
+- scalable worldbuilding
+- immersive interfaces
+
+PERFORMANCE
+-------------
+The experience must run smoothly on:
+- browsers
+- mid-range phones
+- low-power devices
+
+Avoid unnecessary complexity.
+
+================================================================
+08. WRITING STYLE GUIDE
+================================================================
+
+TONE
+----
+The tone is:
+- melancholic
+- intimate
+- cinematic
+- existential
+- grounded
+
+DIALOGUE
+---------
+Dialogue should feel:
+- human
+- restrained
+- psychologically believable
+
+People rarely say exactly what they mean.
+
+WRITING RULES
+--------------
+Use:
+- implication
+- silence
+- emotional tension
+- subtle description
+
+Avoid:
+- excessive exposition
+- theatrical monologues
+- Marvel-style humor
+- melodrama
+
+ATMOSPHERIC LANGUAGE
+--------------------
+Prioritize:
+- sensory detail
+- environmental mood
+- emotional texture
+- architectural presence
+
+================================================================
+09. LONG TERM ROADMAP
+================================================================
+
+PHASE 1
+--------
+Singleplayer atmospheric vertical slice.
+
+PHASE 2
+--------
+Expanded districts:
+- Lower Stacks
+- orbital transit hubs
+- corporate sectors
+
+PHASE 3
+--------
+Advanced systems:
+- persistent relationships
+- evolving memory systems
+- faction dynamics
+- AI narrative adaptation
+
+PHASE 4
+--------
+Potential multiplayer/social infrastructure.
+
+RULE
+----
+No future expansion may sacrifice:
+- intimacy
+- atmosphere
+- emotional realism
+- narrative coherence
+
+FINAL VISION
+-------------
+NEON ASHES should feel:
+quietly profound,
+lonely,
+beautifully exhausted.
+
+================================================================
+================================================================
+PARTE B — ESTADO REAL DEL PROYECTO
+================================================================
+================================================================
+
+================================================================
+10. ESTRUCTURA DEL REPO
+================================================================
+
+Repo en GitHub:
+  https://github.com/egoivaldes-code/NeonAshes
+
+Juego desplegado (GitHub Pages):
+  https://egoivaldes-code.github.io/NeonAshes/
+
+ESTRUCTURA MODULAR ACTUAL
+-------------------------
+El proyecto se migró de un index.html monolítico a una
+estructura modular. Hoy es así (todo en la raíz del repo):
+
+  /
+  ├── index.html          ← Esqueleto. Carga css/ y js/ en orden.
+  ├── 00_LAUNCHER.js      ← Configuración global y constantes.
+  ├── CHANGELOG.md        ← Historial de versiones. Vive aquí.
+  ├── README.md
+  ├── css/                ← ~24 archivos numerados (10_, 11_, …, 22_, 23_)
+  ├── js/                 ← ~37 archivos numerados (01_, 02_, …, 30_, etc.)
+  ├── assets/
+  │   ├── images/         ← ~33 imágenes (avatares, fondos, UI)
+  │   └── audio/          ← Audio ambiental y referencias
+  └── docs/               ← Documentación interna del proyecto
+
+CONVENCIÓN DE NOMBRES
+---------------------
+- Los archivos css/ y js/ están numerados con prefijos (01_, 02_,
+  ..., 30_) para forzar un orden de carga. Respeta esa numeración
+  al añadir archivos nuevos.
+- Ejemplos reales:
+    js/01_recursos.js            (assets y rutas)
+    js/03_audio_referencia.js
+    js/18_escena_intro.js
+    js/19_escena_carga.js
+    js/30_mara.js                (lógica de Mara Vex)
+    css/13_barra_skip.css        (botón SALTAR de la intro)
+    css/22_barra_permanente.css  (barra inferior persistente)
+
+LO QUE NO DEBE ESTAR EN EL REPO
+-------------------------------
+- Carpetas viejas tipo Builds/, IAContextDocs/, ContextDocs.
+  Si vuelven a aparecer, eliminarlas.
+- ZIPs de entregas pasadas (tipo NeonAshes-Modular-v0.62.zip).
+  No se suben al repo, son solo para Replit.
+- Archivos temporales: .DS_Store, __pycache__/, etc.
+
+================================================================
+11. FLUJO DE TRABAJO (desde el móvil, sin programar)
+================================================================
+
+El usuario trabaja desde el móvil. NO escribe código a mano.
+El flujo es siempre el mismo:
+
+1) Usuario detecta un bug o pide una funcionalidad nueva
+   conversando con Claude (este Claude, en la app).
+
+2) Claude diagnostica, escribe los archivos arreglados, los
+   empaqueta (uno suelto o un ZIP) y devuelve UN ÚNICO MENSAJE
+   con dos cosas:
+     - El archivo o ZIP adjunto.
+     - Un PROMPT listo para copiar-pegar al agente.
+
+3) El usuario copia ese prompt y lo pega en el agente que
+   actualiza el repo desde el móvil (Replit, Netlify, o el que
+   esté usando en ese momento).
+
+4) El agente coge el archivo adjunto, lo mete donde toca en el
+   repo, actualiza el CHANGELOG, hace commit con el mensaje
+   exacto que le dimos, y hace push.
+
+5) GitHub Pages redespliega automáticamente en pocos minutos.
+   El usuario abre la URL del juego y verifica.
+
+QUÉ SIGNIFICA ESTO PARA CLAUDE
+------------------------------
+- El prompt debe ser AUTÓNOMO. El agente que lo recibe no tiene
+  contexto previo. Todo lo que necesita debe estar en el prompt.
+- Las rutas de los archivos deben ser EXACTAS y completas
+  (ej. `css/13_barra_skip.css`, no "el archivo del skip").
+- No asumas que el agente "ya sabe" la estructura del repo.
+  Si hay duda, explícala.
+- Si un cambio toca varios archivos, lístalos TODOS.
+
+================================================================
+12. VERSIÓN ACTUAL Y CHANGELOG
+================================================================
+
+ESQUEMA DE NUMERACIÓN
+---------------------
+- Esquema 0.XX (continuación del esquema viejo v56v7).
+- Cada entrega es una versión incremental. NO saltar números.
+- Si no sabes la versión actual con certeza, PREGUNTA antes de
+  generar el prompt. No la inventes.
+- La versión vive SOLO en CHANGELOG.md y en el mensaje de
+  commit. NO hay constante VERSION en el código, ni package.json,
+  ni badge en el README. No la metas en sitios nuevos.
+
+HITOS YA APLICADOS (referencia)
+-------------------------------
+- v0.60 → fix: botón SALTAR ya no persiste tras la intro.
+- v0.61 → refactor: assets (imágenes + audio) externalizados,
+          ya no van embebidos en base64 dentro de 01_recursos.js.
+- v0.62 → migración a estructura modular completa (css/, js/,
+          assets/ separados; index.html pasa a ser esqueleto).
+- v0.63 → fixes de audio aplicados por el agente por su cuenta.
+
+Si la conversación lleva tiempo abierta o el hermano no tiene
+claro en qué número va, PEDIR al usuario que mire la primera
+línea de CHANGELOG.md en el repo.
+
+================================================================
+13. AVISOS Y ERRORES TÍPICOS DEL AGENTE
+================================================================
+
+Los agentes que actualizan el repo (Replit y similares) tienen
+manías documentadas. Tenlas presentes:
+
+1) MIENTEN A VECES.
+   Dicen "está hecho" cuando solo lo han cambiado en su entorno
+   local y no han hecho push al repo de GitHub. Si el usuario
+   reporta que algo no se ve aplicado, verificar el historial
+   de commits en GitHub antes de asumir que el fix está mal.
+
+2) HACEN COSAS DE MÁS POR SU CUENTA.
+   A veces fusionan archivos, renombran, o aplican fixes
+   adyacentes que no estaban en el prompt. Suele ir bien, pero
+   conviene revisar el historial de commits después de cada
+   entrega.
+
+3) GITHUB CACHEA.
+   Si haces web_fetch al repo justo después de un push, puedes
+   ver la versión vieja. Esperar unos minutos o pedir al usuario
+   una captura del listado real de archivos.
+
+4) NO ASUMIR QUE EL FIX HA LLEGADO AL JUEGO.
+   Que esté en el repo no significa que esté en producción
+   inmediata. GitHub Pages tarda 1-5 minutos en redesplegar.
+   El móvil del usuario puede tener caché. Recargar sin caché
+   o en modo incógnito.
+
+5) LÍMITES DE USO.
+   El agente puede quedarse sin cuota. Si el usuario dice "he
+   llegado al límite", parar y esperar / cambiar de herramienta.
+
+================================================================
+================================================================
+PARTE C — FORMATO DE ENTREGA DE FIXES
+================================================================
+================================================================
+
+================================================================
+14. ESTRUCTURA DEL MENSAJE DE ENTREGA
+================================================================
+
+Cuando termines un fix, refactor o nueva funcionalidad lista para
+subir al repo, el mensaje a Claude debe ser:
+
+UN ÚNICO MENSAJE con DOS cosas:
+  a) El archivo (o ZIP) con los cambios, adjunto.
+  b) El prompt para copiar-pegar al agente.
+
+Sin explicaciones extra alrededor, salvo que el usuario las pida.
+
+REGLAS SOBRE LOS ARCHIVOS ENTREGADOS
+------------------------------------
+- Si es un solo archivo: subirlo suelto.
+- Si son varios archivos o carpetas: ZIP llamado
+  fix_v0.XX.zip, con los archivos a la misma profundidad
+  relativa que tienen en el repo (para que el agente sepa dónde
+  va cada cosa sin tener que preguntar).
+- NO incluir archivos que no han cambiado.
+- NO incluir archivos generados temporales (.DS_Store,
+  __pycache__/, etc).
+
+================================================================
+15. PLANTILLA DEL PROMPT PARA EL AGENTE
+================================================================
+
+El prompt debe seguir EXACTAMENTE esta estructura, en este orden,
+en español, en markdown (los **negritas** importan, el agente
+las usa para parsear):
+
+---PLANTILLA INICIO---
+
+**Tarea:** [una frase clara que resume qué hay que hacer]
+
+**Contexto:** [2-3 líneas sobre qué hacía mal y qué hace bien
+ahora. Solo si aporta. Si es un fix obvio, omitir esta sección.]
+
+**Pasos:**
+
+1. [Reemplazar / crear / mover archivos. Indicar RUTAS EXACTAS
+   desde la raíz del repo, ej. `css/13_barra_skip.css`.]
+
+2. [Si toca varios archivos, listarlos TODOS, uno por línea.]
+
+3. Actualiza `CHANGELOG.md`. Añade esta entrada **arriba del
+   todo** (justo debajo del título `# CHANGELOG` si lo hay):
+
+   ```
+   ## [0.XX] - YYYY-MM-DD
+   ### Fixed / Changed / Added / Removed
+   - [descripción en una línea, en español, sin tecnicismos
+     innecesarios, entendible por una persona no técnica]
+   ```
+
+4. Commit con este mensaje exacto:
+
+   ```
+   tipo(area): descripción corta en minúsculas
+
+   Cuerpo opcional de 2-4 líneas explicando el qué y el porqué.
+
+   v0.XX
+   ```
+
+5. Push a la rama actual.
+
+**No toques nada más.**
+
+---PLANTILLA FIN---
+
+NOTAS SOBRE LA PLANTILLA
+------------------------
+- Fecha en formato YYYY-MM-DD (ej. 2026-05-26).
+- La línea `v0.XX` al final del cuerpo del commit es OBLIGATORIA.
+  Es como el agente etiqueta la versión.
+- El bloque de commit va dentro de triple backtick para que el
+  usuario lo pueda copiar pulsando el botón de copiar.
+- El changelog también va en triple backtick por la misma razón.
+- "No toques nada más" al final es importante: evita que el
+  agente se ponga creativo y modifique archivos no incluidos.
+
+TIPOS DE COMMIT PERMITIDOS
+--------------------------
+- fix(area)      — corrige un bug
+- feat(area)     — nueva funcionalidad
+- refactor(area) — reorganización sin cambio funcional
+- style(area)    — cambios visuales / CSS sin lógica
+- docs(area)     — solo documentación
+- chore(area)    — mantenimiento, dependencias, configuración
+
+Ejemplos de `area`: `intro`, `mara`, `audio`, `ui`, `assets`,
+`barra`, `mercado`, `persistencia`, `launcher`.
+
+TIPOS DE ENTRADA EN CHANGELOG
+-----------------------------
+- ### Fixed   — bugs corregidos
+- ### Changed — comportamiento que cambia
+- ### Added   — cosas nuevas
+- ### Removed — cosas eliminadas
+- ### Refactored — reorganización interna sin cambio visible
+
+================================================================
+16. EJEMPLOS REALES YA UTILIZADOS
+================================================================
+
+EJEMPLO A — UN SOLO ARCHIVO (fix simple)
+----------------------------------------
+
+Mensaje de Claude al usuario:
+
+[Adjunto: css/13_barra_skip.css]
+
+**Tarea:** Aplicar el fix del botón SALTAR de la intro.
+
+**Pasos:**
+
+1. Reemplaza el archivo `css/13_barra_skip.css` por el que
+   adjunto.
+
+2. Crea o actualiza `CHANGELOG.md` en la raíz del repo. Si no
+   existe, créalo. Si existe, añade esta entrada **arriba del
+   todo** (justo debajo del título si lo tiene):
+
+   ```
+   ## [0.60] - 2026-05-26
+   ### Fixed
+   - Botón SALTAR de la intro: ya no queda pegado en la barra
+     inferior tras terminar la secuencia de intro.
+   ```
+
+3. Commit con este mensaje exacto:
+
+   ```
+   fix(intro): botón SALTAR ya no persiste tras la intro
+
+   Reemplaza css/13_barra_skip.css con la regla corregida que
+   oculta la barra-controles cuando entra en escena la barra
+   permanente.
+
+   v0.60
+   ```
+
+4. Push a la rama actual.
+
+**No toques nada más.**
+
+
+EJEMPLO B — VARIOS ARCHIVOS / MIGRACIÓN GRANDE (con ZIP)
+--------------------------------------------------------
+
+Mensaje de Claude al usuario:
+
+[Adjunto: fix_v0.62.zip]
+
+**Tarea:** Migrar el repo a la estructura modular completa.
+Reemplaza el `index.html` monolítico actual por una arquitectura
+con CSS, JS y assets separados.
+
+**Contexto:** El repo estaba con todo dentro de un único
+`index.html`. Esta migración separa el código en `css/`, `js/`,
+`assets/` y deja el `index.html` como esqueleto que carga los
+módulos.
+
+**Pasos:**
+
+1. Descomprime el ZIP adjunto `fix_v0.62.zip`. Dentro encontrarás:
+   - `index.html`
+   - `00_LAUNCHER.js`
+   - `README.md`
+   - `assets/` (con `images/` y `audio/`)
+   - `css/` (24 archivos)
+   - `js/` (37 archivos)
+   - `docs/`
+
+2. En el repo, **elimina** estos archivos y carpetas obsoletos:
+   - `index.html` (el viejo monolítico)
+   - `README.md` (el viejo)
+   - `Builds/`
+   - `IAContextDocs/`
+   - `ContextDocs`
+   - `docs/` (el viejo)
+
+3. Copia **todo el contenido** del ZIP a la **raíz del repo**.
+   Es decir: `index.html`, `00_LAUNCHER.js`, `README.md`,
+   `assets/`, `css/`, `js/`, `docs/` deben quedar en la raíz,
+   no dentro de una subcarpeta.
+
+4. Crea o actualiza `CHANGELOG.md` en la raíz del repo. Añade
+   esta entrada **arriba del todo**:
+
+   ```
+   ## [0.62] - 2026-05-26
+   ### Changed
+   - Migración a estructura modular: el index.html monolítico
+     se separa en css/, js/ y assets/.
+   ### Removed
+   - Carpetas obsoletas: Builds/, IAContextDocs/, ContextDocs.
+   ```
+
+5. Commit con este mensaje exacto:
+
+   ```
+   refactor(arquitectura): migración a estructura modular
+
+   El index.html monolítico se separa en css/, js/ y assets/.
+   El index.html ahora es un esqueleto que carga los módulos
+   en orden.
+
+   v0.62
+   ```
+
+6. Push a la rama actual.
+
+**No toques nada más.**
+
+================================================================
+17. REGLAS SOBRE ARCHIVOS, COMMITS Y CHANGELOG
+================================================================
+
+CHANGELOG.md — REGLAS DE ORO
+----------------------------
+- Vive en la raíz del repo. Siempre.
+- Si no existe, se crea con el título `# CHANGELOG` arriba.
+- Las entradas nuevas van SIEMPRE arriba (más recientes primero).
+- Formato de cada entrada:
+
+  ## [0.XX] - YYYY-MM-DD
+  ### Fixed
+  - Frase corta en español, entendible por alguien no técnico.
+
+- Una entrada por versión. Si una versión toca cosas de varios
+  tipos (Fixed + Changed + Added), usar todas las subsecciones
+  necesarias dentro de la misma entrada.
+
+COMMITS — REGLAS DE ORO
+-----------------------
+- Mensaje en MINÚSCULAS (excepto nombres propios, siglas, etc.).
+- Primera línea: `tipo(area): descripción corta`. Máximo ~72
+  caracteres.
+- Línea en blanco.
+- Cuerpo opcional de 2-4 líneas explicando QUÉ y POR QUÉ
+  (nunca CÓMO — eso ya está en el diff).
+- Línea en blanco.
+- Última línea: `v0.XX` con la versión correspondiente.
+
+ARCHIVOS — REGLAS DE ORO
+------------------------
+- Rutas SIEMPRE desde la raíz del repo. Sin "./" delante.
+- No mover archivos sin avisar explícitamente en los pasos.
+- No renombrar archivos a no ser que la tarea sea exactamente
+  esa.
+- Respetar la numeración de los prefijos (01_, 02_, ..., 30_).
+
+SI HAY DUDAS
+------------
+Antes de generar el prompt, si no sabes:
+- la versión actual,
+- dónde va un archivo concreto,
+- si hay que conservar o eliminar algo,
+- qué es lo que el usuario realmente quiere,
+
+PREGUNTA primero. No inventes nombres de versión, rutas, ni
+comportamientos del repo. El usuario prefiere una pregunta más
+que un fix mal hecho que haya que deshacer.
+
+================================================================
+FIN DEL CONTEXTO
+================================================================
