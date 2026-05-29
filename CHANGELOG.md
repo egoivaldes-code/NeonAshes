@@ -11,6 +11,16 @@
 
 ---
 
+## [0.69] - 2026-05-29
+### Added
+- Sistema de música: al entrar suena Main Theme entero, luego Ashes of Helix entero, y vuelta a empezar en bucle
+- En el apartamento, una vez sonado el Main Theme, suena el loop ambiental original del juego
+- Descripciones de zona aleatorias: 4 variantes por zona ajustadas al lore y a la imagen de fondo
+- Mini-barras de estado (Fatiga, Aislamiento, Hambre, Disociación) encima del botón ESTADO
+### Fixed
+- Bug que impedía volver al apartamento
+- Fondo del apartamento en móvil: tenía demasiado zoom, ahora se ve más alejado
+
 ## [0.68] - 2026-05-29
 ### Added
 - Imágenes propias para las 4 zonas del mapa: 3 pantallas de tránsito + fondo de zona para Distrito Ferro, Arrabal Carmesí, Santuario IX y Nodo Fantasma
