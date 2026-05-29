@@ -11,6 +11,12 @@
 
 ---
 
+## [0.69.2] - 2026-05-29
+### Changed
+- La línea separadora sobre los botones del apartamento queda más pegada a ellos
+### Added
+- El mensaje narrativo del apartamento se puede cerrar tocándolo, y se cierra solo tras 8 segundos, para disfrutar de la imagen
+
 ## [0.69.1] - 2026-05-29
 ### Fixed
 - Botón de estado: las mini-barras estiraban la barra inferior; ahora mantiene la altura correcta
