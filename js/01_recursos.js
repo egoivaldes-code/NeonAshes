@@ -40,7 +40,25 @@ const ASSETS = {
   TREN: "assets/images/tren.jpg",
   BOOT: "assets/images/boot.jpg",
   ESPACIO: "assets/images/espacio.jpg",
-  AUDIO: "assets/audio/audio.mp3"
+  AUDIO: "assets/audio/audio.mp3",
+  MAIN_THEME: "assets/audio/main_theme.ogg",
+  ASHES_OF_HELIX: "assets/audio/ashes_of_helix.ogg",
+  FERRO_TRANSITO_1: "assets/images/ferro_transito_1.webp",
+  FERRO_TRANSITO_2: "assets/images/ferro_transito_2.webp",
+  FERRO_TRANSITO_3: "assets/images/ferro_transito_3.webp",
+  FERRO_ZONA: "assets/images/ferro_zona.webp",
+  CARMESI_TRANSITO_1: "assets/images/carmesi_transito_1.webp",
+  CARMESI_TRANSITO_2: "assets/images/carmesi_transito_2.webp",
+  CARMESI_TRANSITO_3: "assets/images/carmesi_transito_3.webp",
+  CARMESI_ZONA: "assets/images/carmesi_zona.webp",
+  SANTUARIO_TRANSITO_1: "assets/images/santuario_transito_1.webp",
+  SANTUARIO_TRANSITO_2: "assets/images/santuario_transito_2.webp",
+  SANTUARIO_TRANSITO_3: "assets/images/santuario_transito_3.webp",
+  SANTUARIO_ZONA: "assets/images/santuario_zona.webp",
+  NODO_TRANSITO_1: "assets/images/nodo_transito_1.webp",
+  NODO_TRANSITO_2: "assets/images/nodo_transito_2.webp",
+  NODO_TRANSITO_3: "assets/images/nodo_transito_3.webp",
+  NODO_ZONA: "assets/images/nodo_zona.webp"
 };
 
 // Apply backgrounds

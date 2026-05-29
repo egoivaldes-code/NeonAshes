@@ -1,7 +1,7 @@
 // ============================================================
-// BLOQUE JS-03 — AUDIO — referencia al elemento del tema principal
-// Solo declara la variable. Toda la lógica de audio está más
-//   abajo, en su propio bloque.
+// BLOQUE JS-03 — AUDIO — referencia y carga del tema principal
+// v0.68: Main Theme suena íntegro al entrar. Al terminar,
+//   cambia automáticamente al loop ambiental (ASSETS.AUDIO).
 // ============================================================
 
 const audioEl = document.getElementById('tema-principal');
@@ -15,10 +15,19 @@ audioEl.addEventListener('loadeddata', () => {
   console.log('Audio cargado');
 });
 
-// Cargar audio desde el archivo en assets/
-audioEl.src = ASSETS.AUDIO;
+// Cargar Main Theme al inicio (sin loop)
+audioEl.src = ASSETS.MAIN_THEME;
+audioEl.loop = false;
 audioEl.load();
 
-// Estado
+// Al terminar el Main Theme, pasar al loop ambiental
+audioEl.addEventListener('ended', function _onMainThemeEnd() {
+  audioEl.removeEventListener('ended', _onMainThemeEnd);
+  audioEl.src = ASSETS.AUDIO;
+  audioEl.loop = true;
+  audioEl.load();
+  audioEl.play().catch(() => {});
+  console.log('Main Theme terminado — entrando en loop ambiental');
+});
 
 // ============================================================

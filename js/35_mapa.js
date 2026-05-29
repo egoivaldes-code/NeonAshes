@@ -50,7 +50,7 @@ const ZONAS_MUNDO = [
     desc: 'Un laberinto de metal oxidado y neón roto. Los Óxidos controlan cada esquina. Huele a aceite quemado y algo peor. Nadie hace preguntas. Nadie quiere respuestas.',
     peligro: '⚠ PELIGRO EXTREMO · PATRULLAS ARMADAS · VIOLENCIA FRECUENTE',
     posX: 80, posY: 160,
-    imgBg: 'MERCADO',
+    imgBg: 'CARMESI_ZONA',
     eventos: [
       { titulo:'CONTROL DE LOS ÓXIDOS', narr:'Tres hombres con brazos augmentados bloquean el paso. El mayor lleva una mandíbula de titanio. Te miran como si ya supieran cuánto vales.',
         opciones:[
@@ -91,7 +91,7 @@ const ZONAS_MUNDO = [
     desc: 'Una antigua fábrica de implantes reconvertida en templo. El Culto de la Carne Perfecta venera la fusión total con la máquina como camino a la trascendencia. Son pacíficos. Pero sus ojos no parpadean al ritmo correcto.',
     peligro: '⚠ ZONA CONTROLADA · DISCURSOS FRECUENTES · CONVERSIÓN VOLUNTARIA',
     posX: 280, posY: 170,
-    imgBg: 'SURGICAL_SUITE',
+    imgBg: 'SANTUARIO_ZONA',
     eventos: [
       { titulo:'SERMÓN DESDE UN ALTAVOZ', narr:'Una voz mecánica repite sin parar: El dolor de la carne es la puerta. La máquina no miente. La máquina no muere. La gente pasa. Algunos se detienen.',
         opciones:[
@@ -131,7 +131,7 @@ const ZONAS_MUNDO = [
     desc: 'Un servidor muerto reconvertido en punto de encuentro. Sin nombre oficial. Sin dirección fija. El Colectivo no existe según HELIX. Y sin embargo aquí está, filtrando datos a las Pilas cada noche.',
     peligro: '⚠ ZONA INESTABLE · VIGILANCIA HELIX ALTA · ACCESO CAMBIA CADA 48H',
     posX: 180, posY: 280,
-    imgBg: 'MARA_ALLEY_CLEAN',
+    imgBg: 'NODO_ZONA',
     eventos: [
       { titulo:'DRON DE VIGILANCIA HELIX', narr:'Un dron de reconocimiento HELIX pasa justo encima de ti. El ojo rojo te barre. No se detiene. Pero tarda un segundo más de lo normal.',
         opciones:[
@@ -169,7 +169,7 @@ const ZONAS_MUNDO = [
     desc: 'El Sindicato Ferro controla este distrito desde hace cuarenta años. No hay violencia visible. No la necesitan. Todo aquí tiene un precio, un intermediario, y una deuda que te sigue si te vas.',
     peligro: '⚠ ZONA SEGURA SUPERFICIALMENTE · DEUDAS IMPAGADAS PELIGROSAS',
     posX: 80, posY: 320,
-    imgBg: 'DOCK_ACCESS_TUNNEL',
+    imgBg: 'FERRO_ZONA',
     eventos: [
       { titulo:'COBRADOR DE DEUDAS', narr:'Un hombre trajeado con un implante ocular rojo se interpone en tu camino. No levanta la voz. Tienes algo para nosotros?',
         opciones:[
@@ -360,17 +360,80 @@ function iniciarViajeAZona(){
   setTimeout(mostrarSiguienteParadaTL, 400);
 }
 
+// ── POOLS DE TEXTO PARA EL TRÁNSITO ──────────────────────────
+// Parada 1 y 2: variantes globales (cualquier destino).
+// Parada 3: variantes por zona (aproximación específica).
+// Se elige una al azar en cada viaje.
+
+const _POOL_CORREDOR = [
+  'El corredor del edificio. Dieciséis puertas cerradas. Ningún vecino visible. El ascensor tarda cuatro minutos en bajar.',
+  'Alguien ha dejado una bolsa de basura en el rellano desde hace tres días. Nadie la ha movido. Nadie pregunta.',
+  'La luz del pasillo parpadea en el tramo final. Lleva parpadeando desde que llegaste al edificio. Probablemente seguirá así.',
+  'Dos pisos más arriba hay música amortiguada. No reconoces la canción. Dura exactamente hasta que entras al ascensor.',
+  'El ascensor huele a desinfectante y a algo que el desinfectante no ha conseguido cubrir del todo.',
+  'Una cámara HELIX en el techo gira medio grado cuando pasas. Siempre lo hace. Probablemente no significa nada.'
+];
+
+const _POOL_TREN = [
+  'El tren vertical huele a gente mojada y aceite. Una pantalla HELIX parpadea: RECUERDA. TU SEGURIDAD ES NUESTRA PRIORIDAD.',
+  'El vagón va medio lleno. Nadie se mira. Todos llevan auriculares o miran el techo. La normalidad aquí tiene una textura muy concreta.',
+  'Una mujer mayor lleva una caja de cartón cerrada con cinta adhesiva. La abraza como si dentro hubiera algo vivo. Puede que lo haya.',
+  'HELIX NEWS en la pantalla del vagón: "Índice de bienestar ciudadano alcanza máximo histórico." Nadie levanta la vista.',
+  'El tren se detiene entre estaciones durante cuarenta y dos segundos. Sin aviso. Luego arranca. Nadie dice nada.',
+  'Un chico de unos diecisiete años lleva un implante óptico sin carcasa. El circuito está a la vista. Te mira como si supiera algo que tú no.'
+];
+
+const _POOL_APROXIMACION = {
+  distrito_ferro: [
+    'El olor cambia antes de llegar. Aceite, metal caliente y algo dulzón que no deberías reconocer. Lo reconoces igual.',
+    'Los carteles de FERROCORP aparecen cada cincuenta metros. No son publicidad. Son recordatorios.',
+    'Un cobrador del Sindicato Ferro está apoyado en una esquina. No hace nada. Solo está ahí. Eso es suficiente.',
+    'El suelo aquí tiene más relieves de barro que en las Pilas. Las máquinas no paran nunca. La gente tampoco.',
+    'Tres trabajadores con cascos naranjas pasan sin mirarte. Llevan turnos de dieciséis horas. Se nota en cómo caminan.'
+  ],
+  arrabal_carmesi: [
+    'El ruido llega antes que la luz. Voces, música sin melodía reconocible, el golpe sordo de algo que no quieres identificar.',
+    'Linternas rojas en cada esquina. No es decoración. Es el código del Arrabal: rojo significa que alguien controla ese tramo.',
+    'Un cartel pintado a mano: FUEGO LENTO — COMIDA REAL — PRECIO REAL. El humo que sale huele a que es verdad.',
+    'Dos hombres discuten en voz baja junto a una entrada. Cuando te ven, paran. Cuando pasas, siguen. No ibas en la conversación.',
+    'El Arrabal Carmesí no duerme porque no puede permitírselo. La energía aquí es la del que sabe que parar cuesta más que seguir.'
+  ],
+  santuario_ix: [
+    'Los primeros carteles aparecen a tres manzanas. TU CARNE ES TEMPORAL. LA FUSIÓN ES ETERNA. Alguien los ha colocado a la altura de los ojos exacta.',
+    'Un grupo de conversos camina en fila. No hablan. Llevan el símbolo del Santuario en el cuello, grabado, no impreso.',
+    'Residuos biomédicos en contenedores sin tapas. Nadie los mira. Llevan aquí suficiente tiempo para que la gente haya aprendido a no verlos.',
+    'Una clínica de implantes con la persiana medio bajada. Dentro, luz quirúrgica. Alguien está despierto a esta hora. Alguien siempre está despierto.',
+    'El dron de Santuario IX sobrevuela la entrada. Lleva el símbolo de la Carne Perfecta pintado en el fuselaje. Bienvenido, hermano.'
+  ],
+  nodo_cero: [
+    'La dirección del Nodo cambia cada cuarenta y ocho horas. Hoy toca aquí. Mañana nadie sabrá dónde.',
+    'Alguien ha proyectado texto verde en la fachada de un edificio abandonado: LA INFORMACIÓN NO QUIERE SALVARTE. QUIERE LIBERARTE.',
+    'Un dron HELIX patrulla la zona con más frecuencia de lo habitual. El Colectivo lo sabe. Tú también deberías saberlo.',
+    'Tres personas con la cara cubierta pasan en dirección contraria. Uno de ellos te mira exactamente un segundo. Luego aparta la vista.',
+    'Grafiti reciente en la acera: SOMOS EL ERROR QUE ELLOS NO PUDIERON ELIMINAR. La pintura todavía brilla.'
+  ]
+};
+
+function _aleatorio(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+
 function generarParadasViaje(zona){
   const rep = getRepZona(zona.id);
   let descLlegada;
   if(rep < -20) descLlegada = 'Llegas con deudas aquí. El ambiente lo percibe antes de que lo hagas tú.';
   else if(rep > 20) descLlegada = 'Te conocen aquí. O al menos, conocen tu reputación. Eso puede ser bueno.';
-  else descLlegada = 'El sector cambia de tono a medida que te acercas. Diferente tipo de ruido. Diferente tipo de mirada.';
+  else {
+    const poolAprox = _POOL_APROXIMACION[zona.id];
+    descLlegada = poolAprox ? _aleatorio(poolAprox) : 'El sector cambia de tono a medida que te acercas. Diferente tipo de ruido. Diferente tipo de mirada.';
+  }
+
+  const imgT1 = { distrito_ferro:'FERRO_TRANSITO_1', arrabal_carmesi:'CARMESI_TRANSITO_1', santuario_ix:'SANTUARIO_TRANSITO_1', nodo_cero:'NODO_TRANSITO_1' }[zona.id] || 'PASILLO';
+  const imgT2 = { distrito_ferro:'FERRO_TRANSITO_2', arrabal_carmesi:'CARMESI_TRANSITO_2', santuario_ix:'SANTUARIO_TRANSITO_2', nodo_cero:'NODO_TRANSITO_2' }[zona.id] || 'TREN';
+  const imgT3 = { distrito_ferro:'FERRO_TRANSITO_3', arrabal_carmesi:'CARMESI_TRANSITO_3', santuario_ix:'SANTUARIO_TRANSITO_3', nodo_cero:'NODO_TRANSITO_3' }[zona.id] || zona.imgBg;
 
   return [
-    { nombre:'SALIENDO DE UNIDAD 273-19A', desc:'El corredor del edificio. Dieciséis puertas cerradas. Ningún vecino visible. El ascensor tarda cuatro minutos en bajar.', color:'#00e5ff', img:'PASILLO' },
-    { nombre:'TRÁNSITO NIVEL 9 — LÍNEA VERTICAL', desc:'El tren vertical huele a gente mojada y aceite. Una pantalla HELIX parpadea: RECUERDA. TU SEGURIDAD ES NUESTRA PRIORIDAD.', color:'rgba(200,216,224,0.5)', img:'TREN' },
-    { nombre:'APROXIMACIÓN A ' + zona.nombreCorto, desc:descLlegada, color:zona.colorFaccion, img:zona.imgBg }
+    { nombre:'SALIENDO DE UNIDAD 273-19A', desc:_aleatorio(_POOL_CORREDOR), color:'#00e5ff', img:imgT1 },
+    { nombre:'TRÁNSITO NIVEL 9 — LÍNEA VERTICAL', desc:_aleatorio(_POOL_TREN), color:'rgba(200,216,224,0.5)', img:imgT2 },
+    { nombre:'APROXIMACIÓN A ' + zona.nombreCorto, desc:descLlegada, color:zona.colorFaccion, img:imgT3 }
   ];
 }
 

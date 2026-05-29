@@ -11,6 +11,16 @@
 
 ---
 
+## [0.68] - 2026-05-29
+### Added
+- Imágenes propias para las 4 zonas del mapa: 3 pantallas de tránsito + fondo de zona para Distrito Ferro, Arrabal Carmesí, Santuario IX y Nodo Fantasma
+- Textos de tránsito aleatorios: 6 variantes de corredor, 6 de tren y 5 por zona (20 textos específicos de lore)
+- Main Theme: suena íntegro al entrar, luego cambia al loop ambiental
+- Ashes of Helix: música en bucle durante misiones narrativas (Mara, casillero)
+- Mapa horizontal para PC (mapa_strata.webp)
+### Fixed
+- Retrato de Mara Vex que aparecía vacío en la escena del bar
+
 ## [0.67.2] - 2026-05-29
 ### Fixed
 - La IA ahora llama de verdad al portero de Cloudflare (antes iba a Gemini directo y fallaba). El panel de debug ya no pide una key de OpenRouter innecesaria.

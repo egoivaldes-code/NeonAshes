@@ -153,6 +153,8 @@ function avanzarUbic(){ intentarEventoAleatorio(()=>mostrarSiguienteUbic()); }
 function irAMercado(){saltoDeEscena();cambiarEscena('transito-escena','mercado-escena');setTimeout(iniciarMercado,800);}
 function iniciarMercado(){
   const c=document.getElementById('mara-card');
+  const maraImg=document.getElementById('mara-img');
+  if(maraImg && typeof ASSETS !== 'undefined' && ASSETS.MARA) maraImg.src=ASSETS.MARA;
   setTimeout(()=>{c.style.opacity='1';c.style.transform='translateY(0)';},300);
   setTimeout(iniciarDialogoMara,1200);
 }
