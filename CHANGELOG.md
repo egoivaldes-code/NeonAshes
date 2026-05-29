@@ -11,6 +11,10 @@
 
 ---
 
+## [0.67.1] - 2026-05-29
+### Changed
+- El sistema de IA ahora llama al portero alojado en Cloudflare Workers en lugar de Netlify, que se pausaba al alcanzar los límites del plan gratuito.
+
 ## [0.67] - 2026-05-26
 ### Added
 - Sistema IA narrativa (primera iteración): módulo `37_ia_cliente.js` con soporte para OpenRouter (principal), Gemini y Groq. Despachador con fallback configurable, telemetría local (llamadas y tokens) y parseo robusto de JSON.
