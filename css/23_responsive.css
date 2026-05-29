@@ -367,15 +367,16 @@ html, body {
 }
 
 
-/* === FONDO DEL APARTAMENTO EN MÓVIL — MENOS ZOOM === */
-/* En pantallas verticales estrechas, background-size:cover recorta y
-   amplía demasiado la habitación. Forzamos un encuadre más alejado para
-   que se vea más cantidad de la escena. Solo afecta al apartamento;
-   el resto de fondos (zonas, tránsito) mantienen 'cover'. */
+/* === FONDO DEL APARTAMENTO EN MÓVIL — ENCUADRE AJUSTADO === */
+/* La imagen apt.jpg trae una franja de leyenda incrustada en la
+   parte baja. Con 'cover' y la posición un poco por encima del
+   centro, llenamos el alto del contenedor recortando esa franja
+   inferior, sin ampliar tanto como el cover por defecto. Queda un
+   pequeño margen de seguridad arriba. */
 @media (max-width: 768px) {
   #bg-apt {
-    background-size: contain;
-    background-position: center top;
-    background-color: #03050a; /* relleno en las bandas que deja contain */
+    background-size: cover;
+    background-position: center 18%;
+    background-color: #03050a;
   }
 }

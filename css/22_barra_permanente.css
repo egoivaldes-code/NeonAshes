@@ -246,10 +246,10 @@ body.barra-permanente-activa .audio-mini {
 .perm-mini-barras {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
   width: 100%;
-  max-width: 46px;
-  margin-bottom: 1px;
+  max-width: 44px;
+  margin-bottom: 0;
 }
 .pmb-fila {
   display: flex;
@@ -258,16 +258,16 @@ body.barra-permanente-activa .audio-mini {
 }
 .pmb-letra {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 0.42rem;
+  font-size: 0.36rem;
   color: rgba(160,200,210,0.7);
-  width: 6px;
+  width: 5px;
   flex-shrink: 0;
   letter-spacing: 0;
   line-height: 1;
 }
 .pmb-track {
   flex: 1;
-  height: 3px;
+  height: 2px;
   background: rgba(200,216,224,0.12);
   border-radius: 2px;
   overflow: hidden;
@@ -279,4 +279,20 @@ body.barra-permanente-activa .audio-mini {
   background: #78ffa0;
   border-radius: 2px;
   transition: width 0.4s ease, background 0.4s ease;
+}
+
+
+/* ============================================================
+   FIX 0.69b — el botón de estado con mini-barras no debe
+   crecer en altura ni estirar la barra permanente. Lo fijamos
+   a la misma altura que los demás botones (48px) y centramos
+   las mini-barras dentro sin desbordar.
+   ============================================================ */
+.barra-permanente { align-items: stretch; }
+.perm-btn {
+  max-height: 52px;
+  overflow: hidden;
+}
+.perm-btn .etiqueta {
+  margin-top: 1px;
 }

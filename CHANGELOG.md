@@ -11,6 +11,11 @@
 
 ---
 
+## [0.69.1] - 2026-05-29
+### Fixed
+- Botón de estado: las mini-barras estiraban la barra inferior; ahora mantiene la altura correcta
+- Fondo del apartamento en móvil: se recorta la franja de leyenda que asomaba abajo
+
 ## [0.69] - 2026-05-29
 ### Added
 - Sistema de música: al entrar suena Main Theme entero, luego Ashes of Helix entero, y vuelta a empezar en bucle
