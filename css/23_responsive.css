@@ -365,3 +365,17 @@ html, body {
 .mapa-img {
   background-image: url('../assets/images/mapa_strata.webp');
 }
+
+
+/* === FONDO DEL APARTAMENTO EN MÓVIL — MENOS ZOOM === */
+/* En pantallas verticales estrechas, background-size:cover recorta y
+   amplía demasiado la habitación. Forzamos un encuadre más alejado para
+   que se vea más cantidad de la escena. Solo afecta al apartamento;
+   el resto de fondos (zonas, tránsito) mantienen 'cover'. */
+@media (max-width: 768px) {
+  #bg-apt {
+    background-size: contain;
+    background-position: center top;
+    background-color: #03050a; /* relleno en las bandas que deja contain */
+  }
+}

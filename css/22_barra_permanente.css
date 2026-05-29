@@ -235,3 +235,48 @@ body.barra-permanente-activa .audio-mini {
 
 
 /* ============================================================
+
+/* ============================================================
+   BLOQUE CSS-40 — MINI-BARRAS DE ESTADO EN EL BOTÓN
+   4 barras (F/A/H/D) encima del texto ESTADO, en el mismo
+   orden vertical y colores que el panel completo. Permiten
+   leer la condición de un vistazo sin abrir la ventana.
+   ============================================================ */
+
+.perm-mini-barras {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  max-width: 46px;
+  margin-bottom: 1px;
+}
+.pmb-fila {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.pmb-letra {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.42rem;
+  color: rgba(160,200,210,0.7);
+  width: 6px;
+  flex-shrink: 0;
+  letter-spacing: 0;
+  line-height: 1;
+}
+.pmb-track {
+  flex: 1;
+  height: 3px;
+  background: rgba(200,216,224,0.12);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.pmb-fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: #78ffa0;
+  border-radius: 2px;
+  transition: width 0.4s ease, background 0.4s ease;
+}

@@ -252,7 +252,7 @@ function seleccionarZona(id){
   document.getElementById('zd-faccion').style.color = zona.colorFaccion;
   document.getElementById('zd-nombre').textContent = zona.nombre;
   document.getElementById('zd-nombre').style.color = zona.colorFaccion;
-  document.getElementById('zd-desc').textContent = zona.desc;
+  document.getElementById('zd-desc').textContent = getDescZona(zona);
   document.getElementById('zd-peligro').textContent = zona.peligro;
   const repEl = document.getElementById('zd-rep');
   repEl.textContent = repTexto;
@@ -415,6 +415,41 @@ const _POOL_APROXIMACION = {
 };
 
 function _aleatorio(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+
+// ── POOL DE DESCRIPCIONES DE ZONA ────────────────────────────
+// 4 variantes por zona, ajustadas al lore y a lo que se ve en el
+// fondo. Se elige una al azar cada vez que se abre el panel.
+const _POOL_DESC_ZONA = {
+  distrito_ferro: [
+    'El Sindicato Ferro controla este distrito desde hace cuarenta años. No hay violencia visible. No la necesitan. Todo aquí tiene un precio, un intermediario, y una deuda que te sigue si te vas.',
+    'FERROCORP nunca apaga sus hornos. El distrito entero vibra con el ruido de la fundición H-07. La gente trabaja turnos que no terminan y nadie recuerda haber firmado por ellos.',
+    'Aquí todo se compra, se vende o se debe. El mercado de repuestos usados no cierra nunca. Si buscas algo que no debería existir, alguien en Ferro lo tiene. Por un precio.',
+    'Carga y descarga las veinticuatro horas. Mantén el nivel de ruido bajo, dice el cartel. Nadie lo cumple. El Sindicato lo permite mientras la mercancía siga moviéndose.'
+  ],
+  arrabal_carmesi: [
+    'El barrio rojo de las Pilas. Linternas de papel, humo de comida real y deudas que se cobran de otras maneras. Aquí el placer es la moneda y todo el mundo paga.',
+    'Bares, casas de apuestas y clubes privados apilados en vertical. El Nido Rojo nunca pregunta de dónde vienes. El Arrabal vive de noche porque de día prefiere no recordarse.',
+    'Comida real, precio real, dice el neón. Es de las pocas cosas honestas del Arrabal. Todo lo demás aquí tiene una segunda lectura y una tercera factura.',
+    'Zona vigilada, avisa el cartel a la entrada. No por la policía corporativa: por quien de verdad manda aquí. En el Arrabal, ser visto es lo normal. Que te recuerden es el problema.'
+  ],
+  santuario_ix: [
+    'Una antigua fábrica de implantes reconvertida en templo. El Culto de la Carne Perfecta venera la fusión total con la máquina como camino a la trascendencia. Son pacíficos. Pero sus ojos no parpadean al ritmo correcto.',
+    'Tu carne es temporal. La fusión es eterna. El mensaje está en cada pared, en cada idioma. Las clínicas de transformación nunca cierran y la lista de conversos voluntarios siempre crece.',
+    'Residuos biomédicos en los contenedores, luz quirúrgica en las clínicas, sermones a las 10:22. Santuario IX ofrece mejorar tu cuerpo. Lo que no dice es qué parte de ti pagas a cambio.',
+    'Unidad, fusión, trascendencia. El culto recibe a todos como hermanos. Bienvenido, dice el cartel del ascensor. La amabilidad aquí es real. Eso es lo que la hace difícil de rechazar.'
+  ],
+  nodo_cero: [
+    'Un servidor muerto reconvertido en punto de encuentro. Sin nombre oficial. Sin dirección fija. El Colectivo no existe según HELIX. Y sin embargo aquí está, filtrando datos a las Pilas cada noche.',
+    'La información es libertad, proclaman las pantallas verdes. El Nodo Fantasma vende acceso remoto, identidades limpias y verdades que HELIX preferiría enterrar. La verdad está en el código.',
+    'Una red descentralizada fuera del alcance de HELIX. Hackers, fugitivos y gente que ya no tiene nada que perder. Somos el error que ellos no pudieron eliminar, dice el grafiti.',
+    'El sistema no te protegerá. La verdad no se vende, se comparte. El Nodo cambia de ubicación cada pocos días para sobrevivir. Hoy está aquí. Conéctate mientras puedas.'
+  ]
+};
+
+function getDescZona(zona){
+  const pool = _POOL_DESC_ZONA[zona.id];
+  return pool ? _aleatorio(pool) : zona.desc;
+}
 
 function generarParadasViaje(zona){
   const rep = getRepZona(zona.id);

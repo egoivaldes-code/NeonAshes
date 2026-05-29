@@ -848,7 +848,6 @@
   <script src="js/13_memoria.js"></script>
   <script src="js/14_ambiente_visual.js"></script>
   <script src="js/15_audio_control.js"></script>
-  <script src="js/16_musica_misiones.js"></script>
   <script src="js/16_hud.js"></script>
   <script src="js/17_eventos_transito.js"></script>
   <script src="js/18_escena_intro.js"></script>
@@ -859,6 +858,8 @@
   <script src="js/23_panel_hub.js"></script>
   <script src="js/24_noticias.js"></script>
   <script src="js/25_panel_estado.js"></script>
+  <script src="js/16_musica_misiones.js"></script>
+  <script src="js/26_mini_barras_estado.js"></script>
   <script src="js/26_facciones.js"></script>
   <script src="js/27_panel_trabajos.js"></script>
   <script src="js/28_terminal.js"></script>
@@ -906,7 +907,12 @@
     <span class="valor" id="perm-cr">1200</span>
   </div>
   <button class="perm-btn" onclick="abrirPanelHub('estado')">
-    <span class="icono">◉</span>
+    <span class="perm-mini-barras" id="perm-mini-barras">
+      <span class="pmb-fila"><span class="pmb-letra">F</span><span class="pmb-track"><span class="pmb-fill" id="pmb-fatiga"></span></span></span>
+      <span class="pmb-fila"><span class="pmb-letra">A</span><span class="pmb-track"><span class="pmb-fill" id="pmb-aislamiento"></span></span></span>
+      <span class="pmb-fila"><span class="pmb-letra">H</span><span class="pmb-track"><span class="pmb-fill" id="pmb-hambre"></span></span></span>
+      <span class="pmb-fila"><span class="pmb-letra">D</span><span class="pmb-track"><span class="pmb-fill" id="pmb-disociacion"></span></span></span>
+    </span>
     <span class="etiqueta">ESTADO</span>
   </button>
   <button class="perm-btn" onclick="abrirInventario()">
