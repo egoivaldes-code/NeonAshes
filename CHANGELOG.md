@@ -11,6 +11,10 @@
 
 ---
 
+## [0.67.2] - 2026-05-29
+### Fixed
+- La IA ahora llama de verdad al portero de Cloudflare (antes iba a Gemini directo y fallaba). El panel de debug ya no pide una key de OpenRouter innecesaria.
+
 ## [0.67.1] - 2026-05-29
 ### Changed
 - El sistema de IA ahora llama al portero alojado en Cloudflare Workers en lugar de Netlify, que se pausaba al alcanzar los límites del plan gratuito.

@@ -83,6 +83,10 @@ const LAUNCHER = {
   //
   // Cambiar de modelo de Groq = editar API_MODELO_GROQ.
 
+  // Proveedor de IA por defecto. 'portero' = llamar al Cloudflare
+  // Worker (seguro: la key vive allí, no en el navegador).
+  API_PROVEEDOR_PRINCIPAL: 'portero',
+
   // Dirección del portero. Ahora vive en un Cloudflare Worker
   // (Netlify se pausaba por límites del plan gratuito). Solo
   // cámbiala si mueves la función de sitio otra vez.

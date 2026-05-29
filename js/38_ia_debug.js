@@ -131,7 +131,14 @@
   function refrescarKey(){
     const el = document.getElementById('ia-key-estado');
     if(!el) return;
-    const proveedor = LAUNCHER.API_PROVEEDOR_PRINCIPAL || 'openrouter';
+    const proveedor = LAUNCHER.API_PROVEEDOR_PRINCIPAL || 'portero';
+    // Con el portero (Cloudflare) la key vive en el servidor, no en
+    // el navegador. No hay que configurar nada aquí.
+    if(proveedor === 'portero'){
+      el.textContent = '✓ usando portero seguro (la key vive en el servidor)';
+      el.className = 'ia-debug-key-estado ok';
+      return;
+    }
     if(IA.hayApiKey(proveedor)){
       const k = IA.obtenerApiKey(proveedor);
       const corta = k.length > 12 ? k.substring(0,6) + '…' + k.substring(k.length-4) : '(corta)';
@@ -205,8 +212,10 @@
     const btn = document.getElementById('ia-prueba-lanzar');
     if(!estado || !btn) return;
 
-    const proveedor = LAUNCHER.API_PROVEEDOR_PRINCIPAL || 'openrouter';
-    if(!IA.hayApiKey(proveedor)){
+    const proveedor = LAUNCHER.API_PROVEEDOR_PRINCIPAL || 'portero';
+    // El portero no necesita key en el navegador; solo bloqueamos
+    // la prueba por falta de key con los proveedores directos.
+    if(proveedor !== 'portero' && !IA.hayApiKey(proveedor)){
       estado.textContent = `✗ no hay API key de ${proveedor} configurada.`;
       estado.className = 'ia-debug-estado fallo';
       return;

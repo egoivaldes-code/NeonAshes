@@ -428,10 +428,86 @@ window.IA = (function(){
   }
 
   // ──────────────────────────────────────────────────────────
+  //  LLAMADA AL PORTERO (Cloudflare Worker)
+  //  Esta es la forma SEGURA y por defecto. El navegador NO lleva
+  //  ninguna API key: se la manda al Worker, que tiene la key de
+  //  Groq guardada a salvo y hace la llamada real por nosotros.
+  //  La URL del Worker está en LAUNCHER.API_URL_PORTERO.
+  // ──────────────────────────────────────────────────────────
+  async function llamarPortero(systemPrompt, contextoEscena){
+    const url = LAUNCHER.API_URL_PORTERO;
+    if(!url){
+      return { ok:false, error:'NO_URL_PORTERO', mensaje:'No hay URL de portero configurada en el LAUNCHER.' };
+    }
+
+    const ctrl = new AbortController();
+    const timeoutMs = LAUNCHER.API_TIMEOUT_MS ?? 12000;
+    const timeoutId = setTimeout(() => ctrl.abort(), timeoutMs);
+
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          systemPrompt: systemPrompt,
+          contextoEscena: contextoEscena,
+          modelo: LAUNCHER.API_MODELO_GROQ || 'llama-3.1-8b-instant',
+          temperatura: LAUNCHER.API_TEMPERATURA ?? 0.85,
+          maxTokens: LAUNCHER.API_MAX_TOKENS_RESPUESTA ?? 800
+        }),
+        signal: ctrl.signal
+      });
+      clearTimeout(timeoutId);
+
+      if(!res.ok){
+        const errorTxt = await res.text().catch(()=>'');
+        return {
+          ok:false,
+          error:`HTTP_${res.status}`,
+          mensaje:`El portero respondió ${res.status}.`,
+          crudo: errorTxt
+        };
+      }
+
+      const data = await res.json();
+      const textoCrudo = data?.choices?.[0]?.message?.content || '';
+
+      if(!textoCrudo){
+        return {
+          ok:false,
+          error:'RESPUESTA_VACIA',
+          mensaje:'El portero devolvió una respuesta vacía.',
+          crudo: JSON.stringify(data)
+        };
+      }
+
+      const parseado = extraerJSON(textoCrudo);
+      if(!parseado){
+        return {
+          ok:false,
+          error:'JSON_INVALIDO',
+          mensaje:'La respuesta del portero no es JSON válido.',
+          crudo: textoCrudo
+        };
+      }
+
+      return { ok:true, datos: parseado, crudo: textoCrudo, proveedor: 'portero' };
+
+    } catch(e){
+      clearTimeout(timeoutId);
+      if(e.name === 'AbortError'){
+        return { ok:false, error:'TIMEOUT', mensaje:`El portero tardó más de ${timeoutMs}ms.` };
+      }
+      return { ok:false, error:'EXCEPCION', mensaje: e.message || String(e) };
+    }
+  }
+
+  // ──────────────────────────────────────────────────────────
   //  DESPACHADOR
   //  Mira el LAUNCHER y elige a quién llamar.
   // ──────────────────────────────────────────────────────────
   async function llamarProveedor(nombre, systemPrompt, contextoEscena){
+    if(nombre === 'portero')    return llamarPortero(systemPrompt, contextoEscena);
     if(nombre === 'openrouter') return llamarOpenRouter(systemPrompt, contextoEscena);
     if(nombre === 'gemini')     return llamarGemini(systemPrompt, contextoEscena);
     if(nombre === 'groq')       return llamarGroq(systemPrompt, contextoEscena);
@@ -450,7 +526,7 @@ window.IA = (function(){
   //    }
   // ──────────────────────────────────────────────────────────
   async function llamar(systemPrompt, contextoEscena){
-    const principal  = LAUNCHER.API_PROVEEDOR_PRINCIPAL || 'gemini';
+    const principal  = LAUNCHER.API_PROVEEDOR_PRINCIPAL || 'portero';
     const fallback   = LAUNCHER.API_PROVEEDOR_FALLBACK  || null;
     const reintentos = LAUNCHER.API_REINTENTOS_POR_PROVEEDOR ?? 1;
 
