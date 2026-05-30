@@ -11,6 +11,11 @@
 
 ---
 
+## [0.72.1] - 2026-05-30
+### Fixed
+- Las escenas del viaje "Explorar" ahora enlazan con la elección anterior, en vez de saltar a situaciones inconexas.
+- Morir durante el viaje ya cierra la partida correctamente, sin dejar continuar tras la muerte.
+
 ## [0.72] - 2026-05-30
 ### Added
 - 20 fondos nuevos para el viaje "Explorar la ciudad" (almacenes, talleres, mercados, puertos y callejones), para dar más variedad visual a la deriva.
