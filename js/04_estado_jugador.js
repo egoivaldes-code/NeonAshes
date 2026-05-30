@@ -49,5 +49,13 @@ Estado.humano = {
   disociacion: 0    // 0-100. Realidad menos fiable. Sube al ver CERO.
 };
 
+// ============================================================
+// CONDICIONES MÉDICAS — lesiones físicas activas
+// ============================================================
+// Lista de condiciones (heridas, mareo, envenenamiento…) que el
+// jugador arrastra. Cada una drena un poco las barras humanas por
+// turno de viaje. El sistema vive en 39_condiciones.js.
+Estado.condiciones = [];
+
 
 // ============================================================

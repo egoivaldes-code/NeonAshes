@@ -38,6 +38,7 @@ function guardarPartida(){
       creditos: Estado.creditos || 0,
       reputacion: Estado.reputacion || 0,
       inventario: Estado.inventario || [],
+      condiciones: Estado.condiciones || [],
       guardadoEn: Date.now()
     };
     localStorage.setItem(CLAVE_PARTIDA, JSON.stringify(datos));

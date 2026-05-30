@@ -1,0 +1,155 @@
+/* ============================================================
+   BLOQUE CSS-25 — EXPLORAR LA CIUDAD + INVENTARIO/CONDICIONES
+   Estilos del viaje narrativo de 10 escenas y de las secciones
+   nuevas del panel ESTADO. Paleta noir: negro azulado, cyan,
+   ámbar, magenta contenido.
+   ============================================================ */
+
+/* ── ESCENA DEL VIAJE ──────────────────────────────────────── */
+#explorar-escena{
+  background:#030508;
+}
+#explorar-escena .bg-overlay{
+  background:linear-gradient(180deg,
+    rgba(3,5,8,0.75) 0%,
+    rgba(3,5,8,0.55) 45%,
+    rgba(3,5,8,0.92) 100%);
+}
+
+.explorar-wrap{
+  position:relative;
+  z-index:2;
+  max-width:640px;
+  margin:0 auto;
+  padding:2rem 1.4rem 3rem;
+  min-height:100%;
+  display:flex;
+  flex-direction:column;
+}
+
+.explorar-titulo{
+  font-size:0.7rem;
+  letter-spacing:0.35em;
+  color:var(--cyan);
+  text-transform:uppercase;
+  opacity:0.85;
+  margin-bottom:1.6rem;
+  text-align:center;
+}
+
+.exp-progreso{
+  font-size:0.55rem;
+  letter-spacing:0.3em;
+  color:rgba(200,216,224,0.45);
+  text-transform:uppercase;
+  margin-bottom:1.2rem;
+  text-align:center;
+}
+
+.exp-narracion{
+  font-size:0.95rem;
+  line-height:1.7;
+  color:var(--blanco-suave);
+  margin-bottom:2rem;
+  animation:expFadeIn 0.6s ease;
+}
+
+@keyframes expFadeIn{
+  from{opacity:0;transform:translateY(8px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.exp-opciones{
+  display:flex;
+  flex-direction:column;
+  gap:0.7rem;
+}
+
+.exp-opcion{
+  background:rgba(0,229,255,0.04);
+  border:1px solid rgba(0,229,255,0.22);
+  color:var(--blanco-suave);
+  font-size:0.85rem;
+  letter-spacing:0.04em;
+  text-align:left;
+  padding:0.9rem 1.1rem;
+  border-radius:2px;
+  cursor:pointer;
+  transition:border-color 0.25s ease, background 0.25s ease;
+  font-family:inherit;
+}
+.exp-opcion:hover:not(:disabled){
+  border-color:rgba(0,229,255,0.6);
+  background:rgba(0,229,255,0.09);
+}
+.exp-opcion:disabled{ opacity:0.4; cursor:default; }
+
+/* Acento sutil de color según el tono moral de la opción. */
+.exp-opcion[data-tono="VIOLENTO"]{ border-left:2px solid var(--magenta); }
+.exp-opcion[data-tono="EMPATICO"]{ border-left:2px solid var(--verde-terminal); }
+.exp-opcion[data-tono="FRIO"]{ border-left:2px solid rgba(200,216,224,0.5); }
+.exp-opcion[data-tono="MANIPULADOR"]{ border-left:2px solid #c084fc; }
+.exp-opcion[data-tono="EVASIVO"]{ border-left:2px solid rgba(0,229,255,0.5); }
+.exp-opcion[data-tono="VENAL"]{ border-left:2px solid #ffb347; }
+.exp-opcion[data-tono="HONESTO"]{ border-left:2px solid #78ffa0; }
+
+.exp-pensando{
+  display:flex;
+  justify-content:center;
+  padding:2rem 0;
+  opacity:0.6;
+}
+
+/* ── PANEL ESTADO: CONDICIONES MÉDICAS ─────────────────────── */
+.estado-cond-fila{
+  display:flex;
+  align-items:center;
+  gap:0.55rem;
+  padding:0.35rem 0;
+}
+.estado-cond-punto{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--cc,#ffa078);
+  box-shadow:0 0 6px var(--cc,#ffa078);
+  flex-shrink:0;
+}
+.estado-cond-nombre{
+  font-size:0.72rem;
+  letter-spacing:0.03em;
+  color:var(--blanco-suave);
+}
+.estado-cond-vacio{
+  font-size:0.68rem;
+  color:rgba(200,216,224,0.4);
+  font-style:italic;
+  line-height:1.5;
+}
+
+/* ── PANEL ESTADO: INVENTARIO ──────────────────────────────── */
+.estado-inv-fila{
+  padding:0.5rem 0;
+  border-bottom:1px solid rgba(58,74,85,0.25);
+}
+.estado-inv-fila:last-child{ border-bottom:none; }
+.estado-inv-nombre{
+  font-size:0.74rem;
+  letter-spacing:0.03em;
+  color:var(--cyan);
+  opacity:0.9;
+}
+.estado-inv-cant{
+  font-size:0.62rem;
+  color:rgba(200,216,224,0.5);
+  margin-left:0.4rem;
+}
+.estado-inv-desc{
+  font-size:0.66rem;
+  line-height:1.5;
+  color:rgba(200,216,224,0.55);
+  margin-top:0.2rem;
+}
+.estado-inv-vacio{
+  font-size:0.68rem;
+  color:rgba(200,216,224,0.4);
+  font-style:italic;
+}

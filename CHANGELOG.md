@@ -11,6 +11,12 @@
 
 ---
 
+## [0.70] - 2026-05-30
+### Added
+- Nuevo punto en el mapa: "Explorar la ciudad". Un viaje a la deriva de 10 escenas generadas por la IA, donde puede pasar de todo: encuentros, peligro, objetos y lesiones. Hay que sobrevivir; si tu estado se desploma, mueres
+- Sistema de objetos: lo que recoges queda guardado y se ve en el panel ESTADO. La IA conoce lo que llevas encima
+- Condiciones médicas (brazo herido, mareo, envenenamiento, hemorragia y más): aparecen en el panel ESTADO y van desgastando tu estado poco a poco mientras las arrastras
+
 ## [0.69.5] - 2026-05-30
 ### Fixed
 - Botón de audio: arreglado el comportamiento errático (encendía/apagaba sin coherencia, mostraba estados contradictorios). Ahora una pulsación es un solo cambio y todos los botones de sonido muestran lo mismo

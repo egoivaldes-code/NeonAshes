@@ -207,6 +207,7 @@
   <link rel="stylesheet" href="css/22_barra_permanente.css">
   <link rel="stylesheet" href="css/23_responsive.css">
   <link rel="stylesheet" href="css/24_debug_ia.css">
+  <link rel="stylesheet" href="css/25_explorar.css">
 
 </head>
 <body>
@@ -766,6 +767,12 @@
           <span class="zm-rep" id="zm-rep-santuario_ix"></span>
           <span class="zm-dot"></span>
         </button>
+        <button class="zona-marker" data-zona="explorar_ciudad"
+                style="left:47.5%; top:62%;"
+                onclick="iniciarExplorarCiudad()">
+          <span class="zm-label">EXPLORAR LA CIUDAD</span>
+          <span class="zm-dot"></span>
+        </button>
       </div>
     </div>
     <div class="zona-detalle" id="zona-detalle">
@@ -795,6 +802,19 @@
   <div class="transito-inner tl-inner">
     <div class="tl-zona-destino" id="tl-zona-destino">→ DESTINO</div>
     <div id="tarjetas-loc-libre"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     BLOQUE HTML-20b — EXPLORAR LA CIUDAD (viaje narrativo IA)
+     Viaje a la deriva de 10 escenas generadas con IA.
+     ============================================================ -->
+<div class="escena" id="explorar-escena">
+  <div class="bg-art" style="background:#030508;"></div>
+  <div class="bg-overlay"></div>
+  <div class="explorar-wrap">
+    <div class="explorar-titulo">EXPLORAR LA CIUDAD</div>
+    <div id="explorar-cuerpo"></div>
   </div>
 </div>
 
@@ -874,6 +894,9 @@
   <script src="js/36_ambiente_sonoro.js"></script>
   <script src="js/37_ia_cliente.js"></script>
   <script src="js/38_ia_debug.js"></script>
+  <script src="js/39_condiciones.js"></script>
+  <script src="js/40_items.js"></script>
+  <script src="js/41_explorar.js"></script>
 
 
 <!-- ============================================================

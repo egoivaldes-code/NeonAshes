@@ -291,6 +291,7 @@ function aplicarPartidaCargada(datos){
   if(typeof datos.creditos === 'number') Estado.creditos = datos.creditos;
   if(typeof datos.reputacion === 'number') Estado.reputacion = datos.reputacion;
   if(Array.isArray(datos.inventario)) Estado.inventario = datos.inventario;
+  if(Array.isArray(datos.condiciones)) Estado.condiciones = datos.condiciones;
 }
 
 
