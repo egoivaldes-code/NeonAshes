@@ -11,6 +11,12 @@
 
 ---
 
+## [0.72.2] - 2026-05-30
+### Added
+- El panel de depuración ahora muestra la versión del juego y tiene un botón para abrir el panel de IA (útil en móvil, sin teclado).
+### Changed
+- El acceso por tap al panel de depuración se mueve a la esquina superior izquierda.
+
 ## [0.72.1] - 2026-05-30
 ### Fixed
 - Las escenas del viaje "Explorar" ahora enlazan con la elección anterior, en vez de saltar a situaciones inconexas.

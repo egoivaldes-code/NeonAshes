@@ -181,8 +181,8 @@ html, body {
   left: max(0.6rem, env(safe-area-inset-left));
 }
 #debug-corner-tap {
-  bottom: env(safe-area-inset-bottom);
-  right: env(safe-area-inset-right);
+  top: env(safe-area-inset-top);
+  left: env(safe-area-inset-left);
 }
 
 /* ===== 3. Anti-solapamientos =====

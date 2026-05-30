@@ -6,6 +6,11 @@
 //   assets/audio manteniendo el nombre.
 // ============================================================
 
+// Versión actual del juego. ACTUALIZAR EN CADA ENTREGA.
+// Se muestra en el panel de depuración (Ctrl+D / tap arriba-izquierda).
+const JUEGO_VERSION = "0.72.1";
+window.JUEGO_VERSION = JUEGO_VERSION;
+
 const ASSETS = {
   APPROACH_SECTOR7: "assets/images/approach_sector7.webp",
   ARRIVAL_SECTOR7: "assets/images/arrival_sector7.webp",

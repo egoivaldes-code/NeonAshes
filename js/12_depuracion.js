@@ -1,13 +1,13 @@
 // ============================================================
 // BLOQUE JS-15 — PANEL DE DEPURACIÓN (Ctrl+D)
 // Solo para desarrollo. Permite forzar muertes y ver el estado
-//   interno. Se abre con Ctrl+D o 4 taps en esquina superior derecha.
+//   interno. Se abre con Ctrl+D o 4 taps en esquina superior izquierda.
 // ============================================================
 
 // ============================================================
 // PANEL DE DEPURACIÓN — solo desarrollo, oculto por defecto
 // ============================================================
-// Activación: Ctrl + D, o 4 taps rápidos en la esquina superior derecha
+// Activación: Ctrl + D, o 4 taps rápidos en la esquina superior izquierda
 // (para móvil). NUNCA aparece por sí solo.
 
 let _debugVisible = false;
@@ -63,6 +63,12 @@ function actualizarDebug(){
   const completadas = Estado.partidasCompletadas || 0;
 
   let html = '';
+
+  // === VERSIÓN + ACCESO AL PANEL IA ===
+  html += `<div class="debug-seccion">`;
+  html += `<div class="debug-fila"><span class="clave">Versión</span><span class="valor">v${(typeof JUEGO_VERSION !== 'undefined') ? JUEGO_VERSION : '?'}</span></div>`;
+  html += `<button class="debug-btn" style="margin-top:0.4rem;width:100%;" onclick="if(typeof toggleDebugIA==='function'){toggleDebugIA();}">ABRIR PANEL IA</button>`;
+  html += `</div>`;
 
   // === ESTADO HUMANO ===
   html += `<div class="debug-seccion">`;
@@ -195,7 +201,7 @@ window.addEventListener('keydown', function(e){
   }
 });
 
-// Activación con 4 taps rápidos en esquina superior derecha (para móvil)
+// Activación con 4 taps rápidos en esquina superior izquierda (para móvil)
 (function(){
   const corner = document.getElementById('debug-corner-tap');
   if(!corner) return;
