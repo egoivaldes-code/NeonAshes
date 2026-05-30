@@ -57,6 +57,48 @@ function generarNoticiasReactivas(){
   if((m.confianzaMara || 0) >= 3){
     reactivas.push({ cat: 'VIDA', txt: 'La gerencia del Bar Noir confirma normalidad operativa. Sin novedades.' });
   }
+  // Reacción al último encuentro con una facción durante el paseo.
+  if(m.ultimaFaccionTocada){
+    const _noticiasFaccion = {
+      sindicatos: {
+        pos: { cat:'PILAS', txt:'Los talleres del Distrito Ferro reportan "ambiente cordial" tras una semana tensa. Nadie aclara con quién.' },
+        neg: { cat:'PILAS', txt:'Altercado menor en los muelles del Sector 7. Los Sindicatos cierran filas y no admiten preguntas.' }
+      },
+      archivistas: {
+        pos: { cat:'INFO', txt:'Circula un archivo no autorizado entre terminales privados. HELIX recuerda que poseer memoria no verificada es delito leve.' },
+        neg: { cat:'INFO', txt:'Una célula de preservación de datos suspende contactos tras "una brecha de confianza". Sin más detalles.' }
+      },
+      iglesia_eco: {
+        pos: { cat:'VIDA', txt:'La Iglesia del Eco abre sus templos una noche más por "alta demanda de escucha". Asistencia en aumento.' },
+        neg: { cat:'VIDA', txt:'Fieles del Eco denuncian acoso a un visitante reciente. La congregación pide "recogimiento".' }
+      },
+      drifters: {
+        pos: { cat:'INFO', txt:'Rutas de transporte no registradas operan "con normalidad", según fuentes que piden no ser citadas.' },
+        neg: { cat:'INFO', txt:'Un piloto independiente cancela trayectos sin previo aviso. Los pasajeros varados no reciben explicación.' }
+      },
+      orpheus: {
+        pos: { cat:'HELIX', txt:'División ORPHEUS amplía su "programa de colaboración ciudadana". Las invitaciones son personales e intransferibles.' },
+        neg: { cat:'HELIX', txt:'ORPHEUS recuerda que toda interacción con su personal queda registrada "por seguridad del propio ciudadano".' }
+      },
+      ia_autonomas: {
+        pos: { cat:'INFO', txt:'Interferencias breves y "casi corteses" en altavoces públicos del Sector 7. HELIX investiga el origen.' },
+        neg: { cat:'INFO', txt:'Una unidad de voz no autorizada deja de emitir tras "un desencuentro". El silencio dura ya varias horas.' }
+      },
+      helix: {
+        pos: { cat:'HELIX', txt:'HELIX agradece a los ciudadanos que "colaboran activamente con el orden". El gesto, dicen, se recuerda.' },
+        neg: { cat:'HELIX', txt:'Refuerzo de vigilancia rutinaria en varios accesos del Nivel 4. "Procedimiento estándar", según la corporación.' }
+      },
+      restos_militares: {
+        pos: { cat:'PILAS', txt:'Veteranos sin destino ofrecen "protección informal" en zonas hostiles. El boca a boca corre rápido.' },
+        neg: { cat:'PILAS', txt:'Tensión en un punto de control improvisado. Exsoldados "recomiendan no insistir".' }
+      }
+    };
+    const _set = _noticiasFaccion[m.ultimaFaccionTocada];
+    if(_set){
+      const _signo = (m.ultimaFaccionSigno === 'neg') ? 'neg' : 'pos';
+      if(_set[_signo]) reactivas.push(_set[_signo]);
+    }
+  }
 
   // ============================================================
   // FASE C: noticia del último muerto

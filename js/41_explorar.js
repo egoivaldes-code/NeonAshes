@@ -431,6 +431,27 @@ function resolverEscenaExplorar(num, escenaPlan, opcionElegida){
   if(escenaPlan.npc && typeof marcarNpcVisto === 'function'){
     marcarNpcVisto(escenaPlan.npc);
   }
+  // COSIDO CON FACCIONES Y NOTICIAS:
+  // Si el NPC de la escena pertenece a una facción, el trato que le
+  // hayas dado mueve un poco la reputación con esa facción, y deja
+  // una huella para que las noticias reactivas la recojan.
+  if(escenaPlan.npc && typeof npcPorId === 'function'){
+    const _npc = npcPorId(escenaPlan.npc);
+    if(_npc && _npc.faccion){
+      const _tono = (opcionElegida && opcionElegida.tono) ? String(opcionElegida.tono).toUpperCase() : '';
+      let _delta = 0;
+      if(_tono === 'EMPATICO' || _tono === 'HONESTO') _delta = 4;
+      else if(_tono === 'VIOLENTO' || _tono === 'MANIPULADOR') _delta = -4;
+      else if(_tono === 'FRIO' || _tono === 'EVASIVO' || _tono === 'VENAL') _delta = 1;
+      if(_delta !== 0 && typeof cambiarRepFaccion === 'function'){
+        cambiarRepFaccion(_npc.faccion, _delta);
+      }
+      // Bandera para la noticia reactiva (la lee 24_noticias.js).
+      if(!Estado.memoria) Estado.memoria = {};
+      Estado.memoria.ultimaFaccionTocada = _npc.faccion;
+      Estado.memoria.ultimaFaccionSigno = _delta >= 0 ? 'pos' : 'neg';
+    }
+  }
 
   // 5) Anotar para el contexto de la IA en las siguientes escenas.
   const resumen = `Escena ${num + 1}: ${opcionElegida.texto}` +
