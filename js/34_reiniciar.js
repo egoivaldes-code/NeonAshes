@@ -15,7 +15,7 @@ function reiniciar(){
   // NO borra la partida guardada — eso lo hace explícitamente "EMPEZAR DE NUEVO".
   // Así el jugador que acaba puede volver a empezar y será reconocido.
   Estado.jugador={nombre:'',apellido1:''};Estado.historialDialogo=[];
-  Estado.creditos=LAUNCHER.CREDITOS_INICIALES;Estado.reputacion=0;Estado.inventario=[];Estado.eventosVistos=[];Estado.condiciones=[];
+  Estado.creditos=LAUNCHER.CREDITOS_INICIALES;Estado.reputacion=0;Estado.inventario=[];Estado.eventosVistos=[];Estado.condiciones=[];Estado.npcsVistos=[];
   // Limpiar la libreta de memoria EN MEMORIA (la guardada se queda).
   Estado.memoria = {
     aceptoEncargo: null,

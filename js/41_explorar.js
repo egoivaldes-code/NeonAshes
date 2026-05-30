@@ -75,7 +75,7 @@ function _aleatorioArr(arr){ return arr[Math.floor(Math.random() * arr.length)];
 function _planificarViaje(){
   const plan = [];
   for(let i = 0; i < EXPLORAR_TOTAL_ESCENAS; i++){
-    plan.push({ tono:'tension', daño:0, item:null, condicion:null, creditos:0 });
+    plan.push({ tono:'tension', daño:0, item:null, condicion:null, creditos:0, npc:null });
   }
   // Primera y última, ancladas.
   plan[0].tono = 'entrada';
@@ -101,6 +101,14 @@ function _planificarViaje(){
   // y 2 pérdidas (peaje, te roban, sobornas, comes algo en un puesto).
   _repartir(plan, 2, 1, 8, (e) => { if(!e.creditos) e.creditos = 12 + Math.floor(Math.random() * 39); });   // +12..+50
   _repartir(plan, 2, 1, 8, (e) => { if(!e.creditos) e.creditos = -(10 + Math.floor(Math.random() * 31)); }); // -10..-40
+
+  // Repartir 2 encuentros con NPCs recurrentes en escenas intermedias.
+  _repartir(plan, 2, 1, 8, (e) => {
+    if(!e.npc && typeof npcAleatorio === 'function'){
+      const n = npcAleatorio();
+      if(n) e.npc = n.id;
+    }
+  });
 
   return plan;
 }
@@ -230,6 +238,10 @@ async function _generarEscenaIA(num, escenaPlan){
   }
   if(escenaPlan.creditos > 0) pistas.push('En esta escena el jugador GANA algo de dinero (un favor pagado, un descuido ajeno, algo de valor que recoge). Insinúalo sin dar cifras.');
   else if(escenaPlan.creditos < 0) pistas.push('En esta escena el jugador PIERDE algo de dinero (un peaje, un soborno, un descuido, un pequeño robo). Insinúalo sin dar cifras.');
+  if(escenaPlan.npc && typeof describirNpcParaIA === 'function'){
+    const retrato = describirNpcParaIA(escenaPlan.npc);
+    if(retrato) pistas.push(retrato);
+  }
 
   // Longitud objetivo según la escena: 1, 5 y 10 pueden respirar más;
   // el resto van CORTAS para no cansar entre escena y escena.
@@ -415,6 +427,10 @@ function resolverEscenaExplorar(num, escenaPlan, opcionElegida){
 
   // 4) Goteo de las condiciones ya activas (el cuerpo roto sigue roto).
   if(typeof drenarCondiciones === 'function') drenarCondiciones();
+  // Recordar al NPC que ha aparecido, para futuros reencuentros.
+  if(escenaPlan.npc && typeof marcarNpcVisto === 'function'){
+    marcarNpcVisto(escenaPlan.npc);
+  }
 
   // 5) Anotar para el contexto de la IA en las siguientes escenas.
   const resumen = `Escena ${num + 1}: ${opcionElegida.texto}` +

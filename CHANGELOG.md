@@ -11,6 +11,10 @@
 
 ---
 
+## [0.71] - 2026-05-30
+### Added
+- NPCs recurrentes: personajes fijos del mundo (Cero-Ocho, Rasha, el Archivero y otros) que pueden aparecer en el viaje por la ciudad y a los que el juego recuerda entre encuentros.
+
 ## [0.70.2] - 2026-05-30
 ### Fixed
 - Si morías durante el viaje, el juego seguía dándote objetos y dinero a un personaje ya muerto; ahora se corta al instante
