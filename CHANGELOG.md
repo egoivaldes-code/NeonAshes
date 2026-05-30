@@ -11,6 +11,10 @@
 
 ---
 
+## [0.72] - 2026-05-30
+### Added
+- 20 fondos nuevos para el viaje "Explorar la ciudad" (almacenes, talleres, mercados, puertos y callejones), para dar más variedad visual a la deriva.
+
 ## [0.71.1] - 2026-05-30
 ### Added
 - Los encuentros con NPCs durante el viaje ahora afectan a la reputación con su facción y generan noticias acordes en la red HELIX.

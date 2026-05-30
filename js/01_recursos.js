@@ -58,7 +58,27 @@ const ASSETS = {
   NODO_TRANSITO_1: "assets/images/nodo_transito_1.webp",
   NODO_TRANSITO_2: "assets/images/nodo_transito_2.webp",
   NODO_TRANSITO_3: "assets/images/nodo_transito_3.webp",
-  NODO_ZONA: "assets/images/nodo_zona.webp"
+  NODO_ZONA: "assets/images/nodo_zona.webp",
+  EXP_ALMACEN_HELIX: "assets/images/exp_almacen_helix.webp",
+  EXP_PUERTO_ORBITAL_1: "assets/images/exp_puerto_orbital_1.webp",
+  EXP_TALLER_PROTESIS_1: "assets/images/exp_taller_protesis_1.webp",
+  EXP_MERCADO_OLVIDADOS: "assets/images/exp_mercado_olvidados.webp",
+  EXP_GUARIDA_ECO: "assets/images/exp_guarida_eco.webp",
+  EXP_PLANTA_AGUA: "assets/images/exp_planta_agua.webp",
+  EXP_MERCADO_SUMERGIDO: "assets/images/exp_mercado_sumergido.webp",
+  EXP_TALLER_REUTILIZA: "assets/images/exp_taller_reutiliza.webp",
+  EXP_CALLEJON_NIVELES: "assets/images/exp_callejon_niveles.webp",
+  EXP_CIBERCAFE: "assets/images/exp_cibercafe.webp",
+  EXP_TALLER_NEURAL: "assets/images/exp_taller_neural.webp",
+  EXP_ALMACEN_OKUPA: "assets/images/exp_almacen_okupa.webp",
+  EXP_CANAL_PILAS: "assets/images/exp_canal_pilas.webp",
+  EXP_COMEDOR_SECTORB: "assets/images/exp_comedor_sectorb.webp",
+  EXP_SANTUARIO_ECO: "assets/images/exp_santuario_eco.webp",
+  EXP_CALLEJON_SUENOS: "assets/images/exp_callejon_suenos.webp",
+  EXP_PUERTO_ORBITAL_2: "assets/images/exp_puerto_orbital_2.webp",
+  EXP_PUERTO_CARGA: "assets/images/exp_puerto_carga.webp",
+  EXP_PLAZA_OLVIDADOS: "assets/images/exp_plaza_olvidados.webp",
+  EXP_ALMACEN_ZONA7: "assets/images/exp_almacen_zona7.webp"
 };
 
 // Apply backgrounds
