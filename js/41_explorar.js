@@ -32,17 +32,49 @@ const EXPLORAR_TOTAL_ESCENAS = 10;
 let _expEscenaActual = 0;
 let _expPlan = [];        // la espina dorsal calculada al empezar
 let _expHistorial = [];   // resumen breve de lo ocurrido (contexto IA)
+let _expNarraciones = []; // aperturas recientes, para no repetir
 let _expEnCurso = false;
 
+// Imágenes GENÉRICAS de las Pilas (sin facción concreta) para el
+// destello atmosférico de ~3s entre escenas. Nada de zonas de facción
+// ni sus tránsitos: la deriva es por la ciudad común.
+const _EXP_IMGS_GENERICAS = [
+  'HOUSING_BLOCK_B2', 'INDUSTRIAL_WALKWAY9', 'LOWER_CANAL_SECTOR7B',
+  'MAINTENANCE_ACCESS12', 'SOUTH_ELEVATOR_LEVEL4', 'SECTOR7_STREETS',
+  'SECTOR7_CENTRAL_PLAZA', 'SERVICE_CONDUIT_RAMP_E', 'DOCK_ACCESS_TUNNEL',
+  'FREE_TRANSIT_HUB', 'PASILLO', 'TREN'
+];
+// Imágenes con cierta carga temática, por si la escena encaja.
+const _EXP_IMGS_POR_TEMA = {
+  mercado: ['MARKET_DISTRICT_TIER1', 'SECTOR7_BLACK_MARKET'],
+  medico:  ['HELIX_MEDICAL_CENTER', 'TREATMENT_WING'],
+  muelle:  ['DOCK_ACCESS_TUNNEL', 'FREIGHT_HUB07', 'LOWER_CANAL_SECTOR7B']
+};
+
+// Elige una imagen para la escena: si el plan trae item/condición con
+// tema reconocible, intenta una temática; si no, una genérica al azar.
+function _imagenParaEscena(escenaPlan){
+  let clave = null;
+  const it = escenaPlan && escenaPlan.item;
+  if(it){
+    if(/placa|sindicato/i.test(it.id || '')) clave = _aleatorioArr(_EXP_IMGS_POR_TEMA.muelle);
+    else if(/analges|estimul/i.test(it.id || '')) clave = _aleatorioArr(_EXP_IMGS_POR_TEMA.medico);
+  }
+  if(!clave) clave = _aleatorioArr(_EXP_IMGS_GENERICAS);
+  return (typeof ASSETS !== 'undefined' && ASSETS[clave]) ? ASSETS[clave] : null;
+}
+
+function _aleatorioArr(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+
 // ── PLANIFICADOR DE LA ESPINA DORSAL ────────────────────────
-// Genera un plan de 10 escenas. Reparte ~3 objetos, ~3 momentos
-// de daño y ~2 condiciones médicas a lo largo del viaje, sin que
-// caigan todos juntos. La escena 1 siempre es de entrada (calma)
-// y la 10 siempre es de salida.
+// Genera un plan de 10 escenas. Reparte objetos, daño, condiciones
+// médicas y movimientos de créditos (ganar y perder) a lo largo del
+// viaje, sin que caigan todos juntos. La escena 1 es de entrada y la
+// 10 de salida (esas dos pueden permitir texto más largo).
 function _planificarViaje(){
   const plan = [];
   for(let i = 0; i < EXPLORAR_TOTAL_ESCENAS; i++){
-    plan.push({ tono:'tension', daño:0, item:null, condicion:null });
+    plan.push({ tono:'tension', daño:0, item:null, condicion:null, creditos:0 });
   }
   // Primera y última, ancladas.
   plan[0].tono = 'entrada';
@@ -62,6 +94,12 @@ function _planificarViaje(){
       e.tono = 'peligro';
     }
   });
+
+  // FLUJO DE CRÉDITOS: la deriva mueve dinero en los dos sentidos.
+  // 2 ganancias (encuentras algo de valor, te pagan un favor, robas)
+  // y 2 pérdidas (peaje, te roban, sobornas, comes algo en un puesto).
+  _repartir(plan, 2, 1, 8, (e) => { if(!e.creditos) e.creditos = 12 + Math.floor(Math.random() * 39); });   // +12..+50
+  _repartir(plan, 2, 1, 8, (e) => { if(!e.creditos) e.creditos = -(10 + Math.floor(Math.random() * 31)); }); // -10..-40
 
   return plan;
 }
@@ -85,6 +123,7 @@ function iniciarExplorarCiudad(){
   _expEscenaActual = 0;
   _expPlan = _planificarViaje();
   _expHistorial = [];
+  _expNarraciones = [];
   _expEnCurso = true;
 
   if(typeof cambiarEscena === 'function'){
@@ -114,15 +153,32 @@ async function mostrarSiguienteEscenaExplorar(){
   const cont = document.getElementById('explorar-cuerpo');
   if(!cont) return;
 
-  // Indicador "pensando" mientras llega la IA.
-  cont.innerHTML = `
-    <div class="exp-progreso">DERIVA · ${num + 1} / ${EXPLORAR_TOTAL_ESCENAS}</div>
-    <div class="exp-pensando">
-      <span class="dots-pensando"><span>·</span><span>·</span><span>·</span></span>
-    </div>`;
+  // IMAGEN DE LA ESCENA: se queda de FONDO durante toda la escena
+  // (ambientación, sobre todo en PC). Además hace un "destello" más
+  // intenso los primeros segundos, que cubre la espera de la IA.
+  const imgSrc = _imagenParaEscena(escenaPlan);
+  const fondo = document.getElementById('explorar-fondo');
+  const flash = document.getElementById('explorar-flash');
+  if(imgSrc){
+    if(fondo) fondo.style.backgroundImage = `url('${imgSrc}')`;
+    if(flash){
+      flash.style.backgroundImage = `url('${imgSrc}')`;
+      flash.classList.add('visible');
+    }
+  }
 
-  // Pedimos la prosa a la IA (con respaldo si falla).
-  const escena = await _generarEscenaIA(num, escenaPlan);
+  cont.innerHTML = `
+    <div class="exp-progreso">DERIVA · ${num + 1} / ${EXPLORAR_TOTAL_ESCENAS}</div>`;
+
+  // Lanzamos la IA y el temporizador del destello a la vez; esperamos
+  // a que terminen los dos (el destello al menos 2.6s, la IA lo que tarde).
+  const tFlash = new Promise(res => setTimeout(res, 2600));
+  const pEscena = _generarEscenaIA(num, escenaPlan);
+  const [escena] = await Promise.all([pEscena, tFlash]);
+
+  // Quitamos solo el destello intenso; la imagen de fondo permanece.
+  if(flash) flash.classList.remove('visible');
+  if(Estado.muerto){ _expEnCurso = false; return; }
 
   // Pintamos narración + opciones.
   cont.innerHTML = `
@@ -169,13 +225,25 @@ async function _generarEscenaIA(num, escenaPlan){
   if(escenaPlan.condicion && CATALOGO_CONDICIONES[escenaPlan.condicion]){
     pistas.push(`En esta escena el jugador sufre una lesión: ${CATALOGO_CONDICIONES[escenaPlan.condicion].desc}`);
   }
+  if(escenaPlan.creditos > 0) pistas.push('En esta escena el jugador GANA algo de dinero (un favor pagado, un descuido ajeno, algo de valor que recoge). Insinúalo sin dar cifras.');
+  else if(escenaPlan.creditos < 0) pistas.push('En esta escena el jugador PIERDE algo de dinero (un peaje, un soborno, un descuido, un pequeño robo). Insinúalo sin dar cifras.');
+
+  // Longitud objetivo según la escena: 1, 5 y 10 pueden respirar más;
+  // el resto van CORTAS para no cansar entre escena y escena.
+  const esLarga = (num === 0 || num === 4 || num === EXPLORAR_TOTAL_ESCENAS - 1);
+  const limitePalabras = esLarga ? 90 : 55;
 
   const sys = [
     'Eres el director narrativo de NEON ASHES, simulación cyberpunk noir grounded y melancólica.',
     'Generas UNA escena de un paseo a la deriva por los Lower Stacks (las Pilas).',
     '',
-    'TONO: noir adulto, íntimo, atmosférico. Subtexto sobre exposición. Sensorial:',
-    'lluvia ácida, hormigón mojado, neón roto, hologramas distantes. El silencio importa.',
+    'TONO: noir adulto, íntimo, atmosférico. Subtexto sobre exposición. El silencio importa.',
+    '',
+    'EVITA REPETIRTE (MUY IMPORTANTE): NO menciones lluvia ácida, neón roto ni',
+    'hologramas en cada escena. Ya se han usado mucho. Varía el ancla sensorial:',
+    'un olor concreto, una textura, un sonido, una temperatura, un detalle humano,',
+    'un objeto fuera de lugar. Cada escena debe sentirse DISTINTA de la anterior.',
+    'No abras dos escenas seguidas igual.',
     '',
     'PROHIBIDO: nacionalidades/idiomas/lugares reales, marcas reales, menores en',
     'cualquier contexto, humor Marvel, melodrama, exposición de lore. NO decidas',
@@ -191,13 +259,14 @@ async function _generarEscenaIA(num, escenaPlan){
     'FORMATO DE SALIDA (OBLIGATORIO): un único objeto JSON válido, sin texto',
     'antes ni después, sin markdown. Estructura exacta:',
     '{',
-    '  "narracion": "Texto en segunda persona, máximo 110 palabras.",',
+    `  "narracion": "Texto en segunda persona, máximo ${limitePalabras} palabras. Conciso.",`,
     '  "opciones": [',
     '    { "texto": "...", "tono": "EMPATICO" },',
     '    { "texto": "...", "tono": "FRIO" },',
     '    { "texto": "...", "tono": "EVASIVO" }',
     '  ]',
     '}',
+    'Las opciones deben ser BREVES (máximo ~10 palabras cada una).',
     'Exactamente 3 opciones. Tonos posibles: VIOLENTO, EMPATICO, FRIO, MANIPULADOR,',
     'EVASIVO, VENAL, HONESTO. Si dudas entre decir algo y sugerirlo, sugiérelo.'
   ].filter(Boolean).join('\n');
@@ -205,12 +274,13 @@ async function _generarEscenaIA(num, escenaPlan){
   const contexto = [
     `ESCENA ${num + 1} de ${EXPLORAR_TOTAL_ESCENAS} del paseo.`,
     _expHistorial.length ? ('LO QUE YA HA PASADO:\n' + _expHistorial.join('\n')) : 'Es el comienzo del paseo.',
+    _expNarraciones.length ? ('\nNO REPITAS estas aperturas/imágenes ya usadas:\n- ' + _expNarraciones.slice(-3).join('\n- ')) : '',
     '',
     'INSTRUCCIONES PARA ESTA ESCENA:',
     pistas.join('\n'),
     '',
     'Genera la narración y las 3 opciones.'
-  ].join('\n');
+  ].filter(Boolean).join('\n');
 
   try {
     const r = await IA.llamar(sys, contexto);
@@ -221,27 +291,61 @@ async function _generarEscenaIA(num, escenaPlan){
         tono: String(o.tono || '').trim()
       }));
       while(ops.length < 3) ops.push(respaldo.opciones[ops.length]);
-      return { narracion: String(r.datos.narracion).trim(), opciones: ops };
+      const narracion = String(r.datos.narracion).trim();
+      // Guardar las primeras palabras como "huella" para no repetir.
+      _expNarraciones.push(narracion.split(/\s+/).slice(0, 8).join(' '));
+      if(_expNarraciones.length > 4) _expNarraciones = _expNarraciones.slice(-4);
+      return { narracion: narracion, opciones: ops };
     }
   } catch(e){ /* cae al respaldo */ }
 
   return respaldo;
 }
 
-// Texto de respaldo si la IA no responde. Sobrio, sirve para testear
-// el loop completo aunque no haya conexión.
+// Texto de respaldo si la IA no responde. Sobrio, con variedad para no
+// repetir siempre lo mismo. Sirve para testear el loop sin conexión.
 function _escenaRespaldo(num, escenaPlan){
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
   let narr;
   if(escenaPlan.tono === 'entrada'){
-    narr = 'Sales sin rumbo. La lluvia ácida cae fina sobre el hormigón. Las Pilas respiran a tu alrededor, ajenas. Caminas porque quedarte quieto era peor.';
+    narr = pick([
+      'Sales sin rumbo. El frío del corredor se pega a la ropa. Caminas porque quedarte quieto era peor.',
+      'Empiezas a andar sin saber adónde. Las Pilas respiran a tu alrededor, ajenas a ti.',
+      'La puerta se cierra a tu espalda. Hay menos gente de la que esperabas. Avanzas.'
+    ]);
   } else if(escenaPlan.tono === 'salida'){
-    narr = 'Las piernas pesan. La ciudad te ha dado lo que tenía esta noche. Empiezas a desandar el camino, más vacío y más lleno a la vez.';
+    narr = pick([
+      'Las piernas pesan. La ciudad te ha dado lo que tenía. Empiezas a desandar el camino.',
+      'Ya está. Reconoces las esquinas de vuelta. Vuelves más vacío y más lleno a la vez.',
+      'El cansancio te alcanza de golpe. Es hora de volver, y lo sabes.'
+    ]);
   } else if(escenaPlan.daño > 0){
-    narr = 'Algo se tuerce. Un encontronazo en un callejón sin salida, manos de más, un golpe que no ves venir. Cuando recuperas el aire, la calle sigue indiferente.';
+    narr = pick([
+      'Algo se tuerce. Un encontronazo en un hueco sin salida, un golpe que no ves venir.',
+      'No lo ves llegar. Cuando recuperas el aire, el dolor ya está instalado.',
+      'Un mal paso, una mano de más. El cuerpo se queja antes que la cabeza.'
+    ]);
   } else if(escenaPlan.item){
-    narr = `Entre los escombros hay algo que no encaja. Te agachas. Es ${escenaPlan.item.nombre.toLowerCase()}. Lo coges antes de pensarlo.`;
+    narr = pick([
+      `Entre los escombros hay algo que no encaja. Te agachas. Es ${escenaPlan.item.nombre.toLowerCase()}.`,
+      `Casi lo pisas sin verlo: ${escenaPlan.item.nombre.toLowerCase()}. Lo coges antes de pensarlo.`
+    ]);
+  } else if(escenaPlan.creditos > 0){
+    narr = pick([
+      'Un descuido ajeno, una moneda en el sitio justo. Hoy la suerte mira para otro lado, pero a tu favor.',
+      'Alguien te debía un favor pequeño. Lo cobras sin hacer ruido.'
+    ]);
+  } else if(escenaPlan.creditos < 0){
+    narr = pick([
+      'Hay un peaje que no estaba escrito en ninguna parte. Pagas y sigues.',
+      'Un roce en la multitud. Tardas un segundo de más en notar que algo falta.'
+    ]);
   } else {
-    narr = 'Una esquina cualquiera. Un holograma roto repite media palabra. Alguien te observa desde un portal y aparta la vista cuando le devuelves la mirada.';
+    narr = pick([
+      'Una esquina cualquiera. Alguien te observa desde un portal y aparta la vista cuando le miras.',
+      'El pasaje se estrecha. Un zumbido eléctrico, una puerta entreabierta, nadie dentro.',
+      'Pasos que no son los tuyos a media distancia. Se detienen cuando tú te detienes.'
+    ]);
   }
   return {
     narracion: narr,
@@ -277,6 +381,19 @@ function resolverEscenaExplorar(num, escenaPlan, opcionElegida){
     darItem(escenaPlan.item);
   }
 
+  // 3b) Movimiento de créditos (ganar o perder).
+  if(escenaPlan.creditos){
+    if(typeof ajustarCreditos === 'function'){
+      ajustarCreditos(escenaPlan.creditos);
+    } else {
+      Estado.creditos = Math.max(0, (Estado.creditos || 0) + escenaPlan.creditos);
+      if(typeof actualizarHUD === 'function') actualizarHUD();
+    }
+    if(typeof notificarCambio === 'function'){
+      notificarCambio((escenaPlan.creditos >= 0 ? '+' : '') + escenaPlan.creditos + ' CR', 'creditos');
+    }
+  }
+
   // 4) Goteo de las condiciones ya activas (el cuerpo roto sigue roto).
   if(typeof drenarCondiciones === 'function') drenarCondiciones();
 
@@ -284,6 +401,7 @@ function resolverEscenaExplorar(num, escenaPlan, opcionElegida){
   const resumen = `Escena ${num + 1}: ${opcionElegida.texto}` +
     (escenaPlan.daño > 0 ? ' (saliste dañado)' : '') +
     (escenaPlan.item ? ` (conseguiste ${escenaPlan.item.nombre})` : '') +
+    (escenaPlan.creditos ? ` (créditos ${escenaPlan.creditos >= 0 ? '+' : ''}${escenaPlan.creditos})` : '') +
     (escenaPlan.condicion && CATALOGO_CONDICIONES[escenaPlan.condicion] ? ` (lesión: ${CATALOGO_CONDICIONES[escenaPlan.condicion].nombre})` : '');
   _expHistorial.push(resumen);
   // Mantener el contexto acotado (últimas 6 anotaciones).
@@ -320,6 +438,9 @@ function finalizarExplorar(){
 
 function volverDeExplorar(){
   if(typeof saltoDeEscena === 'function') saltoDeEscena();
+  // Limpiar la imagen de fondo del viaje para no arrastrarla.
+  const fondo = document.getElementById('explorar-fondo');
+  if(fondo) fondo.style.backgroundImage = '';
   if(typeof cambiarEscena === 'function'){
     cambiarEscena('explorar-escena', 'apartamento');
   } else {

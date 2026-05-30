@@ -8,49 +8,75 @@
 /* ── ESCENA DEL VIAJE ──────────────────────────────────────── */
 #explorar-escena{
   background:#030508;
+  justify-content:flex-start;   /* anclar arriba para que el scroll funcione */
 }
+/* Imagen de FONDO persistente (se queda durante toda la escena). */
+.explorar-fondo{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  background-size:cover;
+  background-position:center;
+  opacity:0.55;
+  transition:background-image 0.4s ease, opacity 0.6s ease;
+}
+/* Velo sobre la imagen de fondo para mantener la paleta noir. */
 #explorar-escena .bg-overlay{
+  z-index:1;
   background:linear-gradient(180deg,
-    rgba(3,5,8,0.75) 0%,
-    rgba(3,5,8,0.55) 45%,
-    rgba(3,5,8,0.92) 100%);
+    rgba(3,5,8,0.55) 0%,
+    rgba(3,5,8,0.45) 40%,
+    rgba(3,5,8,0.9) 100%);
 }
-
 .explorar-wrap{
   position:relative;
   z-index:2;
+  width:100%;
   max-width:640px;
   margin:0 auto;
-  padding:2rem 1.4rem 3rem;
-  min-height:100%;
+  padding:1.4rem 1.1rem 11rem;   /* hueco inferior para la barra permanente */
+  height:100%;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
   display:flex;
   flex-direction:column;
 }
 
 .explorar-titulo{
-  font-size:0.7rem;
-  letter-spacing:0.35em;
+  font-size:0.62rem;
+  letter-spacing:0.32em;
   color:var(--cyan);
   text-transform:uppercase;
   opacity:0.85;
-  margin-bottom:1.6rem;
+  margin-bottom:1.1rem;
   text-align:center;
+  text-shadow:0 1px 6px rgba(3,5,8,0.9);
 }
 
 .exp-progreso{
-  font-size:0.55rem;
+  font-size:0.5rem;
   letter-spacing:0.3em;
-  color:rgba(200,216,224,0.45);
+  color:rgba(200,216,224,0.55);
   text-transform:uppercase;
-  margin-bottom:1.2rem;
+  margin-bottom:0.9rem;
   text-align:center;
+  text-shadow:0 1px 6px rgba(3,5,8,0.9);
 }
 
+/* En MÓVIL el texto va sobre un panel oscuro con borde, para que se
+   lea bien por encima de la imagen de fondo. */
 .exp-narracion{
-  font-size:0.95rem;
-  line-height:1.7;
+  font-size:0.82rem;
+  line-height:1.55;
   color:var(--blanco-suave);
-  margin-bottom:2rem;
+  margin-bottom:1.2rem;
+  padding:0.95rem 1rem;
+  background:rgba(3,5,8,0.72);
+  border:1px solid rgba(0,229,255,0.18);
+  border-left:2px solid var(--cyan);
+  border-radius:3px;
+  backdrop-filter:blur(2px);
+  -webkit-backdrop-filter:blur(2px);
   animation:expFadeIn 0.6s ease;
 }
 
@@ -62,25 +88,28 @@
 .exp-opciones{
   display:flex;
   flex-direction:column;
-  gap:0.7rem;
+  gap:0.55rem;
 }
 
 .exp-opcion{
-  background:rgba(0,229,255,0.04);
+  background:rgba(3,5,8,0.68);
   border:1px solid rgba(0,229,255,0.22);
   color:var(--blanco-suave);
-  font-size:0.85rem;
-  letter-spacing:0.04em;
+  font-size:0.78rem;
+  line-height:1.35;
+  letter-spacing:0.03em;
   text-align:left;
-  padding:0.9rem 1.1rem;
+  padding:0.65rem 0.85rem;
   border-radius:2px;
   cursor:pointer;
   transition:border-color 0.25s ease, background 0.25s ease;
   font-family:inherit;
+  backdrop-filter:blur(2px);
+  -webkit-backdrop-filter:blur(2px);
 }
 .exp-opcion:hover:not(:disabled){
   border-color:rgba(0,229,255,0.6);
-  background:rgba(0,229,255,0.09);
+  background:rgba(0,229,255,0.12);
 }
 .exp-opcion:disabled{ opacity:0.4; cursor:default; }
 
@@ -98,6 +127,75 @@
   justify-content:center;
   padding:2rem 0;
   opacity:0.6;
+}
+
+/* ── DESTELLO DE IMAGEN AL ENTRAR EN LA ESCENA (~3s) ───────── */
+.explorar-flash{
+  position:absolute;
+  inset:0;
+  z-index:3;
+  background-size:cover;
+  background-position:center;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.8s ease;
+}
+.explorar-flash.visible{
+  opacity:1;
+  pointer-events:auto;
+  animation:expFlashKen 3s ease forwards;
+}
+/* Velo para integrar la imagen en la paleta noir + viñeta. */
+.explorar-flash::after{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,
+    rgba(3,5,8,0.45) 0%, rgba(3,5,8,0.25) 50%, rgba(3,5,8,0.75) 100%);
+}
+@keyframes expFlashKen{
+  from{transform:scale(1.06);}
+  to{transform:scale(1.0);}
+}
+
+/* ── PC / TABLET: maquetación más amplia y bonita ──────────── */
+@media (min-width: 768px){
+  /* La imagen se ve más, porque hay espacio y contraste de sobra. */
+  .explorar-fondo{ opacity:0.7; }
+  #explorar-escena .bg-overlay{
+    background:linear-gradient(180deg,
+      rgba(3,5,8,0.4) 0%, rgba(3,5,8,0.3) 45%, rgba(3,5,8,0.85) 100%);
+  }
+  .explorar-wrap{
+    max-width:760px;
+    padding:2.4rem 2rem 3rem;
+    justify-content:center;   /* en PC no hay barra inferior fija que estorbe */
+  }
+  .explorar-titulo{ font-size:0.72rem; letter-spacing:0.4em; margin-bottom:1.4rem; }
+  .exp-progreso{ font-size:0.58rem; margin-bottom:1.4rem; }
+  .exp-narracion{
+    font-size:1rem;
+    line-height:1.75;
+    padding:1.6rem 1.8rem;
+    margin-bottom:1.8rem;
+    background:rgba(3,5,8,0.6);
+    border-left-width:3px;
+    box-shadow:0 8px 40px rgba(0,0,0,0.5);
+  }
+  .exp-opciones{
+    gap:0.7rem;
+    max-width:620px;
+    width:100%;
+    margin:0 auto;
+  }
+  .exp-opcion{
+    font-size:0.86rem;
+    padding:0.9rem 1.2rem;
+  }
+}
+
+@media (min-width: 1200px){
+  .explorar-wrap{ max-width:860px; }
+  .exp-narracion{ font-size:1.05rem; max-width:720px; }
 }
 
 /* ── PANEL ESTADO: CONDICIONES MÉDICAS ─────────────────────── */
@@ -152,4 +250,24 @@
   font-size:0.68rem;
   color:rgba(200,216,224,0.4);
   font-style:italic;
+}
+
+/* ── MODAL INVENTARIO: objeto con nombre + descripción ─────── */
+.inv-item-nombre{
+  font-size:0.74rem;
+  letter-spacing:0.04em;
+  color:var(--cyan);
+  opacity:0.92;
+}
+.inv-item-cant{
+  font-size:0.6rem;
+  color:rgba(200,216,224,0.5);
+  margin-left:0.4rem;
+}
+.inv-item-desc{
+  font-size:0.64rem;
+  line-height:1.5;
+  color:rgba(200,216,224,0.55);
+  margin-top:0.25rem;
+  letter-spacing:0.02em;
 }

@@ -106,11 +106,6 @@ function renderEstado(){
       <div class="estado-seccion-titulo">LESIONES</div>
       ${(typeof renderCondiciones === 'function') ? renderCondiciones() : ''}
     </div>
-
-    <div class="estado-bloque">
-      <div class="estado-seccion-titulo">INVENTARIO</div>
-      ${(typeof renderInventario === 'function') ? renderInventario() : ''}
-    </div>
   `;
 }
 

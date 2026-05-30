@@ -11,6 +11,17 @@
 
 ---
 
+## [0.70.1] - 2026-05-30
+### Changed
+- "Explorar la ciudad": las escenas ya no repiten lluvia ácida, neón ni hologramas a cada paso, y son más cortas entre medias (la primera, la quinta y la última pueden respirar más)
+- El viaje ahora mueve créditos en los dos sentidos: ganas y pierdes dinero por el camino
+- Cada escena muestra de fondo una imagen de la ciudad para dar ambiente, con un destello más fuerte al entrar que cubre la carga
+- En móvil el texto va sobre un panel oscuro con borde para que se lea sobre la imagen; en PC la pantalla se ve más amplia, con la imagen más presente y el texto más grande
+- En el apartamento, "mirar por la ventana" y "dormir" ahora desaparecen tras usarse (dormir, una vez por visita), en vez de quedarse en gris
+### Fixed
+- El inventario mostraba "[object Object]": ahora los objetos salen con su nombre y descripción en la pestaña INVENTARIO
+- Los objetos aparecían en el panel ESTADO en lugar de en INVENTARIO; movidos a su sitio (las lesiones siguen en ESTADO)
+
 ## [0.70] - 2026-05-30
 ### Added
 - Nuevo punto en el mapa: "Explorar la ciudad". Un viaje a la deriva de 10 escenas generadas por la IA, donde puede pasar de todo: encuentros, peligro, objetos y lesiones. Hay que sobrevivir; si tu estado se desploma, mueres

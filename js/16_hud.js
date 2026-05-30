@@ -33,7 +33,19 @@ function actualizarHUD(){
     if(Estado.inventario.length === 0){
       lista.innerHTML = '<li class="inv-vacio">SIN OBJETOS</li>';
     } else {
-      lista.innerHTML = Estado.inventario.map(it => `<li class="inv-item">${it}</li>`).join('');
+      lista.innerHTML = Estado.inventario.map(it => {
+        // Compatibilidad: items antiguos eran texto suelto; los nuevos
+        // son objetos { nombre, desc, cantidad }. Mostramos ambos bien.
+        if(typeof it === 'string'){
+          return `<li class="inv-item">${it}</li>`;
+        }
+        const cant = (it.cantidad && it.cantidad > 1)
+          ? `<span class="inv-item-cant">x${it.cantidad}</span>` : '';
+        return `<li class="inv-item">
+          <div class="inv-item-nombre">${it.nombre || 'Objeto'}${cant}</div>
+          ${it.desc ? `<div class="inv-item-desc">${it.desc}</div>` : ''}
+        </li>`;
+      }).join('');
     }
   }
 }

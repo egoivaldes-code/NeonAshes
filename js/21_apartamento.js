@@ -7,9 +7,10 @@
 function iniciarApartamento(){
   // Cada visita al apartamento, "mirar por la ventana" vuelve a estar
   // disponible. Solo puedes mirarla una vez por visita: tras hacerlo,
-  // el botón se atenúa y no se puede pulsar de nuevo hasta volver a
-  // salir y entrar al apartamento.
+  // el botón desaparece hasta volver a salir y entrar al apartamento.
   Estado.ventanaMirada = false;
+  // Lo mismo con dormir: una sola vez por visita.
+  Estado.durmioEstaVisita = false;
 
   const r=document.getElementById('reloj-apt');
   // El reloj del apartamento ahora lee la hora del juego real. Se
@@ -68,10 +69,20 @@ function iniciarApartamento(){
 // para garantizar que la regla se aplique en todas partes igual.
 function botonVentana(texto){
   const ya = Estado.ventanaMirada === true;
-  if(ya){
-    return `<button class="opcion-btn deshabilitado" disabled>${texto} ✓</button>`;
-  }
+  // Ya mirada esta visita: el botón desaparece para ganar sitio en
+  // pantalla y dejar respirar la ambientación.
+  if(ya) return '';
   return `<button class="opcion-btn" onclick="opcionApt(0)">${texto}</button>`;
+}
+
+// Botón de dormir: solo se puede dormir UNA vez por visita al
+// apartamento. Tras dormir, el botón desaparece (igual que la ventana).
+// Nota: cuando la misión está cerrada o el encargo aceptado, dormir
+// tiene flujos propios (cerrar el día / amanecer), así que ahí no se
+// restringe — esto aplica al dormitar "normal" del menú base.
+function botonDormir(texto){
+  if(Estado.durmioEstaVisita === true) return '';
+  return `<button class="opcion-btn" onclick="opcionApt(2)">${texto}</button>`;
 }
 
 function ajustarTextosApartamentoSegunMemoria(){
@@ -90,7 +101,7 @@ function ajustarTextosApartamentoSegunMemoria(){
     narr.innerHTML = 'La lluvia ácida golpea el cristal.<br>Son las tres de la mañana.<br>No recuerdas cuándo te dormiste.';
     opc.innerHTML = `
       ${botonVentana("Mirar por la ventana")}
-      <button class="opcion-btn" onclick="opcionApt(2)">Seguir durmiendo</button>
+      ${botonDormir("Seguir durmiendo")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Encender el terminal</button>`;
     return;
@@ -146,26 +157,26 @@ function ajustarTextosApartamentoSegunMemoria(){
   if(m.aceptoEncargo === true){
     opc.innerHTML = `
       ${botonVentana("Mirar por la ventana")}
-      <button class="opcion-btn" onclick="opcionApt(2)">Intentar dormir un poco más</button>
+      ${botonDormir("Intentar dormir un poco más")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Comprobar el terminal otra vez</button>`;
   } else if(m.aceptoEncargo === false){
     opc.innerHTML = `
       ${botonVentana("Mirar por la ventana")}
-      <button class="opcion-btn" onclick="opcionApt(2)">Quedarte en la cama</button>
+      ${botonDormir("Quedarte en la cama")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Encender el terminal (HELIX)</button>`;
   } else if(m.vioFragmentoCero){
     opc.innerHTML = `
       ${botonVentana("Mirar por la ventana")}
-      <button class="opcion-btn" onclick="opcionApt(2)">Cerrar los ojos un momento</button>
+      ${botonDormir("Cerrar los ojos un momento")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Revisar el terminal</button>`;
   } else {
     // Vuelta sin haber completado nada concreto
     opc.innerHTML = `
       ${botonVentana("Mirar por la ventana otra vez")}
-      <button class="opcion-btn" onclick="opcionApt(2)">Quedarte tumbado</button>
+      ${botonDormir("Quedarte tumbado")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Encender el terminal</button>`;
   }
@@ -240,6 +251,9 @@ function opcionApt(idx){
   } else if(idx === 2 && !misionCerrada){
     ajustarHumano('fatiga', -8);        // un respiro corto, no una noche entera
     ajustarHumano('aislamiento', 3);    // dormir solo es estar solo
+    // Solo se duerme una vez por visita en el menú base. En los flujos
+    // de "cerrar el día" o "amanecer" no aplica (esos salen del apto).
+    if(m.aceptoEncargo !== true) Estado.durmioEstaVisita = true;
   }
   // idx === 3 (salir, placeholder) no toca el estado humano.
 
@@ -529,7 +543,7 @@ function regenerarOpcionesAptCierre(){
     // Versión post-misión: textos más cansados.
     opc.innerHTML = `
       ${botonVentana("Mirar por la ventana")}
-      <button class="opcion-btn" onclick="opcionApt(2)">Dormir</button>
+      ${botonDormir("Dormir")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Revisar el terminal</button>`;
   } else {
