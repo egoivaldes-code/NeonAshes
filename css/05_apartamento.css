@@ -11,7 +11,7 @@
 .fecha-apt{font-size:0.6rem;color:rgba(0,229,255,0.25);text-align:center;letter-spacing:0.4em;margin-bottom:2rem;}
 .narr-box{background:rgba(0,0,0,0.78);border-left:2px solid var(--cyan);padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:clamp(0.7rem,2.5vw,0.85rem);line-height:1.8;color:var(--blanco-suave);opacity:0;transform:translateY(10px);animation:aparecer 0.8s ease forwards;cursor:pointer;transition:opacity 0.6s ease,transform 0.6s ease,margin 0.6s ease,padding 0.6s ease,max-height 0.6s ease;}
 @keyframes aparecer{to{opacity:1;transform:translateY(0)}}
-.narr-box.cerrada{opacity:0;transform:translateY(-8px);max-height:0;margin:0;padding:0 1.2rem;overflow:hidden;pointer-events:none;border-left-color:transparent;}
+.narr-box.cerrada{opacity:0 !important;transform:translateY(-8px);max-height:0;margin:0;padding:0 1.2rem;overflow:hidden;pointer-events:none;border-left-color:transparent;}
 /* Botón "ASUMIR" del bloque de herencia. Estética de albarán
    burocrático: alineado a la derecha, línea superior tenue,
    sin border ni fondo del botón mismo. Discreto pero pulsable. */

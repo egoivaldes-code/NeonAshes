@@ -11,6 +11,10 @@
 
 ---
 
+## [0.69.3] - 2026-05-30
+### Changed
+- El mensaje del apartamento ahora se reabre automáticamente cuando una acción genera texto nuevo (mirar por la ventana, terminal, dormir), y vuelve a cerrarse al tocarlo o tras 8 segundos
+
 ## [0.69.2] - 2026-05-29
 ### Changed
 - La línea separadora sobre los botones del apartamento queda más pegada a ellos
