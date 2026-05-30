@@ -124,6 +124,10 @@ function reiniciarTrasMuerte(){
     tonoJugador: null, noticiasVistas: true
   };
   Estado.humano = { fatiga: 8, aislamiento: 12, hambre: 5, disociacion: 0 };
+  // El cuerpo y los bolsillos del muerto se quedan con él: el nuevo
+  // personaje empieza sin lesiones y sin objetos.
+  Estado.condiciones = [];
+  Estado.inventario = [];
   Estado.tiempoJuego = null;
   // Los recibos del muerto se quedan con él. El nuevo personaje
   // empieza con la lista limpia.

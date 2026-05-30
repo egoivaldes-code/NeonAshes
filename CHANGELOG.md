@@ -11,6 +11,12 @@
 
 ---
 
+## [0.70.2] - 2026-05-30
+### Fixed
+- Si morías durante el viaje, el juego seguía dándote objetos y dinero a un personaje ya muerto; ahora se corta al instante
+- Al empezar de nuevo tras morir, el personaje nuevo ya no hereda las lesiones ni los objetos del anterior
+- El viaje aguanta mejor las respuestas raras de la IA (ya no aparecen opciones vacías) y los toques dobles, sin quedarse sin opciones ni repetir acciones
+
 ## [0.70.1] - 2026-05-30
 ### Changed
 - "Explorar la ciudad": las escenas ya no repiten lluvia ácida, neón ni hologramas a cada paso, y son más cortas entre medias (la primera, la quinta y la última pueden respirar más)

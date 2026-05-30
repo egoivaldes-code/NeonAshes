@@ -34,6 +34,7 @@ let _expPlan = [];        // la espina dorsal calculada al empezar
 let _expHistorial = [];   // resumen breve de lo ocurrido (contexto IA)
 let _expNarraciones = []; // aperturas recientes, para no repetir
 let _expEnCurso = false;
+let _expResolviendo = false; // blindaje contra doble-pulsación en una escena
 
 // Imágenes GENÉRICAS de las Pilas (sin facción concreta) para el
 // destello atmosférico de ~3s entre escenas. Nada de zonas de facción
@@ -125,6 +126,7 @@ function iniciarExplorarCiudad(){
   _expHistorial = [];
   _expNarraciones = [];
   _expEnCurso = true;
+  _expResolviendo = false;
 
   if(typeof cambiarEscena === 'function'){
     cambiarEscena('mapa-escena', 'explorar-escena');
@@ -181,6 +183,7 @@ async function mostrarSiguienteEscenaExplorar(){
   if(Estado.muerto){ _expEnCurso = false; return; }
 
   // Pintamos narración + opciones.
+  _expResolviendo = false; // la escena nueva acepta una pulsación
   cont.innerHTML = `
     <div class="exp-progreso">DERIVA · ${num + 1} / ${EXPLORAR_TOTAL_ESCENAS}</div>
     <div class="exp-narracion">${escena.narracion}</div>
@@ -285,13 +288,20 @@ async function _generarEscenaIA(num, escenaPlan){
   try {
     const r = await IA.llamar(sys, contexto);
     if(r.ok && r.datos && r.datos.narracion && Array.isArray(r.datos.opciones) && r.datos.opciones.length >= 1){
-      // Normalizar a 3 opciones por si la IA devuelve más o menos.
-      const ops = r.datos.opciones.slice(0, 3).map(o => ({
-        texto: String(o.texto || '…').trim(),
-        tono: String(o.tono || '').trim()
-      }));
+      // Normalizar a 3 opciones por si la IA devuelve más o menos, o
+      // si devuelve strings sueltos en vez de objetos {texto,tono}.
+      const ops = r.datos.opciones.slice(0, 3).map((o, i) => {
+        if(typeof o === 'string'){
+          return { texto: o.trim() || respaldo.opciones[i].texto, tono: '' };
+        }
+        const t = (o && o.texto) ? String(o.texto).trim() : '';
+        return {
+          texto: t || respaldo.opciones[i].texto,
+          tono: (o && o.tono) ? String(o.tono).trim() : ''
+        };
+      });
       while(ops.length < 3) ops.push(respaldo.opciones[ops.length]);
-      const narracion = String(r.datos.narracion).trim();
+      const narracion = String(r.datos.narracion).trim() || respaldo.narracion;
       // Guardar las primeras palabras como "huella" para no repetir.
       _expNarraciones.push(narracion.split(/\s+/).slice(0, 8).join(' '));
       if(_expNarraciones.length > 4) _expNarraciones = _expNarraciones.slice(-4);
@@ -362,6 +372,12 @@ function _escenaRespaldo(num, escenaPlan){
 // condición) + el goteo de condiciones, anota el resumen para la
 // IA, y pasa a la siguiente escena.
 function resolverEscenaExplorar(num, escenaPlan, opcionElegida){
+  // Blindaje contra doble-pulsación: si ya estamos resolviendo esta
+  // escena (o no es la escena en curso), ignoramos el clic.
+  if(_expResolviendo) return;
+  if(num !== _expEscenaActual) return;
+  _expResolviendo = true;
+
   // Bloquear botones para evitar doble clic.
   const opcDiv = document.getElementById('exp-opciones');
   if(opcDiv) opcDiv.querySelectorAll('button').forEach(b => b.disabled = true);
@@ -370,6 +386,9 @@ function resolverEscenaExplorar(num, escenaPlan, opcionElegida){
   if(escenaPlan.daño > 0 && typeof ajustarHumano === 'function'){
     ajustarHumano('fatiga', escenaPlan.daño);
   }
+  // Si el daño ya mató al jugador, el motor de muerte cambió de escena:
+  // no seguimos repartiendo objetos/créditos ni guardando estado raro.
+  if(Estado.muerto){ _expEnCurso = false; return; }
 
   // 2) Condición médica nueva.
   if(escenaPlan.condicion && typeof aplicarCondicion === 'function'){
