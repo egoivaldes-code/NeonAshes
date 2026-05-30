@@ -45,10 +45,15 @@ function renderTrabajos(){
   }
 
   // ¿Mostramos botón "Salir al objetivo"?
-  // Sólo si la misión está aceptada y aún no se ha iniciado / completado.
-  // Doble guarda: misión NO hecha + estado en fase de espera del mensaje.
-  const puedeSalir = !misionHecha && (m.aceptoEncargo === true) &&
-    (Estado.mision === 'mensajeRecibido' || Estado.mision === null || Estado.mision === undefined);
+  // Aparece si el encargo está ACEPTADO y la misión todavía no está hecha
+  // ni en curso. Antes exigía el estado exacto 'mensajeRecibido' y, si el
+  // jugador avanzaba el flujo de otra forma (dormir, cerrar terminal...),
+  // el botón desaparecía y se quedaba SIN FORMA de salir al objetivo.
+  // Ahora basta con que la misión no esté hecha ni ya arrancada.
+  const misionEnCurso = Estado.mision === 'enRuta' || Estado.mision === 'enCasillero' ||
+    Estado.mision === 'paqueteCerrado' || Estado.mision === 'paqueteAbierto' ||
+    Estado.mision === 'paqueteRobado' || Estado.mision === 'volviendo';
+  const puedeSalir = !misionHecha && !misionEnCurso && (m.aceptoEncargo === true);
   const botonSalir = puedeSalir
     ? `<div style="margin-top:1rem;text-align:center;">
          <button class="btn-terminal" style="border-color:rgba(255,0,110,0.4);color:var(--magenta);margin-top:0.5rem;" onclick="iniciarMisionDesdeTrabajos()">SALIR AL OBJETIVO →</button>

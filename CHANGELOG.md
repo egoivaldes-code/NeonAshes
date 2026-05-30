@@ -11,6 +11,12 @@
 
 ---
 
+## [0.69.4] - 2026-05-30
+### Fixed
+- Con el encargo de Mara aceptado, dormir ya no te deja atascado: ahora descansas y amaneces a la hora de la cita, con un botón claro para salir al casillero
+- Dormir recupera el cansancio de verdad (antes la barra se quedaba casi igual por mucho que durmieras)
+- El botón para salir al objetivo del encargo ya no desaparece: sigue disponible mientras el trabajo esté aceptado y aún no lo hayas hecho
+
 ## [0.69.3] - 2026-05-30
 ### Changed
 - El mensaje del apartamento ahora se reabre automáticamente cuando una acción genera texto nuevo (mirar por la ventana, terminal, dormir), y vuelve a cerrarse al tocarlo o tras 8 segundos

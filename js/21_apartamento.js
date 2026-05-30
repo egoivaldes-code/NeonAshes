@@ -238,7 +238,7 @@ function opcionApt(idx){
     ajustarHumano('fatiga', 2);         // mirar la pantalla cansa
     ajustarHumano('disociacion', 1);    // HELIX y anuncios dejan un poso
   } else if(idx === 2 && !misionCerrada){
-    ajustarHumano('fatiga', -2);        // descanso breve y mal
+    ajustarHumano('fatiga', -8);        // un respiro corto, no una noche entera
     ajustarHumano('aislamiento', 3);    // dormir solo es estar solo
   }
   // idx === 3 (salir, placeholder) no toca el estado humano.
@@ -267,10 +267,21 @@ function opcionApt(idx){
       setTimeout(()=>{
         opc.innerHTML = `<button class="opcion-btn" onclick="dormirYCerrarDia()">Dejar que el sueño te lleve →</button>`;
       }, 600);
+    } else if(m.aceptoEncargo === true){
+      // ENCARGO ACEPTADO: la cita con Mara es a las 06:00. Dormir aquí
+      // NO debe dejar al jugador atascado: tiene que poder pasar la noche
+      // y plantarse en el amanecer, listo para salir al objetivo. Antes
+      // este caso daba opciones que no avanzaban el tiempo y el jugador
+      // se quedaba "trujado" sin forma de llegar a la hora del encargo.
+      setTimeout(()=>{
+        opc.innerHTML =
+          `<button class="opcion-btn" onclick="dormirHastaElEncargo()">Dormir hasta el amanecer →</button>` +
+          `<button class="opcion-btn" onclick="opcionApt(1)">Encender el terminal</button>` +
+          `<button class="opcion-btn" onclick="regenerarOpcionesAptCierre()">Quedarte despierto</button>`;
+      }, 500);
     } else {
-      // Dormir antes de la misión: el jugador tiene libertad total.
-      // Puede cerrar el día y descansar, abrir el terminal para ver
-      // el mensaje de Mara, o volver al menú y explorar fuera.
+      // Dormir antes de la misión (sin encargo aceptado): libertad total.
+      // Puede cerrar el día y descansar, abrir el terminal, o volver al menú.
       setTimeout(()=>{
         opc.innerHTML =
           `<button class="opcion-btn" onclick="dormirYCerrarDia()">Dejar que el sueño te lleve →</button>` +
@@ -440,9 +451,9 @@ function textosDormir(misionCerrada, m, h, franja, dia){
     arr.push('Los músculos te tiemblan al relajarse.<br>No sabías que estaban tensos hasta que dejan de estarlo.');
     arr.push('Cierras los ojos. La oscuridad detrás de los párpados es la primera oscuridad real en horas.');
   } else if(m.aceptoEncargo === true){
-    arr.push('No vas a poder dormir.<br>El encargo te espera al amanecer.<br>Y tú lo sabes.');
-    arr.push('Cuentas hasta cien. Cuentas hasta doscientos.<br>El número del casillero te interrumpe cada vez.');
-    arr.push('Cierras los ojos. Detrás de ellos, una luz fluorescente parpadea. No es real. No del todo.');
+    arr.push('Pones la alarma mental en el amanecer.<br>El encargo te espera al alba. Lo sabes. Duermes igual.');
+    arr.push('Cierras los ojos. El número del casillero late detrás de los párpados.<br>Hasta que el cansancio gana.');
+    arr.push('La cita es a las seis. Faltan horas.<br>Te dejas caer. Que el cuerpo descanse lo que pueda.');
   } else if(m.aceptoEncargo === false){
     arr.push('La ciudad nunca duerme.<br>Tú tampoco.<br>La deuda tampoco.');
     arr.push('El número de la deuda se te queda flotando en la oscuridad.<br>Lo intentas borrar. Vuelve.');
@@ -546,7 +557,10 @@ function dormirYCerrarDia(){
   if(misionRecienHecha){
     // Primera (y única) vez: pieza narrativa del eco. Luego vuelve al apt.
     saltoDeEscena();
-    ajustarHumano('fatiga', -10);
+    // Dormir una noche entera tras la misión recupera fatiga de verdad.
+    // Antes era -10 sobre una escala 0-100: insuficiente, la barra se
+    // quedaba alta y el jugador sentía que descansar no servía de nada.
+    ajustarHumano('fatiga', -45);
     // Marcamos el arco principal como cerrado pero la PARTIDA SIGUE VIVA.
     Estado.mision = 'completada';
     if(Estado.memoria) Estado.memoria.ecoVisto = true;
@@ -559,7 +573,9 @@ function dormirYCerrarDia(){
 
   // Cualquier otro caso (antes de misión, o ya viste el eco): solo descansas.
   saltoDeEscena();
-  ajustarHumano('fatiga', -8);
+  // Una noche completa de sueño descansa de verdad. -40 sobre 0-100
+  // saca al jugador de las bandas alta/extrema casi siempre.
+  ajustarHumano('fatiga', -40);
   ajustarHumano('aislamiento', 2);
   // Avanzar el tiempo del juego unas 6-8 horas.
   if(typeof avanzarTiempoJuego === 'function'){
@@ -583,6 +599,52 @@ function dormirYCerrarDia(){
   }
   // Regenerar las opciones del apartamento.
   if(typeof regenerarOpcionesAptCierre === 'function') regenerarOpcionesAptCierre();
+}
+
+// Llamado cuando el jugador duerme TENIENDO el encargo de Mara aceptado.
+// La cita es a las 06:00. Antes este caso dejaba al jugador atascado:
+// las opciones de dormir no avanzaban el tiempo ni daban forma de llegar
+// a la hora del encargo. Ahora dormir descansa de verdad, te lleva al
+// amanecer, y te deja en el apartamento con una salida CLARA al objetivo.
+function dormirHastaElEncargo(){
+  saltoDeEscena();
+  // Descanso real antes de la noche larga.
+  ajustarHumano('fatiga', -40);
+  ajustarHumano('aislamiento', 2);
+  // Llevar el reloj cerca del amanecer / hora del encargo.
+  if(typeof avanzarTiempoJuego === 'function'){
+    avanzarTiempoJuego(60 * (5 + Math.floor(Math.random() * 2))); // 5-6 horas
+  }
+  if(typeof guardarPartida === 'function') guardarPartida();
+  const narr = document.getElementById('narr-apt');
+  if(narr){
+    narr.style.animation = 'none';
+    narr.style.opacity = '0';
+    narr.innerHTML = 'Te despiertas antes de que suene nada.<br>La ciudad está gris. Es casi la hora.<br>El casillero te espera.';
+    setTimeout(()=>{ narr.style.animation = 'aparecer 0.6s ease forwards'; }, 50);
+  }
+  // Dejar opciones con SALIDA AL OBJETIVO bien visible. El jugador no
+  // puede quedarse sin forma de arrancar la misión que ya aceptó.
+  const opc = document.getElementById('opciones-apt');
+  if(opc){
+    setTimeout(()=>{
+      opc.innerHTML =
+        `<button class="opcion-btn" onclick="irAlObjetivoMara()" style="border-color:rgba(255,0,110,0.4);">Salir hacia el casillero →</button>` +
+        `<button class="opcion-btn" onclick="opcionApt(1)">Revisar el terminal</button>` +
+        `${typeof botonVentana === 'function' ? botonVentana('Mirar por la ventana') : ''}`;
+    }, 500);
+  }
+}
+
+// Arranque de la misión Mara desde el apartamento (tras dormir hasta el
+// encargo). Reutiliza el mismo flujo que el terminal/panel de trabajos,
+// con las mismas guardas anti-bucle.
+function irAlObjetivoMara(){
+  if(typeof iniciarMisionDesdeTrabajos === 'function'){
+    iniciarMisionDesdeTrabajos();
+  } else if(typeof irATransito === 'function'){
+    irATransito();
+  }
 }
 
 
