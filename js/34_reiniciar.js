@@ -49,6 +49,9 @@ function reiniciar(){
   idxCarga=0;barraProg.style.width='0%';document.getElementById('btn-inicio').style.display='none';
   const audio=document.getElementById('tema-principal');
   if(audio&&!temaMuted){let v=audio.volume;const iv=setInterval(()=>{v=Math.max(v-0.04,0);audio.volume=v;if(v<=0){clearInterval(iv);audio.currentTime=0;}},30);}
+  // Resetear el estado de la musica para que la nueva partida arranque
+  // limpia en Main Theme (sin arrastrar 'ashes' o 'loop_apt').
+  if(window.MUSICA){ window.MUSICA.pistaActual='main'; window.MUSICA.mainThemeYaSono=false; window.MUSICA.enApartamento=false; }
   introActivo=true;frameActual=0;
   ocultarBotonSkip();
   const ov=document.getElementById('transicion');

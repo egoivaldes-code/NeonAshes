@@ -11,6 +11,13 @@
 
 ---
 
+## [0.69.5] - 2026-05-30
+### Fixed
+- Botón de audio: arreglado el comportamiento errático (encendía/apagaba sin coherencia, mostraba estados contradictorios). Ahora una pulsación es un solo cambio y todos los botones de sonido muestran lo mismo
+- Si apagas el sonido, ya no se vuelve a encender solo al cambiar de música o al entrar/salir del apartamento
+- El volumen ya no salta solo: cada pista respeta el nivel del slider
+- Arreglada la alternancia Main Theme / Ashes of Helix, que no llegaba a cambiar de canción por un ajuste interno del reproductor
+
 ## [0.69.4] - 2026-05-30
 ### Fixed
 - Con el encargo de Mara aceptado, dormir ya no te deja atascado: ahora descansas y amaneces a la hora de la cita, con un botón claro para salir al casillero

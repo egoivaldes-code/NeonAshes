@@ -1,12 +1,13 @@
 // ============================================================
-// BLOQUE JS-16 — MÚSICA DEL APARTAMENTO
-// v0.69: Controla la excepción del apartamento. Cuando el
-//   jugador está en el apartamento Y el Main Theme ya ha sonado
-//   al menos una vez, suena el loop ambiental original
-//   (ASSETS.AUDIO, la música que el juego tenía desde el inicio).
-//   Al salir del apartamento, la alternancia global Main Theme /
-//   Ashes of Helix (definida en 03_audio_referencia.js) retoma
-//   el control de forma natural en la siguiente pista.
+// BLOQUE JS-16 — MUSICA DEL APARTAMENTO
+// Cuando el jugador esta en el apartamento Y el Main Theme ya ha
+//   sonado al menos una vez, suena el loop ambiental (ASSETS.AUDIO).
+//   Al salir, la alternancia global (03_audio_referencia.js) retoma
+//   el control empezando por Main Theme.
+//
+// IMPORTANTE: toda reproduccion pasa por reproducirPista() para
+//   respetar window.AUDIO_ON. Si el jugador apago el sonido, entrar
+//   o salir del apartamento NO lo vuelve a encender.
 // ============================================================
 
 (function(){
@@ -25,23 +26,15 @@
     window.MUSICA.enApartamento = dentro;
 
     if(dentro && window.MUSICA.mainThemeYaSono){
-      // Entrar al apartamento (con Main Theme ya escuchado):
-      // poner el loop ambiental original.
+      // Entrar al apartamento (con Main Theme ya escuchado): loop ambiental.
       if(window.MUSICA.pistaActual !== 'loop_apt'){
         window.MUSICA.pistaActual = 'loop_apt';
-        audioEl.src = ASSETS.AUDIO;
-        audioEl.loop = true;
-        audioEl.load();
-        audioEl.play().catch(()=>{});
+        if(typeof reproducirPista === 'function') reproducirPista('AUDIO', true);
       }
     } else if(!dentro && window.MUSICA.pistaActual === 'loop_apt'){
-      // Salir del apartamento: cortar el loop y volver a la
-      // alternancia global empezando por Main Theme.
+      // Salir del apartamento: volver a la alternancia global por Main Theme.
       window.MUSICA.pistaActual = 'main';
-      audioEl.src = ASSETS.MAIN_THEME;
-      audioEl.loop = false;
-      audioEl.load();
-      audioEl.play().catch(()=>{});
+      if(typeof reproducirPista === 'function') reproducirPista('MAIN_THEME', false);
     }
   }
 
