@@ -112,6 +112,18 @@ function cobrarAlquiler(){
   }
 }
 
+// Suma o resta créditos al jugador de forma centralizada. Es la única
+// puerta para mover dinero: nunca baja de 0 y refresca el HUD al instante.
+// Varios sistemas (deriva, eventos del mapa, misiones) ya la buscaban con
+// typeof; ahora existe de verdad y todos comparten la misma lógica.
+function ajustarCreditos(delta){
+  const d = Number(delta) || 0;
+  Estado.creditos = Math.max(0, (Estado.creditos || 0) + d);
+  if(typeof actualizarHUD === 'function') actualizarHUD();
+  return Estado.creditos;
+}
+window.ajustarCreditos = ajustarCreditos;
+
 function iniciarCobrosPeriódicos(){
   if(_intervaloCobros) return;
   comprobarCobrosDiarios(); // chequeo inmediato al entrar

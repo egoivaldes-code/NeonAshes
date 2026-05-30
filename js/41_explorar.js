@@ -127,9 +127,15 @@ function _planificarViaje(){
 function _repartir(plan, cuantos, min, max, fn){
   let intentos = 0;
   let puestos = 0;
+  const usados = new Set(); // escenas ya elegidas EN ESTE reparto
   while(puestos < cuantos && intentos < 60){
     intentos++;
     const idx = min + Math.floor(Math.random() * (max - min + 1));
+    // Si ya hemos tocado esta escena en este reparto, reintentamos:
+    // así repartimos en escenas distintas y de verdad colocamos
+    // "cuantos" marcadores (antes podía pisar la misma y contar de más).
+    if(usados.has(idx)) continue;
+    usados.add(idx);
     fn(plan[idx]);
     puestos++;
   }

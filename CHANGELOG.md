@@ -11,6 +11,12 @@
 
 ---
 
+## [0.72.3] - 2026-05-31
+### Fixed
+- La deriva reparte bien los objetos, golpes y lesiones (antes a veces salían menos de los previstos).
+### Changed
+- El dinero del juego ahora pasa por un único sitio, más fiable y fácil de mantener.
+
 ## [0.72.2] - 2026-05-30
 ### Added
 - El panel de depuración ahora muestra la versión del juego y tiene un botón para abrir el panel de IA (útil en móvil, sin teclado).
