@@ -271,3 +271,22 @@
   margin-top:0.25rem;
   letter-spacing:0.02em;
 }
+
+/* ── MÓVIL: imágenes de escena con menos zoom ──────────────────
+   En pantalla vertical, las imágenes apaisadas con "cover" se
+   recortaban mucho y se veían demasiado ampliadas. Anclamos arriba
+   (donde suele estar lo importante) y suavizamos el zoom de entrada
+   para que se aprecie más imagen y menos primer plano forzado. */
+@media (max-width: 767px){
+  .explorar-fondo{
+    background-position:center top;
+  }
+  .explorar-flash{
+    background-position:center top;
+  }
+  /* Zoom de entrada (Ken Burns) más leve: 1.06 -> 1.02. */
+  @keyframes expFlashKen{
+    from{transform:scale(1.02);}
+    to{transform:scale(1.0);}
+  }
+}

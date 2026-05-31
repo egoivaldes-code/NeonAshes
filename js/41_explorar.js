@@ -36,6 +36,7 @@ let _expNarraciones = []; // aperturas recientes, para no repetir
 let _expEnCurso = false;
 let _expResolviendo = false; // blindaje contra doble-pulsación en una escena
 let _expUltimaEleccion = null; // texto de la opción elegida en la escena anterior (continuidad)
+let _expHechos = '';      // hechos concretos establecidos en la última escena (coherencia)
 
 // Imágenes GENÉRICAS de las Pilas (sin facción concreta) para el
 // destello atmosférico de ~3s entre escenas. Nada de zonas de facción
@@ -149,6 +150,7 @@ function iniciarExplorarCiudad(){
   _expHistorial = [];
   _expNarraciones = [];
   _expUltimaEleccion = null;
+  _expHechos = '';
   _expEnCurso = true;
   _expResolviendo = false;
 
@@ -305,7 +307,8 @@ async function _generarEscenaIA(num, escenaPlan){
     '    { "texto": "...", "tono": "EMPATICO" },',
     '    { "texto": "...", "tono": "FRIO" },',
     '    { "texto": "...", "tono": "EVASIVO" }',
-    '  ]',
+    '  ],',
+    '  "hechos": "Una frase MUY breve listando los detalles concretos que ESTA escena deja establecidos: vehículos, objetos, personajes presentes, lugar exacto, heridas. Ej: \'Mara va en una moto robada, bajo la lluvia, con un desconocido armado siguiéndola\'. Solo hechos, sin adornos."',
     '}',
     'Las opciones deben ser BREVES (máximo ~10 palabras cada una).',
     'Exactamente 3 opciones. Tonos posibles: VIOLENTO, EMPATICO, FRIO, MANIPULADOR,',
@@ -316,6 +319,7 @@ async function _generarEscenaIA(num, escenaPlan){
     `ESCENA ${num + 1} de ${EXPLORAR_TOTAL_ESCENAS} del paseo.`,
     _expHistorial.length ? ('LO QUE YA HA PASADO:\n' + _expHistorial.join('\n')) : 'Es el comienzo del paseo.',
     _expUltimaEleccion ? ('\nCONTINUIDAD OBLIGATORIA: en la escena anterior, el jugador eligió: "' + _expUltimaEleccion + '". ESTA escena es la CONSECUENCIA DIRECTA e inmediata de esa elección, en el mismo lugar o justo a continuación, sin saltos de tiempo ni de lugar bruscos. Si la elección era ir a algún sitio o hacer algo concreto, esta escena MUESTRA el resultado de eso. No empieces una situación nueva e inconexa.') : '',
+    _expHechos ? ('\nHECHOS YA ESTABLECIDOS (NO los contradigas: si había una moto sigue siendo una moto, si llovía sigue lloviendo, los personajes y objetos presentes siguen ahí salvo que la escena los retire de forma explícita):\n' + _expHechos) : '',
     _expNarraciones.length ? ('\nNO REPITAS estas aperturas/imágenes ya usadas:\n- ' + _expNarraciones.slice(-3).join('\n- ')) : '',
     '',
     'INSTRUCCIONES PARA ESTA ESCENA:',
@@ -341,6 +345,15 @@ async function _generarEscenaIA(num, escenaPlan){
       });
       while(ops.length < 3) ops.push(respaldo.opciones[ops.length]);
       const narracion = String(r.datos.narracion).trim() || respaldo.narracion;
+      // Capturar los "hechos" que la escena deja establecidos, para que la
+      // escena siguiente no los contradiga (la moto no se vuelve coche). Si
+      // la IA no devuelve el campo, usamos la primera frase de la narración
+      // como red de seguridad: nunca quedamos peor que antes.
+      let hechos = (r.datos && r.datos.hechos) ? String(r.datos.hechos).trim() : '';
+      if(!hechos){
+        hechos = narracion.split(/(?<=[.!?])\s/)[0] || '';
+      }
+      _expHechos = hechos.split(/\s+/).slice(0, 40).join(' '); // acotado
       // Guardar las primeras palabras como "huella" para no repetir.
       _expNarraciones.push(narracion.split(/\s+/).slice(0, 8).join(' '));
       if(_expNarraciones.length > 4) _expNarraciones = _expNarraciones.slice(-4);
@@ -432,6 +445,7 @@ function resolverEscenaExplorar(num, escenaPlan, opcionElegida){
     _expEnCurso = false;
     _expResolviendo = false;
     _expUltimaEleccion = null;
+    _expHechos = '';
     return;
   }
 
@@ -468,6 +482,7 @@ function resolverEscenaExplorar(num, escenaPlan, opcionElegida){
     _expEnCurso = false;
     _expResolviendo = false;
     _expUltimaEleccion = null;
+    _expHechos = '';
     return;
   }
 
@@ -518,6 +533,7 @@ function resolverEscenaExplorar(num, escenaPlan, opcionElegida){
     _expEnCurso = false;
     _expResolviendo = false;
     _expUltimaEleccion = null;
+    _expHechos = '';
     return;
   }
 

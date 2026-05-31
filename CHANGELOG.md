@@ -11,6 +11,13 @@
 
 ---
 
+## [0.73.1] - 2026-05-31
+### Fixed
+- La deriva mantiene mejor el hilo entre escenas: los detalles que aparecen (un vehículo, la lluvia, quién está presente) ya no se contradicen en la escena siguiente.
+- En móvil las imágenes de escena se veían con demasiado zoom; ahora se aprecian mejor.
+### Changed
+- El inventario es más grande y la lista se puede deslizar cuando hay muchos objetos.
+
 ## [0.73] - 2026-05-31
 ### Added
 - Rumores: lo que se cuenta por las Pilas. Aparecen en el terminal de noticias y los personajes que ya conoces pueden soltarlos durante la deriva. Cambian según a quién has visto y según tu reputación con cada facción.

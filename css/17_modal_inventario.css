@@ -18,7 +18,10 @@
 .modal-inventario.visible { display: flex; }
 .inv-panel {
   width: 100%;
-  max-width: 420px;
+  max-width: 520px;
+  max-height: 85vh;           /* no se sale de la pantalla */
+  display: flex;
+  flex-direction: column;     /* título arriba, lista en medio, botón abajo */
   background: rgba(0,0,0,0.85);
   border: 1px solid rgba(0,229,255,0.3);
   padding: 1.5rem;
@@ -39,6 +42,7 @@
   margin-bottom: 1.5rem;
 }
 .inv-stats {
+  flex-shrink: 0;             /* cabecera fija */
   border-top: 1px solid rgba(0,229,255,0.1);
   border-bottom: 1px solid rgba(0,229,255,0.1);
   padding: 0.8rem 0;
@@ -51,7 +55,7 @@
 .inv-stat-valor { color: var(--cyan); font-family: 'Share Tech Mono', monospace; }
 .inv-lista {
   list-style: none;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
   min-height: 4rem;
 }
 .inv-item {
@@ -73,6 +77,7 @@
 }
 .btn-cerrar-inv {
   width: 100%;
+  flex-shrink: 0;             /* siempre visible, no se encoge con la lista */
   background: transparent;
   border: 1px solid rgba(0,229,255,0.3);
   color: var(--cyan);
@@ -98,6 +103,7 @@
    Estilo discreto, no compite con el resto del modal. */
 .inv-tabs {
   display: flex;
+  flex-shrink: 0;             /* cabecera fija, no se encoge */
   gap: 0.5rem;
   margin-bottom: 0.8rem;
   border-bottom: 1px solid rgba(0,229,255,0.15);
@@ -123,7 +129,21 @@
   color: var(--cyan);
 }
 .inv-tab-contenido { display: none; }
-.inv-tab-contenido.activa { display: block; }
+.inv-tab-contenido.activa {
+  display: block;
+  flex: 1 1 auto;             /* ocupa el espacio libre del panel */
+  overflow-y: auto;           /* scroll cuando hay muchos objetos/recibos */
+  -webkit-overflow-scrolling: touch;  /* scroll suave en iOS */
+  min-height: 0;              /* imprescindible para que el scroll funcione en flex */
+  margin-bottom: 1rem;
+  padding-right: 0.4rem;      /* aire para la barra de scroll */
+}
+/* Barra de scroll discreta, en la paleta cian del juego. */
+.inv-tab-contenido.activa::-webkit-scrollbar { width: 6px; }
+.inv-tab-contenido.activa::-webkit-scrollbar-thumb {
+  background: rgba(0,229,255,0.25);
+  border-radius: 3px;
+}
 
 
 /* ============================================================
