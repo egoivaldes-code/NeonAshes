@@ -64,6 +64,7 @@ let introRelojId = null;
 let introT0 = 0;
 let introFinalizada = false;
 let introRandomTimer = null;
+let introCaptionTimer = null;
 let introRandomOrden = [];
 let introRandomIdx = 0;
 
@@ -140,9 +141,10 @@ function mostrarFrameIntro(idx){
   _pintarCapa(ASSETS[f.key], f.kb, (INTRO_FRAMES[idx+1]?INTRO_FRAMES[idx+1].at:INTRO_LOGO_AT)-f.at+2);
   const cap = _introEl('cine-caption');
   if(cap){
+    clearTimeout(introCaptionTimer);     // cancelar la aparición pendiente del frame anterior
     cap.classList.remove('visible');
     cap.textContent = f.text;
-    setTimeout(()=>{ if(introActivo && introFase==="narrativa") cap.classList.add('visible'); }, 650);
+    introCaptionTimer = setTimeout(()=>{ if(introActivo && introFase==="narrativa") cap.classList.add('visible'); }, 650);
   }
 }
 
@@ -206,7 +208,7 @@ function saltarIntro(){
   if(!introActivo) return;
   introActivo = false;
   clearInterval(introRelojId);
-  clearTimeout(introRandomTimer);
+  clearTimeout(introRandomTimer); clearTimeout(introCaptionTimer);
   ocultarBotonSkip();
   _introCapas().forEach(c=>c.classList.remove('visible'));
   const cap = _introEl('cine-caption'); if(cap) cap.classList.remove('visible');
@@ -219,7 +221,7 @@ function finalizarIntro(){
   introFinalizada = true;
   introActivo = false;
   clearInterval(introRelojId);
-  clearTimeout(introRandomTimer);
+  clearTimeout(introRandomTimer); clearTimeout(introCaptionTimer);
   ocultarBotonSkip();
   _introEl('cine-top').classList.remove('activa');
   _introEl('cine-bottom').classList.remove('activa');
@@ -243,7 +245,7 @@ window.addEventListener('load', ()=>setTimeout(prepararGateIntro, 200));
 function iniciarIntro(){
   introActivo = false; introFinalizada = false; introFase = "narrativa";
   introFrameMostrado = -1; introCapaActiva = 0;
-  clearInterval(introRelojId); clearTimeout(introRandomTimer);
+  clearInterval(introRelojId); clearTimeout(introRandomTimer); clearTimeout(introCaptionTimer);
   _introCapas().forEach(c=>c.classList.remove('visible'));
   const cap = _introEl('cine-caption'); if(cap) cap.classList.remove('visible');
   const logo = _introEl('cine-logo'); if(logo) logo.classList.remove('visible');

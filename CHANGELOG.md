@@ -11,6 +11,13 @@
 
 ---
 
+## [0.73.3.2] - 2026-05-31
+### Fixed
+- Corregido un parpadeo del texto de la intro: al cambiar de imagen, la frase aparecía, se desvanecía un instante y volvía a aparecer. Ahora aparece una sola vez por frame.
+### Changed
+- La primera pantalla de la intro ya no muestra el título "NEON ASHES" (solo "toca para comenzar"); el logo aparece más adelante.
+- El logo del final de la intro ahora tiene un brillo neón pulsante en cian y magenta.
+
 ## [0.73.3.1] - 2026-05-31
 ### Changed
 - Texto de la intro en verde neón con un fondo oscuro detrás para que se lea mejor sobre las imágenes.

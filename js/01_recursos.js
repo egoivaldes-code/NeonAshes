@@ -8,7 +8,7 @@
 
 // Versión actual del juego. ACTUALIZAR EN CADA ENTREGA.
 // Se muestra en el panel de depuración (Ctrl+D / tap arriba-izquierda).
-const JUEGO_VERSION = "0.73.3.1";
+const JUEGO_VERSION = "0.73.3.2";
 window.JUEGO_VERSION = JUEGO_VERSION;
 
 const ASSETS = {
