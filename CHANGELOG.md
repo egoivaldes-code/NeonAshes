@@ -11,6 +11,11 @@
 
 ---
 
+## [0.73.3.1] - 2026-05-31
+### Changed
+- Texto de la intro en verde neón con un fondo oscuro detrás para que se lea mejor sobre las imágenes.
+- En móvil las imágenes de la intro tienen menos zoom (se recorta menos la composición).
+
 ## [0.73.3] - 2026-05-31
 ### Changed
 - Intro reconstruida sobre el nuevo tema principal: 16 imágenes narradas (≈5s cada una), el logo aparece en el segundo 84 y permanece 10 segundos.
