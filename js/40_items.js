@@ -114,8 +114,21 @@ const ITEMS_EXPLORAR = [
   { id:'analgesico_helix', nombre:'Analgésico HELIX caducado', tipo:'consumible',
     desc:'Sello médico oficial. Caducado. Calma el dolor de una herida. Una vez.' },
   { id:'navaja_ceramica', nombre:'Navaja de cerámica', tipo:'arma',
-    desc:'No la detectan los escáneres. Filo gastado pero suficiente. Pesa poco.' }
+    desc:'No la detectan los escáneres. Filo gastado pero suficiente. Pesa poco.' },
+  { id:'papel_helix', nombre:'Papel mojado con un código', tipo:'dato',
+    desc:'Un código y la hélice de HELIX tachada. Alguien quería que lo tuvieras tú.' }
 ];
+
+// Da un item del catálogo de explorar por su id (para escenas de guion).
+function darItemPorId(id){
+  const it = ITEMS_EXPLORAR.find(x => x.id === id);
+  if(it && typeof darItem === 'function') return darItem(it);
+  return false;
+}
+window.darItemPorId = darItemPorId;
+window.ITEMS_EXPLORAR = ITEMS_EXPLORAR;
+const CATALOGO_ITEMS_EXPLORAR = ITEMS_EXPLORAR;
+window.CATALOGO_ITEMS_EXPLORAR = ITEMS_EXPLORAR;
 
 function itemExplorarAleatorio(){
   return ITEMS_EXPLORAR[Math.floor(Math.random() * ITEMS_EXPLORAR.length)];

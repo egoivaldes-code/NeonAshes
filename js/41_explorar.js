@@ -175,6 +175,45 @@ async function mostrarSiguienteEscenaExplorar(){
   }
 
   const num = _expEscenaActual; // 0-indexed
+
+  // --- MOMENTOS (mixto): a mano prioritarios, IA de 1 escena como relleno ---
+  // No en la primera ni en la última escena, para no romper el ritmo.
+  if(num > 0 && num < EXPLORAR_TOTAL_ESCENAS - 1){
+    // 1) Momento escrito a MANO (45_escenas_datos): prioritario, ~45%.
+    if(typeof hayEscenaGuionDisponible === 'function'
+       && hayEscenaGuionDisponible()
+       && Math.random() < 0.45){
+      const idMomento = elegirEscenaGuion();
+      if(idMomento){
+        _expResolviendo = false;
+        const cont0 = document.getElementById('explorar-cuerpo');
+        if(cont0) cont0.innerHTML = `<div class="exp-progreso">DERIVA · ${num + 1} / ${EXPLORAR_TOTAL_ESCENAS}</div>`;
+        reproducirEscenaGuion(idMomento, ()=>{
+          if(Estado.muerto){ _expEnCurso = false; return; }
+          _expEscenaActual++;
+          setTimeout(mostrarSiguienteEscenaExplorar, 500);
+        });
+        return;
+      }
+    }
+    // 2) Momento de IA de UNA escena (46_momentos_ia): relleno, ~30%.
+    if(typeof generarMomentoIA === 'function' && Math.random() < 0.30){
+      const cont0 = document.getElementById('explorar-cuerpo');
+      if(cont0) cont0.innerHTML = `<div class="exp-progreso">DERIVA · ${num + 1} / ${EXPLORAR_TOTAL_ESCENAS}</div>`;
+      const escIA = await generarMomentoIA();
+      if(escIA){
+        _expResolviendo = false;
+        reproducirMomentoIASuelto(escIA, ()=>{
+          if(Estado.muerto){ _expEnCurso = false; return; }
+          _expEscenaActual++;
+          setTimeout(mostrarSiguienteEscenaExplorar, 500);
+        });
+        return;
+      }
+      // si la IA falla, seguimos a la escena normal de deriva (abajo)
+    }
+  }
+
   const escenaPlan = _expPlan[num];
 
   // Pintar cabecera de progreso.

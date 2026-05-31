@@ -11,6 +11,12 @@
 
 ---
 
+## [0.74.2] - 2026-05-31
+### Added
+- Sistema de escenas de exploración escritas a mano: momentos con texto e imagen fijos, opciones que cierran el momento o encadenan a otra escena, condiciones de aparición, opciones bloqueadas por estado (dinero/fuerza/objeto), efectos (créditos, fatiga, heridas, objetos, facción), resultados con azar y agotamiento (un momento visto no se repite).
+- 24 momentos jugables anclados en el mundo (HELIX, las Pilas, las cuatro facciones, la señal): 20 de ellos de 4 escenas con ramas y consecuencias, más varios cortos de ejemplo.
+- La IA puede generar momentos de UNA escena como relleno durante la exploración, aprendiendo la estructura; sus efectos están limitados a rangos seguros para que no descuadre la partida. Las cadenas y los momentos importantes siguen siendo a mano.
+
 ## [0.73.3.2] - 2026-05-31
 ### Fixed
 - Corregido un parpadeo del texto de la intro: al cambiar de imagen, la frase aparecía, se desvanecía un instante y volvía a aparecer. Ahora aparece una sola vez por frame.

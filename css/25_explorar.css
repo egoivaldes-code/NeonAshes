@@ -290,3 +290,8 @@
     to{transform:scale(1.0);}
   }
 }
+
+/* Escenas de guion escritas a mano (44/45) */
+.exp-opcion.eg-bloqueada{opacity:0.4;cursor:not-allowed;filter:grayscale(0.4);}
+.eg-pista{font-size:0.82em;opacity:0.7;font-style:italic;}
+.eg-resultado{opacity:0.95;}

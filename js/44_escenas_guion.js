@@ -1,0 +1,240 @@
+// ============================================================
+// BLOQUE JS-44 — ESCENAS DE GUION (escritas a mano)
+// ------------------------------------------------------------
+// QUÉ ES:
+//   Un sistema de escenas ESCRITAS A MANO para la exploración.
+//   A diferencia de la deriva con IA (41_explorar.js), aquí cada
+//   escena está fijada: su texto, su imagen y sus opciones no
+//   cambian entre partidas. Las opciones pueden:
+//     · cerrar el momento (volver a explorar), o
+//     · llevar a OTRA escena por su id (cadenas / mini-misiones).
+//
+//   Cada escena y cada opción admiten:
+//     · condiciones de aparición  (cond)
+//     · requisitos para una opción (req) -> si no se cumplen, la
+//       opción aparece BLOQUEADA (visible pero no pulsable)
+//     · efectos sobre el estado     (efectos)
+//     · resultado con azar          (azar)
+//     · agotamiento: un momento visto no vuelve a salir.
+//
+//   El catálogo de escenas vive en 45_escenas_datos.js (los datos).
+//   Este archivo es solo el MOTOR que las lee y ejecuta.
+// ============================================================
+
+// Momentos ya consumidos en esta partida (se agotan).
+function _egAsegurarVistos(){
+  if(!Estado.momentosVistos || !Array.isArray(Estado.momentosVistos)){
+    Estado.momentosVistos = [];
+  }
+  return Estado.momentosVistos;
+}
+
+// ------------------------------------------------------------
+// EVALUACIÓN DE CONDICIONES / REQUISITOS
+// Una condición es un objeto con claves opcionales. TODAS deben
+// cumplirse. Ejemplos:
+//   { item:'papel_helix' }                 -> tiene ese objeto
+//   { noItem:'llave' }                      -> NO tiene ese objeto
+//   { creditosMin:50 }                      -> tiene >=50 créditos
+//   { faccion:'eco', repMin:10 }            -> reputación Eco >=10
+//   { faccion:'sindicatos', repMax:-5 }     -> reputación <=-5
+//   { fatigaMax:80 }                        -> fatiga <=80
+//   { visto:'callejon_voz' }                -> ya vivió ese momento
+//   { noVisto:'callejon_voz' }              -> aún no lo vivió
+// ------------------------------------------------------------
+function _egCumple(cond){
+  if(!cond) return true;
+  try{
+    if(cond.item && !(typeof tieneItem==='function' && tieneItem(cond.item))) return false;
+    if(cond.noItem && (typeof tieneItem==='function' && tieneItem(cond.noItem))) return false;
+    if(typeof cond.creditosMin === 'number' && (Estado.creditos||0) < cond.creditosMin) return false;
+    if(typeof cond.creditosMax === 'number' && (Estado.creditos||0) > cond.creditosMax) return false;
+    if(cond.faccion && typeof getRepFaccion === 'function'){
+      const rep = getRepFaccion(cond.faccion);
+      if(typeof cond.repMin === 'number' && rep < cond.repMin) return false;
+      if(typeof cond.repMax === 'number' && rep > cond.repMax) return false;
+    }
+    const h = (Estado.humano||{});
+    if(typeof cond.fatigaMin==='number' && (h.fatiga||0) < cond.fatigaMin) return false;
+    if(typeof cond.fatigaMax==='number' && (h.fatiga||0) > cond.fatigaMax) return false;
+    if(typeof cond.aislamientoMin==='number' && (h.aislamiento||0) < cond.aislamientoMin) return false;
+    if(typeof cond.disociacionMin==='number' && (h.disociacion||0) < cond.disociacionMin) return false;
+    const vistos = _egAsegurarVistos();
+    if(cond.visto && vistos.indexOf(cond.visto) === -1) return false;
+    if(cond.noVisto && vistos.indexOf(cond.noVisto) !== -1) return false;
+  }catch(e){ return true; }
+  return true;
+}
+
+// ------------------------------------------------------------
+// APLICAR EFECTOS de una opción al estado del jugador.
+// Un bloque de efectos admite (todas opcionales):
+//   { creditos:-50 }                         -> ajusta créditos
+//   { fatiga:+10, aislamiento:-5, hambre:+8, disociacion:+15 }
+//   { item:'papel_helix' }                   -> da un objeto (por id del catálogo)
+//   { quitaItem:'llave' }                    -> quita un objeto
+//   { condicion:'herida_arma' }              -> aplica una condición médica
+//   { quitaCondicion:'mareo' }               -> la cura
+//   { faccion:'eco', rep:+5 }                -> cambia reputación
+// ------------------------------------------------------------
+function _egAplicarEfectos(ef){
+  if(!ef) return;
+  try{
+    if(typeof ef.creditos === 'number' && typeof ajustarCreditos==='function') ajustarCreditos(ef.creditos);
+    const h = Estado.humano || (Estado.humano = {});
+    ['fatiga','aislamiento','hambre','disociacion'].forEach(k=>{
+      if(typeof ef[k] === 'number'){ h[k] = Math.max(0, Math.min(100, (h[k]||0) + ef[k])); }
+    });
+    if(ef.item && typeof darItemPorId === 'function') darItemPorId(ef.item);
+    else if(ef.item && typeof darItem === 'function' && typeof CATALOGO_ITEMS_EXPLORAR !== 'undefined'){
+      const it = (CATALOGO_ITEMS_EXPLORAR||[]).find(x=>x.id===ef.item); if(it) darItem(it);
+    }
+    if(ef.quitaItem && typeof quitarItem === 'function') quitarItem(ef.quitaItem, 1);
+    if(ef.condicion && typeof aplicarCondicion === 'function') aplicarCondicion(ef.condicion);
+    if(ef.quitaCondicion && typeof quitarCondicion === 'function') quitarCondicion(ef.quitaCondicion);
+    if(ef.faccion && typeof ef.rep === 'number' && typeof cambiarRepFaccion === 'function'){
+      cambiarRepFaccion(ef.faccion, ef.rep);
+    }
+    if(typeof actualizarHUD === 'function') actualizarHUD();
+  }catch(e){}
+}
+
+// ------------------------------------------------------------
+// SELECCIÓN: devuelve los momentos de guion disponibles ahora
+// (cumplen condición de aparición y no están agotados).
+// Solo se consideran escenas marcadas como "entrada" (inicio de
+// un momento). Las escenas internas de una cadena no salen solas.
+// ------------------------------------------------------------
+function escenasGuionDisponibles(){
+  if(typeof ESCENAS_GUION === 'undefined') return [];
+  const vistos = _egAsegurarVistos();
+  return Object.keys(ESCENAS_GUION).filter(id=>{
+    const e = ESCENAS_GUION[id];
+    if(!e || !e.entrada) return false;
+    if(vistos.indexOf(id) !== -1) return false;   // agotado
+    return _egCumple(e.cond);
+  });
+}
+
+// ¿Hay algún momento a mano disponible? (lo usa la exploración para
+// decidir si lanzar uno escrito en vez de una escena de IA.)
+function hayEscenaGuionDisponible(){
+  return escenasGuionDisponibles().length > 0;
+}
+
+// Elige un momento de entrada al azar entre los disponibles.
+function elegirEscenaGuion(){
+  const ids = escenasGuionDisponibles();
+  if(ids.length === 0) return null;
+  return ids[Math.floor(Math.random()*ids.length)];
+}
+
+// ------------------------------------------------------------
+// REPRODUCIR una escena de guion por id. Pinta texto + opciones
+// en el contenedor de exploración (#exp-cont). Llama a:
+//   onCerrar()  -> cuando el momento termina (volver a explorar)
+// ------------------------------------------------------------
+function reproducirEscenaGuion(id, onCerrar){
+  if(typeof ESCENAS_GUION === 'undefined' || !ESCENAS_GUION[id]){
+    if(typeof onCerrar === 'function') onCerrar();
+    return;
+  }
+  const e = ESCENAS_GUION[id];
+
+  // marcar como visto el momento de ENTRADA (se agota una vez).
+  if(e.entrada){
+    const vistos = _egAsegurarVistos();
+    if(vistos.indexOf(id) === -1) vistos.push(id);
+    if(typeof guardarEstado === 'function') guardarEstado();
+  }
+
+  // imagen de fondo de la escena (clave de ASSETS) con destello/transición
+  if(e.img && typeof setBgEscenaExplorar === 'function'){
+    setBgEscenaExplorar(e.img);
+  } else if(e.img && typeof ASSETS !== 'undefined' && ASSETS[e.img]){
+    const capa = document.getElementById('explorar-fondo');
+    if(capa) capa.style.backgroundImage = `url('${ASSETS[e.img]}')`;
+  }
+
+  const cont = document.getElementById('explorar-cuerpo');
+  if(!cont){ if(typeof onCerrar==='function') onCerrar(); return; }
+
+  // texto de la escena
+  const texto = (typeof e.texto === 'function') ? e.texto() : e.texto;
+  let html = `<div class="exp-narracion eg-texto">${texto}</div>`;
+  html += `<div class="exp-opciones" id="eg-opciones"></div>`;
+  cont.innerHTML = html;
+
+  // pintar opciones
+  const cajaOpc = document.getElementById('eg-opciones');
+  (e.opciones || []).forEach((op, i)=>{
+    // ¿se muestra esta opción? (cond de opción)
+    if(op.cond && !_egCumple(op.cond)) return;
+    const bloqueada = op.req && !_egCumple(op.req);
+    const btn = document.createElement('button');
+    btn.className = 'exp-opcion' + (bloqueada ? ' eg-bloqueada' : '');
+    btn.innerHTML = op.texto + (bloqueada && op.pista ? ` <span class="eg-pista">(${op.pista})</span>` : '');
+    if(bloqueada){
+      btn.disabled = true;
+    } else {
+      btn.addEventListener('click', ()=>_egResolverOpcion(op, onCerrar), { once:true });
+    }
+    cajaOpc.appendChild(btn);
+  });
+
+  // si por condiciones no quedó ninguna opción, cerramos con un botón seguir
+  if(cajaOpc.children.length === 0){
+    const btn = document.createElement('button');
+    btn.className = 'exp-opcion';
+    btn.textContent = 'Seguir caminando.';
+    btn.addEventListener('click', ()=>{ if(typeof onCerrar==='function') onCerrar(); }, { once:true });
+    cajaOpc.appendChild(btn);
+  }
+}
+
+// Resuelve una opción: aplica efectos, gestiona azar, y salta o cierra.
+function _egResolverOpcion(op, onCerrar){
+  // resultado con azar: { prob:0.6, exito:{...}, fallo:{...} }
+  let rama = op;
+  if(op.azar && typeof op.azar.prob === 'number'){
+    const ok = Math.random() < op.azar.prob;
+    rama = ok ? (op.azar.exito||{}) : (op.azar.fallo||{});
+  }
+
+  // efectos (de la opción y, si hubo azar, de la rama)
+  _egAplicarEfectos(op.efectos);
+  if(rama !== op) _egAplicarEfectos(rama.efectos);
+
+  // texto de resultado opcional (se muestra antes de continuar)
+  const resultado = rama.resultado || op.resultado;
+  const destino = rama.lleva || op.lleva;
+
+  const irAlDestino = ()=>{
+    if(destino && typeof ESCENAS_GUION !== 'undefined' && ESCENAS_GUION[destino]){
+      reproducirEscenaGuion(destino, onCerrar);
+    } else {
+      if(typeof onCerrar === 'function') onCerrar();   // cierra el momento
+    }
+  };
+
+  if(resultado){
+    const cont = document.getElementById('explorar-cuerpo');
+    if(cont){
+      cont.innerHTML = `<div class="exp-narracion eg-texto eg-resultado">${resultado}</div>`
+        + `<div class="exp-opciones" id="eg-opciones"></div>`;
+      const caja = document.getElementById('eg-opciones');
+      const btn = document.createElement('button');
+      btn.className = 'exp-opcion';
+      btn.textContent = destino ? 'Continuar.' : 'Seguir caminando.';
+      btn.addEventListener('click', irAlDestino, { once:true });
+      caja.appendChild(btn);
+      return;
+    }
+  }
+  irAlDestino();
+}
+
+// Exponer al resto del juego
+window.hayEscenaGuionDisponible = hayEscenaGuionDisponible;
+window.elegirEscenaGuion = elegirEscenaGuion;
+window.reproducirEscenaGuion = reproducirEscenaGuion;
