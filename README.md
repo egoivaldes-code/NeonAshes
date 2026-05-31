@@ -1,6 +1,6 @@
 # NEON ASHES
 
-Vertical slice de juego cyberpunk noir en HTML modular.
+Juego cyberpunk noir en HTML modular.
 
 ## Ejecutar
 
