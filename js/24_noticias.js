@@ -157,18 +157,26 @@ function renderNoticias(){
   // 1) Reactivas: las que aplican al estado actual
   const reactivas = generarNoticiasReactivas();
 
+  // 1b) Rumores: boca a boca de las Pilas, filtrado por a quién has
+  //     visto y por tu reputación (lo monta 43_rumores.js). Hasta 2,
+  //     para que se mezclen sin convertir el terminal en cotilleo.
+  const rumores = (typeof rumoresParaNoticias === 'function') ? rumoresParaNoticias(2) : [];
+
   // 2) Rotativas: barajamos el pool y cogemos 3-4 al azar
-  //    (menos si hay muchas reactivas, para no saturar)
-  const numRotativas = Math.max(2, 5 - reactivas.length);
+  //    (menos si hay muchas reactivas/rumores, para no saturar)
+  const numRotativas = Math.max(2, 5 - reactivas.length - rumores.length);
   const pool = [...NOTICIAS_ROTATIVAS];
   pool.sort(() => Math.random() - 0.5);
   const rotativasElegidas = pool.slice(0, numRotativas);
 
-  // 3) Asignamos tiempos. Las reactivas tienden a ser recientes
+  // 3) Asignamos tiempos. Reactivas y rumores tienden a ser recientes
   //    (más impactantes), las rotativas se reparten en el día.
   const todas = [];
   reactivas.forEach(n => {
     todas.push({ ...n, minutos: tiempoAleatorio(5, 90), reactiva: true });
+  });
+  rumores.forEach(n => {
+    todas.push({ ...n, minutos: tiempoAleatorio(5, 120), rumor: true });
   });
   rotativasElegidas.forEach(n => {
     todas.push({ ...n, minutos: tiempoAleatorio(30, 480), reactiva: false });
@@ -180,8 +188,9 @@ function renderNoticias(){
   // 5) Construimos el HTML
   let items = '';
   todas.forEach(n => {
+    const clase = n.rumor ? ' rumor' : (n.reactiva ? ' reactiva' : '');
     items += `
-      <div class="noticia-item${n.reactiva ? ' reactiva' : ''}">
+      <div class="noticia-item${clase}">
         <div class="noticia-meta">
           <span class="noticia-cat">${n.cat}</span>
           <span class="noticia-tiempo">${formatearTiempo(n.minutos)}</span>

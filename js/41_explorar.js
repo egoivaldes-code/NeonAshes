@@ -258,6 +258,15 @@ async function _generarEscenaIA(num, escenaPlan){
   if(escenaPlan.npc && typeof describirNpcParaIA === 'function'){
     const retrato = describirNpcParaIA(escenaPlan.npc);
     if(retrato) pistas.push(retrato);
+    // Si hay un rumor que este personaje podría conocer (atado a él o de
+    // ambiente), se lo damos a la IA como SEMILLA para que lo suelte con
+    // su voz, de pasada, sin soltarlo como un titular. No siempre: ~55%.
+    if(typeof rumorParaNpc === 'function' && Math.random() < 0.55){
+      const _rumor = rumorParaNpc(escenaPlan.npc);
+      if(_rumor){
+        pistas.push('RUMOR QUE ESTE PERSONAJE PUEDE DEJAR CAER (parafraséalo con su voz, de pasada, como un comentario o advertencia; NO lo cites literal ni como titular): ' + _rumor);
+      }
+    }
   }
 
   // Longitud objetivo según la escena: 1, 5 y 10 pueden respirar más;

@@ -11,6 +11,10 @@
 
 ---
 
+## [0.73] - 2026-05-31
+### Added
+- Rumores: lo que se cuenta por las Pilas. Aparecen en el terminal de noticias y los personajes que ya conoces pueden soltarlos durante la deriva. Cambian según a quién has visto y según tu reputación con cada facción.
+
 ## [0.72.3] - 2026-05-31
 ### Fixed
 - La deriva reparte bien los objetos, golpes y lesiones (antes a veces salían menos de los previstos).
