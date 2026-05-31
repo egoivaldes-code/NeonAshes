@@ -11,6 +11,14 @@
 
 ---
 
+## [0.74.3] - 2026-05-31
+### Fixed
+- El texto de la intro ahora se desvanece de forma suave entre frase y frase, en vez de cortarse de golpe; la última frase también se atenúa antes de aparecer el logo.
+- El sonido ambiente (lluvia, gente, industrial) ya suena durante el juego; antes intentaba arrancar una sola vez en una pantalla en silencio y se quedaba mudo para siempre.
+- Al terminar o saltar la intro ahora arranca el Main Theme del juego; antes el audio quedaba en pausa.
+### Changed
+- El brillo neón del logo de la intro ahora es un resplandor que late detrás del logo (visible aunque el logo sea una imagen sin transparencia).
+
 ## [0.74.2] - 2026-05-31
 ### Added
 - Sistema de escenas de exploración escritas a mano: momentos con texto e imagen fijos, opciones que cierran el momento o encadenan a otra escena, condiciones de aparición, opciones bloqueadas por estado (dinero/fuerza/objeto), efectos (créditos, fatiga, heridas, objetos, facción), resultados con azar y agotamiento (un momento visto no se repite).

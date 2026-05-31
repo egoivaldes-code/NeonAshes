@@ -66,18 +66,30 @@ function _inicializarAmbienteSiHaceFalta(){
 
 // Llamar a esto para empezar a sonar las pistas. Solo funcionará tras
 // el primer gesto del usuario (es un requisito de los navegadores).
+// Si el play() es rechazado (gesto aún no válido), NO marcamos arrancado:
+// así el siguiente gesto vuelve a intentarlo en vez de quedarse mudo.
 function arrancarAmbiente(){
   _inicializarAmbienteSiHaceFalta();
   if(_amb.arrancado) return;
-  _amb.arrancado = true;
-  // Las arrancamos a las tres con volumen 0; el fade les dará vida.
+  let algunaArranco = false;
   ['storm','industrial','crowd'].forEach(k => {
     const a = _amb[k];
     if(!a) return;
     a.volume = 0;
-    const p = a.play();
-    if(p && p.catch) p.catch(()=>{ /* primer-gesto bloqueado, reintenta tras tap */ });
+    try{
+      const p = a.play();
+      if(p && p.then){
+        p.then(()=>{ algunaArranco = true; _amb.arrancado = true; })
+         .catch(()=>{ /* gesto no válido todavía; reintenta en el próximo */ });
+      } else {
+        algunaArranco = true;
+      }
+    }catch(e){ /* reintenta en el próximo gesto */ }
   });
+  // Si alguna arrancó de forma síncrona, marcamos ya. Las async marcan
+  // dentro del then. Si ninguna pudo, _amb.arrancado sigue false y el
+  // próximo gesto lo reintentará.
+  if(algunaArranco) _amb.arrancado = true;
 }
 
 // === Perfiles de cada escena ===
@@ -116,6 +128,9 @@ const _perfilesAmbiente = {
 
   // Mapa abierto: vista panorámica de la ciudad bajo lluvia.
   'mapa-escena':        { storm: 0.45, industrial: 0.2,  crowd: 0.15 },
+
+  // Exploración / deriva: calles bajo lluvia, gente dispersa, algo de industrial.
+  'explorar-escena':    { storm: 0.35, industrial: 0.25, crowd: 0.3  },
 
   // Tránsito libre entre zonas: por las calles, con todo.
   'transito-libre-escena': { storm: 0.4, industrial: 0.25, crowd: 0.3 },
@@ -239,25 +254,51 @@ if(typeof toggleMute === 'function'){
   };
 }
 
-// === Arranque al primer tap ===
+// === Arranque al primer gesto + reintentos ===
 // Los navegadores no dejan reproducir audio antes del primer gesto.
-// Enganchamos listeners al document Y a los botones de interacción
-// más habituales para no perdernos el primer gesto del usuario.
+// El primer gesto del juego suele ser el "toca para comenzar" de la
+// intro, cuya escena está en silencio: por eso NO basta con arrancar
+// una vez. Mantenemos los listeners vivos hasta que el ambiente esté
+// realmente sonando, y reaplicamos el perfil de la escena activa.
 (function(){
-  function _primerGestoAmbiente(){
-    if(_amb.arrancado) return;
+  function _gestoAmbiente(){
     arrancarAmbiente();
-    // Aplicar el perfil de la escena activa ahora mismo
     const activa = document.querySelector('.escena.activa');
-    if(activa && activa.id){
-      aplicarAmbienteEscena(activa.id);
+    if(activa && activa.id) aplicarAmbienteEscena(activa.id);
+    // Cuando ya esté sonando de verdad, dejamos de escuchar gestos.
+    if(_amb.arrancado){
+      document.removeEventListener('click', _gestoAmbiente);
+      document.removeEventListener('touchstart', _gestoAmbiente);
     }
   }
-  // Listener genérico en el documento (captura cualquier clic)
-  document.addEventListener('click', _primerGestoAmbiente, {once:true});
-  document.addEventListener('touchstart', _primerGestoAmbiente, {once:true, passive:true});
-  // Backup: si por algún motivo el listener del document no dispara,
-  // intentamos arrancar en cada cambio de escena con perfil no nulo.
+  document.addEventListener('click', _gestoAmbiente);
+  document.addEventListener('touchstart', _gestoAmbiente, {passive:true});
+})();
+
+// === Observer de escena activa ===
+// No todas las pantallas se entran por cambiarEscena() (la intro, por
+// ejemplo, cambia las clases a mano). Para no depender de ese hook,
+// vigilamos qué escena tiene la clase .activa y aplicamos su perfil.
+// Así el ambiente acompaña SIEMPRE a la pantalla en la que estás.
+(function(){
+  let _ultimaEscena = null;
+  function _revisarEscenaActiva(){
+    const activa = document.querySelector('.escena.activa');
+    if(!activa || !activa.id) return;
+    if(activa.id === _ultimaEscena) return;
+    _ultimaEscena = activa.id;
+    // Si el ambiente aún no arrancó pero esta escena quiere sonido,
+    // intentamos arrancar (puede que el gesto ya se haya producido).
+    aplicarAmbienteEscena(activa.id);
+  }
+  let _t = null;
+  const obs = new MutationObserver(()=>{
+    clearTimeout(_t);
+    _t = setTimeout(_revisarEscenaActiva, 160);
+  });
+  obs.observe(document.body, { subtree:true, attributeFilter:['class'] });
+  // Primera comprobación por si ya hay una escena activa al cargar.
+  window.addEventListener('load', ()=>setTimeout(_revisarEscenaActiva, 400));
 })();
 
 // === Hook al sistema de zonas ===

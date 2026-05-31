@@ -142,9 +142,18 @@ function mostrarFrameIntro(idx){
   const cap = _introEl('cine-caption');
   if(cap){
     clearTimeout(introCaptionTimer);     // cancelar la aparición pendiente del frame anterior
+    // 1) desvanecer la frase anterior (acompaña al crossfade de la imagen)
     cap.classList.remove('visible');
-    cap.textContent = f.text;
-    introCaptionTimer = setTimeout(()=>{ if(introActivo && introFase==="narrativa") cap.classList.add('visible'); }, 650);
+    // 2) esperar a que termine ese fade-out (1s en CSS) ANTES de cambiar el
+    //    texto, para que no se vea el salto brusco de una frase a otra.
+    introCaptionTimer = setTimeout(()=>{
+      if(!introActivo || introFase!=="narrativa") return;
+      cap.textContent = f.text;
+      // pequeño respiro y la nueva frase entra suave
+      introCaptionTimer = setTimeout(()=>{
+        if(introActivo && introFase==="narrativa") cap.classList.add('visible');
+      }, 120);
+    }, 1000);
   }
 }
 
@@ -166,11 +175,17 @@ function mostrarLogoIntro(){
   if(introFase!=="narrativa") return;
   introFase = "logo";
   clearInterval(introRelojId);
-  _introCapas().forEach(c=>c.classList.remove('visible'));
+  clearTimeout(introCaptionTimer);
+  // desvanecer la última frase ANTES de que aparezca el logo (no de golpe)
   const cap = _introEl('cine-caption'); if(cap) cap.classList.remove('visible');
-  const logo = _introEl('cine-logo'); if(logo) logo.classList.add('visible');
-  // tras 10s, en vez de terminar, arranca el pase aleatorio de fondos
-  setTimeout(iniciarPaseAleatorio, INTRO_LOGO_HOLD*1000);
+  // dar tiempo al fade-out del texto y del crossfade antes de pintar el logo
+  setTimeout(()=>{
+    if(introFase!=="logo") return;
+    _introCapas().forEach(c=>c.classList.remove('visible'));
+    const logo = _introEl('cine-logo'); if(logo) logo.classList.add('visible');
+    // tras 10s, en vez de terminar, arranca el pase aleatorio de fondos
+    setTimeout(iniciarPaseAleatorio, INTRO_LOGO_HOLD*1000);
+  }, 1100);
 }
 
 // Pase de imágenes de fondo aleatorias hasta que termina la canción.
@@ -228,7 +243,9 @@ function finalizarIntro(){
   const ov = _introEl('transicion');
   ov.style.transition = 'opacity 0.8s ease';
   ov.classList.add('oscurecer');
-  // bajar la música al salir
+  // Cerrar el tema de intro y ARRANCAR el Main Theme del juego.
+  // (El intro_theme no se encadena solo porque lo pausamos; hay que
+  //  pedir explícitamente la primera pista del juego.)
   const audio = _introEl('tema-principal');
   if(audio){ try{ audio.pause(); }catch(e){} }
   setTimeout(()=>{
@@ -236,6 +253,18 @@ function finalizarIntro(){
     if(typeof prepararPantallaIdentidad === 'function') prepararPantallaIdentidad();
     _introEl('nombre-escena').classList.add('activa');
     ov.classList.remove('oscurecer');
+    // Arrancar la música del juego empezando por el Main Theme.
+    if(typeof window.MUSICA !== 'undefined'){
+      window.MUSICA.pistaActual = 'main';
+      window.MUSICA.enApartamento = false;
+    }
+    if(typeof reproducirPista === 'function'){
+      reproducirPista('MAIN_THEME', false);
+    }
+    // Aplicar el ambiente sonoro de la pantalla a la que entramos.
+    if(typeof aplicarAmbienteEscena === 'function'){
+      aplicarAmbienteEscena('nombre-escena');
+    }
   }, 800);
 }
 
