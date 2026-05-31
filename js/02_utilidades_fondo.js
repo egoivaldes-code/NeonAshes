@@ -7,12 +7,7 @@
 function setBg(elId, key){const el=document.getElementById(elId);if(el)el.style.backgroundImage=`url('${ASSETS[key]}')`;}
 function setBgPos(elId, pos){const el=document.getElementById(elId);if(el)el.style.backgroundPosition=pos;}
 
-// Intro frames
-setBg('bg-1','ESPACIO'); setBgPos('bg-1','center 20%');
-setBg('bg-2','BOOT'); setBgPos('bg-2','center 12%');
-setBg('bg-3','PASILLO'); setBgPos('bg-3','center');
-setBg('bg-4','MERCADO'); setBgPos('bg-4','center 25%');
-setBg('bg-5','APT'); setBgPos('bg-5','center top');
+// Intro frames: ahora gestionados por 18_escena_intro.js (intro cinemática v0.73.2)
 
 // Game scenes
 setBg('bg-carga','BOOT'); setBgPos('bg-carga','center top');

@@ -52,7 +52,6 @@ function reiniciar(){
   // Resetear el estado de la musica para que la nueva partida arranque
   // limpia en Main Theme (sin arrastrar 'ashes' o 'loop_apt').
   if(window.MUSICA){ window.MUSICA.pistaActual='main'; window.MUSICA.mainThemeYaSono=false; window.MUSICA.enApartamento=false; }
-  introActivo=true;frameActual=0;
   ocultarBotonSkip();
   const ov=document.getElementById('transicion');
   ov.style.transition='opacity 0.6s ease';ov.classList.add('oscurecer');

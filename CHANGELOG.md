@@ -11,6 +11,20 @@
 
 ---
 
+## [0.73.3] - 2026-05-31
+### Changed
+- Intro reconstruida sobre el nuevo tema principal: 16 imágenes narradas (≈5s cada una), el logo aparece en el segundo 84 y permanece 10 segundos.
+- La intro empieza con una pantalla "toca para comenzar" que enciende el sonido (necesario para que la música suene en navegador) y entra a la intro.
+- Al terminar la intro se va directamente a crear personaje (se elimina la pantalla de carga intermedia).
+### Added
+- Tras el logo, pase de imágenes de fondo aleatorias del proyecto con movimiento lento, hasta que acaba la canción; si el jugador no la salta, cierra solo y pasa a crear personaje.
+
+## [0.73.2] - 2026-05-31
+### Changed
+- Nueva intro cinemática: 17 imágenes a pantalla completa con movimiento lento (Ken Burns) y narración en texto, reemplazando los 5 frames anteriores que avanzaban tocando la pantalla.
+### Added
+- La intro ahora se reproduce sola, sincronizada con "Ashes of Helix", y el logo del juego aparece en el segundo 51 (el breakdown). Botón de saltar siempre visible.
+
 ## [0.73.1] - 2026-05-31
 ### Fixed
 - La deriva mantiene mejor el hilo entre escenas: los detalles que aparecen (un vehículo, la lluvia, quién está presente) ya no se contradicen en la escena siguiente.

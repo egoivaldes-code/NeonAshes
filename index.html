@@ -314,63 +314,18 @@
      ============================================================ -->
 
 <!-- INTRO -->
-<div class="escena activa tap-zone" id="intro-escena">
+<div class="escena activa" id="intro-escena">
   <div class="binary-overlay" id="binary-overlay"></div>
-  <div class="intro-frame" id="frame-0"></div>
-
-  <div class="intro-frame" id="frame-1">
-    <div class="frame-bg" id="bg-1"></div>
-    <div class="frame-overlay" style="background:linear-gradient(180deg,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.35) 50%,rgba(0,0,0,0.8) 100%);"></div>
-    <div class="flashback-text">
-      <div class="flashback-label">FRAGMENTO DE MEMORIA</div>
-      <div class="flashback-main">Antes de este universo,<br>existía <em>otro</em>.</div>
-    </div>
-    <div class="glitch-frame" id="glitch-1"></div>
-    <div class="tap-hint" id="hint-1">TOCA PARA CONTINUAR</div>
-  </div>
-
-  <div class="intro-frame" id="frame-2">
-    <div class="frame-bg" id="bg-2"></div>
-    <div class="frame-overlay" style="background:linear-gradient(180deg,rgba(0,0,0,0.78) 0%,rgba(3,5,8,0.45) 40%,rgba(0,0,0,0.82) 100%);"></div>
-    <div class="flashback-text">
-      <div class="flashback-label">AÑO 2247</div>
-      <div class="flashback-main">Una corporación controla<br><em>todo lo que piensas.</em></div>
-    </div>
-    <div class="glitch-frame" id="glitch-2"></div>
-    <div class="tap-hint" id="hint-2">TOCA PARA CONTINUAR</div>
-  </div>
-
-  <div class="intro-frame" id="frame-3">
-    <div class="frame-bg" id="bg-3"></div>
-    <div class="frame-overlay" style="background:linear-gradient(180deg,rgba(0,0,0,0.65) 0%,rgba(3,5,8,0.32) 50%,rgba(0,0,0,0.82) 100%);"></div>
-    <div class="flashback-text">
-      <div class="flashback-label">LAS PILAS</div>
-      <div class="flashback-main">Millones de vidas<br>bajo la <em>lluvia</em>.</div>
-    </div>
-    <div class="glitch-frame" id="glitch-3"></div>
-    <div class="tap-hint" id="hint-3">TOCA PARA CONTINUAR</div>
-  </div>
-
-  <div class="intro-frame" id="frame-4">
-    <div class="frame-bg" id="bg-4"></div>
-    <div class="frame-overlay" style="background:linear-gradient(180deg,rgba(0,0,0,0.68) 0%,rgba(3,5,8,0.38) 50%,rgba(0,0,0,0.85) 100%);"></div>
-    <div class="flashback-text">
-      <div class="flashback-label">SEÑAL DESCONOCIDA</div>
-      <div class="flashback-main"><em>Alguien</em><br>te ha estado<br>observando.</div>
-    </div>
-    <div class="glitch-frame" id="glitch-4"></div>
-    <div class="tap-hint" id="hint-4">TOCA PARA CONTINUAR</div>
-  </div>
-
-  <div class="intro-frame" id="frame-5">
-    <div class="frame-bg" id="bg-5"></div>
-    <div class="frame-overlay" style="background:linear-gradient(180deg,rgba(0,0,0,0.55) 0%,rgba(3,5,8,0.28) 42%,rgba(0,0,0,0.8) 100%);"></div>
-    <div class="flashback-text">
-      <div class="flashback-label">AHORA · 03:14 AM</div>
-      <div class="flashback-main">Y ahora<br>te despiertas<br><em>tú.</em></div>
-    </div>
-    <div class="glitch-frame" id="glitch-5"></div>
-    <div class="tap-hint" id="hint-5">TOCA PARA CONTINUAR</div>
+  <!-- Intro cinemática v0.73.2: dos capas para crossfade + caption + logo final -->
+  <div class="cine-layer" id="cine-a"></div>
+  <div class="cine-layer" id="cine-b"></div>
+  <div class="cine-vignette"></div>
+  <div class="cine-caption" id="cine-caption"></div>
+  <div class="cine-logo" id="cine-logo"></div>
+  <!-- Gate de arranque: el toque desbloquea el audio del navegador -->
+  <div class="cine-gate" id="cine-gate">
+    <div class="cine-gate-title">NEON&nbsp;ASHES</div>
+    <div class="cine-gate-hint">TOCA PARA COMENZAR</div>
   </div>
 </div>
 

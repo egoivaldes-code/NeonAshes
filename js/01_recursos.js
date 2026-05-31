@@ -8,7 +8,7 @@
 
 // Versión actual del juego. ACTUALIZAR EN CADA ENTREGA.
 // Se muestra en el panel de depuración (Ctrl+D / tap arriba-izquierda).
-const JUEGO_VERSION = "0.73.1";
+const JUEGO_VERSION = "0.73.3";
 window.JUEGO_VERSION = JUEGO_VERSION;
 
 const ASSETS = {
@@ -48,6 +48,7 @@ const ASSETS = {
   AUDIO: "assets/audio/audio.mp3",
   MAIN_THEME: "assets/audio/main_theme.ogg",
   ASHES_OF_HELIX: "assets/audio/ashes_of_helix.ogg",
+  INTRO_THEME: "assets/audio/intro_theme.mp3",
   FERRO_TRANSITO_1: "assets/images/ferro_transito_1.webp",
   FERRO_TRANSITO_2: "assets/images/ferro_transito_2.webp",
   FERRO_TRANSITO_3: "assets/images/ferro_transito_3.webp",
@@ -83,7 +84,25 @@ const ASSETS = {
   EXP_PUERTO_ORBITAL_2: "assets/images/exp_puerto_orbital_2.webp",
   EXP_PUERTO_CARGA: "assets/images/exp_puerto_carga.webp",
   EXP_PLAZA_OLVIDADOS: "assets/images/exp_plaza_olvidados.webp",
-  EXP_ALMACEN_ZONA7: "assets/images/exp_almacen_zona7.webp"
+  EXP_ALMACEN_ZONA7: "assets/images/exp_almacen_zona7.webp",
+  // --- Intro cinemática (17 frames, v0.73.2) ---
+  INTRO_01: "assets/images/intro_01.jpg",
+  INTRO_02: "assets/images/intro_02.jpg",
+  INTRO_03: "assets/images/intro_03.jpg",
+  INTRO_04: "assets/images/intro_04.jpg",
+  INTRO_05: "assets/images/intro_05.jpg",
+  INTRO_06: "assets/images/intro_06.jpg",
+  INTRO_07: "assets/images/intro_07.jpg",
+  INTRO_08: "assets/images/intro_08.jpg",
+  INTRO_09: "assets/images/intro_09.jpg",
+  INTRO_10: "assets/images/intro_10.jpg",
+  INTRO_11: "assets/images/intro_11.jpg",
+  INTRO_12: "assets/images/intro_12.jpg",
+  INTRO_13: "assets/images/intro_13.jpg",
+  INTRO_14: "assets/images/intro_14.jpg",
+  INTRO_15: "assets/images/intro_15.jpg",
+  INTRO_16: "assets/images/intro_16.jpg",
+  INTRO_LOGO: "assets/images/intro_17.jpg"
 };
 
 // Apply backgrounds
