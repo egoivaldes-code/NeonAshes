@@ -68,9 +68,13 @@ function generarNoticiasReactivas(){
         pos: { cat:'INFO', txt:'Circula un archivo no autorizado entre terminales privados. HELIX recuerda que poseer memoria no verificada es delito leve.' },
         neg: { cat:'INFO', txt:'Una célula de preservación de datos suspende contactos tras "una brecha de confianza". Sin más detalles.' }
       },
-      iglesia_eco: {
+      eco: {
         pos: { cat:'VIDA', txt:'La Iglesia del Eco abre sus templos una noche más por "alta demanda de escucha". Asistencia en aumento.' },
         neg: { cat:'VIDA', txt:'Fieles del Eco denuncian acoso a un visitante reciente. La congregación pide "recogimiento".' }
+      },
+      loto: {
+        pos: { cat:'PILAS', txt:'Los teatros del Arrabal Carmesí celebran "una semana de buena fortuna". Las reservas se agotan sin explicación.' },
+        neg: { cat:'PILAS', txt:'Una deuda impagada en el Carmesí termina en silencio. El Loto "lamenta los malentendidos" y no añade nada más.' }
       },
       drifters: {
         pos: { cat:'INFO', txt:'Rutas de transporte no registradas operan "con normalidad", según fuentes que piden no ser citadas.' },
@@ -80,7 +84,7 @@ function generarNoticiasReactivas(){
         pos: { cat:'HELIX', txt:'División ORPHEUS amplía su "programa de colaboración ciudadana". Las invitaciones son personales e intransferibles.' },
         neg: { cat:'HELIX', txt:'ORPHEUS recuerda que toda interacción con su personal queda registrada "por seguridad del propio ciudadano".' }
       },
-      ia_autonomas: {
+      ia: {
         pos: { cat:'INFO', txt:'Interferencias breves y "casi corteses" en altavoces públicos del Sector 7. HELIX investiga el origen.' },
         neg: { cat:'INFO', txt:'Una unidad de voz no autorizada deja de emitir tras "un desencuentro". El silencio dura ya varias horas.' }
       },

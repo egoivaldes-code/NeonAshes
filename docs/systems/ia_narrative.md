@@ -158,10 +158,16 @@ Set único de stats ocultas que comparten todos los backgrounds. No hay stats es
 
 | Zona | Facción local | Color | NPC contacto |
 |---|---|---|---|
-| ARRABAL CARMESÍ | LOS ÓXIDOS (banda criminal) | #ff006e | MANO ROJA (augmentaciones) |
+| ARRABAL CARMESÍ | EL LOTO CARMESÍ (casa del placer) | #ff006e | MANO ROJA (contacto del Loto) |
 | SANTUARIO IX | CULTO DE LA CARNE PERFECTA | #c084fc | HERMANA VAEL |
 | NODO FANTASMA | COLECTIVO SIN NOMBRE (hackers) | #00ff88 | CERO-OCHO |
-| DISTRITO FERRO | SINDICATO FERRO (mafia organizada) | #ff6b00 | DON VASEK |
+| DISTRITO FERRO | SINDICATO FERRO (mafia industrial) | #ff6b00 | DON VASEK |
+
+> **Actualizado v0.75.** El Arrabal Carmesí es un barrio del placer
+> (sino-cyberpunk), regido por EL LOTO CARMESÍ; la antigua banda "Los
+> Óxidos" queda descartada. El óxido/hierro pertenece al Distrito Ferro
+> (zona industrial). Enemistades: Ferro ⚔ Loto, Eco ⚔ IA. Detalle
+> canónico en `docs/systems/facciones_zonas.md`.
 
 ### Zonas especiales (canon, definidas en sesión 02)
 **4 zonas adicionales** que SOLO son accesibles dentro de misiones específicas. No están en el mapa principal. Cuando el caso acaba, vuelven a ser inaccesibles hasta el próximo caso que las requiera.
@@ -176,11 +182,11 @@ Set único de stats ocultas que comparten todos los backgrounds. No hay stats es
 | CERO-OCHO | Nodo Fantasma | LOS HORNOS |
 
 #### EL ASTILLERO (Mano Roja)
-- **Qué es**: antiguo taller industrial reconvertido en clínica clandestina de augmentaciones. Mesas de operación hechas con bancos de mecánico. Iluminación de quirófano improvisada.
+- **Qué es**: trastienda del barrio del placer reconvertida en sala de tratos del Loto Carmesí. Reservados con cortinas, salas privadas tras los teatros, despachos donde se compran y venden secretos. El lujo decadente esconde la coacción.
 - **Atmósfera**: silencioso de día, ruidoso a partir de medianoche. Olor a desinfectante, metal caliente y algo orgánico no identificable. Pacientes que entran enteros y salen con menos. Ex-paramédicos, técnicos robóticos, anestesistas sin licencia.
 - **Movible**: el interior es siempre el mismo (descrito en system prompt). Lo que cambia es **cómo se llega** — el NPC da una entrada distinta cada vez (almacén 4B del muelle, nave abandonada, sótanos del hospital colapsado). Coste de tokens: 15-30 por caso. Despreciable.
 - **Facciones globales con interés**: HELIX (tolera mientras no compita), ORPHEUS (vigila piezas robadas), CÉLULAS AUTÓNOMAS DE IA (interés en firmware sin firmar).
-- **Tipos de caso**: alguien que entró y no salió, recuperar implante "robado", buscar doctor que se fugó con anticipo, identificar cuerpo con augmentaciones recientes, augmentaciones falsificadas mortales.
+- **Tipos de caso**: alguien que entró y no salió, recuperar algo comprometedor (grabación, contrato, deuda), buscar a quien huyó con un secreto, identificar al cliente de una habitación, chantajes que se torcieron.
 
 #### EL TALLER DE CARNE (Hermana Vael)
 - **Qué es**: complejo operativo escondido en sótanos del edificio del Culto de la Carne Perfecta. En superficie: casa de retiro espiritual (cualquiera puede entrar al té con Hermana Vael). En sótano: salas operativas con altares en cada quirófano.
@@ -193,7 +199,7 @@ Set único de stats ocultas que comparten todos los backgrounds. No hay stats es
 #### LA LONJA (Don Vasek)
 - **Qué es**: edificio industrial de procesamiento de pescado y mercancías refrigeradas. Funciona como empresa legal Y como cuartel general operativo del Sindicato Ferro. Cámaras frigoríficas, naves de despiece, oficinas. En trastiendas: contabilidad paralela, cuartos de "conversación", almacenes con mercancía que no es pescado.
 - **Atmósfera**: frío permanente. Olor a hielo, salmuera, metal. Motores de refrigeración industrial de fondo. **El frío es lo que el jugador recuerda** — no es atmósfera, es real (sales temblando si no llevas abrigo). Don Vasek trabaja sin abrigo. Treinta años aquí, ya no lo nota.
-- **Contraste con Mano Roja**: violencia institucional (mafia, silencio) vs violencia callejera (banda, ruido). Vasek invita a cenar, al día siguiente apareces "ahogado".
+- **Contraste con Mano Roja**: violencia institucional del Ferro (mafia, silencio) vs poder blando del Loto (deseo, deuda, chantaje). Vasek invita a cenar y al día siguiente apareces "ahogado"; el Loto te arruina sin tocarte, con lo que sabe de ti.
 - **Acceso**: la barrera es **social, no física**. Todo el mundo sabe lo que es La Lonja. Nadie entra sin invitación. El jugador necesita pase real: caso encargado por Vasek, nombre que abra puertas, o permiso comprado caro.
 - **Facciones globales con interés**: HELIX (cliente legal del procesamiento, da cobertura al Sindicato), RESTOS MILITARES (canal de reclutamiento de ex-militares como soldados), DRIFTERS (peaje por usar rutas refrigeradas para contrabando), SINDICATOS DEL LOWER STACK (rivalidad histórica fría por el uso del nombre).
 - **Tipos de caso**: cobrar deudas (trabajo sucio que Vasek no quiere vinculado a él), investigar traición interna, recuperar envío perdido (no era pescado), encontrar a trabajador legal que vio algo, negociar con otra facción en nombre de Vasek, limpiar cadáver en sitio inconveniente.
@@ -218,7 +224,7 @@ HELIX INDUSTRIES, SINDICATOS DEL LOWER STACK, ARCHIVISTAS, DIVISIÓN ORPHEUS, DR
 Cada una con descripción, aliados, rivales, efectos positivos/negativos ya definidos en el código.
 
 ### Facciones locales (4, una por zona)
-LOS ÓXIDOS, CULTO DE LA CARNE PERFECTA, COLECTIVO SIN NOMBRE, SINDICATO FERRO.
+EL LOTO CARMESÍ, CULTO DE LA CARNE PERFECTA, COLECTIVO SIN NOMBRE, SINDICATO FERRO.
 
 **Los casos pueden impactar reputación en ambas capas** (locales y globales).
 
@@ -233,7 +239,7 @@ LOS ÓXIDOS, CULTO DE LA CARNE PERFECTA, COLECTIVO SIN NOMBRE, SINDICATO FERRO.
 - La IA genera el caso **dentro del marco** de ese NPC concreto.
 
 ### Tipo de caso por NPC (deducción, a confirmar)
-- **MANO ROJA** → violencia callejera, augmentaciones ilegales, ajustes de cuentas
+- **MANO ROJA** → poder blando, secretos de alcoba, deudas de placer, chantaje elegante
 - **HERMANA VAEL** → fanatismo, desapariciones en el culto, transformaciones no consentidas
 - **CERO-OCHO** → identidad digital, robo de datos, suplantaciones, vigilancia
 - **DON VASEK** → cobros, deudas heredadas, secretos familiares, orden impuesto

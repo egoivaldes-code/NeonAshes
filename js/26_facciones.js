@@ -5,48 +5,85 @@
 // ============================================================
 
 // DATOS DE FACCIONES
+// 'enemigo' (id) define la enemistad 1 a 1 entre las 4 facciones de zona:
+//   sindicatos ⚔ loto   y   eco ⚔ ia
+// Subir rep con una baja la de su enemiga (ver cambiarRepFaccion).
 const FACCIONES_DATA = [
   { id:'helix', nombre:'HELIX INDUSTRIES', icono:'⬡', color:'#00e5ff',
     desc:'Megacorporación que controla infraestructura, medicina, implantes y seguridad. Indispensable y opresiva. Ignorarla es imposible. Oponerse tiene consecuencias silenciosas.',
-    aliados:['División ORPHEUS'], rivales:['Sindicatos del Lower Stack','Células Autónomas de IA'],
+    aliados:['División ORPHEUS'], rivales:['Sindicato Ferro','Células Autónomas de IA'],
     efectoPos:'Menores cargos HELIX Bank. Menos vigilancia.',
     efectoNeg:'Cargos adicionales. Vigilancia activa. Implantes denegados.' },
-  { id:'sindicatos', nombre:'SINDICATOS DEL LOWER STACK', icono:'◈', color:'#ff6b00',
-    desc:'Grupos locales que manejan mercado negro, protección y recursos en los barrios bajos. No son una organización unificada — son una red de intereses que convergen cuando la amenaza es externa.',
-    aliados:['Restos Militares'], rivales:['HELIX Industries'],
-    efectoPos:'Precios bajos en mercados negros. Protección informal.',
+  { id:'sindicatos', nombre:'SINDICATO FERRO', icono:'◈', color:'#ff6b00', zona:'distrito_ferro', enemigo:'loto',
+    desc:'La mafia que controla el Distrito Ferro, la zona industrial de las fundiciones. Dos caras del mismo poder: trajes y deudas arriba, obreros y óxido abajo. La violencia es silenciosa: Don Vasek te invita a cenar y al día siguiente apareces "ahogado".',
+    aliados:['Restos Militares'], rivales:['HELIX Industries','El Loto Carmesí'],
+    efectoPos:'Precios bajos en mercados negros. Protección informal en Ferro.',
     efectoNeg:'Peajes. Acceso denegado a ciertos sectores.' },
-  { id:'archivistas', nombre:'ARCHIVISTAS', icono:'◎', color:'#c084fc',
+  { id:'loto', nombre:'EL LOTO CARMESÍ', icono:'❀', color:'#ff006e', zona:'arrabal_carmesi', enemigo:'sindicatos',
+    desc:'La casa del placer que rige el Arrabal Carmesí. Controla teatros, casas de placer y, sobre todo, los secretos que se susurran en la intimidad. Su lema: "El placer no es lujo, es poder". Poder blando hecho de deseo, deuda y chantaje elegante.',
+    aliados:[], rivales:['Sindicato Ferro'],
+    efectoPos:'Acceso a secretos y contactos del barrio rojo. Puertas que no se abren con dinero.',
+    efectoNeg:'El Loto cobra lo que sabe de ti. Te miran como deuda pendiente.' },
+  { id:'eco', nombre:'CULTO DE LA CARNE PERFECTA', icono:'☽', color:'#c084fc', zona:'santuario_ix', enemigo:'ia',
+    desc:'El culto que rige el Santuario IX. Venera la fusión del cuerpo con la máquina como camino a la trascendencia. Seguidores genuinos, mandos cínicos. HELIX los tolera como válvula de escape social.',
+    aliados:[], rivales:['Células Autónomas de IA'],
+    efectoPos:'Refugio en sus templos. Conversión e implantes a buen precio.',
+    efectoNeg:'Sus fanáticos te acosan. Rituales no deseados.' },
+  { id:'ia', nombre:'EL COLECTIVO SIN NOMBRE', icono:'⬢', color:'#00ff88', zona:'nodo_cero', enemigo:'eco',
+    desc:'Hackers y fragmentos de IA que sobreviven fuera del control corporativo, en el Nodo Fantasma. Veneran la información libre y desconfían de todo dogma. Roban y filtran datos a HELIX cada noche. "La verdad está en el código".',
+    aliados:['Archivistas'], rivales:['HELIX Industries','Culto de la Carne Perfecta'],
+    efectoPos:'Información de fuentes inaccesibles. Asistencia técnica inesperada.',
+    efectoNeg:'Comportamiento impredecible. Riesgos de interferencia.' },
+  { id:'archivistas', nombre:'ARCHIVISTAS', icono:'◎', color:'#a78bfa',
     desc:'Recuperan memorias y datos prohibidos para preservar la historia que HELIX borra. Operan en silencio. Su moneda es la información, no los créditos.',
-    aliados:['Células Autónomas de IA'], rivales:['HELIX Industries','División ORPHEUS'],
+    aliados:['El Colectivo Sin Nombre'], rivales:['HELIX Industries','División ORPHEUS'],
     efectoPos:'Acceso a datos históricos. Contactos con información rara.',
     efectoNeg:'Te marcan como potencial filtrador. Cuidado.' },
-  { id:'orpheus', nombre:'DIVISIÓN ORPHEUS', icono:'◉', color:'#ff006e',
+  { id:'orpheus', nombre:'DIVISIÓN ORPHEUS', icono:'◉', color:'#f472b6',
     desc:'División secreta de HELIX especializada en investigación de recuerdos, simulaciones mentales y anomalías relacionadas con CERO. Nadie sabe cuánto saben.',
-    aliados:['HELIX Industries'], rivales:['Archivistas','Iglesia del Eco'],
+    aliados:['HELIX Industries'], rivales:['Archivistas'],
     efectoPos:'Acceso a tecnología de memoria avanzada. Protección temporal.',
     efectoNeg:'Vigilancia intensiva. Posibles invitaciones a instalaciones.' },
-  { id:'drifters', nombre:'DRIFTERS', icono:'◁', color:'#00ff88',
+  { id:'drifters', nombre:'DRIFTERS', icono:'◁', color:'#38bdf8',
     desc:'Pilotos y transportistas que conectan colonias y estaciones olvidadas. No tienen lealtad política. Tienen rutas, y las rutas son poder.',
-    aliados:['Sindicatos del Lower Stack'], rivales:['HELIX Industries'],
+    aliados:['Sindicato Ferro'], rivales:['HELIX Industries'],
     efectoPos:'Acceso a transporte off-grid. Rutas no monitoreadas.',
     efectoNeg:'Sin efecto grave — simplemente no te ayudan.' },
-  { id:'iglesia_eco', nombre:'IGLESIA DEL ECO', icono:'☽', color:'#fbbf24',
-    desc:'Religión nacida de fragmentos de señales de CERO interpretadas como mensajes divinos. Sus seguidores son genuinos, sus líderes ambiguos. HELIX los tolera como válvula de escape social.',
-    aliados:[], rivales:['División ORPHEUS','HELIX Industries'],
-    efectoPos:'Refugio en sus templos. Información sobre señales de CERO.',
-    efectoNeg:'Sus fanáticos te acosan. Rituales no deseados.' },
   { id:'restos_militares', nombre:'RESTOS MILITARES', icono:'▲', color:'#94a3b8',
     desc:'Exsoldados y flotas abandonadas que sobreviven aceptando contratos peligrosos. Sin ideología clara. Con mucho armamento y más cansancio que ambición.',
-    aliados:['Sindicatos del Lower Stack'], rivales:['HELIX Industries'],
+    aliados:['Sindicato Ferro'], rivales:['HELIX Industries'],
     efectoPos:'Protección en zonas hostiles. Acceso a equipo militar.',
-    efectoNeg:'Te ponen en contratos que no elegiste.' },
-  { id:'ia_autonomas', nombre:'CÉLULAS AUTÓNOMAS DE IA', icono:'⬢', color:'#22d3ee',
-    desc:'Inteligencias fragmentadas que sobrevivieron fuera del control corporativo. Algunas útiles, otras inestables o incomprensibles. Todas tienen una relación no resuelta con CERO.',
-    aliados:['Archivistas'], rivales:['HELIX Industries','División ORPHEUS'],
-    efectoPos:'Información de fuentes inaccesibles. Asistencia técnica inesperada.',
-    efectoNeg:'Comportamiento impredecible. Riesgos de interferencia.' }
+    efectoNeg:'Te ponen en contratos que no elegiste.' }
 ];
+
+// Las 4 facciones de zona (las únicas con enemistad y hostilidad).
+const FACCIONES_ZONA = ['sindicatos','loto','eco','ia'];
+
+// ------------------------------------------------------------
+// HOSTILIDAD POR ZONA
+// La facción dueña de cada zona decide cómo te reciben al entrar,
+// según TU reputación de facción con ella. 3 niveles graduales.
+// Umbrales: -20 mal recibido / -45 no te ayudan / -70 te atacan.
+// ------------------------------------------------------------
+function faccionDeZona(zonaId){
+  const f = FACCIONES_DATA.find(x=>x.zona===zonaId);
+  return f ? f.id : null;
+}
+// Devuelve: 'normal' | 'mal_recibido' | 'no_ayudan' | 'atacan'
+function nivelHostilidadZona(zonaId){
+  const fid = faccionDeZona(zonaId);
+  if(!fid) return 'normal';
+  const rep = getRepFaccion(fid);
+  if(rep <= -70) return 'atacan';
+  if(rep <= -45) return 'no_ayudan';
+  if(rep <= -20) return 'mal_recibido';
+  return 'normal';
+}
+if(typeof window !== 'undefined'){
+  window.faccionDeZona = faccionDeZona;
+  window.nivelHostilidadZona = nivelHostilidadZona;
+  window.FACCIONES_ZONA = FACCIONES_ZONA;
+}
 
 const CLAVE_FACCIONES = LAUNCHER.CLAVE_FACCIONES;
 function cargarRepFacciones(){ try{ const r=localStorage.getItem(CLAVE_FACCIONES); return r?JSON.parse(r):{}; }catch(e){return{};} }
@@ -57,13 +94,20 @@ function cambiarRepFaccion(id, delta){
   d[id]=Math.max(-100,Math.min(100,(d[id]||0)+delta));
   const f=FACCIONES_DATA.find(x=>x.id===id);
   if(f){
-    f.aliados.forEach(nombre=>{
+    // Enemistad 1 a 1 entre facciones de zona: subir con una baja con su
+    // enemiga (un poco menos de lo que sube, para que escalar sea posible).
+    if(f.enemigo && delta > 0){
+      const baja = -Math.max(1, Math.round(delta*0.65));
+      d[f.enemigo]=Math.max(-100,Math.min(100,(d[f.enemigo]||0)+baja));
+    }
+    // Aliados/rivales por nombre (efecto suave, para HELIX y demás).
+    (f.aliados||[]).forEach(nombre=>{
       const a=FACCIONES_DATA.find(x=>x.nombre===nombre);
       if(a){ d[a.id]=Math.max(-100,Math.min(100,(d[a.id]||0)+Math.round(delta*0.3))); }
     });
-    f.rivales.forEach(nombre=>{
+    (f.rivales||[]).forEach(nombre=>{
       const r=FACCIONES_DATA.find(x=>x.nombre===nombre);
-      if(r){ d[r.id]=Math.max(-100,Math.min(100,(d[r.id]||0)+Math.round(delta*-0.2))); }
+      if(r && r.id!==f.enemigo){ d[r.id]=Math.max(-100,Math.min(100,(d[r.id]||0)+Math.round(delta*-0.2))); }
     });
   }
   guardarRepFacciones(d);

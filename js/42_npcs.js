@@ -29,7 +29,7 @@ const NPCS_RECURRENTES = [
   {
     id: 'cero_ocho',
     nombre: 'Cero-Ocho',
-    faccion: 'ia_autonomas',
+    faccion: 'ia',
     etiqueta: 'IA fragmentada de barrio',
     fisico: 'No tiene cuerpo. Habla por un altavoz roto de una lavandería cerrada del Sector 7. La voz se entrecorta.',
     voz: 'Pausada, demasiado precisa. Hace preguntas en vez de responder. A veces parece saber de ti más de lo que debería.',
@@ -56,7 +56,7 @@ const NPCS_RECURRENTES = [
   {
     id: 'hermana_lia',
     nombre: 'Hermana Lía',
-    faccion: 'iglesia_eco',
+    faccion: 'eco',
     etiqueta: 'predicadora del Eco',
     fisico: 'Túnica gris remendada, un pequeño altavoz colgado al cuello del que sale estática suave, como un rezo.',
     voz: 'Amable de un modo que inquieta. Habla de CERO como de un padre ausente. Cree de verdad, y eso es lo peor.',

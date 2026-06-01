@@ -45,38 +45,38 @@ const ZONAS_MUNDO = [
     id: 'arrabal_carmesi',
     nombre: 'ARRABAL CARMESÍ',
     nombreCorto: 'CARMESÍ',
-    faccion: 'BANDA CRIMINAL — LOS ÓXIDOS',
+    faccion: 'EL LOTO CARMESÍ — CASA DEL PLACER',
     colorFaccion: '#ff006e',
-    desc: 'Un laberinto de metal oxidado y neón roto. Los Óxidos controlan cada esquina. Huele a aceite quemado y algo peor. Nadie hace preguntas. Nadie quiere respuestas.',
-    peligro: '⚠ PELIGRO EXTREMO · PATRULLAS ARMADAS · VIOLENCIA FRECUENTE',
+    desc: 'Faroles rojos colgando sobre escaleras de piedra, pagodas apiladas, teatros que nunca cierran. El Loto Carmesí rige cada habitación de alquiler y cada secreto que se susurra en ella. Aquí el placer no es lujo: es poder, y todo deja deuda.',
+    peligro: '⚠ ZONA CONTROLADA · DEUDAS DE PLACER · TODO SE PAGA, TARDE O TEMPRANO',
     posX: 80, posY: 160,
     imgBg: 'CARMESI_ZONA',
     eventos: [
-      { titulo:'CONTROL DE LOS ÓXIDOS', narr:'Tres hombres con brazos augmentados bloquean el paso. El mayor lleva una mandíbula de titanio. Te miran como si ya supieran cuánto vales.',
+      { titulo:'COBRADOR DEL LOTO', narr:'Una mujer impecable, vestida de seda oscura, te corta el paso sin tocarte. Dos siluetas esperan tras ella, quietas. "El Loto da la bienvenida a todo el que entra", dice sonriendo. "Y recuerda a todo el que se va sin saldar."',
         opciones:[
-          { txt:'Pagar peaje (-30 CR)', cambios:{creditos:-30}, msg:'La mandíbula de titanio asiente. Te dejan pasar sin tocarte. Por ahora.' },
-          { txt:'Mantener el paso, mirada al suelo', cambios:{humano:{fatiga:3,aislamiento:2}}, msg:'Te dejan pasar. Uno escupe cerca de tus pies. No te giras.' },
-          { txt:'Sacar el nombre de Mara Vex', cambios:{humano:{disociacion:2}}, msg:'Una pausa. Se miran entre ellos. Te dejan pasar más rápido de lo esperado. Eso también da miedo.' }
+          { txt:'Dejar una propina al Loto (-30 CR)', cambios:{creditos:-30}, msg:'La mujer hace una reverencia mínima. "Bienvenido." Las siluetas se apartan como cortinas. Sabes que acabas de comprar una sonrisa, no seguridad.' },
+          { txt:'Seguir el paso, sin mirarla', cambios:{humano:{fatiga:3,aislamiento:2}}, msg:'Te dejan pasar. "Volverás", dice a tu espalda. No es amenaza. Es estadística.' },
+          { txt:'Mencionar a Mara Vex', cambios:{humano:{disociacion:2}}, msg:'Una pausa. La sonrisa no cambia, pero los ojos sí. "Ah. De esos." Te dejan pasar más rápido de lo que esperabas. Eso también incomoda.' }
         ]
       },
-      { titulo:'CADÁVER EN EL CALLEJÓN', narr:'Un hombre tirado contra la pared. Joven. Augmentaciones baratas. Tiene un agujero quemado donde estaba el ojo derecho. Nadie se para.',
+      { titulo:'LA CHICA DEL TEATRO SIN NOMBRE', narr:'Bajo el rótulo de neón rosa de un teatro, una joven con maquillaje corrido fuma en un descanso. No vende nada. Solo mira la lluvia caer sobre los faroles, como quien cuenta los días.',
         opciones:[
-          { txt:'Seguir andando', cambios:{humano:{disociacion:4}}, msg:'Te preguntas cuánto tiempo llevas siendo capaz de hacer esto. No tienes respuesta.' },
-          { txt:'Revisar si aún respira', cambios:{humano:{fatiga:2,aislamiento:-4}}, msg:'No respira. Pero encuentras 12 créditos en el bolsillo roto. Y odias haberte dado cuenta.' },
-          { txt:'Llamar a emergencias HELIX (anónimo)', cambios:{reputacion:-2,humano:{aislamiento:-2}}, msg:'La llamada dura tres segundos. Zona B. Patrulla en 40 minutos. Cuarenta minutos.' }
+          { txt:'Seguir andando', cambios:{humano:{disociacion:4}}, msg:'Te preguntas cuántas caras como la suya has dejado atrás esta semana. No llevas la cuenta. Por eso duele.' },
+          { txt:'Preguntarle si está bien', cambios:{humano:{fatiga:2,aislamiento:-4}}, msg:'"¿Bien?" Se ríe sin ganas. "Nadie pregunta eso aquí." Te mira distinto un segundo, antes de volver a la lluvia.' },
+          { txt:'Dejarle unos créditos sin decir nada (-15 CR)', cambios:{creditos:-15,humano:{aislamiento:-5}}, msg:'Los mira. No dice gracias. Pero los guarda rápido, antes de que alguien del Loto lo vea.' }
         ]
       },
-      { titulo:'NIÑO VENDIENDO CHIPS DE DATOS', narr:'Diez años como mucho. Vende chips de datos sin carcasa desde una caja de cartón. Te mira con unos ojos que ya vieron demasiado.',
+      { titulo:'SUSURRO ENTRE CORTINAS', narr:'Un hombre mayor, bien vestido, te agarra del brazo desde un reservado. "Tú no eres de aquí. Bien. Escucha: en este barrio las paredes oyen y el Loto vende lo que oyen. Cuida lo que dices en las camas que no pagas tú."',
         opciones:[
-          { txt:'Comprar un chip (-20 CR)', cambios:{creditos:-20,humano:{aislamiento:-3}}, msg:'El chip está vacío. Pero el niño te mira como si acabaras de hacer algo importante.' },
-          { txt:'Darle créditos sin coger nada (-15 CR)', cambios:{creditos:-15,humano:{aislamiento:-5}}, msg:'Se queda mirando los créditos. No dice gracias. Pero los guarda rápido, antes de que alguien lo vea.' },
-          { txt:'Seguir sin mirarle', cambios:{humano:{aislamiento:4,disociacion:2}}, msg:'Tres pasos después no puedes recordar su cara. Eso es lo peor.' }
+          { txt:'Agradecer el aviso', cambios:{humano:{aislamiento:-3}}, msg:'Asiente y se hunde de nuevo entre las cortinas. "Por nada. Aquí los favores también se cobran. Algún día."' },
+          { txt:'Preguntar qué sabe él', cambios:{humano:{disociacion:2,fatiga:1}}, msg:'"¿Yo? Demasiado. Por eso bebo en la oscuridad." No dice más. Pero te deja con la sensación de haber rozado algo grande.' },
+          { txt:'Soltarte y seguir', cambios:{humano:{aislamiento:3}}, msg:'Te suelta sin resistencia. "Como quieras. Pero recuerda quién te avisó." Tres pasos después, ya dudas de si pasó.' }
         ]
       }
     ],
-    descripcionLlegada: 'El Arrabal Carmesí huele a circuitos quemados y mugre húmeda. Las paredes sudan. Alguien te observa desde el primer segundo. Los Óxidos llevan este sector desde antes de que nacieras.',
+    descripcionLlegada: 'El Arrabal Carmesí huele a incienso barato, lluvia y perfume rancio. Los faroles tiñen de rojo los charcos. Alguien te observa desde el primer segundo, calculando cuánto vales y cuánto puedes deber. El Loto Carmesí lleva este barrio desde antes de que nacieras.',
     opciones: [
-      { txt:'Buscar a Mano Roja (augmentaciones)', accion:'contacto_mano_roja' },
+      { txt:'Buscar a Mano Roja (tratos del Loto)', accion:'contacto_mano_roja' },
       { txt:'Explorar el mercado negro', accion:'mercado_negro' },
       { txt:'Esperar y observar', accion:'observar' },
       { txt:'← Volver al centro de la ciudad', accion:'volver_mapa_ciudad' }
@@ -601,12 +601,43 @@ function llegarAZona(){
   document.getElementById('zona-rep-display').textContent = repTexto;
   document.getElementById('zona-rep-display').style.color = rep > 15 ? '#00e5ff' : rep < -15 ? '#ff006e' : 'rgba(200,216,224,0.45)';
 
+  // --- HOSTILIDAD DE FACCIÓN AL ENTRAR EN SU ZONA ---
+  // 3 niveles según tu reputación de facción con la dueña de la zona.
+  let _zonaBloqueada = false;
+  if(typeof nivelHostilidadZona === 'function'){
+    const nivel = nivelHostilidadZona(zona.id);
+    const descEl = document.getElementById('zona-llegada-desc');
+    if(nivel === 'mal_recibido'){
+      descEl.textContent = zona.descripcionLlegada + '  Aquí no eres bienvenido: miradas de desprecio, hombros que se giran. Nadie te toca, pero notas el peso de no ser querido.';
+      if(typeof aplicarCambios === 'function') aplicarCambios({ humano:{ fatiga:3, aislamiento:4 } });
+    } else if(nivel === 'no_ayudan'){
+      descEl.textContent = zona.descripcionLlegada + '  En cuanto te reconocen, las puertas se cierran. Aquí ya no tienes amigos: nadie de esta facción moverá un dedo por ti.';
+      if(typeof aplicarCambios === 'function') aplicarCambios({ humano:{ fatiga:4, aislamiento:6 } });
+      _zonaBloqueada = true;
+    } else if(nivel === 'atacan'){
+      // Encontronazo violento al entrar.
+      const perdida = 40;
+      descEl.textContent = zona.descripcionLlegada + '  No llegas a dar diez pasos. Te esperaban. Se te echan encima entre los callejones: golpes, un filo, manos que rebuscan en tus bolsillos. Logras zafarte y salir, pero te llevas lo tuyo.';
+      if(typeof ajustarCreditos === 'function') ajustarCreditos(-perdida);
+      if(typeof aplicarCondicion === 'function') aplicarCondicion('conmocion');
+      if(typeof aplicarCambios === 'function') aplicarCambios({ humano:{ fatiga:10, aislamiento:8 } });
+      _zonaBloqueada = true;
+    }
+  }
+
+  document.getElementById('zona-llegada-desc').style.borderColor = zona.colorFaccion + '55';
   const opcsEl = document.getElementById('zona-opciones');
   let html = '';
   for(let i = 0; i < zona.opciones.length; i++){
     const op = zona.opciones[i];
     const txtZona = op.txt.replace(/\{NOMBRE_ZONA\}/g, zona.nombreCorto || zona.nombre);
-    html += '<button class="opcion-btn" onclick="accionZona(\''+op.accion+'\')">'+txtZona+'</button>';
+    // Si la facción no te ayuda / te ataca, solo dejamos salir (observar y volver).
+    const esSalida = op.accion === 'volver_mapa_ciudad' || op.accion === 'observar';
+    if(_zonaBloqueada && !esSalida){
+      html += '<button class="opcion-btn" disabled style="opacity:0.4;cursor:not-allowed;">'+txtZona+' · CERRADO</button>';
+    } else {
+      html += '<button class="opcion-btn" onclick="accionZona(\''+op.accion+'\')">'+txtZona+'</button>';
+    }
   }
   opcsEl.innerHTML = html;
 
@@ -656,42 +687,42 @@ function accionZona(accion){
 
   const RESPUESTAS = {
     contacto_mano_roja: {
-      narr: 'Mano Roja opera desde el fondo de una tienda de repuestos. Un tío con el brazo derecho completamente mecánico, hasta el puto hombro. Te mira sin sorpresa. "¿Qué traes, hostia? ¿Pasta o cotilleos? Porque sin una de las dos cosas, ya estás saliendo por donde has entrado."',
+      narr: 'A Mano Roja la encuentras en un reservado del Teatro Sin Nombre, tras una cortina granate. El brazo derecho, mecánico hasta el hombro, descansa sobre la mesa cargado de anillos. No trafica con piezas: trafica con lo que la gente confiesa entre las sábanas. "¿Qué me traes? ¿Créditos o secretos? Porque sin una de las dos, esta cortina se cierra y tú no has estado nunca aquí."',
       rep: 5,
-      faccion: 'sindicatos',
+      faccion: 'loto',
       botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     mercado_negro: {
-      narr: 'Compras raciones de fábrica. Saben a plástico y proteína sintética. El hambre afloja un poco.',
+      narr: 'Entre los puestos del barrio compras raciones y algo caliente. Saben a plástico y a perfume del local de al lado. El hambre afloja un poco.',
       cambios: { creditos: -25, humano: { hambre: -20 } },
-      rep: 2, faccion: 'sindicatos',
+      rep: 2, faccion: 'loto',
       botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     observar: {
-      narr: 'Te quedas en una esquina, mirando. El Arrabal Carmesí nunca para. Peleas, negocios, fugas, reuniones. Ves cómo funciona esto por dentro. Y algo en tu cabeza lo archiva sin pedirte permiso.',
+      narr: 'Te quedas en una esquina, bajo un farol rojo, mirando. El Arrabal Carmesí nunca duerme: tratos en los reservados, gente que entra sola y sale acompañada, deudas que cambian de mano. Ves cómo funciona esto por dentro. Y algo en tu cabeza lo archiva sin pedirte permiso.',
       cambios: { humano: { disociacion: 4, aislamiento: -3 } },
       botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     contacto_vael: {
       narr: 'Hermana Vael lleva una túnica blanca y tiene un ojo artificial con iris en espiral. Te recibe con calma perturbadora. "Bienvenido al umbral. Algunos cruzan estas puertas buscando un firmware espiritual. Otros, solo una pieza de recambio para el alma. ¿Cuál es tu protocolo hoy: fe o necesidad?"',
-      rep: 5, faccion: 'iglesia_eco',
+      rep: 5, faccion: 'eco',
       botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     templo_interior: {
       narr: 'El interior del templo es oscuro y tranquilo. Hay gente meditando con partes mecánicas expuestas, cables visibles. El silencio aquí es diferente al silencio de tu apartamento. Más denso. Más lleno.',
       cambios: { humano: { disociacion: 7, fatiga: -4 } },
-      rep: 3, faccion: 'iglesia_eco',
+      rep: 3, faccion: 'eco',
       botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     sermon: {
       narr: 'El líder del Culto habla durante veinte minutos sobre el umbral de la carne. Su voz tiene una cadencia que hace que escuchar sea fácil. Demasiado fácil. Cuando termina, no estás seguro de cuánto has asentido.',
       cambios: { humano: { disociacion: 10, aislamiento: -8 } },
-      rep: 5, faccion: 'iglesia_eco',
+      rep: 5, faccion: 'eco',
       botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     contacto_ceroocho: {
       narr: 'Cero-Ocho es joven. Demasiado. Lleva tres pantallas en órbita craneal como un HUD heredado. "¿Qué bit me traes que no esté ya en mi caché? Porque si es ruido sin firmar, esto te va a costar ancho de banda del caro."',
-      rep: 5, faccion: 'ia_autonomas',
+      rep: 5, faccion: 'ia',
       botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     tablon: {
@@ -703,7 +734,7 @@ function accionZona(accion){
     vender_info: {
       narr: 'Le cuentas lo poco que sabes. Cero-Ocho lo escucha con cara de aburrimiento. Luego te transfiere 40 créditos. Esto lo sabía. Pero el gesto vale algo.',
       cambios: { creditos: 40, humano: { disociacion: 4 } },
-      rep: 5, faccion: 'ia_autonomas',
+      rep: 5, faccion: 'ia',
       botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
     },
     contacto_vasek: {

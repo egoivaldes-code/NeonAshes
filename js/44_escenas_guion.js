@@ -30,6 +30,22 @@ function _egAsegurarVistos(){
 }
 
 // ------------------------------------------------------------
+// CADENAS (missionchains) — control de "una parte por run".
+// Una escena de entrada puede declarar  cadena:'kepler'  (un id de
+// cadena). Regla: en una misma run de exploración solo puede avanzar
+// UNA parte de cada cadena. Al avanzar una parte, apuntamos su cadena
+// aquí; mientras dure la run, no se ofrecen más entradas de esa cadena.
+// Esto se reinicia al empezar cada nueva run (lo hace explorar).
+// ------------------------------------------------------------
+window._cadenasTocadasEnRun = window._cadenasTocadasEnRun || [];
+
+// Llamar al INICIO de cada run de exploración para resetear el límite.
+function reiniciarCadenasDeRun(){
+  window._cadenasTocadasEnRun = [];
+}
+window.reiniciarCadenasDeRun = reiniciarCadenasDeRun;
+
+// ------------------------------------------------------------
 // EVALUACIÓN DE CONDICIONES / REQUISITOS
 // Una condición es un objeto con claves opcionales. TODAS deben
 // cumplirse. Ejemplos:
@@ -108,10 +124,13 @@ function _egAplicarEfectos(ef){
 function escenasGuionDisponibles(){
   if(typeof ESCENAS_GUION === 'undefined') return [];
   const vistos = _egAsegurarVistos();
+  const cadenasTocadas = window._cadenasTocadasEnRun || [];
   return Object.keys(ESCENAS_GUION).filter(id=>{
     const e = ESCENAS_GUION[id];
     if(!e || !e.entrada) return false;
     if(vistos.indexOf(id) !== -1) return false;   // agotado
+    // Una parte de cadena por run: si su cadena ya avanzó en esta run, no.
+    if(e.cadena && cadenasTocadas.indexOf(e.cadena) !== -1) return false;
     return _egCumple(e.cond);
   });
 }
@@ -145,6 +164,10 @@ function reproducirEscenaGuion(id, onCerrar){
   if(e.entrada){
     const vistos = _egAsegurarVistos();
     if(vistos.indexOf(id) === -1) vistos.push(id);
+    // Si es parte de una cadena, bloquear más partes de esa cadena en esta run.
+    if(e.cadena && (window._cadenasTocadasEnRun||[]).indexOf(e.cadena) === -1){
+      window._cadenasTocadasEnRun.push(e.cadena);
+    }
     if(typeof guardarEstado === 'function') guardarEstado();
   }
 

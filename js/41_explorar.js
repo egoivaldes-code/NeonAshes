@@ -145,6 +145,8 @@ function _repartir(plan, cuantos, min, max, fn){
 // ── ARRANQUE DEL VIAJE ──────────────────────────────────────
 function iniciarExplorarCiudad(){
   if(typeof saltoDeEscena === 'function') saltoDeEscena();
+  // Nueva run: se permite avanzar de nuevo una parte de cada cadena de lore.
+  if(typeof reiniciarCadenasDeRun === 'function') reiniciarCadenasDeRun();
   _expEscenaActual = 0;
   _expPlan = _planificarViaje();
   _expHistorial = [];

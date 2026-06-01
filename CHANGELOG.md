@@ -11,6 +11,17 @@
 
 ---
 
+## [0.75] - 2026-06-01
+### Added
+- Cadenas de misiones de lore que se descubren explorando, una parte por partida. Cadena general "Lo que quedó arriba" (vida fuera de la Tierra) y una cadena de 5 partes por cada facción de zona, con recompensas crecientes y super-recompensa final (reputación + objeto único).
+- Sistema de enemistad entre facciones de zona: ganar reputación con una baja la de su enemiga (Ferro contra Loto, Eco contra IA).
+- Niveles de hostilidad al entrar en una zona cuya facción te odia: mal recibido, no te ayudan (contactos cerrados) y te atacan (pierdes créditos y sufres una herida).
+- Nueva facción El Loto Carmesí, que rige el Arrabal Carmesí como barrio del placer.
+### Changed
+- El Arrabal Carmesí deja de ser "Los Óxidos" y pasa a ser el barrio del placer del Loto Carmesí (textos, eventos y contacto reescritos). El óxido y el hierro pasan a ser propios del Distrito Ferro.
+### Fixed
+- La reputación con la Iglesia del Eco y las IA ya se muestra y funciona; antes se guardaba con un identificador distinto al del panel y quedaba invisible.
+
 ## [0.74.3] - 2026-05-31
 ### Fixed
 - El texto de la intro ahora se desvanece de forma suave entre frase y frase, en vez de cortarse de golpe; la última frase también se atenúa antes de aparecer el logo.

@@ -74,9 +74,13 @@ Cadena de fallback gratuita:
 
 ## NPCs CANÓNICOS Y SUS ZONAS
 
+> Lore de facciones de zona actualizado en v0.75. Ver
+> `docs/systems/facciones_zonas.md` para el detalle canónico
+> (enemistades y hostilidad incluidas).
+
 | NPC | Facción | Zona estable | Zona especial (solo en casos) |
 |---|---|---|---|
-| MANO ROJA | Los Óxidos | Arrabal Carmesí | EL ASTILLERO |
+| MANO ROJA | El Loto Carmesí | Arrabal Carmesí | EL ASTILLERO |
 | HERMANA VAEL | Culto de la Carne Perfecta | Santuario IX | EL TALLER DE CARNE |
 | CERO-OCHO | Colectivo Sin Nombre | Nodo Fantasma | LOS HORNOS |
 | DON VASEK | Sindicato Ferro | Distrito Ferro | LA LONJA |

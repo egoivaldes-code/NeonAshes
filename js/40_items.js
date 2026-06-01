@@ -116,7 +116,29 @@ const ITEMS_EXPLORAR = [
   { id:'navaja_ceramica', nombre:'Navaja de cerámica', tipo:'arma',
     desc:'No la detectan los escáneres. Filo gastado pero suficiente. Pesa poco.' },
   { id:'papel_helix', nombre:'Papel mojado con un código', tipo:'dato',
-    desc:'Un código y la hélice de HELIX tachada. Alguien quería que lo tuvieras tú.' }
+    desc:'Un código y la hélice de HELIX tachada. Alguien quería que lo tuvieras tú.' },
+
+  // ── Cadena de lore "Lo que quedó arriba" (vida fuera de la Tierra) ──
+  { id:'manifiesto_io', nombre:'Manifiesto de carga de Ío', tipo:'recuerdo',
+    desc:'Una lista de cargamento de hace décadas. Refinería 7, órbita de Ío. Los nombres de la tripulación siguen ahí, escritos a mano.' },
+  { id:'semilla_hidroponia', nombre:'Sobre de semillas viejas', tipo:'recuerdo',
+    desc:'Trigo enano, modificado para crecer sin gravedad. En el sobre, una huerta de un cilindro que ya no existe. Aún huele a tierra.' },
+  { id:'ficha_minera', nombre:'Ficha de un minero del Cinturón', tipo:'recuerdo',
+    desc:'Identificación de una roca minera. Cuota cumplida: 11 años. Cuota pendiente: la que nunca dejaron de deber.' },
+  { id:'dossier_marte', nombre:'Dossier sellado de Marte', tipo:'dato',
+    desc:'Documentos de la megaciudad marciana. Mitad censurados. Lo que se lee no explica por qué la gente dejó de volver.' },
+  { id:'baliza_orbita_muerta', nombre:'Baliza de la órbita muerta', tipo:'recuerdo',
+    desc:'Un transmisor apagado de una estación abandonada. Guarda la última voz que se grabó allí arriba. No te atreves a borrarla.' },
+
+  // ── Recompensas finales de las cadenas de facción ──
+  { id:'sello_ferro', nombre:'Sello de hierro del Ferro', tipo:'recuerdo',
+    desc:'Una ficha de fundición con la marca de Don Vasek. No se compra ni se roba: se gana. En el Distrito Ferro, esto es una puerta abierta y una deuda saldada.' },
+  { id:'llave_loto', nombre:'Llave del Loto', tipo:'recuerdo',
+    desc:'Una pequeña flor de loto de laca roja. Quien la lleva tiene reservado en cualquier casa del Carmesí, y oídos en todas ellas. El Loto te debe un secreto, para variar.' },
+  { id:'reliquia_carne', nombre:'Reliquia de la Carne Perfecta', tipo:'recuerdo',
+    desc:'Un fragmento de implante bendecido por el Culto, tibio al tacto sin razón. Para los fieles del Santuario, llevarla es ser de los suyos. Para ti, un peso que zumba bajo.' },
+  { id:'clave_colectivo', nombre:'Clave del Colectivo', tipo:'dato',
+    desc:'Una credencial cifrada del Nodo Fantasma. Te abre puertas en la red que HELIX cree cerradas. El Colectivo confía en ti; eso, hoy, vale más que créditos.' }
 ];
 
 // Da un item del catálogo de explorar por su id (para escenas de guion).
