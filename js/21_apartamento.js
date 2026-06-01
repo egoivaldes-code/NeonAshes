@@ -269,7 +269,7 @@ function opcionApt(idx){
       // sistema le ha dejado este botón único en un estado inesperado),
       // siempre puede volver al menú base sin quedarse atrapado.
       opc.innerHTML =
-        `<button class="opcion-btn" onclick="irATerminal()">Abrir el mensaje cifrado</button>` +
+        `<button class="opcion-btn" onclick="irATerminal()">Abrir el terminal</button>` +
         `<button class="opcion-btn" onclick="regenerarOpcionesAptCierre()">← Cerrar terminal</button>`;
     }
   } else if(idx === 0){

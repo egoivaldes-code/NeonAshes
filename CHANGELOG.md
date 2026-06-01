@@ -11,6 +11,14 @@
 
 ---
 
+## [0.76.1] - 2026-06-01
+### Changed
+- El botón del apartamento ahora dice "Abrir el terminal" y entra al escritorio HELIX en lugar de saltar directo al mensaje.
+### Fixed
+- El escritorio HELIX ya tiene un botón "Cerrar terminal" para salir, colocado por encima de la barra inferior en móvil.
+- Quitados los solapamientos de la parte superior: el reloj y la cabecera vieja se ocultan en el escritorio HELIX, y el reloj también se oculta durante la deriva para no pisar el texto en móvil.
+- La cabecera del escritorio respeta el área segura del notch en móviles.
+
 ## [0.76] - 2026-06-01
 ### Added
 - El terminal del apartamento ahora abre un escritorio corporativo HELIX con seis iconos. Mensajes, Mapa y Noticias funcionan; Mercado, Contactos y Banco muestran un módulo no disponible.

@@ -58,6 +58,11 @@ function dispararMuerte(stat){
   if(panel) panel.classList.remove('activo');
   document.body.classList.remove('panel-abierto');
 
+  // Por si la muerte ocurre durante la deriva o el terminal, limpiamos
+  // sus marcas en el body para no arrastrarlas (reloj/cabecera).
+  document.body.classList.remove('explorar-activo');
+  document.body.classList.remove('terminal-escritorio-activo');
+
   // Cerrar también el panel de depuración si estaba abierto.
   const debugPanel = document.getElementById('debug-panel');
   if(debugPanel && debugPanel.classList.contains('visible')){

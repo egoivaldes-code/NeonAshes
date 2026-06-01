@@ -80,8 +80,8 @@
 /* Texto de sistema esquinas */
 .helix-sys-top{
   position: absolute;
-  top: 0;
-  left: 0;
+  top: max(0px, env(safe-area-inset-top, 0px));
+  left: max(0px, env(safe-area-inset-left, 0px));
   font-family: 'Share Tech Mono', monospace;
   font-size: 0.5rem;
   letter-spacing: 0.15em;
@@ -171,3 +171,53 @@
 }
 
 /* ============================================================ */
+
+/* Botón volver al apartamento dentro del escritorio HELIX */
+.helix-salir-fila{
+  position:absolute;
+  left:0; right:0;
+  bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+  display:flex; justify-content:center;
+  z-index:5;
+}
+.helix-salir-btn{
+  background:rgba(10,18,24,0.72);
+  border:1px solid rgba(74,154,184,0.45);
+  color:#7fc4dc;
+  font-family:inherit;
+  font-size:0.72rem;
+  letter-spacing:0.12em;
+  padding:0.55rem 1.1rem;
+  border-radius:3px;
+  cursor:pointer;
+  transition:all 0.2s ease;
+}
+.helix-salir-btn:hover,
+.helix-salir-btn:active{
+  background:rgba(74,154,184,0.18);
+  border-color:rgba(74,154,184,0.8);
+  color:#bfe6f2;
+}
+
+/* ----------------------------------------------------------
+   Escritorio HELIX activo: ocultamos el reloj diegético y la
+   cabecera vieja del terminal para que no se solapen con la
+   cabecera propia del escritorio (esquina superior izquierda).
+   ---------------------------------------------------------- */
+body.terminal-escritorio-activo #reloj-diegetico{
+  opacity: 0 !important;
+  pointer-events: none;
+}
+body.terminal-escritorio-activo .terminal-header{
+  display: none;
+}
+
+/* ----------------------------------------------------------
+   Deriva (exploración) activa: ocultamos el reloj diegético
+   para que no se solape con el contenido en la parte superior,
+   especialmente en pantallas estrechas (móvil).
+   ---------------------------------------------------------- */
+body.explorar-activo #reloj-diegetico{
+  opacity: 0 !important;
+  pointer-events: none;
+}

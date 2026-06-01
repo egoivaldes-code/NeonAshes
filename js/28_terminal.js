@@ -19,6 +19,11 @@ function mostrarEscritorioHelix(){
   const body = document.getElementById('terminal-body');
   body.innerHTML = '';
 
+  // Marca en el body: mientras se ve el escritorio HELIX, ocultamos el
+  // reloj diegético y la cabecera vieja del terminal para que no se
+  // solapen con la cabecera propia del escritorio.
+  document.body.classList.add('terminal-escritorio-activo');
+
   // Ocultamos los botones de acción del terminal mientras estamos
   // en el escritorio (solo se muestran dentro de Mensajes).
   const acciones = document.querySelector('.terminal-acciones');
@@ -73,8 +78,18 @@ function mostrarEscritorioHelix(){
       v4.1.7<br>
       RED: HELIX-NET
     </div>
+    <div class="helix-salir-fila">
+      <button class="helix-salir-btn" onclick="cerrarTerminalHelix()">← CERRAR TERMINAL</button>
+    </div>
   `;
   body.appendChild(escritorio);
+}
+
+// Cierra el terminal desde el escritorio HELIX: limpia la marca del
+// body (para que el reloj y la cabecera vuelvan) y sale al apartamento.
+function cerrarTerminalHelix(){
+  document.body.classList.remove('terminal-escritorio-activo');
+  cambiarEscena('terminal-escena','apartamento');
 }
 
 // ------------------------------------------------------------
@@ -83,6 +98,9 @@ function mostrarEscritorioHelix(){
 function abrirTerminalMensajes(){
   const body = document.getElementById('terminal-body');
   body.innerHTML = '';
+
+  // Dentro de Mensajes sí queremos la cabecera del terminal y el reloj.
+  document.body.classList.remove('terminal-escritorio-activo');
 
   // Restauramos los botones de acción
   const acciones = document.querySelector('.terminal-acciones');
@@ -120,6 +138,7 @@ function volverAEscritorioHelix(){
 function abrirTerminalMapa(){
   // Volvemos al apartamento en background antes de abrir el mapa,
   // para que volverApartamentoDesMapa() funcione correctamente.
+  document.body.classList.remove('terminal-escritorio-activo');
   cambiarEscena('terminal-escena', 'apartamento');
   setTimeout(abrirMapa, 100);
 }
@@ -128,6 +147,7 @@ function abrirTerminalMapa(){
 // MÓDULO: NOTICIAS — usa abrirPanelHub() ya existente
 // ------------------------------------------------------------
 function abrirTerminalNoticias(){
+  document.body.classList.remove('terminal-escritorio-activo');
   abrirPanelHub('noticias');
 }
 
@@ -147,6 +167,7 @@ function abrirTerminalBanco(){
 function mostrarModuloNoDisponible(nombre, mensaje){
   const body = document.getElementById('terminal-body');
   body.innerHTML = '';
+  document.body.classList.remove('terminal-escritorio-activo');
   const acciones = document.querySelector('.terminal-acciones');
   if(acciones) acciones.style.display = '';
 

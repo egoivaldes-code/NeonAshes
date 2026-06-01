@@ -162,6 +162,9 @@ function iniciarExplorarCiudad(){
     document.getElementById('mapa-escena').classList.remove('activa');
     document.getElementById('explorar-escena').classList.add('activa');
   }
+  // Durante la deriva ocultamos el reloj diegético para que no se
+  // solape con el contenido en la parte de arriba (sobre todo en móvil).
+  document.body.classList.add('explorar-activo');
   setTimeout(mostrarSiguienteEscenaExplorar, 400);
 }
 
@@ -606,6 +609,8 @@ function volverDeExplorar(){
   // Limpiar la imagen de fondo del viaje para no arrastrarla.
   const fondo = document.getElementById('explorar-fondo');
   if(fondo) fondo.style.backgroundImage = '';
+  // Salimos de la deriva: devolvemos el reloj diegético.
+  document.body.classList.remove('explorar-activo');
   if(typeof cambiarEscena === 'function'){
     cambiarEscena('explorar-escena', 'apartamento');
   } else {
