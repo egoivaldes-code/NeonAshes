@@ -11,6 +11,15 @@
 
 ---
 
+## [0.76.2] - 2026-06-01
+### Changed
+- Al encender el terminal ahora se entra directamente al escritorio HELIX, sin paso intermedio.
+### Fixed
+- El terminal recupera su fondo (imagen del apartamento con tinte azul).
+- Si abres el mapa desde el terminal, al volver regresas al terminal y no al apartamento.
+### Added
+- El mapa usa una imagen horizontal propia en PC (la vertical se mantiene en móvil), con los marcadores de zona recolocados para PC.
+
 ## [0.76.1] - 2026-06-01
 ### Changed
 - El botón del apartamento ahora dice "Abrir el terminal" y entra al escritorio HELIX en lugar de saltar directo al mensaje.

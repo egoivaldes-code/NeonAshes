@@ -211,12 +211,33 @@ let _eventoActualTL = null;
 let _tiempoPorParadaTL = 50;  // minutos de juego que cuesta cada parada (recalculado al iniciar viaje según visitas previas)
 
 function renderizarMapa(){
+  // En PC usamos la imagen horizontal del mapa, cuyas zonas están en
+  // posiciones distintas a la vertical de móvil. Cada marcador lleva en
+  // el HTML sus coordenadas de PC (data-pc-left / data-pc-top) además de
+  // las de móvil (style original). Aquí elegimos cuáles aplicar.
+  const esPC = window.matchMedia('(min-width: 900px)').matches;
+
   // Actualiza la etiqueta de reputación de cada marcador anclado
   // sobre el mapa Strata I. Los marcadores ya están en el HTML;
   // aquí solo refrescamos el texto de REP y la clase visual.
   ZONAS_MUNDO.forEach(zona => {
     const marker = document.querySelector('.zona-marker[data-zona="'+zona.id+'"]');
     if(!marker) return;
+
+    // Reposicionar según dispositivo.
+    if(esPC && marker.dataset.pcLeft && marker.dataset.pcTop){
+      // Guardamos las coords de móvil la primera vez, por si volvemos.
+      if(!marker.dataset.movLeft){
+        marker.dataset.movLeft = marker.style.left;
+        marker.dataset.movTop = marker.style.top;
+      }
+      marker.style.left = marker.dataset.pcLeft;
+      marker.style.top = marker.dataset.pcTop;
+    } else if(!esPC && marker.dataset.movLeft){
+      marker.style.left = marker.dataset.movLeft;
+      marker.style.top = marker.dataset.movTop;
+    }
+
     const rep = getRepZona(zona.id);
     const repEl = document.getElementById('zm-rep-'+zona.id);
 
@@ -295,6 +316,16 @@ function abrirMapa(){
     document.getElementById('apartamento').classList.remove('activa');
     document.getElementById('mapa-escena').classList.add('activa');
   }
+  // Fondo del mapa: en pantallas anchas (PC) usamos la versión
+  // horizontal preparada; en móvil, la vertical. Es el único sitio
+  // del juego con dos imágenes distintas según el dispositivo.
+  (function(){
+    const bg = document.getElementById('bg-mapa');
+    if(!bg || typeof ASSETS === 'undefined') return;
+    const esPC = window.matchMedia('(min-width: 900px)').matches;
+    const key = esPC ? 'MAPA_STRATA_PC' : 'MAPA_STRATA';
+    if(ASSETS[key]) bg.style.backgroundImage = `url('${ASSETS[key]}')`;
+  })();
   renderizarMapa();
   const sub = document.getElementById('mapa-subtitulo');
   if(sub && Estado.jugador) sub.textContent = Estado.jugador.nombre + ' · ELIGE UN DESTINO';
@@ -302,6 +333,18 @@ function abrirMapa(){
 
 function volverApartamentoDesMapa(){
   cerrarDetalleZona();
+  // Si el mapa se abrió desde el terminal, volvemos al terminal.
+  if(window._mapaDesdeTerminal){
+    window._mapaDesdeTerminal = false;
+    if(typeof cambiarEscena === 'function'){
+      cambiarEscena('mapa-escena', 'terminal-escena');
+    } else {
+      document.getElementById('mapa-escena').classList.remove('activa');
+      document.getElementById('terminal-escena').classList.add('activa');
+    }
+    if(typeof mostrarEscritorioHelix === 'function') mostrarEscritorioHelix();
+    return;
+  }
   if(typeof cambiarEscena === 'function'){
     cambiarEscena('mapa-escena', 'apartamento');
   } else {
@@ -313,6 +356,8 @@ function volverApartamentoDesMapa(){
 
 function iniciarViajeAZona(){
   if(!_zonaSeleccionada) return;
+  // Si veníamos del terminal, al viajar ya no volvemos a él.
+  window._mapaDesdeTerminal = false;
   _zonaActual = _zonaSeleccionada;
   cerrarDetalleZona();
   if(typeof saltoDeEscena === 'function') saltoDeEscena();

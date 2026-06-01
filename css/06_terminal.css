@@ -7,7 +7,7 @@
    ============================================================ */
 
 #terminal-escena{align-items:flex-start;justify-content:flex-start;padding:0;}
-.terminal-overlay{background:rgba(3,5,8,1);}
+.terminal-overlay{background:rgba(3,5,8,0.88);}
 .terminal-pantalla{position:relative;z-index:5;width:100%;height:100%;background:linear-gradient(rgba(0,229,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.01) 1px,transparent 1px),transparent;background-size:30px 30px;padding:1.5rem 1.5rem 7rem 1.5rem;display:flex;flex-direction:column;overflow:hidden;}
 .terminal-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,229,255,0.12);padding-bottom:0.8rem;margin-bottom:1.5rem;}
 .terminal-titulo{font-size:0.55rem;letter-spacing:0.4em;color:var(--cyan-dim);}

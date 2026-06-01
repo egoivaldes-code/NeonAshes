@@ -139,6 +139,9 @@ function abrirTerminalMapa(){
   // Volvemos al apartamento en background antes de abrir el mapa,
   // para que volverApartamentoDesMapa() funcione correctamente.
   document.body.classList.remove('terminal-escritorio-activo');
+  // Recordamos que el mapa se abrió desde el terminal, para que al
+  // pulsar "volver" en el mapa regrese al terminal y no al apartamento.
+  window._mapaDesdeTerminal = true;
   cambiarEscena('terminal-escena', 'apartamento');
   setTimeout(abrirMapa, 100);
 }

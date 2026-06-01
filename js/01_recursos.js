@@ -8,7 +8,7 @@
 
 // Versión actual del juego. ACTUALIZAR EN CADA ENTREGA.
 // Se muestra en el panel de depuración (Ctrl+D / tap arriba-izquierda).
-const JUEGO_VERSION = "0.76.1";
+const JUEGO_VERSION = "0.76.2";
 window.JUEGO_VERSION = JUEGO_VERSION;
 
 const ASSETS = {
@@ -23,6 +23,8 @@ const ASSETS = {
   HOUSING_BLOCK_B2: "assets/images/housing_block_b2.webp",
   INDUSTRIAL_WALKWAY9: "assets/images/industrial_walkway9.webp",
   LOWER_CANAL_SECTOR7B: "assets/images/lower_canal_sector7b.webp",
+  MAPA_STRATA: "assets/images/mapa_strata.webp",
+  MAPA_STRATA_PC: "assets/images/mapa_strata_pc.webp",
   MAINTENANCE_ACCESS12: "assets/images/maintenance_access12.webp",
   MARA_ALLEY_CLEAN: "assets/images/mara_alley_clean.webp",
   MARKET_DISTRICT_TIER1: "assets/images/market_district_tier1.webp",

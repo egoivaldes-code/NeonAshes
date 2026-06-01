@@ -263,14 +263,10 @@ function opcionApt(idx){
     if(misionCerrada){
       setTimeout(()=>{ regenerarOpcionesAptCierre(); }, 600);
     } else {
-      // Terminal — lleva al mensaje cifrado / HELIX según contexto.
-      // Añadimos también un botón "Cerrar terminal" como red de seguridad:
-      // si por algún motivo el jugador no quiere abrir el mensaje (o el
-      // sistema le ha dejado este botón único en un estado inesperado),
-      // siempre puede volver al menú base sin quedarse atrapado.
-      opc.innerHTML =
-        `<button class="opcion-btn" onclick="irATerminal()">Abrir el terminal</button>` +
-        `<button class="opcion-btn" onclick="regenerarOpcionesAptCierre()">← Cerrar terminal</button>`;
+      // Sin paso intermedio: tras el breve texto de ambiente, entramos
+      // directamente al escritorio HELIX. El escritorio ya tiene su
+      // propio botón "Cerrar terminal" para volver al apartamento.
+      setTimeout(()=>{ irATerminal(); }, 700);
     }
   } else if(idx === 0){
     // Ventana — devolverse al menú base con las 4 opciones.
