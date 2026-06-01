@@ -141,7 +141,14 @@ function notificarCambio(texto, tipo){
 
 function aplicarCambios(c){
   if(c.creditos){
-    Estado.creditos += c.creditos;
+    // Pasamos por ajustarCreditos para que la wallet respete el tope 0
+    // y vaya siempre por el mismo camino (sumar suma, restar resta, pero
+    // nunca por debajo de 0). Antes se sumaba a mano y podía quedar negativo.
+    if(typeof ajustarCreditos === 'function'){
+      ajustarCreditos(c.creditos);
+    } else {
+      Estado.creditos = Math.max(0, (Estado.creditos || 0) + c.creditos);
+    }
     notificarCambio((c.creditos > 0 ? '+' : '') + c.creditos + ' CR', c.creditos > 0 ? 'pos' : 'neg');
   }
   if(c.reputacion){

@@ -593,10 +593,25 @@ async function resolverEventoTL(opcionIdx){
     Estado.creditos = Math.max(0, (Estado.creditos || 0) + c.creditos);
     if(typeof actualizarHUD === 'function') actualizarHUD();
   }
+  if(c.creditos && typeof notificarCambio === 'function'){
+    notificarCambio((c.creditos >= 0 ? '+' : '') + c.creditos + ' CR', 'creditos');
+  }
   if(c.humano){
     for(const k in c.humano){
       if(typeof ajustarHumano === 'function') ajustarHumano(k, c.humano[k]);
     }
+  }
+  // Antes los eventos de zona solo aplicaban créditos y estado humano:
+  // si una opción prometía un objeto o reputación, se perdía. Ahora
+  // también se aplican item, condición y reputación de facción.
+  if(c.item){
+    if(typeof darItemPorId === 'function') darItemPorId(c.item);
+    else if(typeof darItem === 'function') darItem(c.item);
+  }
+  if(c.quitaItem && typeof quitarItem === 'function') quitarItem(c.quitaItem, 1);
+  if(c.condicion && typeof aplicarCondicion === 'function') aplicarCondicion(c.condicion);
+  if(c.faccion && typeof c.rep === 'number' && typeof cambiarRepFaccion === 'function'){
+    cambiarRepFaccion(c.faccion, c.rep);
   }
 
   const cont = document.getElementById('tarjetas-loc-libre');
@@ -813,8 +828,12 @@ function accionZona(accion){
   if(r.cambios){
     const c = r.cambios;
     if(c.creditos){
-      Estado.creditos = Math.max(0, (Estado.creditos || 0) + c.creditos);
-      if(typeof actualizarHUD === 'function') actualizarHUD();
+      if(typeof ajustarCreditos === 'function'){
+        ajustarCreditos(c.creditos);
+      } else {
+        Estado.creditos = Math.max(0, (Estado.creditos || 0) + c.creditos);
+        if(typeof actualizarHUD === 'function') actualizarHUD();
+      }
       if(typeof notificarCambio === 'function') notificarCambio((c.creditos >= 0 ? '+' : '') + c.creditos + ' CR', 'creditos');
     }
     if(c.humano){

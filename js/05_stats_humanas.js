@@ -55,6 +55,10 @@ function ajustarHumano(dimension, delta){
   // (eventos, mirar ventana, dormir, encuentros...). Sin abrir el panel.
   if(cambioReal !== 0){
     encolarFlechaStat(dimension, cambioReal);
+    // Repintar las mini-barras F/A/H/D al instante. Antes solo se
+    // refrescaban si algo llamaba a actualizarHUD() aparte, por eso
+    // a veces el cambio de estado no se veía reflejado.
+    if(typeof actualizarMiniBarrasEstado === 'function') actualizarMiniBarrasEstado();
   }
   // Si cruzamos un umbral que genera noticia reactiva nueva, marcamos.
   // (Solo subiendo, no bajando, para no spamear)

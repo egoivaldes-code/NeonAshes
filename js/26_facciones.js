@@ -93,6 +93,12 @@ function cambiarRepFaccion(id, delta){
   const d=cargarRepFacciones();
   d[id]=Math.max(-100,Math.min(100,(d[id]||0)+delta));
   const f=FACCIONES_DATA.find(x=>x.id===id);
+  // Aviso visual del cambio principal de reputación (solo el de esta
+  // facción; los efectos colaterales de aliados/enemigos no se anuncian
+  // para no saturar la pantalla).
+  if(delta !== 0 && typeof mostrarFlechaReputacion === 'function'){
+    mostrarFlechaReputacion(id, delta);
+  }
   if(f){
     // Enemistad 1 a 1 entre facciones de zona: subir con una baja con su
     // enemiga (un poco menos de lo que sube, para que escalar sea posible).
@@ -111,6 +117,48 @@ function cambiarRepFaccion(id, delta){
     });
   }
   guardarRepFacciones(d);
+}
+
+// Nombres cortos para el aviso flotante de reputación (los oficiales
+// son largos y no caben bien en la tarjetita).
+const REP_NOMBRE_CORTO = {
+  helix: 'HELIX',
+  sindicatos: 'FERRO',
+  loto: 'LOTO',
+  eco: 'CULTO',
+  ia: 'COLECTIVO',
+  archivistas: 'ARCHIVISTAS',
+  orpheus: 'ORPHEUS',
+  drifters: 'DRIFTERS',
+  restos_militares: 'MILITARES'
+};
+
+// Aviso flotante de cambio de reputación. Reutiliza el contenedor y los
+// estilos de las flechitas de estado (stat-feedback / stat-flecha) para
+// mantener coherencia visual. Muestra: NOMBRE  ↑ +5.
+function mostrarFlechaReputacion(id, delta){
+  const cont = document.getElementById('stat-feedback');
+  if(!cont) return;
+  const nombre = REP_NOMBRE_CORTO[id] || (id || '').toUpperCase();
+  const abs = Math.abs(delta);
+  let flecha, clase;
+  if(delta > 0){
+    if(abs <= 5){ flecha = '↑';  clase = 'sf-up-poco';  }
+    else        { flecha = '↑↑'; clase = 'sf-up-mucho'; }
+  } else {
+    if(abs <= 5){ flecha = '↓';  clase = 'sf-down-poco'; }
+    else        { flecha = '↓↓'; clase = 'sf-down-mucho';}
+  }
+  const signo = delta > 0 ? '+' : '';
+  const tarjeta = document.createElement('div');
+  tarjeta.className = 'stat-flecha sf-rep ' + clase;
+  tarjeta.innerHTML = `<span class="sf-nombre">REP · ${nombre}</span>`
+    + `<span class="sf-flecha">${flecha}</span>`
+    + `<span class="sf-rep-num">${signo}${delta}</span>`;
+  cont.appendChild(tarjeta);
+  requestAnimationFrame(()=>{ tarjeta.classList.add('visible'); });
+  setTimeout(()=>{ tarjeta.classList.remove('visible'); }, 2000);
+  setTimeout(()=>{ if(tarjeta.parentNode) tarjeta.remove(); }, 2600);
 }
 
 const ZONAS_NOMBRES_DISP = {

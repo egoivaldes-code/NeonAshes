@@ -73,3 +73,16 @@
 
 
 /* ============================================================
+/* Aviso de cambio de reputación: reutiliza .stat-flecha pero añade el
+   número de cambio (+5 / -10) junto a la flecha. */
+.stat-flecha.sf-rep .sf-rep-num{
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+}
+.stat-flecha.sf-rep.sf-up-poco   .sf-rep-num{ color:#00ff88; }
+.stat-flecha.sf-rep.sf-up-mucho  .sf-rep-num{ color:#00e5ff; }
+.stat-flecha.sf-rep.sf-down-poco .sf-rep-num{ color:#ffc800; }
+.stat-flecha.sf-rep.sf-down-mucho .sf-rep-num{ color:#ff3a5e; }

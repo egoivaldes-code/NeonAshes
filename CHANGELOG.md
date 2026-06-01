@@ -11,6 +11,13 @@
 
 ---
 
+## [0.76.3] - 2026-06-01
+### Fixed
+- El estado (fatiga, aislamiento, hambre, disociación) ahora se actualiza en pantalla justo al cambiar.
+- Los créditos se aplican siempre de forma fiable y la wallet nunca queda en negativo; los eventos de zona del mapa ya entregan también objetos y reputación que antes podían perderse.
+### Added
+- Aviso visual flotante cuando sube o baja la reputación con una facción.
+
 ## [0.76.2] - 2026-06-01
 ### Changed
 - Al encender el terminal ahora se entra directamente al escritorio HELIX, sin paso intermedio.
