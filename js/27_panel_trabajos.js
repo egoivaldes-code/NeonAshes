@@ -111,6 +111,11 @@ function iniciarMisionDesdeTrabajos(){
 // Cuando se acepta o rechaza el encargo de Mara, ponemos un badge
 // en el botón de Trabajos para que el jugador note que hay novedad.
 function marcarTrabajosActualizado(){
+  // Bandera persistente: así el escritorio HELIX puede mostrar el badge
+  // en el icono CONTACTOS (que ahora contiene la pestaña Trabajos).
+  if(Estado.memoria) Estado.memoria.trabajosVistos = false;
+  // Refrescar badges del terminal si el escritorio está visible.
+  if(typeof actualizarBadgesTerminal === 'function') actualizarBadgesTerminal();
   const btn = document.getElementById('hub-btn-trabajos');
   if(!btn) return;
   if(!btn.querySelector('.badge')){
@@ -126,6 +131,7 @@ function marcarTrabajosActualizado(){
 // el panel se borra el badge automáticamente.
 function marcarNoticiasActualizadas(){
   Estado.memoria.noticiasVistas = false;
+  if(typeof actualizarBadgesTerminal === 'function') actualizarBadgesTerminal();
   const btn = document.getElementById('hub-btn-noticias');
   if(!btn) return;
   if(!btn.querySelector('.badge')){

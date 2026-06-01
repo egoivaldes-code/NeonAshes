@@ -28,22 +28,20 @@ function abrirPanelHub(seccion){
     cuerpo.innerHTML = renderEstado();
   } else if(seccion === 'contactos'){
     titulo.textContent = 'CONTACTOS';
-    cuerpo.innerHTML = renderContactos();
+    cuerpo.innerHTML = renderContactosConPestanas('contactos');
+  } else if(seccion === 'trabajos'){
+    // Trabajos ahora vive como pestaña dentro de Contactos.
+    titulo.textContent = 'CONTACTOS';
+    if(Estado.memoria) Estado.memoria.trabajosVistos = true;
+    if(typeof actualizarBadgesTerminal === 'function') actualizarBadgesTerminal();
+    cuerpo.innerHTML = renderContactosConPestanas('trabajos');
   } else if(seccion === 'noticias'){
     titulo.textContent = 'NOTICIAS';
     cuerpo.innerHTML = renderNoticias();
     // Al abrir, marcamos las noticias como leídas para quitar el badge
     Estado.memoria.noticiasVistas = true;
+    if(typeof actualizarBadgesTerminal === 'function') actualizarBadgesTerminal();
     const btn = document.getElementById('hub-btn-noticias');
-    if(btn){
-      const badge = btn.querySelector('.badge');
-      if(badge) badge.remove();
-    }
-  } else if(seccion === 'trabajos'){
-    titulo.textContent = 'TRABAJOS';
-    cuerpo.innerHTML = renderTrabajos();
-    // Al abrir, quitamos el badge "!" si estaba puesto (igual que noticias).
-    const btn = document.getElementById('hub-btn-trabajos');
     if(btn){
       const badge = btn.querySelector('.badge');
       if(badge) badge.remove();
@@ -58,6 +56,35 @@ function cerrarPanelHub(){
   document.body.classList.remove('panel-abierto');
   // Reanudar el reloj del juego al cerrar.
   reanudarTiempoJuego();
+}
+
+// ------------------------------------------------------------
+// CONTACTOS + TRABAJOS fusionados en un panel con dos pestañas.
+// 'activa' indica qué pestaña se muestra ('contactos' o 'trabajos').
+// ------------------------------------------------------------
+function renderContactosConPestanas(activa){
+  const tab = (activa === 'trabajos') ? 'trabajos' : 'contactos';
+  const cuerpoTab = (tab === 'trabajos')
+    ? (typeof renderTrabajos === 'function' ? renderTrabajos() : '')
+    : (typeof renderContactos === 'function' ? renderContactos() : '');
+  const clsC = tab === 'contactos' ? 'cp-tab activa' : 'cp-tab';
+  const clsT = tab === 'trabajos' ? 'cp-tab activa' : 'cp-tab';
+  return ''
+    + '<div class="cp-tabs">'
+    +   '<button class="'+clsC+'" onclick="cambiarTabContactos(\'contactos\')">CONTACTOS</button>'
+    +   '<button class="'+clsT+'" onclick="cambiarTabContactos(\'trabajos\')">TRABAJOS</button>'
+    + '</div>'
+    + '<div id="cp-cuerpo-tab">' + cuerpoTab + '</div>';
+}
+
+function cambiarTabContactos(tab){
+  // Al ver la pestaña de Trabajos, se marca como visto y se quita su badge.
+  if(tab === 'trabajos'){
+    if(Estado.memoria) Estado.memoria.trabajosVistos = true;
+    if(typeof actualizarBadgesTerminal === 'function') actualizarBadgesTerminal();
+  }
+  const cuerpo = document.getElementById('hub-panel-cuerpo');
+  if(cuerpo) cuerpo.innerHTML = renderContactosConPestanas(tab);
 }
 
 // ============================================================

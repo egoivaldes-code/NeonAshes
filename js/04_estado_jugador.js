@@ -29,7 +29,8 @@ Estado.memoria = {
   tonoJugador: null,
   // ¿El jugador ha consultado las noticias desde la última actualización?
   // Si es false y hay reactivas, el botón NOTICIAS muestra badge.
-  noticiasVistas: true
+  noticiasVistas: true,
+  trabajosVistos: true
 };
 
 // ============================================================

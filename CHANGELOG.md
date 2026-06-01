@@ -11,6 +11,14 @@
 
 ---
 
+## [0.76.4] - 2026-06-01
+### Changed
+- La acción "Seguir durmiendo" ahora se llama "Dormir".
+- En el apartamento se elimina la barra inferior duplicada (Contactos, Noticias, Trabajos); queda Estado e Inventario.
+- El icono Contactos del terminal ahora funciona y reúne Contactos y Trabajos en dos pestañas.
+### Added
+- Avisos "!" de noticias y trabajos sobre los iconos del terminal HELIX.
+
 ## [0.76.3] - 2026-06-01
 ### Fixed
 - El estado (fatiga, aislamiento, hambre, disociación) ahora se actualiza en pantalla justo al cambiar.

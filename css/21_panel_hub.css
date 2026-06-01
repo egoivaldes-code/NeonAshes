@@ -418,3 +418,30 @@
 
 
 /* ============================================================
+/* ============================================================
+   PESTAÑAS Contactos / Trabajos (panel fusionado)
+   ============================================================ */
+.cp-tabs{
+  display:flex;
+  gap:0.4rem;
+  margin-bottom:1rem;
+  border-bottom:1px solid rgba(0,229,255,0.15);
+}
+.cp-tab{
+  flex:1;
+  background:transparent;
+  border:none;
+  border-bottom:2px solid transparent;
+  color:rgba(200,216,224,0.5);
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.62rem;
+  letter-spacing:0.25em;
+  padding:0.6rem 0.4rem;
+  cursor:pointer;
+  transition:color 0.2s, border-color 0.2s;
+}
+.cp-tab:hover{ color:rgba(200,216,224,0.8); }
+.cp-tab.activa{
+  color:var(--cyan);
+  border-bottom-color:var(--cyan);
+}

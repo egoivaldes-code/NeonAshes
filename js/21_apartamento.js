@@ -101,7 +101,7 @@ function ajustarTextosApartamentoSegunMemoria(){
     narr.innerHTML = 'La lluvia ácida golpea el cristal.<br>Son las tres de la mañana.<br>No recuerdas cuándo te dormiste.';
     opc.innerHTML = `
       ${botonVentana("Mirar por la ventana")}
-      ${botonDormir("Seguir durmiendo")}
+      ${botonDormir("Dormir")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Encender el terminal</button>`;
     return;

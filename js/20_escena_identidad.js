@@ -105,7 +105,8 @@ function empezarDeNuevo(){
   Estado.memoria = {
     aceptoEncargo: null, pidioMasInfo: false, guardoSilencio: false,
     vecesPidioInfo: 0, vioFragmentoCero: false, confianzaMara: 0, tonoJugador: null,
-    noticiasVistas: true
+    noticiasVistas: true,
+    trabajosVistos: true
   };
   Estado.humano = { fatiga: 8, aislamiento: 12, hambre: 5, disociacion: 0 };
   Estado.partidasCompletadas = 0;

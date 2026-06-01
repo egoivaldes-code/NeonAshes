@@ -221,3 +221,25 @@ body.explorar-activo #reloj-diegetico{
   opacity: 0 !important;
   pointer-events: none;
 }
+
+/* Badge "!" de aviso sobre los iconos del escritorio HELIX
+   (noticias o trabajos sin ver). Mismo estilo que el del apartamento. */
+.helix-icono{ position: relative; }
+.helix-icono .helix-badge{
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: var(--magenta, #ff006e);
+  color: #000;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  font-size: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Share Tech Mono', monospace;
+  letter-spacing: 0;
+  font-weight: bold;
+  box-shadow: 0 0 8px rgba(255,0,110,0.6);
+}

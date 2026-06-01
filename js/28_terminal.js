@@ -60,11 +60,11 @@ function mostrarEscritorioHelix(){
         <div class="helix-icono-simbolo">◈</div>
         <div class="helix-icono-label">MAPA</div>
       </div>
-      <div class="helix-icono" onclick="abrirTerminalNoticias()">
+      <div class="helix-icono" id="helix-icono-noticias" onclick="abrirTerminalNoticias()">
         <div class="helix-icono-simbolo">▤</div>
         <div class="helix-icono-label">NOTICIAS</div>
       </div>
-      <div class="helix-icono" onclick="abrirTerminalContactos()">
+      <div class="helix-icono" id="helix-icono-contactos" onclick="abrirTerminalContactos()">
         <div class="helix-icono-simbolo">◎</div>
         <div class="helix-icono-label">CONTACTOS</div>
       </div>
@@ -83,6 +83,33 @@ function mostrarEscritorioHelix(){
     </div>
   `;
   body.appendChild(escritorio);
+  // Pintar badges de aviso (noticias / trabajos) sobre los iconos.
+  actualizarBadgesTerminal();
+}
+
+// Coloca o quita los badges "!" en los iconos del escritorio HELIX
+// según haya noticias o trabajos sin ver. Seguro de llamar aunque el
+// escritorio no esté visible (no hace nada si no encuentra los iconos).
+function actualizarBadgesTerminal(){
+  const m = Estado.memoria || {};
+  _ponerBadgeIcono('helix-icono-noticias', m.noticiasVistas === false);
+  _ponerBadgeIcono('helix-icono-contactos', m.trabajosVistos === false);
+}
+
+function _ponerBadgeIcono(idIcono, hayAviso){
+  const icono = document.getElementById(idIcono);
+  if(!icono) return;
+  const previo = icono.querySelector('.helix-badge');
+  if(hayAviso){
+    if(!previo){
+      const b = document.createElement('span');
+      b.className = 'helix-badge';
+      b.textContent = '!';
+      icono.appendChild(b);
+    }
+  } else if(previo){
+    previo.remove();
+  }
 }
 
 // Cierra el terminal desde el escritorio HELIX: limpia la marca del
@@ -161,7 +188,8 @@ function abrirTerminalMercado(){
   mostrarModuloNoDisponible('MERCADO', 'Sistema de intercambio en mantenimiento programado.');
 }
 function abrirTerminalContactos(){
-  mostrarModuloNoDisponible('CONTACTOS', 'Directorio de red no disponible en este nodo.');
+  document.body.classList.remove('terminal-escritorio-activo');
+  abrirPanelHub('contactos');
 }
 function abrirTerminalBanco(){
   mostrarModuloNoDisponible('BANCO', 'Acceso a HELIX BANK restringido fuera de horario operativo.');
