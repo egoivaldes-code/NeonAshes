@@ -1,39 +1,187 @@
 // ============================================================
-// BLOQUE JS-32 — TERMINAL — mensajes pendientes (Helix, Mara)
-// Pinta los mensajes que el jugador encuentra al abrir el terminal
-//   en su apartamento.
+// BLOQUE JS-28 — TERMINAL — escritorio HELIX + menú principal
+// Al abrir el terminal se muestra el escritorio corporativo de
+// HELIX con 6 iconos. Mensajes, Mapa y Noticias están operativos.
+// Mercado, Contactos y Banco muestran módulo no disponible.
 // ============================================================
 
 function irATerminal(){
-  // ESTADO HUMANO: encender el terminal a las 3am, leer mensajes urgentes... cansa.
   ajustarHumano('fatiga', 4);
-  saltoDeEscena(); // +50 a +70 minutos al cambiar de escena
-  cambiarEscena('apartamento','terminal-escena');setTimeout(escribirTerminal,700);
+  saltoDeEscena();
+  cambiarEscena('apartamento', 'terminal-escena');
+  setTimeout(mostrarEscritorioHelix, 300);
 }
 
+// ------------------------------------------------------------
+// ESCRITORIO HELIX — pantalla principal del terminal
+// ------------------------------------------------------------
+function mostrarEscritorioHelix(){
+  const body = document.getElementById('terminal-body');
+  body.innerHTML = '';
+
+  // Ocultamos los botones de acción del terminal mientras estamos
+  // en el escritorio (solo se muestran dentro de Mensajes).
+  const acciones = document.querySelector('.terminal-acciones');
+  if(acciones) acciones.style.display = 'none';
+
+  const escritorio = document.createElement('div');
+  escritorio.id = 'helix-escritorio';
+  escritorio.innerHTML = `
+    <div class="helix-desktop-bg">
+      <svg class="helix-bg-logo" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M60 8 C35 8 18 26 18 46 C18 66 35 76 60 76 C85 76 102 66 102 46 C102 26 85 8 60 8Z" stroke="#4a9ab8" stroke-width="2" fill="none"/>
+        <path d="M60 44 C35 44 18 62 18 82 C18 102 35 112 60 112 C85 112 102 102 102 82 C102 62 85 44 60 44Z" stroke="#4a9ab8" stroke-width="2" fill="none"/>
+        <line x1="60" y1="8" x2="60" y2="112" stroke="#4a9ab8" stroke-width="1" stroke-dasharray="3 4"/>
+        <circle cx="60" cy="60" r="4" fill="#4a9ab8" opacity="0.6"/>
+      </svg>
+      <div class="helix-bg-nombre">HELIX</div>
+      <div class="helix-bg-tagline">INDUSTRIES · SISTEMA CORPORATIVO CERTIFICADO</div>
+    </div>
+    <div class="helix-sys-top">
+      SYS: NOMINAL<br>
+      SESIÓN: ACTIVA<br>
+      RED: HELIX-NET
+    </div>
+    <div class="helix-iconos-grid">
+      <div class="helix-icono" onclick="abrirTerminalMensajes()">
+        <div class="helix-icono-simbolo">✉</div>
+        <div class="helix-icono-label">MENSAJES</div>
+      </div>
+      <div class="helix-icono" onclick="abrirTerminalMercado()">
+        <div class="helix-icono-simbolo">⬡</div>
+        <div class="helix-icono-label">MERCADO</div>
+      </div>
+      <div class="helix-icono" onclick="abrirTerminalMapa()">
+        <div class="helix-icono-simbolo">◈</div>
+        <div class="helix-icono-label">MAPA</div>
+      </div>
+      <div class="helix-icono" onclick="abrirTerminalNoticias()">
+        <div class="helix-icono-simbolo">▤</div>
+        <div class="helix-icono-label">NOTICIAS</div>
+      </div>
+      <div class="helix-icono" onclick="abrirTerminalContactos()">
+        <div class="helix-icono-simbolo">◎</div>
+        <div class="helix-icono-label">CONTACTOS</div>
+      </div>
+      <div class="helix-icono" onclick="abrirTerminalBanco()">
+        <div class="helix-icono-simbolo">◇</div>
+        <div class="helix-icono-label">BANCO</div>
+      </div>
+    </div>
+    <div class="helix-sys-bottom">
+      UNIDAD: 273-19A<br>
+      v4.1.7<br>
+      RED: HELIX-NET
+    </div>
+  `;
+  body.appendChild(escritorio);
+}
+
+// ------------------------------------------------------------
+// MÓDULO: MENSAJES — lógica original intacta
+// ------------------------------------------------------------
+function abrirTerminalMensajes(){
+  const body = document.getElementById('terminal-body');
+  body.innerHTML = '';
+
+  // Restauramos los botones de acción
+  const acciones = document.querySelector('.terminal-acciones');
+  if(acciones) acciones.style.display = '';
+
+  // Botón volver al escritorio (reemplaza el de volver al apartamento
+  // solo visualmente dentro de mensajes — el original sigue en el HTML).
+  const btnVolver = document.querySelector('.btn-terminal-volver');
+  if(btnVolver){
+    btnVolver._onclickOriginal = btnVolver.getAttribute('onclick');
+    btnVolver.setAttribute('onclick', 'volverAEscritorioHelix()');
+    btnVolver.textContent = '← ESCRITORIO';
+  }
+
+  escribirTerminal();
+}
+
+function volverAEscritorioHelix(){
+  // Restauramos el botón volver a su estado original
+  const btnVolver = document.querySelector('.btn-terminal-volver');
+  if(btnVolver && btnVolver._onclickOriginal){
+    btnVolver.setAttribute('onclick', btnVolver._onclickOriginal);
+    btnVolver.textContent = '← VOLVER AL APARTAMENTO';
+  }
+  // Ocultamos el botón SALIR por si estaba visible
+  const btnSalir = document.getElementById('btn-terminal');
+  if(btnSalir) btnSalir.style.display = 'none';
+
+  mostrarEscritorioHelix();
+}
+
+// ------------------------------------------------------------
+// MÓDULO: MAPA — usa abrirMapa() ya existente
+// ------------------------------------------------------------
+function abrirTerminalMapa(){
+  // Volvemos al apartamento en background antes de abrir el mapa,
+  // para que volverApartamentoDesMapa() funcione correctamente.
+  cambiarEscena('terminal-escena', 'apartamento');
+  setTimeout(abrirMapa, 100);
+}
+
+// ------------------------------------------------------------
+// MÓDULO: NOTICIAS — usa abrirPanelHub() ya existente
+// ------------------------------------------------------------
+function abrirTerminalNoticias(){
+  abrirPanelHub('noticias');
+}
+
+// ------------------------------------------------------------
+// MÓDULOS NO DISPONIBLES (Mercado, Contactos, Banco)
+// ------------------------------------------------------------
+function abrirTerminalMercado(){
+  mostrarModuloNoDisponible('MERCADO', 'Sistema de intercambio en mantenimiento programado.');
+}
+function abrirTerminalContactos(){
+  mostrarModuloNoDisponible('CONTACTOS', 'Directorio de red no disponible en este nodo.');
+}
+function abrirTerminalBanco(){
+  mostrarModuloNoDisponible('BANCO', 'Acceso a HELIX BANK restringido fuera de horario operativo.');
+}
+
+function mostrarModuloNoDisponible(nombre, mensaje){
+  const body = document.getElementById('terminal-body');
+  body.innerHTML = '';
+  const acciones = document.querySelector('.terminal-acciones');
+  if(acciones) acciones.style.display = '';
+
+  const btnVolver = document.querySelector('.btn-terminal-volver');
+  if(btnVolver){
+    btnVolver._onclickOriginal = btnVolver.getAttribute('onclick');
+    btnVolver.setAttribute('onclick', 'volverAEscritorioHelix()');
+    btnVolver.textContent = '← ESCRITORIO';
+  }
+
+  const box = document.createElement('div');
+  box.className = 'helix-modulo-error';
+  box.innerHTML = `
+    <div class="helix-modulo-error-titulo">> MÓDULO: ${nombre}</div>
+    <div class="helix-modulo-error-msg">> ${mensaje}</div>
+    <div class="helix-modulo-error-codigo">> CÓDIGO: 503 · SERVICIO NO DISPONIBLE</div>
+  `;
+  body.appendChild(box);
+}
+
+// ------------------------------------------------------------
+// FUNCIÓN escribirTerminal — lógica original de mensajes
+// (sin cambios respecto a la versión anterior)
+// ------------------------------------------------------------
 async function escribirTerminal(){
   const body=document.getElementById('terminal-body');body.innerHTML='';
   const n=Estado.jugador.nombre,a=Estado.jugador.apellido1;
-  // ANTI-BUCLE: si la misión ya está hecha o completada, NO mostramos el
-  // mensaje inicial de Mara ni el botón "SALIR DEL APARTAMENTO". Solo
-  // los recibos de HELIX y un terminal vacío. La trama no debe rebobinar.
   const yaHecha = Estado.mision === 'volvioApartamento' || Estado.mision === 'completada';
-
-  // ANTI-BUCLE 2: si el jugador ya vio el mensaje de Mara y volvió al
-  // apartamento sin aceptar, NO repetimos toda la animación de descifrado.
-  // Mostramos un resumen breve y el mensaje cifrado tal cual, listo
-  // para que pueda decidir si sale al bar o no.
   Estado.memoria = Estado.memoria || {};
   const yaVioMensajeMara = Estado.memoria.vioMensajeMaraEnTerminal === true;
 
-  // === RAMA RÁPIDA: ya vio el mensaje de Mara, no ha hecho la misión ===
-  // Sin esperas largas, sin "descifrando…", sin re-boot ceremonioso.
   if(yaVioMensajeMara && !yaHecha){
-    // Cabecera mínima
     const d1=document.createElement('div');d1.className='linea-terminal sistema';
     d1.textContent=`> sesión restaurada · ${n.toUpperCase()} ${a.toUpperCase()}`;
     body.appendChild(d1);
-    // Si hay mensajes nuevos de HELIX (cobros), los anunciamos y pintamos.
     const numPendientes = (Estado.terminalPendientes || []).length;
     if(numPendientes > 0){
       const d2=document.createElement('div');d2.className='linea-terminal sistema';
@@ -43,7 +191,6 @@ async function escribirTerminal(){
       pintarMensajesHelixPendientes(body);
       await esperar(600);
     }
-    // El mensaje de Mara sigue ahí: lo reproducimos tal cual, sin descifrado.
     const dM=document.createElement('div');dM.className='linea-terminal cifrado';
     dM.textContent=`> mensaje pendiente: [REDACTADO]`;
     body.appendChild(dM);
@@ -53,19 +200,16 @@ async function escribirTerminal(){
     msg.innerHTML=`<div class="remitente">DE: [REDACTADO]</div><div class="cuerpo-mensaje">Bar Noir.<br>Una hora.<br><br>No respondas.</div>`;
     body.appendChild(msg);
     body.scrollTop=body.scrollHeight;
-    // Activamos el botón SALIR inmediatamente: ya conoces la dirección.
     document.getElementById('btn-terminal').style.display='block';
     return;
   }
 
   const lineas=[{txt:`> boot 4.1.7`,cls:'linea-terminal sistema',d:0},{txt:`> usuario: ${n.toUpperCase()} ${a.toUpperCase()}`,cls:'linea-terminal sistema',d:400}];
-  // Si hay mensajes pendientes de HELIX, los anunciamos antes del de Mara.
   const numPendientes = (Estado.terminalPendientes || []).length;
   if(numPendientes > 0){
     lineas.push({txt:`> ${numPendientes} notificacion(es) HELIX BANK`,cls:'linea-terminal sistema',d:700});
   }
   if(yaHecha){
-    // Mensaje sobrio: bandeja sin nada nuevo.
     lineas.push({txt:`> bandeja entrante — sin mensajes nuevos`,cls:'linea-terminal sistema',d:900});
   } else {
     lineas.push({txt:`> 1 mensaje entrante — PRIORIDAD ALTA`,cls:'linea-terminal alerta',d:900});
@@ -73,13 +217,11 @@ async function escribirTerminal(){
     lineas.push({txt:`> completado.`,cls:'linea-terminal sistema',d:2000});
   }
   for(const l of lineas){await esperar(l.d);const d=document.createElement('div');d.className=l.cls;d.textContent=l.txt;body.appendChild(d);body.scrollTop=body.scrollHeight;}
-  // Pintamos los mensajes pendientes de HELIX (cobros, amenaza).
   if(numPendientes > 0){
     await esperar(800);
     pintarMensajesHelixPendientes(body);
   }
   if(yaHecha){
-    // Tras la misión: solo un botón discreto para volver al apartamento.
     await esperar(1000);
     const volverBox = document.createElement('div');
     volverBox.style.cssText = 'text-align:center;margin-top:1.5rem;';
@@ -96,18 +238,11 @@ async function escribirTerminal(){
   await esperar(3000);
   const d2=document.createElement('div');d2.className='linea-terminal alerta';d2.textContent=`> esto no parece casual.`;body.appendChild(d2);
   setTimeout(()=>{document.getElementById('btn-terminal').style.display='block';},1000);
-  // Marcar que el mensaje de Mara ya se ha visto. Si el jugador vuelve
-  // al apartamento sin aceptar y reentra al terminal, no le repetiremos
-  // toda la animación de descifrado (ver "RAMA RÁPIDA" al inicio de
-  // esta función).
   Estado.memoria = Estado.memoria || {};
   Estado.memoria.vioMensajeMaraEnTerminal = true;
   if(typeof guardarPartida === 'function') guardarPartida();
 }
 
-// Pinta en el terminal los mensajes pendientes de HELIX Bank. Cada
-// cobro se ve como una "factura" sobria. La amenaza tiene su propio
-// formato más agresivo (sin perder el tono burocrático).
 function pintarMensajesHelixPendientes(body){
   const pendientes = Estado.terminalPendientes || [];
   pendientes.forEach(p => {
@@ -145,31 +280,19 @@ function pintarMensajesHelixPendientes(body){
       body.appendChild(box);
       setTimeout(()=>{box.style.opacity='1';box.style.transform='translateY(0)';},100);
     } else if(p.tipo === 'misionMara'){
-      // Mensaje cifrado con las coordenadas del paquete.
-      // La combinación 0-2-7-1-9 es tu fecha de nacimiento "oficial"
-      // según HELIX. Lo notarás cuando abras el paquete.
-      //
-      // CAPA 2: el texto varía según si pediste info y la confianza
-      // con Mara. Cuatro versiones posibles (combinaciones de 2x2,
-      // con neutra/baja unidas en uno mismo).
       const box = document.createElement('div');
       box.className = 'mensaje-mara-box mensaje-mision';
       box.style.cssText = 'opacity:0;transform:translateY(10px);transition:all 0.6s ease;margin-top:0.8rem;border-left:3px solid var(--magenta);';
-      // Selección del texto según el estado.
       const conf = nivelConfianzaMara();
       const info = pidioInfoMara();
       let cuerpoTxt = '';
       if(!info && conf !== 'alta'){
-        // Estándar (sin info, neutra/baja)
         cuerpoTxt = `Casillero 218.<br>Corredor oeste. Nivel 4.<br><br>Combinación: <span style="letter-spacing:0.3em;color:var(--cyan)">0 - 2 - 7 - 1 - 9</span><br><br>No te demores. No respondas.`;
       } else if(!info && conf === 'alta'){
-        // Sin info + confianza alta
         cuerpoTxt = `218. Corredor oeste. Nivel 4.<br><br>Combinación: <span style="letter-spacing:0.3em;color:var(--cyan)">0 - 2 - 7 - 1 - 9</span><br><br>Si algo va mal, no me llames. Sal por el ascensor sur.<br>Estaré ahí cuando llegues.`;
       } else if(info && conf !== 'alta'){
-        // Con info + neutra/baja
         cuerpoTxt = `Casillero 218 como te dije.<br>Corredor oeste. Nivel 4.<br><br>Combinación: <span style="letter-spacing:0.3em;color:var(--cyan)">0 - 2 - 7 - 1 - 9</span><br><br>Sabes lo que vienes a buscar. No te entretengas.`;
       } else {
-        // Con info + confianza alta
         cuerpoTxt = `Tal como hablamos.<br>218, corredor oeste, Nivel 4.<br><br>Combinación: <span style="letter-spacing:0.3em;color:var(--cyan)">0 - 2 - 7 - 1 - 9</span><br><br>No es el primer sobre que recoges en tu vida. Aunque tú no lo sepas.<br>Confío en ti. No me hagas arrepentirme.`;
       }
       box.innerHTML = `
@@ -185,11 +308,9 @@ function pintarMensajesHelixPendientes(body){
     }
   });
   body.scrollTop = body.scrollHeight;
-  // Tras mostrarlos, los limpiamos. Quedan en Estado.recibos por si
-  // el jugador quiere consultarlos en el inventario.
   Estado.terminalPendientes = [];
 }
-function esperar(ms){return new Promise(r=>setTimeout(r,ms));}
 
+function esperar(ms){return new Promise(r=>setTimeout(r,ms));}
 
 // ============================================================

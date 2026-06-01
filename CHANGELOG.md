@@ -11,6 +11,10 @@
 
 ---
 
+## [0.76] - 2026-06-01
+### Added
+- El terminal del apartamento ahora abre un escritorio corporativo HELIX con seis iconos. Mensajes, Mapa y Noticias funcionan; Mercado, Contactos y Banco muestran un módulo no disponible.
+
 ## [0.75] - 2026-06-01
 ### Added
 - Cadenas de misiones de lore que se descubren explorando, una parte por partida. Cadena general "Lo que quedó arriba" (vida fuera de la Tierra) y una cadena de 5 partes por cada facción de zona, con recompensas crecientes y super-recompensa final (reputación + objeto único).
