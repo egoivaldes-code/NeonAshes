@@ -192,9 +192,16 @@ html, body {
 .mercado-inner,
 .terminal-pantalla,
 .transito-inner,
-#tarjetas-loc-mision,
-.interior-apt {
+#tarjetas-loc-mision {
   padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0));
+}
+
+/* El apartamento está anclado abajo (bottom:0). Tras quitar la barra
+   hub, un padding-bottom grande dejaba un hueco enorme entre las
+   opciones y la barra permanente. Le damos un padding justo para
+   librar solo la barra permanente, dejando más sitio a la imagen. */
+.interior-apt {
+  padding-bottom: calc(4.8rem + env(safe-area-inset-bottom, 0));
 }
 
 /* tl-inner es un caso aparte: tiene position:absolute; bottom:0,
@@ -316,7 +323,7 @@ html, body {
   .opcion-btn { padding: 0.45rem 0.8rem; }
   .reloj-apt { font-size: 1.6rem; margin-bottom: 0.3rem; }
   .fecha-apt { margin-bottom: 1rem; }
-  .interior-apt { padding: 0.8rem 1.2rem 0 1.2rem; }
+  .interior-apt { padding: 0.8rem 1.2rem calc(4.2rem + env(safe-area-inset-bottom, 0)) 1.2rem; }
 }
 
 /* ===== 7. AJUSTE FINO MÓVIL ESTRECHO (<360px) =====
@@ -324,7 +331,7 @@ html, body {
 @media (max-width: 360px) {
   .opcion-btn { font-size: 0.62rem; padding: 0.5rem 0.7rem; }
   .narr-box { padding: 0.85rem 1rem; font-size: 0.72rem; }
-  .interior-apt { padding: 1rem 1rem 0 1rem; }
+  .interior-apt { padding: 1rem 1rem calc(4.8rem + env(safe-area-inset-bottom, 0)) 1rem; }
   .mercado-inner,
   .terminal-pantalla { padding-left: 1rem; padding-right: 1rem; }
 }

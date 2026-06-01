@@ -142,6 +142,75 @@ function abrirTerminalMensajes(){
     btnVolver.textContent = '← ESCRITORIO';
   }
 
+  // Paso previo: bandeja de entrada. El jugador ve la lista de mensajes
+  // y elige cuál abrir, en vez de saltar directo al de Mara.
+  mostrarBandejaMensajes();
+}
+
+// Bandeja de entrada del terminal: lista los mensajes disponibles.
+function mostrarBandejaMensajes(){
+  const body = document.getElementById('terminal-body');
+  if(!body) return;
+  body.innerHTML = '';
+  document.body.classList.remove('terminal-escritorio-activo');
+  const acciones = document.querySelector('.terminal-acciones');
+  if(acciones) acciones.style.display = '';
+  // Ocultar el botón SALIR (solo aplica dentro del mensaje de Mara).
+  const btnSalir = document.getElementById('btn-terminal');
+  if(btnSalir) btnSalir.style.display = 'none';
+  // El botón volver, en la bandeja, regresa al escritorio HELIX.
+  const btnVolverB = document.querySelector('.btn-terminal-volver');
+  if(btnVolverB){
+    btnVolverB.setAttribute('onclick', 'volverAEscritorioHelix()');
+    btnVolverB.textContent = '← ESCRITORIO';
+  }
+
+  Estado.memoria = Estado.memoria || {};
+  const misionHecha = Estado.mision === 'volvioApartamento' || Estado.mision === 'completada';
+
+  const cab = document.createElement('div');
+  cab.className = 'bandeja-cabecera';
+  cab.textContent = '> BANDEJA DE ENTRADA';
+  body.appendChild(cab);
+
+  const lista = document.createElement('div');
+  lista.className = 'bandeja-lista';
+
+  // Mensaje de Mara: el único de momento. Si la misión ya está hecha,
+  // se marca como leído; si no, va con prioridad alta y sin leer.
+  const maraNoLeido = !misionHecha;
+  const item = document.createElement('div');
+  item.className = 'bandeja-item' + (maraNoLeido ? ' no-leido' : ' leido');
+  item.setAttribute('onclick', 'abrirMensajeMara()');
+  item.innerHTML =
+      '<div class="bandeja-item-top">'
+    +   '<span class="bandeja-de">DE: [REDACTADO]</span>'
+    +   (maraNoLeido ? '<span class="bandeja-prio">PRIORIDAD ALTA</span>' : '<span class="bandeja-leido-tag">LEÍDO</span>')
+    + '</div>'
+    + '<div class="bandeja-asunto">Transmisión cifrada</div>'
+    + '<div class="bandeja-preview">' + (misionHecha ? 'Mensaje ya descifrado.' : 'Sin descifrar · pulsa para abrir') + '</div>';
+  lista.appendChild(item);
+
+  body.appendChild(lista);
+
+  // Notificaciones de HELIX BANK, si las hay, como avisos secundarios.
+  const numPendientes = (Estado.terminalPendientes || []).length;
+  if(numPendientes > 0){
+    const aviso = document.createElement('div');
+    aviso.className = 'bandeja-banco';
+    aviso.textContent = '> ' + numPendientes + ' notificación(es) HELIX BANK';
+    body.appendChild(aviso);
+  }
+}
+
+// Abre el mensaje de Mara (contenido original intacto).
+function abrirMensajeMara(){
+  // El botón "volver" pasa a regresar a la bandeja, no al escritorio.
+  const btnVolver = document.querySelector('.btn-terminal-volver');
+  if(btnVolver){
+    btnVolver.setAttribute('onclick', 'mostrarBandejaMensajes()');
+    btnVolver.textContent = '← BANDEJA';
+  }
   escribirTerminal();
 }
 

@@ -20,10 +20,23 @@ function guardarEstadoZonas(data){
   try { localStorage.setItem(CLAVE_ZONAS, JSON.stringify(data)); } catch(e){}
 }
 function getRepZona(id){
+  // La reputación de zona ahora es la de su facción dominante (un único
+  // contador). Si la zona no tiene facción, caemos al valor antiguo.
+  if(typeof faccionDeZona === 'function' && typeof getRepFaccion === 'function'){
+    const fid = faccionDeZona(id);
+    if(fid) return getRepFaccion(fid);
+  }
   const d = cargarEstadoZonas();
   return (d[id] && typeof d[id].rep === 'number') ? d[id].rep : 0;
 }
 function cambiarRepZona(id, delta){
+  // Redirigimos el cambio a la reputación de la facción dueña de la zona,
+  // para no llevar dos contadores distintos del mismo sitio. Las visitas
+  // se siguen guardando aparte (solo cuentan cuántas veces has estado).
+  if(typeof faccionDeZona === 'function' && typeof cambiarRepFaccion === 'function'){
+    const fid = faccionDeZona(id);
+    if(fid){ cambiarRepFaccion(fid, delta); return; }
+  }
   const d = cargarEstadoZonas();
   if(!d[id]) d[id] = { rep: 0, visitas: 0 };
   d[id].rep = Math.max(-100, Math.min(100, (d[id].rep || 0) + delta));
@@ -687,9 +700,14 @@ function llegarAZona(){
 
   document.getElementById('zona-llegada-desc').style.borderColor = zona.colorFaccion + '55';
   const opcsEl = document.getElementById('zona-opciones');
+  // Acciones con recompensa ya hechas hoy: se ocultan del menú (más limpio
+  // y deja más sitio). Vuelven a aparecer al cambiar de día de juego.
+  const hoy = _diaDeJuegoActual();
+  const hechasHoy = (Estado.memoria && Estado.memoria.accionesZonaHoy) || {};
   let html = '';
   for(let i = 0; i < zona.opciones.length; i++){
     const op = zona.opciones[i];
+    if(hechasHoy[zona.id + ':' + op.accion] === hoy) continue; // ya hecha hoy
     const txtZona = op.txt.replace(/\{NOMBRE_ZONA\}/g, zona.nombreCorto || zona.nombre);
     // Si la facción no te ayuda / te ataca, solo dejamos salir (observar y volver).
     const esSalida = op.accion === 'volver_mapa_ciudad' || op.accion === 'observar';
@@ -717,6 +735,18 @@ function llegarAZona(){
 // Las opciones disponibles cuando llegas a una zona (hablar con
 //   un contacto, comprar, observar, asistir a un sermón, etc.).
 // ============================================================
+
+// Devuelve el "día de juego" actual como texto (año-mes-día), para
+// limitar acciones a una vez al día. Usa el reloj diegético del juego.
+function _diaDeJuegoActual(){
+  try {
+    if(typeof obtenerFechaJuego === 'function'){
+      const f = obtenerFechaJuego();
+      return f.getFullYear() + '-' + (f.getMonth()+1) + '-' + f.getDate();
+    }
+  } catch(e){}
+  return 'dia-unico';
+}
 
 function accionZona(accion){
   const zona = _zonaActual;
@@ -825,6 +855,25 @@ function accionZona(accion){
   }
 
   narr.innerHTML = r.narr;
+
+  // Acciones con recompensa (créditos, estado o reputación) solo se pueden
+  // hacer una vez por día de juego, igual que "mirar por la ventana".
+  // Las acciones puramente narrativas o de salir no se limitan.
+  const tieneRecompensa = !!(r.cambios || r.rep);
+  if(tieneRecompensa){
+    const hoy = _diaDeJuegoActual();
+    Estado.memoria = Estado.memoria || {};
+    Estado.memoria.accionesZonaHoy = Estado.memoria.accionesZonaHoy || {};
+    const clave = zona.id + ':' + accion;
+    if(Estado.memoria.accionesZonaHoy[clave] === hoy){
+      // Ya hecha hoy: mostramos aviso y no aplicamos efectos otra vez.
+      narr.innerHTML = 'Ya te has ocupado de esto hoy. Será mejor volver mañana; insistir ahora solo llamaría la atención.';
+      opcEl.innerHTML = r.botones.replace(/\{NOMBRE_ZONA\}/g, _nz);
+      return;
+    }
+    Estado.memoria.accionesZonaHoy[clave] = hoy;
+  }
+
   if(r.cambios){
     const c = r.cambios;
     if(c.creditos){

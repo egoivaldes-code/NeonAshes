@@ -286,7 +286,6 @@ function opcionApt(idx){
       setTimeout(()=>{
         opc.innerHTML =
           `<button class="opcion-btn" onclick="dormirHastaElEncargo()">Dormir hasta el amanecer →</button>` +
-          `<button class="opcion-btn" onclick="opcionApt(1)">Encender el terminal</button>` +
           `<button class="opcion-btn" onclick="regenerarOpcionesAptCierre()">Quedarte despierto</button>`;
       }, 500);
     } else {
@@ -295,7 +294,6 @@ function opcionApt(idx){
       setTimeout(()=>{
         opc.innerHTML =
           `<button class="opcion-btn" onclick="dormirYCerrarDia()">Dejar que el sueño te lleve →</button>` +
-          `<button class="opcion-btn" onclick="opcionApt(1)">Encender el terminal</button>` +
           `<button class="opcion-btn" onclick="regenerarOpcionesAptCierre()">Quedarte despierto</button>`;
       }, 500);
     }

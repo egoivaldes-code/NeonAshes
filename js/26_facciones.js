@@ -191,24 +191,10 @@ function renderContactos(){
     htmlContactos += '<div class="contacto-tarjeta"><div class="contacto-avatar mara">M</div><div class="contacto-info"><span class="contacto-nombre">MARA VEX</span><span class="contacto-rol">FIXER · BAR NOIR</span><span class="contacto-relacion '+relacionClase+'">RELACIÓN: '+relacionTxt+'</span><div class="contacto-meta">'+descripcion+'</div>'+estadoEncargo+'</div></div>';
   }
 
-  // SECCIÓN: REPUTACIÓN POR ZONA
-  let repZonas = {};
-  try { repZonas = JSON.parse(localStorage.getItem('neon_ashes_zonas_v1') || '{}'); } catch(e){}
-  const hayZonas = Object.keys(repZonas).some(k => repZonas[k] && repZonas[k].visitas > 0);
-  let htmlZonas = '<div class="zonas-rep-titulo-seccion">REPUTACIÓN POR ZONA</div>';
-  if(!hayZonas){
-    htmlZonas += '<div style="font-size:0.55rem;letter-spacing:0.18em;color:rgba(200,216,224,0.3);font-style:italic;padding:0.5rem 0.2rem;">Aún no has visitado ninguna zona.</div>';
-  } else {
-    Object.entries(ZONAS_NOMBRES_DISP).forEach(([id, nombre]) => {
-      const visitas = (repZonas[id] && repZonas[id].visitas) || 0;
-      if(visitas === 0) return;
-      const rep = (repZonas[id] && typeof repZonas[id].rep === 'number') ? repZonas[id].rep : 0;
-      const cls = rep > 15 ? 'pos' : rep < -15 ? 'neg' : 'neu';
-      const label = rep > 15 ? ('+'+rep) : rep < -15 ? String(rep) : '0';
-      const colorZona = rep > 15 ? '#00e5ff' : rep < -15 ? '#ff006e' : 'rgba(200,216,224,0.35)';
-      htmlZonas += '<div class="zona-rep-fila"><div><div class="zona-rep-nombre" style="color:'+colorZona+'">'+nombre+'</div><div style="font-size:0.46rem;letter-spacing:0.15em;color:rgba(200,216,224,0.3);margin-top:0.15rem;">VISITAS: '+visitas+'</div></div><div class="zona-rep-valor '+cls+'">'+label+'</div></div>';
-    });
-  }
+  // SECCIÓN: REPUTACIÓN POR ZONA — eliminada. La reputación de cada zona
+  // es ahora la misma que la de su facción dominante, así que se muestra
+  // una sola vez, abajo, en la sección FACCIONES (sin duplicar cifras).
+  let htmlZonas = '';
 
   // SECCIÓN: FACCIONES
   let htmlFacciones = '<div class="facciones-titulo-seccion">FACCIONES</div>';
@@ -216,9 +202,13 @@ function renderContactos(){
   FACCIONES_DATA.forEach(f => {
     const rep = typeof repF[f.id]==='number' ? repF[f.id] : 0;
     const repAbs = Math.abs(rep);
-    const barWidth = Math.round(repAbs/2);
-    const repLabel = rep > 15 ? ('FAVORABLE +'+rep) : rep < -15 ? ('HOSTIL '+rep) : rep === 0 ? 'NEUTRAL' : ('NEUTRA '+(rep>0?'+':'')+rep);
+    // La barra va de -100 a +100, creciendo desde el centro (50%).
+    // El relleno ocupa la mitad proporcional al valor.
+    const barWidth = repAbs / 2; // 0..50 (% del ancho total)
+    const repLabel = rep > 15 ? 'FAVORABLE' : rep < -15 ? 'HOSTIL' : rep === 0 ? 'NEUTRAL' : 'NEUTRA';
     const repColor = rep > 15 ? f.color : rep < -15 ? '#ff006e' : 'rgba(200,216,224,0.4)';
+    // Número siempre con signo explícito (+29 / -45 / 0).
+    const repNum = rep > 0 ? ('+'+rep) : String(rep);
     const expandida = _faccionExpandida === f.id;
     const barLeft = rep >= 0 ? '50%' : (50 - barWidth) + '%';
 
@@ -226,9 +216,14 @@ function renderContactos(){
       + '<div class="faccion-header" onclick="toggleFaccion(\''+f.id+'\')">'
       + '<div class="faccion-icono" style="color:'+f.color+'">'+f.icono+'</div>'
       + '<div class="faccion-header-info">'
-      + '<div class="faccion-nombre-row"><span class="faccion-nombre" style="color:'+f.color+'">'+f.nombre+'</span><span class="faccion-flecha">▾</span></div>'
+      + '<div class="faccion-nombre-row"><span class="faccion-nombre" style="color:'+f.color+'">'+f.nombre+'</span>'
+      +   '<span class="faccion-rep-num" style="color:'+repColor+'">'+repNum+'</span>'
+      +   '<span class="faccion-flecha">▾</span></div>'
       + '<div class="faccion-rep-mini" style="color:'+repColor+'">'+repLabel+'</div>'
-      + '<div class="faccion-barra-wrap"><div class="faccion-barra-fill" style="width:'+barWidth+'%;background:'+repColor+';left:'+barLeft+';"></div></div>'
+      + '<div class="faccion-barra-wrap">'
+      +   '<div class="faccion-barra-centro"></div>'
+      +   '<div class="faccion-barra-fill" style="width:'+barWidth+'%;background:'+repColor+';left:'+barLeft+';box-shadow:0 0 6px '+repColor+';"></div>'
+      + '</div>'
       + '</div></div>'
       + '<div class="faccion-cuerpo">'
       + '<div class="faccion-desc">'+f.desc+'</div>'

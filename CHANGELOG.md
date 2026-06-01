@@ -11,6 +11,18 @@
 
 ---
 
+## [0.76.5] - 2026-06-01
+### Changed
+- La reputación de cada zona y la de su facción son ahora el mismo valor; se quita el bloque duplicado "Reputación por zona".
+- La barra de facción muestra el número con claridad (+/-) y una escala centrada.
+- Mensajes abre primero una bandeja de entrada donde eliges qué mensaje leer.
+### Fixed
+- La pantalla de dormir ya no incluye "Encender el terminal".
+- La cabecera del terminal ya no se solapa con el reloj.
+- Corregidos los huecos del apartamento y de las zonas; las opciones ya no quedan pegadas a la barra inferior.
+### Added
+- Las acciones de zona con recompensa solo se pueden hacer una vez por día de juego y desaparecen del menú tras usarlas.
+
 ## [0.76.4] - 2026-06-01
 ### Changed
 - La acción "Seguir durmiendo" ahora se llama "Dormir".

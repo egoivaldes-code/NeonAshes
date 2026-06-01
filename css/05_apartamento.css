@@ -155,8 +155,10 @@
   margin: 0;
 }
 #apartamento .interior-apt {
-  /* Reservamos espacio abajo para hub-barra (≈70px) + barra permanente (≈64px). */
-  padding-bottom: 150px;
+  /* La barra hub del apartamento se eliminó: ahora solo hay que dejar
+     espacio para la barra permanente (≈64px) más un pequeño respiro.
+     Así las opciones bajan hacia la barra y la imagen gana sitio arriba. */
+  padding-bottom: 78px;
 }
 
 

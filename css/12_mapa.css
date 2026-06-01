@@ -226,7 +226,7 @@
   /* padding-bottom amplio para que la barra permanente (z-index 35,
      ~3rem de alto) nunca tape la última opción de la zona. */
   padding: 1.2rem 1.4rem;
-  padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0));
+  padding-bottom: calc(6.2rem + env(safe-area-inset-bottom, 0));
   z-index: 5;
   background: linear-gradient(0deg, rgba(3,5,8,0.97) 0%, rgba(3,5,8,0.5) 100%);
   /* Permitir scroll vertical cuando haya muchas opciones y no quepan. */

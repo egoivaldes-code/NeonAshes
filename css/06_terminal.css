@@ -9,7 +9,7 @@
 #terminal-escena{align-items:flex-start;justify-content:flex-start;padding:0;}
 .terminal-overlay{background:rgba(3,5,8,0.88);}
 .terminal-pantalla{position:relative;z-index:5;width:100%;height:100%;background:linear-gradient(rgba(0,229,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.01) 1px,transparent 1px),transparent;background-size:30px 30px;padding:1.5rem 1.5rem 7rem 1.5rem;display:flex;flex-direction:column;overflow:hidden;}
-.terminal-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,229,255,0.12);padding-bottom:0.8rem;margin-bottom:1.5rem;}
+.terminal-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,229,255,0.12);padding-bottom:0.8rem;margin-bottom:1.5rem;margin-top:calc(2.6rem + env(safe-area-inset-top, 0px));}
 .terminal-titulo{font-size:0.55rem;letter-spacing:0.4em;color:var(--cyan-dim);}
 .terminal-status{display:flex;gap:0.5rem;align-items:center;}
 .dot{width:6px;height:6px;border-radius:50%;}
@@ -80,7 +80,7 @@
 /* Texto de sistema esquinas */
 .helix-sys-top{
   position: absolute;
-  top: max(0px, env(safe-area-inset-top, 0px));
+  top: calc(2.6rem + env(safe-area-inset-top, 0px));
   left: max(0px, env(safe-area-inset-left, 0px));
   font-family: 'Share Tech Mono', monospace;
   font-size: 0.5rem;
@@ -242,4 +242,65 @@ body.explorar-activo #reloj-diegetico{
   letter-spacing: 0;
   font-weight: bold;
   box-shadow: 0 0 8px rgba(255,0,110,0.6);
+}
+
+/* ============================================================
+   BANDEJA DE ENTRADA del terminal (lista de mensajes)
+   ============================================================ */
+.bandeja-cabecera{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.62rem;
+  letter-spacing:0.25em;
+  color:var(--cyan,#00e5ff);
+  margin-bottom:1rem;
+  opacity:0.8;
+}
+.bandeja-lista{ display:flex; flex-direction:column; gap:0.6rem; }
+.bandeja-item{
+  border:1px solid rgba(0,229,255,0.18);
+  background:rgba(0,20,28,0.45);
+  padding:0.9rem 1rem;
+  cursor:pointer;
+  transition:background 0.2s, border-color 0.2s;
+}
+.bandeja-item:hover,
+.bandeja-item:active{
+  background:rgba(0,40,52,0.6);
+  border-color:rgba(0,229,255,0.45);
+}
+.bandeja-item.no-leido{ border-left:3px solid #ff006e; }
+.bandeja-item.leido{ opacity:0.6; }
+.bandeja-item-top{
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:0.4rem;
+}
+.bandeja-de{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.55rem; letter-spacing:0.15em;
+  color:rgba(200,216,224,0.6);
+}
+.bandeja-prio{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.5rem; letter-spacing:0.15em;
+  color:#ff006e;
+}
+.bandeja-leido-tag{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.5rem; letter-spacing:0.15em;
+  color:rgba(200,216,224,0.35);
+}
+.bandeja-asunto{
+  font-size:0.8rem; color:var(--blanco-suave,#e8f4f8);
+  margin-bottom:0.25rem;
+}
+.bandeja-preview{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.52rem; letter-spacing:0.1em;
+  color:rgba(200,216,224,0.4);
+}
+.bandeja-banco{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.55rem; letter-spacing:0.15em;
+  color:rgba(0,229,255,0.5);
+  margin-top:1.2rem;
 }
