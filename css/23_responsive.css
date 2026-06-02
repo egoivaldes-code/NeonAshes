@@ -374,16 +374,13 @@ html, body {
 }
 
 
-/* === FONDO DEL APARTAMENTO EN MÓVIL — ENCUADRE AJUSTADO === */
-/* La imagen apt.jpg trae una franja de leyenda incrustada en la
-   parte baja. Con 'cover' y la posición un poco por encima del
-   centro, llenamos el alto del contenedor recortando esa franja
-   inferior, sin ampliar tanto como el cover por defecto. Queda un
-   pequeño margen de seguridad arriba. */
+/* === FONDO DEL APARTAMENTO EN MÓVIL — ENCUADRE === */
+/* La imagen apt.jpg ya viene limpia (sin franja de leyenda). Se
+   centra con 'cover'. */
 @media (max-width: 768px) {
   #bg-apt {
     background-size: cover;
-    background-position: center 18%;
+    background-position: center center;
     background-color: #03050a;
   }
 }

@@ -223,3 +223,14 @@
 
 
 /* ============================================================
+/* Enlace al extracto completo de HELIX BANK (v0.78) */
+.inv-recibos-pie{
+  margin-top:0.7rem; padding-top:0.6rem;
+  border-top:1px solid rgba(0,229,255,0.12);
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.55rem; letter-spacing:0.12em; text-align:center;
+  color:rgba(0,229,255,0.6); cursor:pointer;
+  transition:color 0.2s ease;
+}
+.inv-recibos-pie:hover,
+.inv-recibos-pie:active{ color:rgba(0,229,255,0.95); }

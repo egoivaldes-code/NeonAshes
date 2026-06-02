@@ -260,8 +260,96 @@ function abrirTerminalContactos(){
   document.body.classList.remove('terminal-escritorio-activo');
   abrirPanelHub('contactos');
 }
+// MÓDULO: BANCO — extracto detallado HELIX BANK.
+// Misma fuente de datos que la pestaña RECIBOS del inventario
+// (Estado.recibos), pero presentado como un extracto bancario
+// diegético: titular, saldo, unidad, cargos pendientes y la lista
+// completa de movimientos con más detalle por línea.
 function abrirTerminalBanco(){
-  mostrarModuloNoDisponible('BANCO', 'Acceso a HELIX BANK restringido fuera de horario operativo.');
+  const body = document.getElementById('terminal-body');
+  if(!body) return;
+  body.innerHTML = '';
+  document.body.classList.remove('terminal-escritorio-activo');
+  const acciones = document.querySelector('.terminal-acciones');
+  if(acciones) acciones.style.display = '';
+
+  const btnVolver = document.querySelector('.btn-terminal-volver');
+  if(btnVolver){
+    btnVolver._onclickOriginal = btnVolver.getAttribute('onclick');
+    btnVolver.setAttribute('onclick', 'volverAEscritorioHelix()');
+    btnVolver.textContent = '← ESCRITORIO';
+  }
+
+  const nombre = (Estado.jugador && Estado.jugador.nombre) || '';
+  const apellido = (Estado.jugador && Estado.jugador.apellido1) || '';
+  const titular = (nombre + ' ' + apellido).trim().toUpperCase() || 'USUARIO/A';
+  const saldo = Estado.creditos || 0;
+  const recibos = Estado.recibos || [];
+  const pendientes = recibos.filter(r => !r.pagado).length;
+
+  let movimientosHtml;
+  if(recibos.length === 0){
+    movimientosHtml = '<div class="banco-vacio">Sin movimientos registrados en este período.</div>';
+  } else {
+    movimientosHtml = recibos.map(r => {
+      const fecha = new Date(r.fecha);
+      const d = String(fecha.getDate()).padStart(2,'0');
+      const mes = (typeof MESES_CORTOS !== 'undefined') ? MESES_CORTOS[fecha.getMonth()] : (fecha.getMonth()+1);
+      const a = fecha.getFullYear();
+      const fechaTxt = `${d} ${mes} ${a}`;
+      const estado = r.pagado ? 'ejecutado' : 'impagado';
+      const estadoTxt = r.pagado ? 'EJECUTADO' : 'IMPAGADO';
+      const signo = r.pagado ? '−' : '!';
+      const saldoLinea = r.pagado
+        ? `Saldo resultante · ${r.saldoTras} CR`
+        : 'Cargo pendiente de regularización';
+      return `
+        <div class="banco-mov ${estado}">
+          <div class="banco-mov-top">
+            <span class="banco-mov-fecha">${fechaTxt}</span>
+            <span class="banco-mov-estado ${estado}">${estadoTxt}</span>
+          </div>
+          <div class="banco-mov-mid">
+            <span class="banco-mov-concepto">${r.concepto}</span>
+            <span class="banco-mov-importe ${estado}">${signo}${r.importe} CR</span>
+          </div>
+          <div class="banco-mov-bot">${saldoLinea}</div>
+        </div>`;
+    }).join('');
+  }
+
+  const avisoPend = pendientes > 0
+    ? `<div class="banco-aviso-pend">⚠ ${pendientes} cargo(s) pendiente(s) de regularización</div>`
+    : '';
+
+  const panel = document.createElement('div');
+  panel.className = 'banco-extracto';
+  panel.innerHTML = `
+    <div class="banco-cabecera">
+      <div class="banco-marca">HELIX BANK</div>
+      <div class="banco-sub">EXTRACTO DE CUENTA · DOMICILIACIONES</div>
+    </div>
+    <div class="banco-resumen">
+      <div class="banco-resumen-fila">
+        <span class="banco-lbl">TITULAR</span>
+        <span class="banco-val">${titular}</span>
+      </div>
+      <div class="banco-resumen-fila">
+        <span class="banco-lbl">UNIDAD</span>
+        <span class="banco-val">273-19A · H-44 / NIVEL 273</span>
+      </div>
+      <div class="banco-resumen-fila banco-saldo">
+        <span class="banco-lbl">SALDO DISPONIBLE</span>
+        <span class="banco-val banco-saldo-cifra">${saldo} CR</span>
+      </div>
+    </div>
+    ${avisoPend}
+    <div class="banco-mov-titulo">MOVIMIENTOS</div>
+    <div class="banco-movimientos">${movimientosHtml}</div>
+    <div class="banco-pie">Documento generado automáticamente. HELIX BANK no atiende consultas presenciales.</div>
+  `;
+  body.appendChild(panel);
+  body.scrollTop = 0;
 }
 
 function mostrarModuloNoDisponible(nombre, mensaje){

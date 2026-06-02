@@ -304,3 +304,102 @@ body.explorar-activo #reloj-diegetico{
   color:rgba(0,229,255,0.5);
   margin-top:1.2rem;
 }
+
+/* ============================================================
+   EXTRACTO HELIX BANK — módulo BANCO del terminal (v0.78)
+   Vista detallada de los recibos domiciliados, misma fuente
+   de datos que la pestaña RECIBOS del inventario.
+   ============================================================ */
+.banco-extracto{
+  font-family:'Share Tech Mono',monospace;
+  color:rgba(200,216,224,0.85);
+  max-width:640px; margin:0 auto; padding:0.4rem 0.2rem 1.4rem;
+}
+.banco-cabecera{
+  border-bottom:1px solid rgba(0,229,255,0.25);
+  padding-bottom:0.7rem; margin-bottom:0.9rem; text-align:center;
+}
+.banco-marca{
+  font-size:1.15rem; letter-spacing:0.4em; font-weight:700;
+  color:rgba(0,229,255,0.9);
+}
+.banco-sub{
+  font-size:0.55rem; letter-spacing:0.25em; margin-top:0.3rem;
+  color:rgba(200,216,224,0.5); text-transform:uppercase;
+}
+.banco-resumen{
+  background:rgba(0,40,50,0.18);
+  border:1px solid rgba(0,229,255,0.15);
+  padding:0.7rem 0.9rem; margin-bottom:0.9rem;
+}
+.banco-resumen-fila{
+  display:flex; justify-content:space-between; align-items:baseline;
+  padding:0.28rem 0; font-size:0.62rem;
+}
+.banco-resumen-fila + .banco-resumen-fila{
+  border-top:1px solid rgba(0,229,255,0.08);
+}
+.banco-lbl{
+  letter-spacing:0.18em; color:rgba(200,216,224,0.45);
+  text-transform:uppercase; font-size:0.55rem;
+}
+.banco-val{ letter-spacing:0.1em; color:rgba(200,216,224,0.9); text-align:right; }
+.banco-saldo .banco-lbl{ color:rgba(0,229,255,0.7); }
+.banco-saldo-cifra{
+  font-size:0.95rem; font-weight:700; color:rgba(0,229,255,0.95);
+  letter-spacing:0.12em;
+}
+.banco-aviso-pend{
+  background:rgba(40,0,15,0.25);
+  border-left:2px solid rgba(255,100,124,0.6);
+  color:rgba(255,140,160,0.9);
+  font-size:0.58rem; letter-spacing:0.12em;
+  padding:0.5rem 0.7rem; margin-bottom:0.9rem;
+}
+.banco-mov-titulo{
+  font-size:0.58rem; letter-spacing:0.3em; text-transform:uppercase;
+  color:rgba(0,229,255,0.6); margin:0.4rem 0 0.6rem;
+}
+.banco-movimientos{ display:flex; flex-direction:column; gap:0.5rem; }
+.banco-mov{
+  background:rgba(0,40,50,0.15);
+  border-left:2px solid rgba(0,229,255,0.3);
+  padding:0.55rem 0.7rem;
+}
+.banco-mov.impagado{
+  border-left-color:rgba(255,100,124,0.6);
+  background:rgba(40,0,15,0.18);
+}
+.banco-mov-top{
+  display:flex; justify-content:space-between;
+  font-size:0.5rem; letter-spacing:0.12em; text-transform:uppercase;
+  color:rgba(200,216,224,0.45); margin-bottom:0.3rem;
+}
+.banco-mov-estado.ejecutado{ color:rgba(0,229,255,0.7); }
+.banco-mov-estado.impagado{ color:rgba(255,100,124,0.9); }
+.banco-mov-mid{
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:0.25rem;
+}
+.banco-mov-concepto{
+  font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase;
+  color:rgba(0,229,255,0.85);
+}
+.banco-mov-importe{ font-weight:700; letter-spacing:0.1em; font-size:0.7rem; }
+.banco-mov-importe.ejecutado{ color:rgba(200,216,224,0.9); }
+.banco-mov-importe.impagado{ color:rgba(255,100,124,0.95); }
+.banco-mov-bot{
+  font-size:0.52rem; letter-spacing:0.1em;
+  color:rgba(200,216,224,0.5);
+}
+.banco-vacio{
+  text-align:center; font-style:italic; font-size:0.6rem;
+  letter-spacing:0.15em; color:rgba(200,216,224,0.35);
+  padding:1.2rem 0;
+}
+.banco-pie{
+  margin-top:1.3rem; padding-top:0.7rem;
+  border-top:1px solid rgba(0,229,255,0.12);
+  font-size:0.5rem; letter-spacing:0.12em; text-align:center;
+  color:rgba(200,216,224,0.3); font-style:italic;
+}

@@ -11,6 +11,12 @@
 
 ---
 
+## [0.77.1] - 2026-06-02
+### Changed
+- Reemplazados los fondos de apartamento, tren, pasillo y mercado por versiones limpias sin franjas de información incrustada.
+### Added
+- El módulo BANCO del terminal ahora muestra el extracto detallado de HELIX BANK, enlazado con los recibos del inventario. El enlace desde el inventario solo aparece estando en el apartamento.
+
 ## [0.77] - 2026-06-02
 ### Added
 - Nuevas acciones en el apartamento: "Comer algo" (aparece cuando tienes hambre; te cobra créditos por comida de reparto y reduce el hambre), "Despejar la cabeza" (baja fatiga y disociación) y "Romper el silencio" (baja aislamiento). Cada una se puede hacer una vez por visita y tiene varios textos para no repetirse.

@@ -76,6 +76,14 @@ function mostrarHUD(visible){
 function abrirInventario(){
   actualizarHUD();
   renderRecibos(); // refrescar la lista cada vez que se abre
+  // El enlace al extracto del banco solo tiene sentido en el apartamento,
+  // que es donde está el terminal HELIX. Fuera, solo se ve el resumen.
+  const pieBanco = document.getElementById('inv-recibos-pie');
+  if(pieBanco){
+    const apt = document.getElementById('apartamento');
+    const enApartamento = apt && apt.classList.contains('activa');
+    pieBanco.style.display = enApartamento ? '' : 'none';
+  }
   document.getElementById('modal-inv').classList.add('visible');
   document.body.classList.add('panel-abierto');
   // Consultar el inventario también pausa el reloj del juego.
@@ -85,6 +93,22 @@ function cerrarInventario(){
   document.getElementById('modal-inv').classList.remove('visible');
   document.body.classList.remove('panel-abierto');
   reanudarTiempoJuego();
+}
+
+// Puente desde la pestaña RECIBOS del inventario al extracto detallado
+// del terminal (HELIX BANK). Cierra el inventario, entra al terminal y
+// abre directamente el módulo banco, saltándose el escritorio.
+function irAExtractoBanco(){
+  // Salvaguarda: solo accesible desde el apartamento (donde está el terminal).
+  const apt = document.getElementById('apartamento');
+  if(!(apt && apt.classList.contains('activa'))) return;
+  cerrarInventario();
+  if(typeof irATerminal === 'function'){
+    irATerminal();
+    setTimeout(() => {
+      if(typeof abrirTerminalBanco === 'function') abrirTerminalBanco();
+    }, 350);
+  }
 }
 
 // Alterna entre las pestañas OBJETOS y RECIBOS dentro del inventario.
