@@ -11,6 +11,12 @@
 
 ---
 
+## [0.77.3] - 2026-06-02
+### Changed
+- Mejorado el encuadre de la imagen y el reloj del apartamento en móvil.
+### Added
+- El juego se fuerza a orientación vertical en móvil; en horizontal se muestra un aviso para girar el dispositivo. No afecta a PC.
+
 ## [0.77.2] - 2026-06-02
 ### Changed
 - El fondo del apartamento en móvil ahora se ve completo (menos zoom).

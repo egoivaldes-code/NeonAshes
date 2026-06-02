@@ -376,13 +376,81 @@ html, body {
 
 /* === FONDO DEL APARTAMENTO EN MÓVIL — ENCUADRE === */
 /* La imagen apt.jpg ya viene limpia. En móvil usamos 'contain' para
-   que se vea la habitación completa (menos zoom). El color de fondo
-   rellena las bandas que queden por la diferencia de proporción. */
+   que se vea la habitación completa (menos zoom). La bajamos un poco
+   (no pegada al borde) para dejar aire arriba para el reloj de fecha
+   y que el encuadre respire. */
 @media (max-width: 768px) {
   #bg-apt {
     background-size: contain;
-    background-position: center top;
+    background-position: center 14%;
     background-color: #03050a;
     background-repeat: no-repeat;
   }
+  /* El reloj grande sube hacia la franja negra que queda entre la
+     imagen y el bloque de opciones, en vez de quedar pegado al texto.
+     Aprovecha el espacio vacío y mejora el equilibrio visual. */
+  #apartamento .reloj-apt {
+    margin-top: -22vh;
+  }
+}
+
+/* ============================================================
+   BLOQUEO DE ORIENTACIÓN — solo vertical (v0.77.3)
+   El juego está diseñado en vertical. En horizontal mostramos
+   un overlay que cubre todo y pide girar el dispositivo. Es la
+   forma fiable en navegador móvil (el bloqueo real de rotación
+   no está garantizado en todos los navegadores, sobre todo iOS).
+   ============================================================ */
+#rotacion-overlay{
+  display: none;
+}
+/* Solo en dispositivos TÁCTILES apaisados (móvil/tablet). La condición
+   'pointer: coarse' distingue dedo de ratón: garantiza que en PC nunca
+   salte el overlay, aunque la ventana del navegador sea baja y apaisada. */
+@media (orientation: landscape) and (max-height: 600px) and (pointer: coarse) {
+  #rotacion-overlay{
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #030508;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    gap: 1rem;
+  }
+  .rot-icono{
+    font-size: 3.5rem;
+    color: var(--cyan);
+    opacity: 0.7;
+    transform: rotate(90deg);
+    animation: rotAviso 2s ease-in-out infinite;
+    text-shadow: 0 0 20px rgba(0,229,255,0.4);
+  }
+  .rot-texto{
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.3em;
+    color: var(--cyan);
+    text-shadow: 0 0 12px rgba(0,229,255,0.3);
+  }
+  .rot-sub{
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: rgba(200,216,224,0.5);
+    text-transform: uppercase;
+  }
+  /* Mientras se ve el aviso, ocultamos el juego por debajo. */
+  .escena,
+  .barra-permanente,
+  #barra-permanente {
+    visibility: hidden;
+  }
+}
+@keyframes rotAviso{
+  0%, 100% { transform: rotate(90deg); }
+  50% { transform: rotate(0deg); }
 }

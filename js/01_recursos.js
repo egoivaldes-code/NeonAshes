@@ -8,8 +8,30 @@
 
 // Versión actual del juego. ACTUALIZAR EN CADA ENTREGA.
 // Se muestra en el panel de depuración (Ctrl+D / tap arriba-izquierda).
-const JUEGO_VERSION = "0.77.2";
+const JUEGO_VERSION = "0.77.3";
 window.JUEGO_VERSION = JUEGO_VERSION;
+
+// ------------------------------------------------------------
+// BLOQUEO DE ORIENTACIÓN (vertical).
+// Intento "best effort": donde el navegador lo soporte, fijamos la
+// orientación a vertical. Donde no (iOS Safari y la mayoría de navegadores
+// móviles fuera de pantalla completa), no pasa nada: el overlay CSS
+// (#rotacion-overlay) se encarga de pedir girar el dispositivo. Se
+// envuelve en try/catch porque lock() rechaza con error si no se cumple
+// la condición de pantalla completa, y no queremos que eso ensucie nada.
+// ------------------------------------------------------------
+(function intentarBloquearVertical(){
+  try{
+    // Solo tiene sentido en dispositivos táctiles (móvil/tablet). En PC
+    // no se intenta siquiera: el ratón no rota la pantalla.
+    var esTactil = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    if(!esTactil) return;
+    if(screen && screen.orientation && typeof screen.orientation.lock === 'function'){
+      const p = screen.orientation.lock('portrait');
+      if(p && typeof p.catch === 'function') p.catch(function(){ /* no soportado: lo cubre el overlay */ });
+    }
+  }catch(e){ /* silencioso: el overlay CSS es el plan de respaldo */ }
+})();
 
 const ASSETS = {
   APPROACH_SECTOR7: "assets/images/approach_sector7.webp",
