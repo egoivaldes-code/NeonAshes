@@ -115,7 +115,35 @@ function botonSilencio(){
   return `<button class="opcion-btn" onclick="opcionApt(6)">Romper el silencio</button>`;
 }
 
-function ajustarTextosApartamentoSegunMemoria(){
+// Devuelve UNA sola acción ambiental, la que mejor encaja con tu estado
+// actual. Prioridad: hambre apreciable → comer; fatiga alta → despejar;
+// aislamiento alto → romper el silencio; en cualquier otro caso, mirar
+// por la ventana. Si la acción elegida ya se usó esta visita, no se
+// ofrece nada (regla: una sola acción ambiental por visita, sin reemplazo).
+function botonAmbientalUnico(textoVentana){
+  const h = Estado.humano || {};
+  const niv = (s) => (typeof nivel === 'function') ? nivel(s) : null;
+  const esAlto = (s) => { const n = niv(s); return n === 'medio' || n === 'alto' || n === 'extremo'; };
+  const esAltoFuerte = (s) => { const n = niv(s); return n === 'alto' || n === 'extremo'; };
+
+  // Elegir por prioridad de necesidad.
+  if(esAlto(h.hambre) && Estado.comioEstaVisita !== true){
+    return botonComer();
+  }
+  if(esAltoFuerte(h.fatiga) && Estado.despejoEstaVisita !== true){
+    return botonDespejar();
+  }
+  if(esAltoFuerte(h.aislamiento) && Estado.silencioEstaVisita !== true){
+    return botonSilencio();
+  }
+  // Por defecto: mirar por la ventana.
+  return botonVentana(textoVentana || 'Mirar por la ventana');
+}
+
+// Si soloOpciones === true, regenera ÚNICAMENTE los botones del menú
+// sin reescribir el texto narrativo (se usa al cerrar una acción, para
+// no pisar el texto de la acción que el jugador acaba de leer).
+function ajustarTextosApartamentoSegunMemoria(soloOpciones){
   const narr = document.getElementById('narr-apt');
   const opc = document.getElementById('opciones-apt');
   const fechaApt = document.querySelector('.fecha-apt');
@@ -128,12 +156,11 @@ function ajustarTextosApartamentoSegunMemoria(){
   // Caso base: primera vez jugando. Sin cambios.
   if(completadas === 0 && m.aceptoEncargo === null && !m.guardoSilencio){
     // Texto original — lo dejamos como estaba.
-    narr.innerHTML = 'La lluvia ácida golpea el cristal.<br>Son las tres de la mañana.<br>No recuerdas cuándo te dormiste.';
+    if(!soloOpciones){
+      narr.innerHTML = 'La lluvia ácida golpea el cristal.<br>Son las tres de la mañana.<br>No recuerdas cuándo te dormiste.';
+    }
     opc.innerHTML = `
-      ${botonVentana("Mirar por la ventana")}
-      ${botonComer()}
-      ${botonDespejar()}
-      ${botonSilencio()}
+      ${botonAmbientalUnico("Mirar por la ventana")}
       ${botonDormir("Dormir")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Encender el terminal</button>`;
@@ -171,7 +198,9 @@ function ajustarTextosApartamentoSegunMemoria(){
     lineas.push('Empiezas a perder la cuenta de cuántas noches llevas así.');
   }
 
-  narr.innerHTML = lineas.join('<br>');
+  if(!soloOpciones){
+    narr.innerHTML = lineas.join('<br>');
+  }
 
   // === Etiqueta de la unidad: cambia si hay disociación alta ===
   if(fechaApt){
@@ -189,38 +218,26 @@ function ajustarTextosApartamentoSegunMemoria(){
   // de HELIX. Si aceptó, hay continuidad con el encargo.
   if(m.aceptoEncargo === true){
     opc.innerHTML = `
-      ${botonVentana("Mirar por la ventana")}
-      ${botonComer()}
-      ${botonDespejar()}
-      ${botonSilencio()}
+      ${botonAmbientalUnico("Mirar por la ventana")}
       ${botonDormir("Intentar dormir un poco más")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Comprobar el terminal otra vez</button>`;
   } else if(m.aceptoEncargo === false){
     opc.innerHTML = `
-      ${botonVentana("Mirar por la ventana")}
-      ${botonComer()}
-      ${botonDespejar()}
-      ${botonSilencio()}
+      ${botonAmbientalUnico("Mirar por la ventana")}
       ${botonDormir("Quedarte en la cama")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Encender el terminal (HELIX)</button>`;
   } else if(m.vioFragmentoCero){
     opc.innerHTML = `
-      ${botonVentana("Mirar por la ventana")}
-      ${botonComer()}
-      ${botonDespejar()}
-      ${botonSilencio()}
+      ${botonAmbientalUnico("Mirar por la ventana")}
       ${botonDormir("Cerrar los ojos un momento")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Revisar el terminal</button>`;
   } else {
     // Vuelta sin haber completado nada concreto
     opc.innerHTML = `
-      ${botonVentana("Mirar por la ventana otra vez")}
-      ${botonComer()}
-      ${botonDespejar()}
-      ${botonSilencio()}
+      ${botonAmbientalUnico("Mirar por la ventana otra vez")}
       ${botonDormir("Quedarte tumbado")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Encender el terminal</button>`;
@@ -716,17 +733,15 @@ function regenerarOpcionesAptCierre(){
   if(misionCerrada){
     // Versión post-misión: textos más cansados.
     opc.innerHTML = `
-      ${botonVentana("Mirar por la ventana")}
-      ${botonComer()}
-      ${botonDespejar()}
-      ${botonSilencio()}
+      ${botonAmbientalUnico("Mirar por la ventana")}
       ${botonDormir("Dormir")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Revisar el terminal</button>`;
   } else {
-    // Estado normal: dejamos que el ajustador escoja los textos.
+    // Estado normal: regeneramos SOLO los botones, sin reescribir el
+    // texto narrativo (que ahora muestra el resultado de la acción).
     if(typeof ajustarTextosApartamentoSegunMemoria === 'function'){
-      ajustarTextosApartamentoSegunMemoria();
+      ajustarTextosApartamentoSegunMemoria(true);
     }
   }
 }

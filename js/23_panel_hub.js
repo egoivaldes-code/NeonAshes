@@ -25,7 +25,7 @@ function abrirPanelHub(seccion){
 
   if(seccion === 'estado'){
     titulo.textContent = 'ESTADO';
-    cuerpo.innerHTML = renderEstado();
+    cuerpo.innerHTML = renderEstadoConPestanas('estado');
   } else if(seccion === 'contactos'){
     titulo.textContent = 'CONTACTOS';
     cuerpo.innerHTML = renderContactosConPestanas('contactos');
@@ -49,6 +49,43 @@ function abrirPanelHub(seccion){
   }
 
   panel.classList.add('activo');
+}
+
+// ------------------------------------------------------------
+// ESTADO con pestañas: ESTADO · CONTACTOS · TRABAJOS.
+// Permite consultar relaciones, reputación y trabajos también
+// fuera del apartamento (solo lectura: las acciones que cambian
+// el mundo —aceptar/salir a un objetivo— quedan bloqueadas fuera
+// del apartamento; ver iniciarMisionDesdeTrabajos).
+// ------------------------------------------------------------
+function renderEstadoConPestanas(activa){
+  const tab = (activa === 'contactos' || activa === 'trabajos') ? activa : 'estado';
+  let cuerpoTab;
+  if(tab === 'contactos'){
+    cuerpoTab = (typeof renderContactos === 'function') ? renderContactos() : '';
+  } else if(tab === 'trabajos'){
+    cuerpoTab = (typeof renderTrabajos === 'function') ? renderTrabajos() : '';
+  } else {
+    cuerpoTab = (typeof renderEstado === 'function') ? renderEstado() : '';
+  }
+  const cls = (t) => tab === t ? 'cp-tab activa' : 'cp-tab';
+  return ''
+    + '<div class="cp-tabs">'
+    +   '<button class="'+cls('estado')+'" onclick="cambiarTabEstado(\'estado\')">ESTADO</button>'
+    +   '<button class="'+cls('contactos')+'" onclick="cambiarTabEstado(\'contactos\')">CONTACTOS</button>'
+    +   '<button class="'+cls('trabajos')+'" onclick="cambiarTabEstado(\'trabajos\')">TRABAJOS</button>'
+    + '</div>'
+    + '<div id="hub-panel-cuerpo-tab">' + cuerpoTab + '</div>';
+}
+
+function cambiarTabEstado(tab){
+  // Al ver Trabajos, marcamos como visto para quitar su badge.
+  if(tab === 'trabajos'){
+    if(Estado.memoria) Estado.memoria.trabajosVistos = true;
+    if(typeof actualizarBadgesTerminal === 'function') actualizarBadgesTerminal();
+  }
+  const cuerpo = document.getElementById('hub-panel-cuerpo');
+  if(cuerpo) cuerpo.innerHTML = renderEstadoConPestanas(tab);
 }
 
 function cerrarPanelHub(){

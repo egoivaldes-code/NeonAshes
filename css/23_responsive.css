@@ -375,12 +375,14 @@ html, body {
 
 
 /* === FONDO DEL APARTAMENTO EN MÓVIL — ENCUADRE === */
-/* La imagen apt.jpg ya viene limpia (sin franja de leyenda). Se
-   centra con 'cover'. */
+/* La imagen apt.jpg ya viene limpia. En móvil usamos 'contain' para
+   que se vea la habitación completa (menos zoom). El color de fondo
+   rellena las bandas que queden por la diferencia de proporción. */
 @media (max-width: 768px) {
   #bg-apt {
-    background-size: cover;
-    background-position: center center;
+    background-size: contain;
+    background-position: center top;
     background-color: #03050a;
+    background-repeat: no-repeat;
   }
 }

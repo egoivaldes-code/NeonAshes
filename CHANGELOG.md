@@ -11,6 +11,15 @@
 
 ---
 
+## [0.77.2] - 2026-06-02
+### Changed
+- El fondo del apartamento en móvil ahora se ve completo (menos zoom).
+- El apartamento muestra una sola acción ambiental al entrar, elegida según el estado del jugador.
+### Added
+- El panel ESTADO incluye pestañas CONTACTOS y TRABAJOS, consultables fuera del apartamento en solo lectura. Salir a un objetivo sigue restringido al apartamento.
+### Fixed
+- El texto de las acciones del apartamento ya no se sustituye al instante por el texto inicial de la lluvia ácida.
+
 ## [0.77.1] - 2026-06-02
 ### Changed
 - Reemplazados los fondos de apartamento, tren, pasillo y mercado por versiones limpias sin franjas de información incrustada.

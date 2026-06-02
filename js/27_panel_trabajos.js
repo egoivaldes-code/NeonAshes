@@ -53,7 +53,12 @@ function renderTrabajos(){
   const misionEnCurso = Estado.mision === 'enRuta' || Estado.mision === 'enCasillero' ||
     Estado.mision === 'paqueteCerrado' || Estado.mision === 'paqueteAbierto' ||
     Estado.mision === 'paqueteRobado' || Estado.mision === 'volviendo';
-  const puedeSalir = !misionHecha && !misionEnCurso && (m.aceptoEncargo === true);
+  // Las acciones que cambian el mundo (salir a un objetivo) solo se
+  // permiten desde el apartamento. Fuera, la lista de trabajos es de
+  // solo lectura: ves el encargo, pero no puedes arrancarlo.
+  const apt = document.getElementById('apartamento');
+  const enApartamento = apt && apt.classList.contains('activa');
+  const puedeSalir = !misionHecha && !misionEnCurso && (m.aceptoEncargo === true) && enApartamento;
   const botonSalir = puedeSalir
     ? `<div style="margin-top:1rem;text-align:center;">
          <button class="btn-terminal" style="border-color:rgba(255,0,110,0.4);color:var(--magenta);margin-top:0.5rem;" onclick="iniciarMisionDesdeTrabajos()">SALIR AL OBJETIVO →</button>
@@ -80,6 +85,9 @@ function renderTrabajos(){
 // Llamado desde el botón "SALIR AL OBJETIVO" del panel Trabajos.
 // Cierra el panel y arranca la misión, como antes hacía el terminal.
 function iniciarMisionDesdeTrabajos(){
+  // Salvaguarda: solo desde el apartamento. Fuera, no se arranca nada.
+  const apt = document.getElementById('apartamento');
+  if(!(apt && apt.classList.contains('activa'))) return;
   // ANTI-BUCLE: si la misión ya está hecha, no la arrancamos otra vez.
   // El botón no debería estar visible, pero esta guarda protege ante
   // estados raros de UI o pulsaciones dobles.
