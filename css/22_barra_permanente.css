@@ -246,28 +246,28 @@ body.barra-permanente-activa .audio-mini {
 .perm-mini-barras {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
   width: 100%;
-  max-width: 44px;
+  max-width: 62px;
   margin-bottom: 0;
 }
 .pmb-fila {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
 }
 .pmb-letra {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 0.36rem;
-  color: rgba(160,200,210,0.7);
-  width: 5px;
+  font-size: 0.5rem;
+  color: rgba(160,200,210,0.8);
+  width: 7px;
   flex-shrink: 0;
   letter-spacing: 0;
   line-height: 1;
 }
 .pmb-track {
   flex: 1;
-  height: 2px;
+  height: 3px;
   background: rgba(200,216,224,0.12);
   border-radius: 2px;
   overflow: hidden;
@@ -290,7 +290,7 @@ body.barra-permanente-activa .audio-mini {
    ============================================================ */
 .barra-permanente { align-items: stretch; }
 .perm-btn {
-  max-height: 52px;
+  max-height: 60px;
   overflow: hidden;
 }
 .perm-btn .etiqueta {

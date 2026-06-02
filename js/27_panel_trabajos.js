@@ -17,6 +17,10 @@ let _subtabTrabajos = 'encargos';
 // vez (como aviso de paga/ascenso) y se consume en el siguiente render.
 let _ultimoResultadoProfesion = null;
 
+// Acción de campo cuyo selector de lugares está abierto ahora mismo.
+// {prof, accion} o null. Al elegir lugar o trabajar, se cierra.
+let _lugarAbierto = null;
+
 function renderTrabajos(){
   const sub = (_subtabTrabajos === 'oficio') ? 'oficio' : 'encargos';
   const cuerpo = (sub === 'oficio') ? renderTrabajosOficio() : renderEncargos();
@@ -65,17 +69,40 @@ function renderTrabajosOficio(){
   if(_ultimoResultadoProfesion){
     const r = _ultimoResultadoProfesion;
     const asc = r.ascendio ? `<div style="color:var(--cyan);margin-top:0.4rem;">ASCENSO · ahora eres ${r.rangoNuevo}</div>` : '';
+    // Línea de paga (solo si cobró algo).
+    const pagaLinea = (r.paga > 0)
+      ? `<span class="creditos">+${r.paga} CR</span>`
+      : `<span style="opacity:0.5;">SIN BOTÍN</span>`;
+    // Costes: herida, multa, fatiga. En magenta para que pesen.
+    let costes = '';
+    if(r.herida) costes += `<div style="color:var(--magenta);margin-top:0.3rem;font-size:0.55rem;">LESIÓN · ${r.herida}</div>`;
+    if(r.multa > 0) costes += `<div style="color:var(--magenta);margin-top:0.3rem;font-size:0.55rem;">SANCIÓN HELIX · −${r.multa} CR domiciliados</div>`;
+    if(r.fatiga >= 12) costes += `<div style="color:rgba(255,160,120,0.8);margin-top:0.3rem;font-size:0.55rem;">El cuerpo acusa el esfuerzo.</div>`;
     aviso = `
       <div class="trabajo-tarjeta" style="border-color:rgba(0,229,255,0.25);">
         <div class="trabajo-descripcion" style="opacity:0.85;">${r.nota}</div>
-        <div class="trabajo-meta"><span></span><span class="creditos">+${r.paga} CR</span></div>
+        <div class="trabajo-meta"><span></span>${pagaLinea}</div>
+        ${costes}
         ${asc}
       </div>`;
     _ultimoResultadoProfesion = null;
   }
 
-  // CASO 1: no ejerce nada → lista de oficios para escoger.
+  // CASO 1: no ejerce nada → lista de oficios para escoger (solo en casa).
   if(!activas.length){
+    const apt0 = document.getElementById('apartamento');
+    const enApt0 = apt0 && apt0.classList.contains('activa');
+    if(!enApt0){
+      return `
+        ${aviso}
+        <div class="lista-vacia">
+          <div class="icono">◇</div>
+          <div>NO EJERCES NINGÚN OFICIO</div>
+          <div style="margin-top:1rem;font-size:0.55rem;letter-spacing:0.2em;opacity:0.5">
+            Podrás escoger un oficio desde tu apartamento.
+          </div>
+        </div>`;
+    }
     let cards = '';
     PROFESIONES.forEach(p => {
       cards += `
@@ -98,6 +125,12 @@ function renderTrabajosOficio(){
   }
 
   // CASO 2: ejerce una o más → tarjeta por profesión con rango y acciones.
+  // Las ACCIONES (trabajar, elegir lugar) solo se ofrecen dentro del
+  // apartamento. Fuera, o consultando desde estado en la calle, la
+  // pestaña es de solo lectura: oficio, rango y progreso.
+  const apt = document.getElementById('apartamento');
+  const enApartamento = apt && apt.classList.contains('activa');
+
   let cards = '';
   activas.forEach(p => {
     const est = estadoProfesion(p.id);
@@ -108,12 +141,47 @@ function renderTrabajosOficio(){
       ? `<div style="margin-top:0.5rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.6;">PROGRESO: ${prog} / ${umbral}</div>`
       : `<div style="margin-top:0.5rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.6;">RANGO MÁXIMO ALCANZADO</div>`;
 
-    let botonesAccion = '';
-    (p.acciones || []).forEach(a => {
-      botonesAccion += `
-        <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
-          onclick="ejercerProfesionDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
-    });
+    // Bloque de acciones: solo dentro del apartamento.
+    let bloqueAcciones = '';
+    if(enApartamento){
+      const cd = (typeof cooldownProfesion === 'function') ? cooldownProfesion(p.id) : { puede:true };
+      if(!cd.puede){
+        // En cooldown: no se puede trabajar todavía.
+        const h = Math.floor(cd.minutosRestantes / 60);
+        const m = cd.minutosRestantes % 60;
+        const tiempo = h > 0 ? `${h} h ${m} min` : `${m} min`;
+        bloqueAcciones = `
+          <div style="margin-top:0.8rem;font-size:0.55rem;letter-spacing:0.15em;opacity:0.6;text-align:center;border:1px solid rgba(255,160,120,0.2);padding:0.6rem;">
+            DESCANSANDO · podrás volver a trabajar<br>en ${tiempo} de juego
+          </div>`;
+      } else {
+        let botonesAccion = '';
+        (p.acciones || []).forEach(a => {
+          if(a.conLugares && _lugarAbierto && _lugarAbierto.prof === p.id && _lugarAbierto.accion === a.id){
+            botonesAccion += _renderSelectorLugares(p, a);
+          } else if(a.conLugares){
+            botonesAccion += `
+              <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+                onclick="abrirLugaresDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
+          } else {
+            botonesAccion += `
+              <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+                onclick="ejercerProfesionDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
+          }
+        });
+        bloqueAcciones = `
+          <div style="margin-top:0.8rem;">
+            <div style="font-size:0.5rem;letter-spacing:0.2em;opacity:0.5;margin-bottom:0.2rem;">TRABAJAR:</div>
+            ${botonesAccion}
+          </div>`;
+      }
+    } else {
+      // Fuera del apartamento: solo lectura.
+      bloqueAcciones = `
+        <div style="margin-top:0.8rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.45;text-align:center;">
+          Solo puedes trabajar desde tu apartamento.
+        </div>`;
+    }
 
     cards += `
       <div class="trabajo-tarjeta">
@@ -122,10 +190,7 @@ function renderTrabajosOficio(){
           <span class="trabajo-estado aceptado">${rango.nombre}</span>
         </div>
         ${barra}
-        <div style="margin-top:0.8rem;">
-          <div style="font-size:0.5rem;letter-spacing:0.2em;opacity:0.5;margin-bottom:0.2rem;">TRABAJAR:</div>
-          ${botonesAccion}
-        </div>
+        ${bloqueAcciones}
       </div>`;
   });
   return `${aviso}${cards}`;
@@ -137,12 +202,56 @@ function elegirProfesionDesdePanel(id){
   _refrescarSubcuerpoTrabajos();
 }
 
+// Render del selector de lugares: una lista de sitios donde rebuscar,
+// cada uno con su sabor y un botón. Más un botón para cancelar.
+function _renderSelectorLugares(prof, accion){
+  let sitios = '';
+  (prof.lugares || []).forEach(l => {
+    sitios += `
+      <div style="margin-top:0.5rem;padding:0.5rem;border:1px solid rgba(0,229,255,0.12);">
+        <div style="font-size:0.6rem;letter-spacing:0.15em;color:var(--cyan);">${l.nombre.toUpperCase()}</div>
+        <div style="font-size:0.55rem;opacity:0.65;margin:0.3rem 0;">${l.sabor}</div>
+        <button class="btn-terminal" style="display:block;width:100%;"
+          onclick="ejercerLugarDesdePanel('${prof.id}','${accion.id}','${l.id}')">REBUSCAR AQUÍ →</button>
+      </div>`;
+  });
+  return `
+    <div style="margin-top:0.5rem;border:1px solid rgba(0,229,255,0.2);padding:0.5rem;">
+      <div style="font-size:0.5rem;letter-spacing:0.2em;opacity:0.6;margin-bottom:0.2rem;">¿DÓNDE REBUSCAS?</div>
+      ${sitios}
+      <button class="btn-terminal" style="display:block;width:100%;margin-top:0.6rem;opacity:0.6;"
+        onclick="cerrarLugaresDesdePanel()">VOLVER</button>
+    </div>`;
+}
+
+// Abre el selector de lugares para una acción de campo.
+function abrirLugaresDesdePanel(idProf, idAccion){
+  _lugarAbierto = { prof: idProf, accion: idAccion };
+  _refrescarSubcuerpoTrabajos();
+}
+
+// Cierra el selector sin trabajar.
+function cerrarLugaresDesdePanel(){
+  _lugarAbierto = null;
+  _refrescarSubcuerpoTrabajos();
+}
+
+// El jugador elige un lugar concreto y trabaja allí.
+function ejercerLugarDesdePanel(idProf, idAccion, idLugar){
+  _lugarAbierto = null;
+  if(typeof ejercerProfesion === 'function'){
+    const r = ejercerProfesion(idProf, idAccion, idLugar);
+    if(r && !r.bloqueado) _ultimoResultadoProfesion = r;
+  }
+  _refrescarSubcuerpoTrabajos();
+}
+
 // El jugador pulsa una acción de TRABAJAR. Ejerce, guarda el resultado
 // y re-renderiza para mostrar paga, progreso y posible ascenso.
 function ejercerProfesionDesdePanel(idProf, idAccion){
   if(typeof ejercerProfesion === 'function'){
     const r = ejercerProfesion(idProf, idAccion);
-    if(r) _ultimoResultadoProfesion = r;
+    if(r && !r.bloqueado) _ultimoResultadoProfesion = r;
   }
   _refrescarSubcuerpoTrabajos();
 }

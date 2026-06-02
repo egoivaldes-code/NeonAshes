@@ -2,6 +2,16 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.78.1] - 2026-06-02
+### Added
+- La acción "Salir a buscar chatarra" del Scavenger ahora pide elegir entre cuatro lugares (conducto, contenedor HELIX, vehículo abandonado, pozo de inundación), cada uno con distintos desenlaces: mejor o peor botín, heridas, fatiga o multas domiciliadas de HELIX según el riesgo.
+### Changed
+- Las profesiones solo se pueden ejercer y escoger desde el apartamento; fuera, la pestaña es de solo lectura.
+- Subir de rango en una profesión cuesta ahora mucho más trabajo.
+- Cada acción de trabajar tiene un descanso obligatorio de 8 horas de juego antes de poder repetir.
+- Apartamento: la imagen de fondo se extiende más abajo y el reloj se ancla justo debajo de ella.
+- Las siglas y barras de estado (F/A/H/D) del botón Estado son más grandes y legibles.
+
 ## [0.78] - 2026-06-02
 ### Added
 - Sistema de profesiones: la subpestaña Profesiones permite escoger un oficio (Scavenger) y trabajar en él con un botón Trabajar que despliega acciones, paga créditos, suma progreso y sube de rango.
