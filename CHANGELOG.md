@@ -11,6 +11,12 @@
 
 ---
 
+## [0.77.4] - 2026-06-02
+### Added
+- La pestaña Trabajos ahora tiene dos subpestañas: Encargos (el trabajo de Mara) y Trabajos (oficio, aún vacío).
+
+---
+
 ## [0.77.3] - 2026-06-02
 ### Changed
 - Mejorado el encuadre de la imagen y el reloj del apartamento en móvil.

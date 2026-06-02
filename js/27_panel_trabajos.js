@@ -1,9 +1,59 @@
 // ============================================================
 // BLOQUE JS-31 — PANEL TRABAJOS — render y aceptar misión
 // Lista de misiones disponibles y la lógica para aceptar una.
+//
+// La pestaña TRABAJOS se divide en dos subpestañas:
+//   - ENCARGOS: trabajos puntuales que ofrece un contacto (Mara, etc.)
+//   - TRABAJOS: oficio recurrente ligado a una profesión (aún vacío)
+// renderTrabajos() monta las subpestañas; cada una tiene su render.
 // ============================================================
 
+// Subpestaña activa dentro de TRABAJOS. Se recuerda mientras el panel
+// está abierto para que al alternar no se pierda dónde estabas.
+let _subtabTrabajos = 'encargos';
+
 function renderTrabajos(){
+  const sub = (_subtabTrabajos === 'oficio') ? 'oficio' : 'encargos';
+  const cuerpo = (sub === 'oficio') ? renderTrabajosOficio() : renderEncargos();
+  const clsE = sub === 'encargos' ? 'cp-tab activa' : 'cp-tab';
+  const clsO = sub === 'oficio'   ? 'cp-tab activa' : 'cp-tab';
+  return ''
+    + '<div class="cp-tabs" style="margin-bottom:0.8rem;">'
+    +   '<button class="'+clsE+'" onclick="cambiarSubtabTrabajos(\'encargos\')">ENCARGOS</button>'
+    +   '<button class="'+clsO+'" onclick="cambiarSubtabTrabajos(\'oficio\')">TRABAJOS</button>'
+    + '</div>'
+    + '<div id="trabajos-subcuerpo">' + cuerpo + '</div>';
+}
+
+// Alterna entre las dos subpestañas reinyectando solo el cuerpo de
+// la pestaña TRABAJOS, sin volver a dibujar todo el panel.
+function cambiarSubtabTrabajos(sub){
+  _subtabTrabajos = (sub === 'oficio') ? 'oficio' : 'encargos';
+  // El contenedor donde vive el render de la pestaña TRABAJOS puede ser
+  // 'cp-cuerpo-tab' (abierto desde CONTACTOS) o 'hub-panel-cuerpo-tab'
+  // (abierto desde ESTADO). Reinyectamos en el que exista.
+  const cont = document.getElementById('cp-cuerpo-tab')
+            || document.getElementById('hub-panel-cuerpo-tab');
+  if(cont) cont.innerHTML = renderTrabajos();
+}
+
+// Subpestaña TRABAJOS (oficio recurrente). De momento vacía: el sistema
+// de profesiones aún no existe. Mensaje diegético en el mismo tono que
+// la lista vacía de encargos.
+function renderTrabajosOficio(){
+  return `
+    <div class="lista-vacia">
+      <div class="icono">◇</div>
+      <div>NO EJERCES NINGÚN OFICIO</div>
+      <div style="margin-top:1rem;font-size:0.55rem;letter-spacing:0.2em;opacity:0.6">
+        La ciudad no te ha ofrecido nada<br>
+        que puedas llamar trabajo. Todavía.
+      </div>
+    </div>`;
+}
+
+// Subpestaña ENCARGOS — el encargo de Mara Vex. Misma lógica de siempre.
+function renderEncargos(){
   const m = Estado.memoria || {};
   const yaConoceMara = m.aceptoEncargo !== null || m.pidioMasInfo || m.guardoSilencio || m.vecesPidioInfo > 0 || (Estado.partidasCompletadas || 0) > 0;
 
