@@ -1,6 +1,15 @@
 # NEON ASHES — Historial de versiones
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
+
+## [0.78] - 2026-06-02
+### Added
+- Sistema de profesiones: la subpestaña Profesiones permite escoger un oficio (Scavenger) y trabajar en él con un botón Trabajar que despliega acciones, paga créditos, suma progreso y sube de rango.
+### Changed
+- El alquiler diario sube de 100 a 250 CR para crear presión económica.
+- La subpestaña antes llamada "Trabajos" pasa a llamarse "Profesiones".
+
+---
 > Si necesitas saber en qué versión se cambió algo, búscalo aquí.
 >
 > Para el estado actual del proyecto, ver `STATUS.md`.

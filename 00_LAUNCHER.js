@@ -26,7 +26,7 @@ const LAUNCHER = {
 
   // ─── ECONOMÍA ──────────────────────────────────────────────────
   CREDITOS_INICIALES: 1200,   // CR con los que arranca cada partida nueva
-  ALQUILER_DIARIO:    100,    // CR/día que cuesta vivir en el apartamento
+  ALQUILER_DIARIO:    250,    // CR/día que cuesta vivir en el apartamento
   FATIGA_POR_IMPAGADO: 5,     // penalización si no llegas al alquiler
 
   // ─── TIEMPO DEL UNIVERSO ───────────────────────────────────────
