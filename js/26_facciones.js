@@ -191,6 +191,28 @@ function renderContactos(){
     htmlContactos += '<div class="contacto-tarjeta"><div class="contacto-avatar mara">M</div><div class="contacto-info"><span class="contacto-nombre">MARA VEX</span><span class="contacto-rol">FIXER · BAR NOIR</span><span class="contacto-relacion '+relacionClase+'">RELACIÓN: '+relacionTxt+'</span><div class="contacto-meta">'+descripcion+'</div>'+estadoEncargo+'</div></div>';
   }
 
+  // === JEFES DE ZONA CONOCIDOS ===
+  // Cuando hablas con el jefe de una zona, queda guardado aquí como
+  // contacto, junto a Mara. La "relación" sale de tu reputación con su
+  // facción (el mismo contador que usa el mapa).
+  const jefes = (m.jefesConocidos) || {};
+  const JEFES_DATA = [
+    { key:'mano_roja', nombre:'MANO ROJA',  rol:'EL LOTO CARMESÍ · TEATRO SIN NOMBRE', faccion:'loto',       inicial:'R', desc:'Trafica con lo que la gente confiesa entre las sábanas. No olvida una deuda. Tampoco un secreto.' },
+    { key:'vael',      nombre:'HERMANA VAEL', rol:'CULTO DE LA CARNE PERFECTA · SANTUARIO IX', faccion:'eco', inicial:'V', desc:'Predica la fusión con la máquina con una calma que desarma. Te recibió como hermano. Eso no siempre es bueno.' },
+    { key:'cero_ocho', nombre:'CERO-OCHO',   rol:'EL COLECTIVO SIN NOMBRE · NODO FANTASMA', faccion:'ia',  inicial:'0', desc:'Demasiado joven para lo que sabe. Habla en ancho de banda y mide a la gente en bits. Te tolera mientras le seas útil.' },
+    { key:'vasek',     nombre:'DON VASEK',   rol:'SINDICATO FERRO · DISTRITO FERRO', faccion:'sindicatos', inicial:'F', desc:'Setenta años y la serenidad de quien hace mucho que no necesita levantar la voz. Lo desagradable lo gestiona en otra parte.' }
+  ];
+  JEFES_DATA.forEach(j => {
+    if(!jefes[j.key]) return;
+    const repJ = (typeof getRepFaccion === 'function') ? getRepFaccion(j.faccion) : 0;
+    let rClase, rTxt;
+    if(repJ > 15){ rClase='confianza'; rTxt='favorable'; }
+    else if(repJ < -15){ rClase='tensa'; rTxt='hostil'; }
+    else if(repJ > 0){ rClase='fria'; rTxt='cordial'; }
+    else { rClase='fria'; rTxt='profesional'; }
+    htmlContactos += '<div class="contacto-tarjeta"><div class="contacto-avatar">'+j.inicial+'</div><div class="contacto-info"><span class="contacto-nombre">'+j.nombre+'</span><span class="contacto-rol">'+j.rol+'</span><span class="contacto-relacion '+rClase+'">RELACIÓN: '+rTxt+'</span><div class="contacto-meta">'+j.desc+'</div></div></div>';
+  });
+
   // SECCIÓN: REPUTACIÓN POR ZONA — eliminada. La reputación de cada zona
   // es ahora la misma que la de su facción dominante, así que se muestra
   // una sola vez, abajo, en la sección FACCIONES (sin duplicar cifras).

@@ -11,7 +11,15 @@
 
 ---
 
-## [0.76.5] - 2026-06-01
+## [0.77] - 2026-06-02
+### Added
+- Nuevas acciones en el apartamento: "Comer algo" (aparece cuando tienes hambre; te cobra créditos por comida de reparto y reduce el hambre), "Despejar la cabeza" (baja fatiga y disociación) y "Romper el silencio" (baja aislamiento). Cada una se puede hacer una vez por visita y tiene varios textos para no repetirse.
+- Al hablar con el jefe de cada zona (Mano Roja, Hermana Vael, Cero-Ocho, Don Vasek), ahora queda guardado en CONTACTOS junto a Mara, con su relación según tu reputación con su facción.
+### Changed
+- Comer en el apartamento está preparado para gastar comida del inventario (gratis) en cuanto se añada; mientras tanto, siempre pides reparto y se cobra.
+- Mejorados y ampliados los textos de transición y de zona, con más carga de lore: más variantes de corredor, tren vertical, aproximación a cada zona y descripción de cada zona.
+
+---
 ### Changed
 - La reputación de cada zona y la de su facción son ahora el mismo valor; se quita el bloque duplicado "Reputación por zona".
 - La barra de facción muestra el número con claridad (+/-) y una escala centrada.

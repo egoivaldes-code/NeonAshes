@@ -429,7 +429,13 @@ const _POOL_CORREDOR = [
   'La luz del pasillo parpadea en el tramo final. Lleva parpadeando desde que llegaste al edificio. Probablemente seguirá así.',
   'Dos pisos más arriba hay música amortiguada. No reconoces la canción. Dura exactamente hasta que entras al ascensor.',
   'El ascensor huele a desinfectante y a algo que el desinfectante no ha conseguido cubrir del todo.',
-  'Una cámara HELIX en el techo gira medio grado cuando pasas. Siempre lo hace. Probablemente no significa nada.'
+  'Una cámara HELIX en el techo gira medio grado cuando pasas. Siempre lo hace. Probablemente no significa nada.',
+  'El panel del ascensor pide tu huella. La acepta a la tercera. «GRACIAS POR SU PACIENCIA, CIUDADANO», dice, sin paciencia ninguna.',
+  'Una puerta entreabierta deja ver a un hombre dormido frente a tres pantallas encendidas. Ninguna emite sonido. Sigue durmiendo.',
+  'El número de tu planta lleva apagado meses. Te orientas por la mancha de humedad de la pared, que tiene forma de algo que prefieres no mirar dos veces.',
+  'Pegado al buzón comunitario, un aviso de HELIX: «REESTRUCTURACIÓN DE SERVICIOS EN CURSO». Lleva la misma fecha desde el invierno pasado.',
+  'En el rellano, un altar improvisado: una vela LED, una foto descolorida, flores de plástico. Alguien de este bloque ya no baja.',
+  'El zumbido del transformador del sótano sube por el hueco de la escalera. Es el latido del edificio. Hoy suena más cansado que ayer.'
 ];
 
 const _POOL_TREN = [
@@ -438,7 +444,13 @@ const _POOL_TREN = [
   'Una mujer mayor lleva una caja de cartón cerrada con cinta adhesiva. La abraza como si dentro hubiera algo vivo. Puede que lo haya.',
   'HELIX NEWS en la pantalla del vagón: "Índice de bienestar ciudadano alcanza máximo histórico." Nadie levanta la vista.',
   'El tren se detiene entre estaciones durante cuarenta y dos segundos. Sin aviso. Luego arranca. Nadie dice nada.',
-  'Un chico de unos diecisiete años lleva un implante óptico sin carcasa. El circuito está a la vista. Te mira como si supiera algo que tú no.'
+  'Un chico de unos diecisiete años lleva un implante óptico sin carcasa. El circuito está a la vista. Te mira como si supiera algo que tú no.',
+  'El tren cruza un tramo sin paredes. Por la ventanilla, las Pilas se apilan hacia arriba hasta que la lluvia se las traga. No alcanzas a ver el cielo. Nunca lo alcanzas.',
+  'Un anuncio de implantes de memoria HELIX se repite en bucle: «¿Y si pudieras elegir qué olvidar?». La pasajera de enfrente lo mira con una atención que da miedo.',
+  'Alguien ha rascado en el plástico del asiento un solo símbolo: tres líneas curvas que se cierran. Apartas la mirada antes de entender por qué te resulta familiar.',
+  'Dos operarios del Sindicato Ferro hablan bajo sobre una deuda que no es la suya. Callan en cuanto notan que existes. El resto del trayecto fingen no haberte visto.',
+  'El vagón frena y todos se inclinan a la vez, como una sola criatura cansada. Nadie se sujeta. Hace tiempo que aprendieron a caer juntos.',
+  'Por megafonía, una voz sintética agradece tu confianza en el transporte HELIX. La grabación tiene un siseo de fondo, como si llevara décadas repitiéndose.'
 ];
 
 const _POOL_APROXIMACION = {
@@ -447,28 +459,36 @@ const _POOL_APROXIMACION = {
     'Los carteles de FERROCORP aparecen cada cincuenta metros. No son publicidad. Son recordatorios.',
     'Un cobrador del Sindicato Ferro está apoyado en una esquina. No hace nada. Solo está ahí. Eso es suficiente.',
     'El suelo aquí tiene más relieves de barro que en las Pilas. Las máquinas no paran nunca. La gente tampoco.',
-    'Tres trabajadores con cascos naranjas pasan sin mirarte. Llevan turnos de dieciséis horas. Se nota en cómo caminan.'
+    'Tres trabajadores con cascos naranjas pasan sin mirarte. Llevan turnos de dieciséis horas. Se nota en cómo caminan.',
+    'Las farolas funcionan todas. Las aceras están barridas. En Ferro el orden no es un regalo: es un aviso de quién manda y de lo que cuesta romperlo.',
+    'En la puerta de un local, dos hombres de traje idéntico te ven llegar. No te paran. Solo memorizan tu cara para cuando haga falta.'
   ],
   arrabal_carmesi: [
     'El ruido llega antes que la luz. Voces, música sin melodía reconocible, el golpe sordo de algo que no quieres identificar.',
     'Linternas rojas en cada esquina. No es decoración. Es el código del Arrabal: rojo significa que alguien controla ese tramo.',
     'Un cartel pintado a mano: FUEGO LENTO — COMIDA REAL — PRECIO REAL. El humo que sale huele a que es verdad.',
     'Dos hombres discuten en voz baja junto a una entrada. Cuando te ven, paran. Cuando pasas, siguen. No ibas en la conversación.',
-    'El Arrabal Carmesí no duerme porque no puede permitírselo. La energía aquí es la del que sabe que parar cuesta más que seguir.'
+    'El Arrabal Carmesí no duerme porque no puede permitírselo. La energía aquí es la del que sabe que parar cuesta más que seguir.',
+    'Una chica con los ojos pintados de plata te ofrece una sonrisa de catálogo y la retira en cuanto calcula que no vas a pagarla. Aquí hasta la amabilidad cotiza.',
+    'El emblema del Loto —una flor abierta sobre fondo negro— cuelga sobre cada portal. No es marca de comercio. Es marca de propiedad.'
   ],
   santuario_ix: [
     'Los primeros carteles aparecen a tres manzanas. TU CARNE ES TEMPORAL. LA FUSIÓN ES ETERNA. Alguien los ha colocado a la altura de los ojos exacta.',
     'Un grupo de conversos camina en fila. No hablan. Llevan el símbolo del Santuario en el cuello, grabado, no impreso.',
     'Residuos biomédicos en contenedores sin tapas. Nadie los mira. Llevan aquí suficiente tiempo para que la gente haya aprendido a no verlos.',
     'Una clínica de implantes con la persiana medio bajada. Dentro, luz quirúrgica. Alguien está despierto a esta hora. Alguien siempre está despierto.',
-    'El dron de Santuario IX sobrevuela la entrada. Lleva el símbolo de la Carne Perfecta pintado en el fuselaje. Bienvenido, hermano.'
+    'El dron de Santuario IX sobrevuela la entrada. Lleva el símbolo de la Carne Perfecta pintado en el fuselaje. Bienvenido, hermano.',
+    'Una voz serena recita por los altavoces que el dolor es solo carne pidiendo ser corregida. Lo dice tan despacio que casi le crees.',
+    'En un muro, alguien ha escrito a mano «LA MÁQUINA NO MIENTE». Debajo, más pequeño y más reciente: «pero olvida». Nadie lo ha borrado todavía.'
   ],
   nodo_cero: [
     'La dirección del Nodo cambia cada cuarenta y ocho horas. Hoy toca aquí. Mañana nadie sabrá dónde.',
     'Alguien ha proyectado texto verde en la fachada de un edificio abandonado: LA INFORMACIÓN NO QUIERE SALVARTE. QUIERE LIBERARTE.',
     'Un dron HELIX patrulla la zona con más frecuencia de lo habitual. El Colectivo lo sabe. Tú también deberías saberlo.',
     'Tres personas con la cara cubierta pasan en dirección contraria. Uno de ellos te mira exactamente un segundo. Luego aparta la vista.',
-    'Grafiti reciente en la acera: SOMOS EL ERROR QUE ELLOS NO PUDIERON ELIMINAR. La pintura todavía brilla.'
+    'Grafiti reciente en la acera: SOMOS EL ERROR QUE ELLOS NO PUDIERON ELIMINAR. La pintura todavía brilla.',
+    'No hay carteles. No hay neón. Solo cables tendidos de ventana a ventana y el zumbido de demasiados servidores trabajando donde no debería haber ninguno.',
+    'Una pintada a medio borrar repite tres veces la misma palabra: CERO. CERO. CERO. Como si quien la escribió necesitara convencerse de que existe.'
   ]
 };
 
@@ -482,25 +502,33 @@ const _POOL_DESC_ZONA = {
     'El Sindicato Ferro controla este distrito desde hace cuarenta años. No hay violencia visible. No la necesitan. Todo aquí tiene un precio, un intermediario, y una deuda que te sigue si te vas.',
     'FERROCORP nunca apaga sus hornos. El distrito entero vibra con el ruido de la fundición H-07. La gente trabaja turnos que no terminan y nadie recuerda haber firmado por ellos.',
     'Aquí todo se compra, se vende o se debe. El mercado de repuestos usados no cierra nunca. Si buscas algo que no debería existir, alguien en Ferro lo tiene. Por un precio.',
-    'Carga y descarga las veinticuatro horas. Mantén el nivel de ruido bajo, dice el cartel. Nadie lo cumple. El Sindicato lo permite mientras la mercancía siga moviéndose.'
+    'Carga y descarga las veinticuatro horas. Mantén el nivel de ruido bajo, dice el cartel. Nadie lo cumple. El Sindicato lo permite mientras la mercancía siga moviéndose.',
+    'Las calles más limpias de las Pilas. La gente saluda, los comercios pagan a tiempo, los niños juegan sin miedo. Don Vasek lo llama orden. Otros lo llaman de otra manera, pero no en voz alta.',
+    'En Ferro el favor es una moneda más estable que el crédito. Aceptas uno y dejas de pertenecerte un poco. Aquí casi todo el mundo le debe algo a alguien, y todos fingen que no.'
   ],
   arrabal_carmesi: [
     'El barrio rojo de las Pilas. Linternas de papel, humo de comida real y deudas que se cobran de otras maneras. Aquí el placer es la moneda y todo el mundo paga.',
     'Bares, casas de apuestas y clubes privados apilados en vertical. El Nido Rojo nunca pregunta de dónde vienes. El Arrabal vive de noche porque de día prefiere no recordarse.',
     'Comida real, precio real, dice el neón. Es de las pocas cosas honestas del Arrabal. Todo lo demás aquí tiene una segunda lectura y una tercera factura.',
-    'Zona vigilada, avisa el cartel a la entrada. No por la policía corporativa: por quien de verdad manda aquí. En el Arrabal, ser visto es lo normal. Que te recuerden es el problema.'
+    'Zona vigilada, avisa el cartel a la entrada. No por la policía corporativa: por quien de verdad manda aquí. En el Arrabal, ser visto es lo normal. Que te recuerden es el problema.',
+    'El Loto Carmesí no vende cuerpos: vende lo que la gente confiesa cuando se cree a salvo. Cada cortina granate esconde un trato, y cada trato deja un hilo del que tirar más tarde.',
+    'Aquí la noche tiene reglas que nadie escribe pero todos conocen. Mira lo que quieras, toca lo que pagues, y no preguntes nunca quién llora detrás de qué puerta.'
   ],
   santuario_ix: [
     'Una antigua fábrica de implantes reconvertida en templo. El Culto de la Carne Perfecta venera la fusión total con la máquina como camino a la trascendencia. Son pacíficos. Pero sus ojos no parpadean al ritmo correcto.',
     'Tu carne es temporal. La fusión es eterna. El mensaje está en cada pared, en cada idioma. Las clínicas de transformación nunca cierran y la lista de conversos voluntarios siempre crece.',
     'Residuos biomédicos en los contenedores, luz quirúrgica en las clínicas, sermones a las 10:22. Santuario IX ofrece mejorar tu cuerpo. Lo que no dice es qué parte de ti pagas a cambio.',
-    'Unidad, fusión, trascendencia. El culto recibe a todos como hermanos. Bienvenido, dice el cartel del ascensor. La amabilidad aquí es real. Eso es lo que la hace difícil de rechazar.'
+    'Unidad, fusión, trascendencia. El culto recibe a todos como hermanos. Bienvenido, dice el cartel del ascensor. La amabilidad aquí es real. Eso es lo que la hace difícil de rechazar.',
+    'La Hermana Vael predica que el alma es solo firmware mal escrito y que la carne es el error que el Culto vino a corregir. Lo dice con tanta dulzura que cuesta recordar que está hablando de cortar.',
+    'Nadie obliga a nadie a quedarse en el Santuario. Por eso es tan inquietante: la gente entra por su pie y, al cabo de las semanas, parpadea distinto, habla más lento, sonríe con media cara.'
   ],
   nodo_cero: [
     'Un servidor muerto reconvertido en punto de encuentro. Sin nombre oficial. Sin dirección fija. El Colectivo no existe según HELIX. Y sin embargo aquí está, filtrando datos a las Pilas cada noche.',
     'La información es libertad, proclaman las pantallas verdes. El Nodo Fantasma vende acceso remoto, identidades limpias y verdades que HELIX preferiría enterrar. La verdad está en el código.',
     'Una red descentralizada fuera del alcance de HELIX. Hackers, fugitivos y gente que ya no tiene nada que perder. Somos el error que ellos no pudieron eliminar, dice el grafiti.',
-    'El sistema no te protegerá. La verdad no se vende, se comparte. El Nodo cambia de ubicación cada pocos días para sobrevivir. Hoy está aquí. Conéctate mientras puedas.'
+    'El sistema no te protegerá. La verdad no se vende, se comparte. El Nodo cambia de ubicación cada pocos días para sobrevivir. Hoy está aquí. Conéctate mientras puedas.',
+    'El Colectivo Sin Nombre rasca en los archivos de HELIX buscando lo que la corporación borró. A veces encuentran agujeros con forma de algo más grande. A veces encuentran la palabra CERO, y entonces nadie duerme.',
+    'Aquí nadie usa su cara ni su nombre. Confías en la firma de un dato, no en la persona. Es un sitio frío y paranoico, y aun así es lo más parecido a la libertad que verás en las Pilas.'
   ]
 };
 
@@ -852,6 +880,26 @@ function accionZona(accion){
     narr.innerHTML = '[CONTENIDO EN DESARROLLO]';
     opcEl.innerHTML = '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a '+_nz+'</button>';
     return;
+  }
+
+  // === REGISTRO DE JEFES COMO CONTACTOS ===
+  // Al hablar por primera vez con el jefe de una zona, queda guardado en
+  // CONTACTOS PERSONALES (igual que Mara). El conocerlo es permanente: se
+  // marca aunque ya hubieras hablado hoy o la acción no diera recompensa.
+  const JEFE_DE_ACCION = {
+    contacto_mano_roja: 'mano_roja',
+    contacto_vael: 'vael',
+    contacto_ceroocho: 'cero_ocho',
+    contacto_vasek: 'vasek'
+  };
+  if(JEFE_DE_ACCION[accion]){
+    Estado.memoria = Estado.memoria || {};
+    Estado.memoria.jefesConocidos = Estado.memoria.jefesConocidos || {};
+    if(!Estado.memoria.jefesConocidos[JEFE_DE_ACCION[accion]]){
+      Estado.memoria.jefesConocidos[JEFE_DE_ACCION[accion]] = true;
+      if(typeof notificarCambio === 'function') notificarCambio('NUEVO CONTACTO', 'rep');
+      if(typeof guardarPartida === 'function') guardarPartida();
+    }
   }
 
   narr.innerHTML = r.narr;

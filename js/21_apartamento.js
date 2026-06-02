@@ -11,6 +11,10 @@ function iniciarApartamento(){
   Estado.ventanaMirada = false;
   // Lo mismo con dormir: una sola vez por visita.
   Estado.durmioEstaVisita = false;
+  // Nuevas acciones de apartamento, una vez por visita cada una.
+  Estado.comioEstaVisita = false;
+  Estado.despejoEstaVisita = false;
+  Estado.silencioEstaVisita = false;
 
   const r=document.getElementById('reloj-apt');
   // El reloj del apartamento ahora lee la hora del juego real. Se
@@ -85,6 +89,32 @@ function botonDormir(texto){
   return `<button class="opcion-btn" onclick="opcionApt(2)">${texto}</button>`;
 }
 
+// Botón "comer algo": solo aparece si tienes hambre apreciable y no has
+// comido ya esta visita. Comer cuesta créditos (comida cara de reparto),
+// salvo que en el futuro lleves raciones en el inventario (ver opcionApt).
+function botonComer(){
+  if(Estado.comioEstaVisita === true) return '';
+  const h = Estado.humano || {};
+  const n = (typeof nivel === 'function') ? nivel(h.hambre) : null;
+  // Solo ofrecemos comer si el hambre es media o superior (evita spam).
+  if(!(n === 'medio' || n === 'alto' || n === 'extremo')) return '';
+  return `<button class="opcion-btn" onclick="opcionApt(4)">Comer algo</button>`;
+}
+
+// Botón "despejar la cabeza": agua fría en la cara. Baja fatiga y
+// disociación un poco. Una vez por visita.
+function botonDespejar(){
+  if(Estado.despejoEstaVisita === true) return '';
+  return `<button class="opcion-btn" onclick="opcionApt(5)">Despejar la cabeza</button>`;
+}
+
+// Botón "romper el silencio": poner algo de música, sentarte un rato.
+// Baja aislamiento. Una vez por visita.
+function botonSilencio(){
+  if(Estado.silencioEstaVisita === true) return '';
+  return `<button class="opcion-btn" onclick="opcionApt(6)">Romper el silencio</button>`;
+}
+
 function ajustarTextosApartamentoSegunMemoria(){
   const narr = document.getElementById('narr-apt');
   const opc = document.getElementById('opciones-apt');
@@ -101,6 +131,9 @@ function ajustarTextosApartamentoSegunMemoria(){
     narr.innerHTML = 'La lluvia ácida golpea el cristal.<br>Son las tres de la mañana.<br>No recuerdas cuándo te dormiste.';
     opc.innerHTML = `
       ${botonVentana("Mirar por la ventana")}
+      ${botonComer()}
+      ${botonDespejar()}
+      ${botonSilencio()}
       ${botonDormir("Dormir")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Encender el terminal</button>`;
@@ -157,18 +190,27 @@ function ajustarTextosApartamentoSegunMemoria(){
   if(m.aceptoEncargo === true){
     opc.innerHTML = `
       ${botonVentana("Mirar por la ventana")}
+      ${botonComer()}
+      ${botonDespejar()}
+      ${botonSilencio()}
       ${botonDormir("Intentar dormir un poco más")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Comprobar el terminal otra vez</button>`;
   } else if(m.aceptoEncargo === false){
     opc.innerHTML = `
       ${botonVentana("Mirar por la ventana")}
+      ${botonComer()}
+      ${botonDespejar()}
+      ${botonSilencio()}
       ${botonDormir("Quedarte en la cama")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Encender el terminal (HELIX)</button>`;
   } else if(m.vioFragmentoCero){
     opc.innerHTML = `
       ${botonVentana("Mirar por la ventana")}
+      ${botonComer()}
+      ${botonDespejar()}
+      ${botonSilencio()}
       ${botonDormir("Cerrar los ojos un momento")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Revisar el terminal</button>`;
@@ -176,6 +218,9 @@ function ajustarTextosApartamentoSegunMemoria(){
     // Vuelta sin haber completado nada concreto
     opc.innerHTML = `
       ${botonVentana("Mirar por la ventana otra vez")}
+      ${botonComer()}
+      ${botonDespejar()}
+      ${botonSilencio()}
       ${botonDormir("Quedarte tumbado")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Encender el terminal</button>`;
@@ -224,6 +269,37 @@ function opcionApt(idx){
     return;
   }
 
+  // === OPCIÓN 4: COMER ALGO ===
+  // Si en el futuro llevas raciones en el inventario, se gastan gratis.
+  // Mientras no haya comida en el inventario, pides reparto y se cobra:
+  // la comida en las Pilas es cara. Marca el resultado para el texto.
+  let _comioDeInventario = false;
+  if(idx === 4){
+    Estado.comioEstaVisita = true;
+    // ¿Tienes alguna ración de comida en el inventario? (preparado para
+    // cuando se añadan items de comida; hoy normalmente no hay ninguna).
+    const racion = (Array.isArray(Estado.inventario))
+      ? Estado.inventario.find(i => i && (i.tipo === 'comida' || /raci[oó]n|comida|barrita|comestible/i.test(i.id || '') || /raci[oó]n|comida|barrita/i.test(i.nombre || '')))
+      : null;
+    if(racion){
+      _comioDeInventario = true;
+      if(typeof quitarItem === 'function') quitarItem(racion.id, 1);
+    }
+    candidatos = textosComer(_comioDeInventario, m, h, franja, dia);
+  }
+
+  // === OPCIÓN 5: DESPEJAR LA CABEZA ===
+  else if(idx === 5){
+    Estado.despejoEstaVisita = true;
+    candidatos = textosDespejar(misionCerrada, m, h, franja, dia);
+  }
+
+  // === OPCIÓN 6: ROMPER EL SILENCIO ===
+  else if(idx === 6){
+    Estado.silencioEstaVisita = true;
+    candidatos = textosSilencio(misionCerrada, m, h, franja, dia);
+  }
+
   resp = elegirAlAzar(candidatos) || 'La habitación se queda en silencio.';
 
   narr.style.animation='none';
@@ -254,6 +330,29 @@ function opcionApt(idx){
     // Solo se duerme una vez por visita en el menú base. En los flujos
     // de "cerrar el día" o "amanecer" no aplica (esos salen del apto).
     if(m.aceptoEncargo !== true) Estado.durmioEstaVisita = true;
+  } else if(idx === 4){
+    // Comer: baja el hambre. Si comiste del inventario es gratis; si no,
+    // pides reparto y te cobran (comida cara en las Pilas).
+    if(!_comioDeInventario){
+      const COSTE_COMIDA = 35; // crédito por una comida de reparto/máquina
+      if(typeof ajustarCreditos === 'function'){
+        ajustarCreditos(-COSTE_COMIDA);
+      } else {
+        Estado.creditos = Math.max(0, (Estado.creditos || 0) - COSTE_COMIDA);
+        if(typeof actualizarHUD === 'function') actualizarHUD();
+      }
+      if(typeof notificarCambio === 'function') notificarCambio('-'+COSTE_COMIDA+' CR', 'creditos');
+    }
+    ajustarHumano('hambre', -22);       // sacia bien, pero no del todo
+    ajustarHumano('fatiga', -2);        // comer sienta bien
+  } else if(idx === 5){
+    // Despejar la cabeza: agua fría. Baja fatiga y disociación.
+    ajustarHumano('fatiga', -4);
+    ajustarHumano('disociacion', -4);
+  } else if(idx === 6){
+    // Romper el silencio: música, presencia. Baja aislamiento.
+    ajustarHumano('aislamiento', -5);
+    ajustarHumano('fatiga', -1);
   }
   // idx === 3 (salir, placeholder) no toca el estado humano.
 
@@ -270,6 +369,9 @@ function opcionApt(idx){
     }
   } else if(idx === 0){
     // Ventana — devolverse al menú base con las 4 opciones.
+    setTimeout(()=>{ regenerarOpcionesAptCierre(); }, 600);
+  } else if(idx === 4 || idx === 5 || idx === 6){
+    // Comer / despejar / romper el silencio: tras el texto, volver al menú.
     setTimeout(()=>{ regenerarOpcionesAptCierre(); }, 600);
   } else if(idx === 2){
     if(misionCerrada){
@@ -406,6 +508,84 @@ function textosVentana(misionCerrada, m, h, franja, dia){
   return arr;
 }
 
+// COMER — varía según si fue del inventario (gratis) o reparto (de pago),
+// la hora y el nivel de hambre. Pool amplio para que no suene repetido.
+function textosComer(deInventario, m, h, franja, dia){
+  const arr = [];
+
+  if(deInventario){
+    arr.push('Sacas lo que te quedaba y comes de pie, junto a la encimera.<br>No es gran cosa. Pero es tuyo, y eso ya es raro aquí.');
+    arr.push('Comes despacio lo que llevabas encima.<br>El estómago lo agradece antes que tú.');
+    arr.push('Lo último de tus reservas.<br>Mañana tocará buscar más. Hoy, al menos, no pasas hambre.');
+  } else {
+    arr.push('Pides reparto. Tarda doce minutos y llega frío.<br>Caro, plástico, anónimo. Pero el estómago deja de protestar.');
+    arr.push('La máquina del rellano escupe una ración tibia por un precio que duele.<br>Sabe a sal y a poco más. Suficiente para callar el hambre.');
+    arr.push('Un cuenco de fideos sintéticos de la cocina automática de abajo.<br>Treinta y cinco créditos por algo que finge ser comida. Te lo comes igual.');
+    arr.push('Comida de reparto HELIX: «Nutrición garantizada».<br>No garantiza sabor. Tampoco lo esperabas. El hambre afloja.');
+  }
+
+  if(franja === 'madrugada' || franja === 'noche'){
+    arr.push('Comer a estas horas tiene algo de derrota.<br>Lo haces de espaldas a la ventana, sin encender la luz grande.');
+  } else if(franja === 'amanecer' || franja === 'manana'){
+    arr.push('Primera cosa que comes en lo que va de ciclo.<br>El cuerpo lo recibe como quien recibe a un viejo conocido del que ya no se fía.');
+  }
+
+  if(nivel(h.hambre) === 'extremo'){
+    arr.push('Llevabas demasiado sin comer. Las primeras cucharadas casi duelen.<br>Te obligas a ir despacio. El cuerpo quiere más de lo que conviene.');
+  }
+  if(nivel(h.aislamiento) === 'alto' || nivel(h.aislamiento) === 'extremo'){
+    arr.push('Comes solo, como casi siempre.<br>En algún piso de enfrente, alguien cena acompañado. No piensas en ello. Lo intentas.');
+  }
+
+  arr.push('Comes sin pensar demasiado.<br>El hambre era ruido de fondo. Ahora hay un poco menos de ruido.');
+  return arr;
+}
+
+// DESPEJAR LA CABEZA — agua fría, un momento de pausa. Baja fatiga y
+// disociación. Variantes por estado y hora.
+function textosDespejar(misionCerrada, m, h, franja, dia){
+  const arr = [];
+
+  arr.push('Agua fría en la cara. El grifo escupe con presión irregular.<br>Por un segundo, el mundo vuelve a estar a la distancia correcta.');
+  arr.push('Te mojas la nuca y la frente.<br>El espejo te devuelve una cara que reconoces casi del todo.');
+  arr.push('Dejas correr el agua y metes las manos debajo.<br>Frío. Real. Te anclas a eso un momento.');
+
+  if(nivel(h.disociacion) === 'alto' || nivel(h.disociacion) === 'extremo'){
+    arr.push('El agua fría te trae de vuelta de donde fuera que estabas.<br>Te miras las manos hasta convencerte de que son las tuyas.');
+    arr.push('Te echas agua hasta que el reflejo deja de ir medio segundo por detrás de ti.<br>Funciona. Por ahora.');
+  }
+  if(nivel(h.fatiga) === 'alto' || nivel(h.fatiga) === 'extremo'){
+    arr.push('El frío te espabila lo justo para seguir un rato más.<br>No es descanso. Es aplazar el cansancio.');
+  }
+  if(franja === 'madrugada'){
+    arr.push('A esta hora el agua sale casi helada de la tubería.<br>Te despeja de golpe. La madrugada se vuelve un poco más soportable.');
+  }
+
+  arr.push('Un momento frente al lavabo. Respiras.<br>No arregla nada. Pero la cabeza pesa un poco menos.');
+  return arr;
+}
+
+// ROMPER EL SILENCIO — música, ruido de fondo, presencia. Baja aislamiento.
+function textosSilencio(misionCerrada, m, h, franja, dia){
+  const arr = [];
+
+  arr.push('Pones algo de música baja en el terminal. Una emisora vieja del Nivel 9.<br>No la escuchas del todo. Pero el silencio deja de ocupar toda la habitación.');
+  arr.push('Dejas la radio encendida en una frecuencia cualquiera.<br>Voces de desconocidos llenando el aire. Es casi como no estar solo.');
+  arr.push('Te sientas y dejas que el ruido de la ciudad entre por la rejilla.<br>Lluvia, tráfico, alguien que ríe lejos. La vida de otros, prestada un rato.');
+
+  if(nivel(h.aislamiento) === 'extremo'){
+    arr.push('Llevabas demasiado tiempo en silencio. Cualquier voz vale.<br>Subes el volumen un poco. Lo justo para no oírte pensar.');
+  }
+  if(franja === 'noche' && dia === 'finde'){
+    arr.push('Los bares de abajo laten a través del suelo.<br>Dejas que el bajo marque el ritmo de la habitación. Por un rato, formas parte de algo.');
+  } else if(franja === 'madrugada'){
+    arr.push('A estas horas solo hay emisoras automáticas y locutores grabados.<br>Aun así, una voz es una voz. La dejas puesta.');
+  }
+
+  arr.push('Algo de sonido para que las paredes no estén tan calladas.<br>No es compañía. Pero se le parece lo suficiente esta noche.');
+  return arr;
+}
+
 function textosTerminal(misionCerrada, m, h, franja, dia){
   const arr = [];
 
@@ -537,6 +717,9 @@ function regenerarOpcionesAptCierre(){
     // Versión post-misión: textos más cansados.
     opc.innerHTML = `
       ${botonVentana("Mirar por la ventana")}
+      ${botonComer()}
+      ${botonDespejar()}
+      ${botonSilencio()}
       ${botonDormir("Dormir")}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Revisar el terminal</button>`;
