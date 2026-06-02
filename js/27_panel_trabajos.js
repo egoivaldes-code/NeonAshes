@@ -4,13 +4,18 @@
 //
 // La pestaña TRABAJOS se divide en dos subpestañas:
 //   - ENCARGOS: trabajos puntuales que ofrece un contacto (Mara, etc.)
-//   - TRABAJOS: oficio recurrente ligado a una profesión (aún vacío)
+//   - PROFESIONES: oficios recurrentes que el jugador ejerce (motor en
+//     js/51_profesiones.js). Aquí solo se renderiza la interfaz.
 // renderTrabajos() monta las subpestañas; cada una tiene su render.
 // ============================================================
 
 // Subpestaña activa dentro de TRABAJOS. Se recuerda mientras el panel
 // está abierto para que al alternar no se pierda dónde estabas.
 let _subtabTrabajos = 'encargos';
+
+// Resultado de la última acción de profesión ejercida. Se muestra una
+// vez (como aviso de paga/ascenso) y se consume en el siguiente render.
+let _ultimoResultadoProfesion = null;
 
 function renderTrabajos(){
   const sub = (_subtabTrabajos === 'oficio') ? 'oficio' : 'encargos';
@@ -20,7 +25,7 @@ function renderTrabajos(){
   return ''
     + '<div class="cp-tabs" style="margin-bottom:0.8rem;">'
     +   '<button class="'+clsE+'" onclick="cambiarSubtabTrabajos(\'encargos\')">ENCARGOS</button>'
-    +   '<button class="'+clsO+'" onclick="cambiarSubtabTrabajos(\'oficio\')">TRABAJOS</button>'
+    +   '<button class="'+clsO+'" onclick="cambiarSubtabTrabajos(\'oficio\')">PROFESIONES</button>'
     + '</div>'
     + '<div id="trabajos-subcuerpo">' + cuerpo + '</div>';
 }
@@ -37,19 +42,116 @@ function cambiarSubtabTrabajos(sub){
   if(cont) cont.innerHTML = renderTrabajos();
 }
 
-// Subpestaña TRABAJOS (oficio recurrente). De momento vacía: el sistema
-// de profesiones aún no existe. Mensaje diegético en el mismo tono que
-// la lista vacía de encargos.
+// Subpestaña PROFESIONES. Dos caras:
+//  - Si el jugador NO ejerce ninguna: lista de oficios disponibles para
+//    escoger.
+//  - Si ejerce una o más: muestra cada una con su rango, progreso y el
+//    botón TRABAJAR que despliega las acciones del oficio.
+// El motor (datos, paga, progreso, ascensos) vive en js/51_profesiones.js.
 function renderTrabajosOficio(){
-  return `
-    <div class="lista-vacia">
-      <div class="icono">◇</div>
-      <div>NO EJERCES NINGÚN OFICIO</div>
-      <div style="margin-top:1rem;font-size:0.55rem;letter-spacing:0.2em;opacity:0.6">
-        La ciudad no te ha ofrecido nada<br>
-        que puedas llamar trabajo. Todavía.
+  if(typeof PROFESIONES === 'undefined'){
+    return `
+      <div class="lista-vacia">
+        <div class="icono">◇</div>
+        <div>NO EJERCES NINGÚN OFICIO</div>
+      </div>`;
+  }
+
+  // ¿Ejerce alguna?
+  const activas = PROFESIONES.filter(p => typeof tieneProfesion === 'function' && tieneProfesion(p.id));
+
+  // Resultado de la última acción ejercida, para mostrarlo arriba.
+  let aviso = '';
+  if(_ultimoResultadoProfesion){
+    const r = _ultimoResultadoProfesion;
+    const asc = r.ascendio ? `<div style="color:var(--cyan);margin-top:0.4rem;">ASCENSO · ahora eres ${r.rangoNuevo}</div>` : '';
+    aviso = `
+      <div class="trabajo-tarjeta" style="border-color:rgba(0,229,255,0.25);">
+        <div class="trabajo-descripcion" style="opacity:0.85;">${r.nota}</div>
+        <div class="trabajo-meta"><span></span><span class="creditos">+${r.paga} CR</span></div>
+        ${asc}
+      </div>`;
+    _ultimoResultadoProfesion = null;
+  }
+
+  // CASO 1: no ejerce nada → lista de oficios para escoger.
+  if(!activas.length){
+    let cards = '';
+    PROFESIONES.forEach(p => {
+      cards += `
+        <div class="trabajo-tarjeta">
+          <div class="trabajo-header">
+            <span class="trabajo-titulo">${p.nombre.toUpperCase()}</span>
+          </div>
+          <div class="trabajo-descripcion">${p.desc}</div>
+          <div style="margin-top:0.8rem;text-align:center;">
+            <button class="btn-terminal" onclick="elegirProfesionDesdePanel('${p.id}')">EMPEZAR EN ESTE OFICIO →</button>
+          </div>
+        </div>`;
+    });
+    return `
+      ${aviso}
+      <div style="font-size:0.55rem;letter-spacing:0.2em;opacity:0.55;margin-bottom:0.8rem;text-align:center;">
+        NO EJERCES NINGÚN OFICIO · ESCOGE UNO PARA EMPEZAR
       </div>
-    </div>`;
+      ${cards}`;
+  }
+
+  // CASO 2: ejerce una o más → tarjeta por profesión con rango y acciones.
+  let cards = '';
+  activas.forEach(p => {
+    const est = estadoProfesion(p.id);
+    const rango = p.rangos[est.rango || 0];
+    const umbral = rango.umbral;
+    const prog = est.progreso || 0;
+    const barra = umbral > 0
+      ? `<div style="margin-top:0.5rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.6;">PROGRESO: ${prog} / ${umbral}</div>`
+      : `<div style="margin-top:0.5rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.6;">RANGO MÁXIMO ALCANZADO</div>`;
+
+    let botonesAccion = '';
+    (p.acciones || []).forEach(a => {
+      botonesAccion += `
+        <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+          onclick="ejercerProfesionDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
+    });
+
+    cards += `
+      <div class="trabajo-tarjeta">
+        <div class="trabajo-header">
+          <span class="trabajo-titulo">${p.nombre.toUpperCase()}</span>
+          <span class="trabajo-estado aceptado">${rango.nombre}</span>
+        </div>
+        ${barra}
+        <div style="margin-top:0.8rem;">
+          <div style="font-size:0.5rem;letter-spacing:0.2em;opacity:0.5;margin-bottom:0.2rem;">TRABAJAR:</div>
+          ${botonesAccion}
+        </div>
+      </div>`;
+  });
+  return `${aviso}${cards}`;
+}
+
+// El jugador escoge un oficio desde la lista. Lo activa y re-renderiza.
+function elegirProfesionDesdePanel(id){
+  if(typeof elegirProfesion === 'function') elegirProfesion(id);
+  _refrescarSubcuerpoTrabajos();
+}
+
+// El jugador pulsa una acción de TRABAJAR. Ejerce, guarda el resultado
+// y re-renderiza para mostrar paga, progreso y posible ascenso.
+function ejercerProfesionDesdePanel(idProf, idAccion){
+  if(typeof ejercerProfesion === 'function'){
+    const r = ejercerProfesion(idProf, idAccion);
+    if(r) _ultimoResultadoProfesion = r;
+  }
+  _refrescarSubcuerpoTrabajos();
+}
+
+// Re-renderiza solo el cuerpo de la subpestaña activa.
+function _refrescarSubcuerpoTrabajos(){
+  const cont = document.getElementById('cp-cuerpo-tab')
+            || document.getElementById('hub-panel-cuerpo-tab');
+  if(cont) cont.innerHTML = renderTrabajos();
 }
 
 // Subpestaña ENCARGOS — el encargo de Mara Vex. Misma lógica de siempre.
