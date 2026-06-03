@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.78.4] - 2026-06-03
+### Fixed
+- El badge de novedad de Profesiones ahora aparece correctamente en cualquier partida nueva (antes no salía según cómo se empezara).
+### Changed
+- En pantallas de PC el texto y la interfaz se ven más grandes: a partir de 1024px de ancho y un poco más a partir de 1600px.
+- Apartamento: el reloj central vuelve a su posición estable y visible (se revierte el intento anterior que lo hacía desaparecer).
+
 ## [0.78.3] - 2026-06-03
 ### Fixed
 - El botón "Ir a trabajar" ahora aparece en el apartamento justo al escoger un oficio, sin tener que salir y volver a entrar.
