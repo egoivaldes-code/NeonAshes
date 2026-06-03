@@ -93,7 +93,9 @@ function mostrarEscritorioHelix(){
 function actualizarBadgesTerminal(){
   const m = Estado.memoria || {};
   _ponerBadgeIcono('helix-icono-noticias', m.noticiasVistas === false);
-  _ponerBadgeIcono('helix-icono-contactos', m.trabajosVistos === false);
+  // El icono CONTACTOS (que contiene la pestaña Trabajos) avisa tanto de
+  // encargos nuevos como de profesiones sin descubrir.
+  _ponerBadgeIcono('helix-icono-contactos', m.trabajosVistos === false || m.profesionesVistas === false);
 }
 
 function _ponerBadgeIcono(idIcono, hayAviso){

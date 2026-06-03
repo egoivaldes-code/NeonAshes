@@ -2,6 +2,15 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.78.2] - 2026-06-03
+### Added
+- Nueva opción "Ir a trabajar" en el apartamento (solo si ejerces algún oficio): atajo directo a las acciones de la profesión sin pasar por menús.
+- Badges de aviso que guían hasta la pestaña Profesiones al empezar una partida, y se apagan al verla.
+- Ventana de herencia al confirmar identidad: muestra el desglose (créditos heredados y carga de fatiga) y deja al jugador decidir si acepta la herencia o empieza sin nada. Rechazarla la descarta para siempre.
+### Changed
+- La herencia ya no se aplica automáticamente ni se cuenta al entrar al apartamento; ahora es una decisión del jugador en la ventana de herencia.
+- Apartamento: la imagen de fondo baja un poco y el reloj se ancla más cerca de ella.
+
 ## [0.78.1] - 2026-06-02
 ### Added
 - La acción "Salir a buscar chatarra" del Scavenger ahora pide elegir entre cuatro lugares (conducto, contenedor HELIX, vehículo abandonado, pozo de inundación), cada uno con distintos desenlaces: mejor o peor botín, heridas, fatiga o multas domiciliadas de HELIX según el riesgo.

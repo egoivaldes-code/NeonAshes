@@ -33,3 +33,77 @@
 
 
 /* ============================================================
+/* ============================================================
+   VENTANA DE HERENCIA (v0.78.2)
+   Overlay que aparece al confirmar identidad si hay herencia
+   pendiente. Tono noir: parece un expediente frío de HELIX.
+   ============================================================ */
+.ventana-herencia{
+  position:fixed;
+  inset:0;
+  z-index:200;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:1.5rem;
+  background:rgba(3,5,8,0.92);
+  backdrop-filter:blur(3px);
+}
+.ventana-herencia.activa{ display:flex; }
+.vh-caja{
+  width:100%;
+  max-width:420px;
+  border:1px solid rgba(0,229,255,0.25);
+  background:rgba(8,12,18,0.96);
+  padding:1.5rem;
+  box-shadow:0 0 40px rgba(0,229,255,0.08);
+}
+.vh-titulo{
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.6rem;
+  letter-spacing:0.3em;
+  color:rgba(0,229,255,0.6);
+  text-align:center;
+  margin-bottom:1.2rem;
+  border-bottom:1px solid rgba(0,229,255,0.15);
+  padding-bottom:0.8rem;
+}
+.vh-texto{
+  font-size:0.8rem;
+  line-height:1.6;
+  color:rgba(200,216,224,0.85);
+  margin-bottom:1.3rem;
+}
+.vh-desglose{
+  border:1px solid rgba(200,216,224,0.1);
+  padding:0.8rem;
+  margin-bottom:1rem;
+}
+.vh-linea{
+  display:flex;
+  justify-content:space-between;
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.62rem;
+  letter-spacing:0.1em;
+  padding:0.3rem 0;
+}
+.vh-positivo span:last-child{ color:var(--cyan,#00e5ff); }
+.vh-negativo span:last-child{ color:var(--magenta,#ff006e); }
+.vh-aviso{
+  font-size:0.58rem;
+  letter-spacing:0.05em;
+  color:rgba(200,216,224,0.45);
+  text-align:center;
+  margin-bottom:1.2rem;
+  line-height:1.5;
+}
+.vh-botones{
+  display:flex;
+  flex-direction:column;
+  gap:0.6rem;
+}
+.vh-botones .btn-terminal{ width:100%; }
+.vh-rechazar{
+  border-color:rgba(200,216,224,0.2)!important;
+  color:rgba(200,216,224,0.6)!important;
+}
