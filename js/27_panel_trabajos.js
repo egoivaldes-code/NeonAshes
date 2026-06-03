@@ -26,10 +26,17 @@ function renderTrabajos(){
   const cuerpo = (sub === 'oficio') ? renderTrabajosOficio() : renderEncargos();
   const clsE = sub === 'encargos' ? 'cp-tab activa' : 'cp-tab';
   const clsO = sub === 'oficio'   ? 'cp-tab activa' : 'cp-tab';
+  // Badge "!" en PROFESIONES mientras el jugador no haya entrado nunca
+  // a verlas (Estado.memoria.profesionesVistas === false). Guía la
+  // navegación hasta el sistema de oficios al empezar la partida.
+  const m = Estado.memoria || {};
+  const badgeProf = (m.profesionesVistas === false)
+    ? ' <span class="cp-tab-badge">!</span>'
+    : '';
   return ''
     + '<div class="cp-tabs" style="margin-bottom:0.8rem;">'
     +   '<button class="'+clsE+'" onclick="cambiarSubtabTrabajos(\'encargos\')">ENCARGOS</button>'
-    +   '<button class="'+clsO+'" onclick="cambiarSubtabTrabajos(\'oficio\')">PROFESIONES</button>'
+    +   '<button class="'+clsO+'" onclick="cambiarSubtabTrabajos(\'oficio\')">PROFESIONES'+badgeProf+'</button>'
     + '</div>'
     + '<div id="trabajos-subcuerpo">' + cuerpo + '</div>';
 }
@@ -38,9 +45,12 @@ function renderTrabajos(){
 // la pestaña TRABAJOS, sin volver a dibujar todo el panel.
 function cambiarSubtabTrabajos(sub){
   _subtabTrabajos = (sub === 'oficio') ? 'oficio' : 'encargos';
-  // El contenedor donde vive el render de la pestaña TRABAJOS puede ser
-  // 'cp-cuerpo-tab' (abierto desde CONTACTOS) o 'hub-panel-cuerpo-tab'
-  // (abierto desde ESTADO). Reinyectamos en el que exista.
+  // Al entrar en PROFESIONES, marcamos como vistas para apagar su badge
+  // en toda la cadena de navegación.
+  if(_subtabTrabajos === 'oficio'){
+    if(Estado.memoria) Estado.memoria.profesionesVistas = true;
+    if(typeof actualizarBadgesTerminal === 'function') actualizarBadgesTerminal();
+  }
   const cont = document.getElementById('cp-cuerpo-tab')
             || document.getElementById('hub-panel-cuerpo-tab');
   if(cont) cont.innerHTML = renderTrabajos();

@@ -128,6 +128,10 @@ function muerteAunRecordada(){
 // Presión: 30% de la del muerto + 10 fijos (gastos HELIX).
 // ============================================================
 function aplicarHerencia(){
+  // Calcula la herencia SIN aplicarla. Devuelve el desglose para que la
+  // ventana de herencia lo muestre, o null si no hay nada pendiente.
+  // La aplicación real (sumar créditos/fatiga) o el descarte se hacen
+  // con resolverHerencia(true|false) según decida el jugador.
   const archivo = cargarArchivoMundo();
   if(!archivo.herenciaPendiente) return null;
   if(archivo.muertos.length === 0) return null;
@@ -137,20 +141,10 @@ function aplicarHerencia(){
   // Créditos: 50% del muerto, mínimo 300, máximo 800.
   const credBase = Math.floor((ultimo.creditosAlMorir || 0) * 0.5);
   const creditosHeredados = Math.max(300, Math.min(800, credBase));
-  Estado.creditos = (Estado.creditos || 0) + creditosHeredados;
 
-  // El hambre no se hereda: cada estómago empieza vacío o lleno por su cuenta.
-  // Lo que sí se hereda es el agotamiento de cargar con el muerto: papeleo,
-  // funerales mínimos, noches sin dormir. Lo añadimos a fatiga.
+  // Fatiga heredada: el peso de cargar con el muerto (papeleo, funeral,
+  // noches sin dormir). 20% del hambre del muerto + 5 fijos.
   const fatigaHeredada = Math.round((ultimo.hambreAlMorir || 0) * 0.2) + 5;
-  if(Estado.humano){
-    Estado.humano.fatiga = Math.min(100, (Estado.humano.fatiga || 0) + fatigaHeredada);
-  }
-
-  // Marcamos la herencia como cobrada. La bandera no se vuelve a poner
-  // a true hasta que muera otro personaje.
-  archivo.herenciaPendiente = false;
-  guardarArchivoMundo(archivo);
 
   // Saber si el apellido coincide define el texto narrativo de entrada.
   const apellidoNuevo = (Estado.jugador && Estado.jugador.apellido1) || '';
@@ -165,6 +159,25 @@ function aplicarHerencia(){
     mismoApellido: mismoApellido,
     causaMuerte: ultimo.causa
   };
+}
+
+// Resuelve la herencia según la decisión del jugador en la ventana.
+// aceptar=true  → suma créditos y fatiga heredados al personaje nuevo.
+// aceptar=false → no aplica nada (empieza limpio).
+// En ambos casos la herencia QUEDA QUEMADA: marcada como cobrada, no se
+// vuelve a ofrecer hasta que muera otro personaje.
+function resolverHerencia(info, aceptar){
+  const archivo = cargarArchivoMundo();
+  if(aceptar && info){
+    Estado.creditos = (Estado.creditos || 0) + (info.creditosHeredados || 0);
+    if(Estado.humano){
+      Estado.humano.fatiga = Math.min(100, (Estado.humano.fatiga || 0) + (info.fatigaHeredada || 0));
+    }
+  }
+  // Quemar la herencia en cualquier caso (aceptada o rechazada).
+  archivo.herenciaPendiente = false;
+  guardarArchivoMundo(archivo);
+  if(typeof guardarPartida === 'function') guardarPartida();
 }
 
 // Texto atmosférico que se muestra al nuevo personaje en su primer

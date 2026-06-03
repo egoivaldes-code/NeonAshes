@@ -382,15 +382,15 @@ html, body {
 @media (max-width: 768px) {
   #bg-apt {
     background-size: contain;
-    background-position: center 14%;
+    background-position: center 22%;
     background-color: #03050a;
     background-repeat: no-repeat;
   }
-  /* El reloj grande sube hacia la franja negra que queda entre la
-     imagen y el bloque de opciones, en vez de quedar pegado al texto.
-     Aprovecha el espacio vacío y mejora el equilibrio visual. */
+  /* El reloj grande sube hasta quedar pegado justo debajo de la imagen
+     de fondo, eliminando la franja negra que quedaba entre la foto y el
+     bloque de opciones. Acoplado a background-position de #bg-apt. */
   #apartamento .reloj-apt {
-    margin-top: -22vh;
+    margin-top: -26vh;
   }
 }
 

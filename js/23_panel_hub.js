@@ -69,11 +69,13 @@ function renderEstadoConPestanas(activa){
     cuerpoTab = (typeof renderEstado === 'function') ? renderEstado() : '';
   }
   const cls = (t) => tab === t ? 'cp-tab activa' : 'cp-tab';
+  const _m = Estado.memoria || {};
+  const _bTrab = (_m.profesionesVistas === false) ? ' <span class="cp-tab-badge">!</span>' : '';
   return ''
     + '<div class="cp-tabs">'
     +   '<button class="'+cls('estado')+'" onclick="cambiarTabEstado(\'estado\')">ESTADO</button>'
     +   '<button class="'+cls('contactos')+'" onclick="cambiarTabEstado(\'contactos\')">CONTACTOS</button>'
-    +   '<button class="'+cls('trabajos')+'" onclick="cambiarTabEstado(\'trabajos\')">TRABAJOS</button>'
+    +   '<button class="'+cls('trabajos')+'" onclick="cambiarTabEstado(\'trabajos\')">TRABAJOS'+_bTrab+'</button>'
     + '</div>'
     + '<div id="hub-panel-cuerpo-tab">' + cuerpoTab + '</div>';
 }
@@ -106,10 +108,12 @@ function renderContactosConPestanas(activa){
     : (typeof renderContactos === 'function' ? renderContactos() : '');
   const clsC = tab === 'contactos' ? 'cp-tab activa' : 'cp-tab';
   const clsT = tab === 'trabajos' ? 'cp-tab activa' : 'cp-tab';
+  const _mc = Estado.memoria || {};
+  const _bT = (_mc.profesionesVistas === false) ? ' <span class="cp-tab-badge">!</span>' : '';
   return ''
     + '<div class="cp-tabs">'
     +   '<button class="'+clsC+'" onclick="cambiarTabContactos(\'contactos\')">CONTACTOS</button>'
-    +   '<button class="'+clsT+'" onclick="cambiarTabContactos(\'trabajos\')">TRABAJOS</button>'
+    +   '<button class="'+clsT+'" onclick="cambiarTabContactos(\'trabajos\')">TRABAJOS'+_bT+'</button>'
     + '</div>'
     + '<div id="cp-cuerpo-tab">' + cuerpoTab + '</div>';
 }

@@ -445,3 +445,21 @@
   color:var(--cyan);
   border-bottom-color:var(--cyan);
 }
+/* Badge "!" inline en el texto de una pestaña/subpestaña, para guiar
+   la navegación hacia una novedad (p.ej. profesiones sin descubrir). */
+.cp-tab-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:13px;
+  height:13px;
+  margin-left:0.25em;
+  vertical-align:middle;
+  background:var(--magenta,#ff006e);
+  color:#000;
+  border-radius:50%;
+  font-size:0.5rem;
+  font-weight:bold;
+  letter-spacing:0;
+  box-shadow:0 0 6px rgba(255,0,110,0.6);
+}

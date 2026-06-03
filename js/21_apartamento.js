@@ -39,23 +39,8 @@ function iniciarApartamento(){
   // y Estado.memoria (cargada de la partida anterior).
   ajustarTextosApartamentoSegunMemoria();
 
-  // FASE D: si este personaje acaba de heredar de un muerto,
-  // sobrescribimos el texto inicial del apartamento con la frase
-  // atmosférica de herencia. Tiene prioridad sobre la narrativa de
-  // "noche normal" o de partidas previas: estás aquí por primera vez,
-  // pero alguien ya no.
-  if(Estado.herenciaRecibida){
-    const textoHerencia = textoEntradaConHerencia(Estado.herenciaRecibida);
-    if(textoHerencia){
-      const narr = document.getElementById('narr-apt');
-      if(narr){
-        narr.innerHTML = textoHerencia;
-      }
-    }
-    // Lo dejamos disponible solo en esta entrada. Si el jugador
-    // sale y vuelve (eco), el apartamento ya es "suyo".
-    Estado.herenciaRecibida = null;
-  }
+  // (La herencia ya no se cuenta aquí: se ofrece y se resuelve en la
+  // ventana de herencia al confirmar identidad, antes de entrar.)
 
   // Si hay noticias reactivas pendientes (partida cargada con
   // estado avanzado o decisiones ya tomadas), mostramos el badge.
@@ -87,6 +72,26 @@ function botonVentana(texto){
 function botonDormir(texto){
   if(Estado.durmioEstaVisita === true) return '';
   return `<button class="opcion-btn" onclick="opcionApt(2)">${texto}</button>`;
+}
+
+// Botón "Ir a trabajar": aparece solo si el jugador ejerce al menos una
+// profesión. Atajo directo a la jornada sin pasar por menús: abre el
+// panel de Profesiones ya en su sitio, listo para elegir acción/lugar.
+function botonIrTrabajar(){
+  if(typeof PROFESIONES === 'undefined') return '';
+  const ejerceAlguna = PROFESIONES.some(p => typeof tieneProfesion === 'function' && tieneProfesion(p.id));
+  if(!ejerceAlguna) return '';
+  return `<button class="opcion-btn" onclick="irATrabajarDesdeApartamento()">Ir a trabajar</button>`;
+}
+
+// Lleva al jugador directo a trabajar desde el apartamento (opción B):
+// abre el panel en la subpestaña Profesiones, donde están las acciones
+// del oficio (y el aviso de cooldown si toca descansar).
+function irATrabajarDesdeApartamento(){
+  if(typeof _subtabTrabajos !== 'undefined') _subtabTrabajos = 'oficio';
+  if(typeof abrirPanelHub === 'function'){
+    abrirPanelHub('trabajos');
+  }
 }
 
 // Botón "comer algo": solo aparece si tienes hambre apreciable y no has
@@ -162,6 +167,7 @@ function ajustarTextosApartamentoSegunMemoria(soloOpciones){
     opc.innerHTML = `
       ${botonAmbientalUnico("Mirar por la ventana")}
       ${botonDormir("Dormir")}
+      ${botonIrTrabajar()}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Encender el terminal</button>`;
     return;
@@ -220,18 +226,21 @@ function ajustarTextosApartamentoSegunMemoria(soloOpciones){
     opc.innerHTML = `
       ${botonAmbientalUnico("Mirar por la ventana")}
       ${botonDormir("Intentar dormir un poco más")}
+      ${botonIrTrabajar()}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Comprobar el terminal otra vez</button>`;
   } else if(m.aceptoEncargo === false){
     opc.innerHTML = `
       ${botonAmbientalUnico("Mirar por la ventana")}
       ${botonDormir("Quedarte en la cama")}
+      ${botonIrTrabajar()}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Encender el terminal (HELIX)</button>`;
   } else if(m.vioFragmentoCero){
     opc.innerHTML = `
       ${botonAmbientalUnico("Mirar por la ventana")}
       ${botonDormir("Cerrar los ojos un momento")}
+      ${botonIrTrabajar()}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Revisar el terminal</button>`;
   } else {
@@ -239,6 +248,7 @@ function ajustarTextosApartamentoSegunMemoria(soloOpciones){
     opc.innerHTML = `
       ${botonAmbientalUnico("Mirar por la ventana otra vez")}
       ${botonDormir("Quedarte tumbado")}
+      ${botonIrTrabajar()}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Encender el terminal</button>`;
   }
@@ -735,6 +745,7 @@ function regenerarOpcionesAptCierre(){
     opc.innerHTML = `
       ${botonAmbientalUnico("Mirar por la ventana")}
       ${botonDormir("Dormir")}
+      ${botonIrTrabajar()}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Revisar el terminal</button>`;
   } else {
