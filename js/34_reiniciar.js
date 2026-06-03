@@ -26,7 +26,8 @@ function reiniciar(){
     confianzaMara: 0,
     tonoJugador: null,
     noticiasVistas: true,
-    trabajosVistos: true
+    trabajosVistos: true,
+    profesionesVistas: false
   };
   // Limpiar el estado humano EN MEMORIA.
   Estado.humano = {

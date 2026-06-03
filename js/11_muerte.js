@@ -126,7 +126,8 @@ function reiniciarTrasMuerte(){
   Estado.memoria = {
     aceptoEncargo: null, pidioMasInfo: false, guardoSilencio: false,
     vecesPidioInfo: 0, vioFragmentoCero: false, confianzaMara: 0,
-    tonoJugador: null, noticiasVistas: true, trabajosVistos: true
+    tonoJugador: null, noticiasVistas: true, trabajosVistos: true,
+    profesionesVistas: false
   };
   Estado.humano = { fatiga: 8, aislamiento: 12, hambre: 5, disociacion: 0 };
   // El cuerpo y los bolsillos del muerto se quedan con él: el nuevo

@@ -249,6 +249,14 @@ html, body {
    ultrawide. Se aplica solo a partir de 1024px. */
 @media (min-width: 1024px) {
 
+  /* En PC el contenido se centra en una columna. Para que no se vea
+     todo diminuto, subimos el tamaño base de fuente: como casi toda la
+     interfaz está en rem, esto agranda texto, botones y espaciados de
+     forma proporcional. No afecta a móvil (este media es solo ancho). */
+  html, body {
+    font-size: 18px;
+  }
+
   /* Las escenas en sí ocupan toda la pantalla (necesario para
      que los fondos cubran), pero su contenido interno se centra
      y queda contenido. */
@@ -272,7 +280,7 @@ html, body {
   .flashback-text,
   #zona-llegada-interior,
   #mapa-interior {
-    max-width: 820px;
+    max-width: 900px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -280,10 +288,10 @@ html, body {
   /* Las barras fijas (permanente, hub) ya estaban con max-width
      760px en el @media 1200px+. Las ampliamos para que entren ya
      a partir de 1024px y un poco más anchas, coherentes con
-     820px de contenido. */
+     900px de contenido. */
   .barra-permanente,
   .hub-barra {
-    max-width: 820px;
+    max-width: 900px;
     left: 50% !important;
     right: auto !important;
     transform: translateX(-50%);
@@ -295,6 +303,10 @@ html, body {
    más que un libro cómodo de leer. Cap final más generoso
    pero todavía contenido. */
 @media (min-width: 1600px) {
+  /* Pantallas grandes: un punto más de tamaño base sobre el de 1024px. */
+  html, body {
+    font-size: 20px;
+  }
   .interior-apt,
   .terminal-pantalla,
   .mercado-inner,
@@ -304,11 +316,11 @@ html, body {
   .eco-interior,
   #zona-llegada-interior,
   #mapa-interior {
-    max-width: 900px;
+    max-width: 1000px;
   }
   .barra-permanente,
   .hub-barra {
-    max-width: 900px;
+    max-width: 1000px;
   }
   /* Lectura un pelín más generosa */
   .narr-box { font-size: 1.05rem; }
@@ -382,29 +394,9 @@ html, body {
 @media (max-width: 768px) {
   #bg-apt {
     background-size: contain;
-    background-position: center 8%;
+    background-position: center top;
     background-color: #03050a;
     background-repeat: no-repeat;
-  }
-  /* El reloj se saca del flujo del bloque inferior y se ancla por
-     posición absoluta justo bajo el borde de la foto. La imagen
-     (ratio 3:2) al 8% desde arriba, escalada por ancho, tiene su borde
-     inferior a ~8vh + 66.7vw. Pegamos el reloj ahí, con franja negra
-     arriba. Fecha, narración y opciones siguen ancladas abajo. */
-  #apartamento .reloj-apt {
-    position: absolute;
-    top: calc(8vh + 66.7vw + 0.5rem);
-    left: 0;
-    width: 100%;
-    margin: 0;
-  }
-  /* La fecha viaja justo bajo el reloj (van juntos: hora + ubicación). */
-  #apartamento .fecha-apt {
-    position: absolute;
-    top: calc(8vh + 66.7vw + 4rem);
-    left: 0;
-    width: 100%;
-    margin: 0;
   }
 }
 

@@ -30,7 +30,10 @@ Estado.memoria = {
   // ¿El jugador ha consultado las noticias desde la última actualización?
   // Si es false y hay reactivas, el botón NOTICIAS muestra badge.
   noticiasVistas: true,
-  trabajosVistos: true
+  trabajosVistos: true,
+  // ¿El jugador ha visto la pestaña Profesiones? Empieza en false para
+  // que el badge guíe hasta ella al comenzar la partida.
+  profesionesVistas: false
 };
 
 // ============================================================
