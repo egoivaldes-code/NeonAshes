@@ -99,6 +99,13 @@ function renderInventario(){
 // Catálogo de objetos que el viaje "Explorar la ciudad" puede soltar.
 // Son objetos de sabor + contexto para misiones futuras.
 const ITEMS_EXPLORAR = [
+  // CHATARRA — material apilable. A diferencia de los objetos de sabor,
+  // la chatarra se acumula (x2, x3...) y es la materia prima que el
+  // Scavenger refina al "Procesar chatarra". Se consigue explorando,
+  // como pequeño consuelo cuando un registro no da nada de valor.
+  { id:'chatarra', nombre:'Chatarra', tipo:'material',
+    desc:'Metal retorcido, cable, plástico quemado. No vale nada tal cual, pero alguien con paciencia podría sacarle unos créditos.' },
+
   { id:'chip_datos_corrupto', nombre:'Chip de datos corrupto', tipo:'dato',
     desc:'Medio ilegible. Alguien lo tiró con prisas. Tal vez Cero-Ocho pueda leerlo.' },
   { id:'placa_sindicato', nombre:'Placa del Sindicato Ferro', tipo:'documento',
@@ -155,6 +162,22 @@ window.CATALOGO_ITEMS_EXPLORAR = ITEMS_EXPLORAR;
 function itemExplorarAleatorio(){
   return ITEMS_EXPLORAR[Math.floor(Math.random() * ITEMS_EXPLORAR.length)];
 }
+
+// Da una cantidad concreta de chatarra. Atajo cómodo para escenas de
+// exploración y para el sistema de profesiones.
+function darChatarra(cantidad){
+  const n = Math.max(1, cantidad || 1);
+  return darItem({ id:'chatarra', nombre:'Chatarra', tipo:'material',
+    desc:'Metal retorcido, cable, plástico quemado. No vale nada tal cual, pero alguien con paciencia podría sacarle unos créditos.',
+    cantidad:n });
+}
+function contarChatarra(){
+  _asegurarInventario();
+  const it = Estado.inventario.find(i => i.id === 'chatarra');
+  return it ? (it.cantidad || 0) : 0;
+}
+window.darChatarra = darChatarra;
+window.contarChatarra = contarChatarra;
 
 window.darItem = darItem;
 window.quitarItem = quitarItem;
