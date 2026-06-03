@@ -14,6 +14,8 @@ Estado.inventario = [];
 function actualizarHUD(){
   const cr = document.getElementById('hud-cr');
   if(cr) cr.textContent = Estado.creditos;
+  // Badge de novedad en el botón ESTADO de la barra permanente.
+  if(typeof actualizarBadgesTerminal === 'function') actualizarBadgesTerminal();
   // Barra permanente nueva
   const permCr = document.getElementById('perm-cr');
   if(permCr) permCr.textContent = Estado.creditos;

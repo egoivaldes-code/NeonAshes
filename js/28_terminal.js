@@ -96,6 +96,13 @@ function actualizarBadgesTerminal(){
   // El icono CONTACTOS (que contiene la pestaña Trabajos) avisa tanto de
   // encargos nuevos como de profesiones sin descubrir.
   _ponerBadgeIcono('helix-icono-contactos', m.trabajosVistos === false || m.profesionesVistas === false);
+  // Badge en el botón ESTADO de la barra permanente: la pestaña Trabajos
+  // (con Profesiones) vive dentro del panel ESTADO, así que la novedad
+  // debe resaltarse también ahí, en el punto de entrada.
+  const badgeEstado = document.getElementById('perm-badge-estado');
+  if(badgeEstado){
+    badgeEstado.style.display = (m.profesionesVistas === false) ? 'flex' : 'none';
+  }
 }
 
 function _ponerBadgeIcono(idIcono, hayAviso){

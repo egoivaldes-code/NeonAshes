@@ -201,7 +201,7 @@ html, body {
    opciones y la barra permanente. Le damos un padding justo para
    librar solo la barra permanente, dejando más sitio a la imagen. */
 .interior-apt {
-  padding-bottom: calc(4.8rem + env(safe-area-inset-bottom, 0));
+  padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0));
 }
 
 /* tl-inner es un caso aparte: tiene position:absolute; bottom:0,
@@ -382,15 +382,29 @@ html, body {
 @media (max-width: 768px) {
   #bg-apt {
     background-size: contain;
-    background-position: center 22%;
+    background-position: center 8%;
     background-color: #03050a;
     background-repeat: no-repeat;
   }
-  /* El reloj grande sube hasta quedar pegado justo debajo de la imagen
-     de fondo, eliminando la franja negra que quedaba entre la foto y el
-     bloque de opciones. Acoplado a background-position de #bg-apt. */
+  /* El reloj se saca del flujo del bloque inferior y se ancla por
+     posición absoluta justo bajo el borde de la foto. La imagen
+     (ratio 3:2) al 8% desde arriba, escalada por ancho, tiene su borde
+     inferior a ~8vh + 66.7vw. Pegamos el reloj ahí, con franja negra
+     arriba. Fecha, narración y opciones siguen ancladas abajo. */
   #apartamento .reloj-apt {
-    margin-top: -26vh;
+    position: absolute;
+    top: calc(8vh + 66.7vw + 0.5rem);
+    left: 0;
+    width: 100%;
+    margin: 0;
+  }
+  /* La fecha viaja justo bajo el reloj (van juntos: hora + ubicación). */
+  #apartamento .fecha-apt {
+    position: absolute;
+    top: calc(8vh + 66.7vw + 4rem);
+    left: 0;
+    width: 100%;
+    margin: 0;
   }
 }
 

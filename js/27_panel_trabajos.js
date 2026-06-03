@@ -209,6 +209,12 @@ function renderTrabajosOficio(){
 // El jugador escoge un oficio desde la lista. Lo activa y re-renderiza.
 function elegirProfesionDesdePanel(id){
   if(typeof elegirProfesion === 'function') elegirProfesion(id);
+  // Si el jugador está en el apartamento, refrescamos sus opciones para
+  // que aparezca "Ir a trabajar" de inmediato (sin tener que salir y
+  // volver a entrar).
+  if(typeof ajustarTextosApartamentoSegunMemoria === 'function'){
+    ajustarTextosApartamentoSegunMemoria(true);
+  }
   _refrescarSubcuerpoTrabajos();
 }
 

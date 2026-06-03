@@ -50,6 +50,29 @@
   position: relative;
   min-height: 48px;
 }
+
+/* Badge "!" en la esquina superior derecha de un botón de la barra
+   permanente, para señalar una novedad dentro del panel (p.ej. una
+   pestaña sin ver dentro de ESTADO). */
+.perm-badge {
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  width: 13px;
+  height: 13px;
+  background: var(--magenta, #ff006e);
+  color: #000;
+  border-radius: 50%;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.5rem;
+  font-weight: bold;
+  letter-spacing: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 6px rgba(255,0,110,0.6);
+  z-index: 2;
+}
 .perm-btn:hover {
   background: rgba(0,229,255,0.1);
   border-color: rgba(0,229,255,0.4);

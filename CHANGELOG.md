@@ -2,6 +2,15 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.78.3] - 2026-06-03
+### Fixed
+- El botón "Ir a trabajar" ahora aparece en el apartamento justo al escoger un oficio, sin tener que salir y volver a entrar.
+- La última opción del apartamento ya no queda pegada a la barra de estado.
+### Changed
+- Apartamento: la imagen de fondo deja una pequeña franja negra arriba y el reloj se ancla justo bajo el borde de la imagen.
+### Added
+- Badge de novedad en el botón Estado de la barra inferior, que resalta cuando hay profesiones sin descubrir (se apaga al verlas).
+
 ## [0.78.2] - 2026-06-03
 ### Added
 - Nueva opción "Ir a trabajar" en el apartamento (solo si ejerces algún oficio): atajo directo a las acciones de la profesión sin pasar por menús.
