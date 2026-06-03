@@ -5,16 +5,22 @@
 // ============================================================
 
 function iniciarApartamento(){
-  // Cada visita al apartamento, "mirar por la ventana" vuelve a estar
-  // disponible. Solo puedes mirarla una vez por visita: tras hacerlo,
-  // el botón desaparece hasta volver a salir y entrar al apartamento.
-  Estado.ventanaMirada = false;
-  // Lo mismo con dormir: una sola vez por visita.
+  // Dormir sigue siendo una sola vez por visita (su flujo cierra el día).
   Estado.durmioEstaVisita = false;
-  // Nuevas acciones de apartamento, una vez por visita cada una.
-  Estado.comioEstaVisita = false;
-  Estado.despejoEstaVisita = false;
-  Estado.silencioEstaVisita = false;
+
+  // ACCIONES AMBIENTALES (v0.78.6): ya NO se reinician por visita. Su
+  // disponibilidad la decide ahora un cooldown de juego persistente
+  // (ver BLOQUE JS-24B). Salir y volver a entrar ya no las recarga.
+  // Si la partida es vieja (sin estos campos) o no hay ranuras aún,
+  // se inicializan aquí.
+  if(typeof Estado.cooldownsApt !== 'object' || Estado.cooldownsApt === null){
+    Estado.cooldownsApt = {};
+  }
+  if(!Array.isArray(Estado.ranurasApt) || Estado.ranurasApt.length === 0){
+    if(typeof _elegirRanurasIniciales === 'function'){
+      Estado.ranurasApt = _elegirRanurasIniciales();
+    }
+  }
 
   const r=document.getElementById('reloj-apt');
   // El reloj del apartamento ahora lee la hora del juego real. Se
@@ -56,11 +62,185 @@ function iniciarApartamento(){
 // visita (atenuado y no clicable) o si todavía no (activo normal).
 // Se usa en TODOS los sitios donde se genera el menú del apartamento
 // para garantizar que la regla se aplique en todas partes igual.
+// ============================================================
+// BLOQUE JS-24B — ACCIONES AMBIENTALES DEL APARTAMENTO (v0.78.6)
+// ------------------------------------------------------------
+// Las acciones de ambiente (mirar la ventana, fumar, ducharse...)
+// ya no son "una por visita". Ahora:
+//   - Hay un POOL de acciones. En pantalla se ven 3 RANURAS.
+//   - Al hacer una, aplica su efecto y deja sitio a OTRA distinta
+//     del pool, que entra YA EN COOLDOWN (no se puede usar al
+//     instante: evita el spam de encadenar acciones).
+//   - El cooldown es de 4h de JUEGO por acción y es PERSISTENTE:
+//     salir y volver a entrar al apartamento no lo resetea (antes
+//     el sistema "por visita" sí se podía spamear así).
+//   - Una acción en cooldown se muestra en gris con un tick (✓) y
+//     el tiempo de juego que le queda.
+// ============================================================
+
+// Cooldown de las acciones ambientales: 4 horas de JUEGO.
+const COOLDOWN_AMBIENTAL_MS = 4 * 60 * 60 * 1000;
+
+// Hora de juego actual en milisegundos (o null si aún no hay reloj).
+function _ahoraJuegoMsApt(){
+  if(typeof obtenerFechaJuego === 'function'){
+    try { return obtenerFechaJuego().getTime(); } catch(e){ return null; }
+  }
+  return null;
+}
+
+// CATÁLOGO de acciones ambientales. Cada una:
+//   id        — clave interna y de cooldown
+//   etiqueta  — texto del botón
+//   idx       — número que recibe opcionApt() al pulsarla
+//   requiere  — (opcional) función que decide si la acción tiene
+//               sentido ahora mismo (p.ej. comer solo con hambre).
+const AMBIENTALES_APT = [
+  { id:'ventana',  etiqueta:'Mirar por la ventana',   idx:0 },
+  { id:'comer',    etiqueta:'Comer algo',             idx:4,
+    requiere: () => {
+      const h = Estado.humano || {};
+      const n = (typeof nivel === 'function') ? nivel(h.hambre) : null;
+      return n === 'medio' || n === 'alto' || n === 'extremo';
+    } },
+  { id:'despejar', etiqueta:'Despejar la cabeza',     idx:5 },
+  { id:'silencio', etiqueta:'Romper el silencio',     idx:6 },
+  { id:'fumar',    etiqueta:'Fumar un cigarrillo',    idx:7 },
+  { id:'periodico',etiqueta:'Leer el periódico digital', idx:8 },
+  { id:'ducha',    etiqueta:'Ducharte',               idx:9 },
+  { id:'espejo',   etiqueta:'Mirarte al espejo',      idx:10 },
+  { id:'limpiar',  etiqueta:'Limpiar el apartamento', idx:11 }
+];
+
+function _ambientalPorId(id){ return AMBIENTALES_APT.find(a => a.id === id) || null; }
+function _ambientalPorIdx(idx){ return AMBIENTALES_APT.find(a => a.idx === idx) || null; }
+
+// ¿Está esta acción en cooldown? Devuelve { enCd:bool, minutos:int }.
+function _cdAmbiental(id){
+  const cds = Estado.cooldownsApt || {};
+  const sello = cds[id];
+  if(!sello) return { enCd:false, minutos:0 };
+  const ahora = _ahoraJuegoMsApt();
+  if(ahora === null) return { enCd:false, minutos:0 };
+  const transcurrido = ahora - sello;
+  if(transcurrido >= COOLDOWN_AMBIENTAL_MS) return { enCd:false, minutos:0 };
+  return { enCd:true, minutos: Math.ceil((COOLDOWN_AMBIENTAL_MS - transcurrido) / 60000) };
+}
+
+// Marca una acción como recién usada (arranca su cooldown desde ahora).
+function _marcarCdAmbiental(id){
+  if(!Estado.cooldownsApt) Estado.cooldownsApt = {};
+  const ahora = _ahoraJuegoMsApt();
+  if(ahora !== null) Estado.cooldownsApt[id] = ahora;
+}
+
+// Formatea el tiempo restante de cooldown de forma legible y diegética.
+function _formatoCdAmbiental(minutos){
+  if(minutos >= 60){
+    const h = Math.floor(minutos / 60);
+    const m = minutos % 60;
+    return m > 0 ? `${h}h ${m}min` : `${h}h`;
+  }
+  return `${minutos}min`;
+}
+
+// Devuelve las 3 ranuras ambientales actuales como lista de ids.
+// Las guarda en Estado.ranurasApt para que persistan entre visitas.
+// Si no hay ranuras (partida nueva o cargada antes de esta versión),
+// las inicializa eligiendo 3 acciones distintas y disponibles.
+function _ranurasAmbientales(){
+  let ranuras = Array.isArray(Estado.ranurasApt) ? Estado.ranurasApt.slice() : null;
+
+  // Inicialización: elegir 3 acciones distintas, priorizando las que
+  // tienen sentido ahora (pasan su 'requiere') y no están en cooldown.
+  if(!ranuras || ranuras.length === 0){
+    ranuras = _elegirRanurasIniciales();
+    Estado.ranurasApt = ranuras.slice();
+  }
+  return ranuras;
+}
+
+function _elegirRanurasIniciales(){
+  const candidatas = AMBIENTALES_APT.filter(a => {
+    if(typeof a.requiere === 'function' && !a.requiere()) return false;
+    return !_cdAmbiental(a.id).enCd;
+  });
+  // Barajar y coger 3. Si no hay 3 disponibles, completar con las que
+  // queden (aunque estén en cooldown) para que siempre haya 3 ranuras.
+  const baraja = candidatas.slice();
+  for(let i = baraja.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [baraja[i], baraja[j]] = [baraja[j], baraja[i]];
+  }
+  const elegidas = baraja.slice(0, 3).map(a => a.id);
+  if(elegidas.length < 3){
+    const resto = AMBIENTALES_APT.filter(a => !elegidas.includes(a.id));
+    for(let i = resto.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [resto[i], resto[j]] = [resto[j], resto[i]];
+    }
+    for(const a of resto){
+      if(elegidas.length >= 3) break;
+      elegidas.push(a.id);
+    }
+  }
+  return elegidas;
+}
+
+// Tras hacer una acción (idx), la sustituye en su ranura por OTRA del
+// pool que no esté ya visible, y la deja EN COOLDOWN (sello = ahora).
+// Si no hay ninguna fuera de las ranuras, deja la misma (quedará en
+// cooldown igualmente, en gris con tick).
+function _rotarRanuraAmbiental(idHecha){
+  const ranuras = _ranurasAmbientales();
+  const pos = ranuras.indexOf(idHecha);
+  if(pos === -1) return;
+  // Candidatas: no visibles en otras ranuras, y con sentido ahora.
+  const visibles = new Set(ranuras);
+  const candidatas = AMBIENTALES_APT.filter(a => {
+    if(visibles.has(a.id)) return false;
+    if(typeof a.requiere === 'function' && !a.requiere()) return false;
+    return true;
+  });
+  if(candidatas.length === 0){
+    // No hay relevo posible: la acción hecha se queda, en cooldown.
+    return;
+  }
+  const nueva = candidatas[Math.floor(Math.random() * candidatas.length)];
+  ranuras[pos] = nueva.id;
+  // La nueva entra YA EN COOLDOWN: no usable al instante (anti-spam).
+  _marcarCdAmbiental(nueva.id);
+  Estado.ranurasApt = ranuras.slice();
+}
+
+// Genera el HTML de los 3 botones ambientales según ranuras + cooldown.
+// Activa → botón normal. En cooldown → gris, tick ✓ y tiempo restante.
+function botonesAmbientales(textoVentana){
+  const ranuras = _ranurasAmbientales();
+  let html = '';
+  for(const id of ranuras){
+    const acc = _ambientalPorId(id);
+    if(!acc) continue;
+    let etiqueta = acc.etiqueta;
+    if(acc.id === 'ventana' && textoVentana) etiqueta = textoVentana;
+    const cd = _cdAmbiental(acc.id);
+    if(cd.enCd){
+      html += `<button class="opcion-btn deshabilitado" disabled>`
+            + `<span class="amb-tick">✓</span> ${etiqueta} `
+            + `<span class="amb-cd">· ${_formatoCdAmbiental(cd.minutos)}</span></button>`;
+    } else {
+      html += `<button class="opcion-btn" onclick="opcionApt(${acc.idx})">${etiqueta}</button>`;
+    }
+  }
+  return html;
+}
+
 function botonVentana(texto){
-  const ya = Estado.ventanaMirada === true;
-  // Ya mirada esta visita: el botón desaparece para ganar sitio en
-  // pantalla y dejar respirar la ambientación.
-  if(ya) return '';
+  // Helper conservado para momentos puntuales (p.ej. el amanecer del
+  // encargo) donde solo queremos ofrecer "mirar por la ventana" como
+  // toque atmosférico, sin desplegar las 3 ranuras ambientales. La
+  // regla de "una por visita" se retiró: ahora la disponibilidad de
+  // las ambientales la gobierna el cooldown de juego (BLOQUE JS-24B).
   return `<button class="opcion-btn" onclick="opcionApt(0)">${texto}</button>`;
 }
 
@@ -165,7 +345,7 @@ function ajustarTextosApartamentoSegunMemoria(soloOpciones){
       narr.innerHTML = 'La lluvia ácida golpea el cristal.<br>Son las tres de la mañana.<br>No recuerdas cuándo te dormiste.';
     }
     opc.innerHTML = `
-      ${botonAmbientalUnico("Mirar por la ventana")}
+      ${botonesAmbientales("Mirar por la ventana")}
       ${botonDormir("Dormir")}
       ${botonIrTrabajar()}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
@@ -224,21 +404,21 @@ function ajustarTextosApartamentoSegunMemoria(soloOpciones){
   // de HELIX. Si aceptó, hay continuidad con el encargo.
   if(m.aceptoEncargo === true){
     opc.innerHTML = `
-      ${botonAmbientalUnico("Mirar por la ventana")}
+      ${botonesAmbientales("Mirar por la ventana")}
       ${botonDormir("Intentar dormir un poco más")}
       ${botonIrTrabajar()}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Comprobar el terminal otra vez</button>`;
   } else if(m.aceptoEncargo === false){
     opc.innerHTML = `
-      ${botonAmbientalUnico("Mirar por la ventana")}
+      ${botonesAmbientales("Mirar por la ventana")}
       ${botonDormir("Quedarte en la cama")}
       ${botonIrTrabajar()}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
       <button class="opcion-btn" onclick="opcionApt(1)">Encender el terminal (HELIX)</button>`;
   } else if(m.vioFragmentoCero){
     opc.innerHTML = `
-      ${botonAmbientalUnico("Mirar por la ventana")}
+      ${botonesAmbientales("Mirar por la ventana")}
       ${botonDormir("Cerrar los ojos un momento")}
       ${botonIrTrabajar()}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
@@ -246,7 +426,7 @@ function ajustarTextosApartamentoSegunMemoria(soloOpciones){
   } else {
     // Vuelta sin haber completado nada concreto
     opc.innerHTML = `
-      ${botonAmbientalUnico("Mirar por la ventana otra vez")}
+      ${botonesAmbientales("Mirar por la ventana otra vez")}
       ${botonDormir("Quedarte tumbado")}
       ${botonIrTrabajar()}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>
@@ -274,9 +454,6 @@ function opcionApt(idx){
 
   // === OPCIÓN 0: MIRAR POR LA VENTANA ===
   if(idx === 0){
-    // Marcar que ya se miró: la siguiente regeneración de opciones
-    // mostrará el botón atenuado hasta que se vuelva al apartamento.
-    Estado.ventanaMirada = true;
     candidatos = textosVentana(misionCerrada, m, h, franja, dia);
   }
 
@@ -302,7 +479,6 @@ function opcionApt(idx){
   // la comida en las Pilas es cara. Marca el resultado para el texto.
   let _comioDeInventario = false;
   if(idx === 4){
-    Estado.comioEstaVisita = true;
     // ¿Tienes alguna ración de comida en el inventario? (preparado para
     // cuando se añadan items de comida; hoy normalmente no hay ninguna).
     const racion = (Array.isArray(Estado.inventario))
@@ -317,14 +493,47 @@ function opcionApt(idx){
 
   // === OPCIÓN 5: DESPEJAR LA CABEZA ===
   else if(idx === 5){
-    Estado.despejoEstaVisita = true;
     candidatos = textosDespejar(misionCerrada, m, h, franja, dia);
   }
 
   // === OPCIÓN 6: ROMPER EL SILENCIO ===
   else if(idx === 6){
-    Estado.silencioEstaVisita = true;
     candidatos = textosSilencio(misionCerrada, m, h, franja, dia);
+  }
+
+  // === OPCIÓN 7: FUMAR UN CIGARRILLO ===
+  else if(idx === 7){
+    candidatos = textosFumar(misionCerrada, m, h, franja, dia);
+  }
+
+  // === OPCIÓN 8: LEER EL PERIÓDICO DIGITAL ===
+  else if(idx === 8){
+    candidatos = textosPeriodico(misionCerrada, m, h, franja, dia);
+  }
+
+  // === OPCIÓN 9: DUCHARTE ===
+  else if(idx === 9){
+    candidatos = textosDucha(misionCerrada, m, h, franja, dia);
+  }
+
+  // === OPCIÓN 10: MIRARTE AL ESPEJO ===
+  else if(idx === 10){
+    candidatos = textosEspejo(misionCerrada, m, h, franja, dia);
+  }
+
+  // === OPCIÓN 11: LIMPIAR EL APARTAMENTO ===
+  else if(idx === 11){
+    candidatos = textosLimpiar(misionCerrada, m, h, franja, dia);
+  }
+
+  // Tras elegir el texto, si la acción es AMBIENTAL (tiene entrada en el
+  // catálogo) arrancamos su cooldown y rotamos su ranura por otra del
+  // pool (que entra también en cooldown: anti-spam). El idx 2 (dormir),
+  // 1 (terminal) y 3 (salir) NO son ambientales y se gestionan aparte.
+  const _accAmb = (typeof _ambientalPorIdx === 'function') ? _ambientalPorIdx(idx) : null;
+  if(_accAmb){
+    if(typeof _marcarCdAmbiental === 'function') _marcarCdAmbiental(_accAmb.id);
+    if(typeof _rotarRanuraAmbiental === 'function') _rotarRanuraAmbiental(_accAmb.id);
   }
 
   resp = elegirAlAzar(candidatos) || 'La habitación se queda en silencio.';
@@ -380,6 +589,37 @@ function opcionApt(idx){
     // Romper el silencio: música, presencia. Baja aislamiento.
     ajustarHumano('aislamiento', -5);
     ajustarHumano('fatiga', -1);
+  } else if(idx === 7){
+    // Fumar: un vicio. Calma un poco la tensión y el aislamiento, pero
+    // no resuelve nada. Cansa el cuerpo a la larga (fatiga leve +).
+    ajustarHumano('aislamiento', -3);
+    ajustarHumano('fatiga', 1);
+  } else if(idx === 8){
+    // Leer el periódico digital: textura del mundo. Distrae un poco del
+    // encierro (aislamiento leve -), pero la pantalla cansa la vista.
+    ajustarHumano('aislamiento', -2);
+    ajustarHumano('fatiga', 1);
+  } else if(idx === 9){
+    // Ducharte: más lento y completo que despejarse. Baja fatiga y
+    // algo de aislamiento (te reconcilias un poco con el cuerpo).
+    ajustarHumano('fatiga', -6);
+    ajustarHumano('aislamiento', -3);
+    ajustarHumano('disociacion', -2);
+  } else if(idx === 10){
+    // Mirarte al espejo: identidad y disociación. Si vas disociado,
+    // mirarte fijamente lo agrava; si no, te ancla un poco.
+    if(nivel(h.disociacion) === 'alto' || nivel(h.disociacion) === 'extremo'){
+      ajustarHumano('disociacion', 3);
+    } else {
+      ajustarHumano('disociacion', -3);
+    }
+    ajustarHumano('aislamiento', 1);
+  } else if(idx === 11){
+    // Limpiar el apartamento: esfuerzo (sube fatiga) a cambio de una
+    // sensación de orden y control que baja aislamiento y disociación.
+    ajustarHumano('fatiga', 4);
+    ajustarHumano('aislamiento', -4);
+    ajustarHumano('disociacion', -3);
   }
   // idx === 3 (salir, placeholder) no toca el estado humano.
 
@@ -397,8 +637,9 @@ function opcionApt(idx){
   } else if(idx === 0){
     // Ventana — devolverse al menú base con las 4 opciones.
     setTimeout(()=>{ regenerarOpcionesAptCierre(); }, 600);
-  } else if(idx === 4 || idx === 5 || idx === 6){
-    // Comer / despejar / romper el silencio: tras el texto, volver al menú.
+  } else if(idx === 4 || idx === 5 || idx === 6 || idx === 7 || idx === 8 || idx === 9 || idx === 10 || idx === 11){
+    // Acciones ambientales: tras el texto, volver al menú (regenera los
+    // botones, mostrando la ranura rotada y los cooldowns actualizados).
     setTimeout(()=>{ regenerarOpcionesAptCierre(); }, 600);
   } else if(idx === 2){
     if(misionCerrada){
@@ -613,6 +854,88 @@ function textosSilencio(misionCerrada, m, h, franja, dia){
   return arr;
 }
 
+
+// === TEXTOS DE LAS ACCIONES AMBIENTALES NUEVAS (v0.78.6) ===
+// Mismo patrón que textosVentana/Comer/etc.: array de candidatos, se
+// elige uno al azar. Tono noir melancólico, sin humor, con variantes
+// por estado humano y franja horaria.
+
+function textosFumar(misionCerrada, m, h, franja, dia){
+  const arr = [];
+  arr.push('Enciendes uno. La primera calada siempre sabe a tregua.<br>Las siguientes solo saben a costumbre.');
+  arr.push('El humo sube recto hasta que el ventilador lo rompe.<br>Lo miras deshacerse. Es lo único que se mueve en la habitación.');
+  arr.push('Fumas junto al cristal, viendo la brasa reflejada sobre la lluvia.<br>Dos luces pequeñas en mitad de la nada.');
+  if(nivel(h.aislamiento) === 'alto' || nivel(h.aislamiento) === 'extremo'){
+    arr.push('Fumar te da algo que hacer con las manos.<br>Algo que no sea contar las horas que llevas sin hablar con nadie.');
+  }
+  if(franja === 'madrugada'){
+    arr.push('A esta hora el cigarrillo es casi una conversación.<br>Tú preguntas, la brasa responde con un crujido. Os entendéis.');
+  }
+  arr.push('Lo apuras hasta el filtro. Sabes que no deberías.<br>Hay cosas que se hacen precisamente por eso.');
+  return arr;
+}
+
+function textosPeriodico(misionCerrada, m, h, franja, dia){
+  const arr = [];
+  arr.push('Pasas titulares en el terminal sin pulsar ninguno.<br>"HELIX amplía cobertura médica en el Nivel 4." Abajo no llega nada de eso.');
+  arr.push('El boletín de las Pilas: dos desaparecidos, un corte de agua, una promoción de créditos al consumo.<br>El orden de importancia lo decide alguien que no vive aquí.');
+  arr.push('Anuncios entre noticia y noticia. Siempre la misma sonrisa corporativa.<br>"Tu futuro, asegurado." Cierras antes de que cargue el resto.');
+  if(franja === 'madrugada'){
+    arr.push('A estas horas el feed se repite en bucle.<br>Las mismas tres noticias reordenadas, como si el mundo también durmiera mal.');
+  }
+  if(m.aceptoEncargo === false){
+    arr.push('Un recuadro de HELIX recuerda los plazos de morosidad domiciliada.<br>No sabes si es publicidad o una advertencia personal. Quizá las dos.');
+  }
+  arr.push('Lees sin leer. Los ojos resbalan por las palabras.<br>Te enteras de todo y no recuerdas nada. Como siempre.');
+  return arr;
+}
+
+function textosDucha(misionCerrada, m, h, franja, dia){
+  const arr = [];
+  arr.push('El agua tarda en calentarse. Cuando lo hace, te quedas más de lo necesario.<br>Por una vez, el ruido de las tuberías tapa el de la ciudad.');
+  arr.push('Te duchas a oscuras. El vapor empaña el poco neón que entra por la rejilla.<br>Sales sintiéndote, por un momento, una persona nueva. Dura poco.');
+  arr.push('El agua arrastra el día por el desagüe. Mugre, sudor, lo demás no se va tan fácil.<br>Pero algo se lleva. Lo justo para seguir.');
+  if(nivel(h.fatiga) === 'alto' || nivel(h.fatiga) === 'extremo'){
+    arr.push('Apoyas la frente en los azulejos fríos y dejas correr el agua.<br>No es descanso, pero se le acerca. El cuerpo deja de pesar tanto.');
+  }
+  if(franja === 'madrugada'){
+    arr.push('A esta hora el agua sale casi helada al principio.<br>Te despeja de golpe. Luego el calor llega como una disculpa.');
+  }
+  arr.push('Cierras el grifo y te quedas quieto, goteando.<br>El silencio vuelve despacio, llenando otra vez cada esquina.');
+  return arr;
+}
+
+function textosEspejo(misionCerrada, m, h, franja, dia){
+  const arr = [];
+  arr.push('Te miras en el espejo del baño. La cara de siempre, un poco más cansada.<br>Te sostienes la mirada hasta que resulta incómodo. Luego un poco más.');
+  arr.push('El espejo tiene una grieta en una esquina. Te divide la cara en dos.<br>Ninguna de las dos mitades te termina de convencer.');
+  arr.push('Te observas como si fueras otra persona. Casi lo consigues.<br>Hay noches en que reconocerte cuesta más que otras.');
+  if(nivel(h.disociacion) === 'alto' || nivel(h.disociacion) === 'extremo'){
+    arr.push('El reflejo parpadea medio segundo después que tú.<br>Lo compruebas dos veces. La tercera ya no estás seguro de quién va primero.');
+    arr.push('Por un instante la cara del espejo no parece la tuya.<br>Apartas la vista antes de averiguar de quién es.');
+  } else {
+    arr.push('Te lavas la cara y te miras gotear. Sigues siendo tú.<br>Es poco, pero algunos días es lo único confirmado.');
+  }
+  arr.push('Apagas la luz del baño con tu cara todavía flotando en el cristal.<br>Sigue ahí cuando ya no la ves. Eso es lo que más inquieta.');
+  return arr;
+}
+
+function textosLimpiar(misionCerrada, m, h, franja, dia){
+  const arr = [];
+  arr.push('Recoges sin método: una taza, ropa del suelo, un cable que no va a ningún sitio.<br>El apartamento no queda limpio. Queda menos rendido. Por hoy basta.');
+  arr.push('Ordenas la mesa, alineas lo poco que tienes.<br>Un orden frágil contra todo lo de fuera. Sabes que no aguanta, pero lo haces igual.');
+  arr.push('Pasas un trapo por la repisa. El polvo vuelve antes de que termines.<br>Aun así sienta bien hacer algo con las manos que no sea esperar.');
+  if(nivel(h.aislamiento) === 'alto' || nivel(h.aislamiento) === 'extremo'){
+    arr.push('Limpiar es una forma de fingir que esperas visita.<br>No esperas a nadie. Pero la habitación no tiene por qué saberlo.');
+  }
+  if(franja === 'madrugada'){
+    arr.push('Limpiar a estas horas es admitir que no vas a dormir.<br>Al menos el ruido del trapo llena el hueco que dejaría el sueño.');
+  }
+  arr.push('Terminas y miras la habitación desde la puerta.<br>Un poco más tuya. Un poco menos celda. La diferencia es pequeña, pero existe.');
+  return arr;
+}
+
+
 function textosTerminal(misionCerrada, m, h, franja, dia){
   const arr = [];
 
@@ -743,7 +1066,7 @@ function regenerarOpcionesAptCierre(){
   if(misionCerrada){
     // Versión post-misión: textos más cansados.
     opc.innerHTML = `
-      ${botonAmbientalUnico("Mirar por la ventana")}
+      ${botonesAmbientales("Mirar por la ventana")}
       ${botonDormir("Dormir")}
       ${botonIrTrabajar()}
       <button class="opcion-btn" onclick="abrirMapa()">Salir del apartamento</button>

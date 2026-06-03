@@ -7,18 +7,24 @@
 .apt-overlay{background:linear-gradient(180deg,rgba(3,5,8,0.25) 0%,rgba(3,5,8,0.45) 38%,rgba(3,5,8,0.97) 63%,rgba(3,5,8,1) 100%);}
 .interior-apt{position:absolute;bottom:0;left:0;width:100%;padding:1.5rem 1.5rem 0 1.5rem;z-index:5;display:flex;flex-direction:column;}
 /* La barra inferior del hub (CONTACTOS/NOTICIAS/TRABAJOS) va dentro del flujo, justo después de las opciones. */
-/* RELOJ Y FECHA — anclados a posición FIJA en la escena, fuera de
-   .interior-apt. Ese bloque está anclado abajo y crece hacia arriba
-   según el largo de la narración (que aparece y desaparece con las
-   acciones), lo que hacía que el reloj se moviera cada vez que cambiaba
-   el texto. Sacándolos a posición absoluta respecto a la escena, quedan
-   quietos. El 'top' los sitúa en la franja bajo la imagen de fondo. */
+/* RELOJ Y FECHA (v0.78.6) — el reloj daba guerra porque vivía dentro
+   de .interior-apt, un bloque anclado ABAJO que crece según el texto
+   de la narración: cada acción cambiaba el texto y el reloj se movía.
+   Y los parches con 'top:NN%' bailaban entre pantallas porque la foto
+   (background-size:contain) no termina nunca en el mismo punto.
+   SOLUCIÓN DEFINITIVA: el reloj+fecha forman una BANDA propia anclada
+   con 'top' fijo a la escena, fuera del flujo del texto y de la caja
+   de acciones. No se mueve con la narración. Va pequeño y discreto,
+   en la franja bajo la foto, casi pegado al borde inferior de la
+   imagen. Las acciones suben para aprovechar el hueco. */
 #apartamento .reloj-apt,
-#apartamento .fecha-apt{ position:absolute; left:0; width:100%; z-index:6; margin:0; }
-#apartamento .reloj-apt{ top:56%; }
-#apartamento .fecha-apt{ top:calc(56% + 3.4rem); }
-.reloj-apt{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,7vw,3.5rem);font-weight:700;color:rgba(0,229,255,0.55);text-align:center;margin-bottom:0.5rem;letter-spacing:0.1em;text-shadow:0 0 20px rgba(0,229,255,0.3);}
-.fecha-apt{font-size:0.6rem;color:rgba(0,229,255,0.25);text-align:center;letter-spacing:0.4em;margin-bottom:2rem;}
+#apartamento .fecha-apt{ position:absolute; left:0; width:100%; z-index:6; margin:0; pointer-events:none; }
+#apartamento .reloj-apt{ top:50%; }
+#apartamento .fecha-apt{ top:calc(50% + 2.1rem); }
+/* Reloj más pequeño que antes (era un numerote enorme que tapaba y
+   competía con las acciones). Ahora es discreto. */
+.reloj-apt{font-family:'Orbitron',sans-serif;font-size:clamp(1.4rem,5vw,2.2rem);font-weight:700;color:rgba(0,229,255,0.5);text-align:center;margin-bottom:0.4rem;letter-spacing:0.1em;text-shadow:0 0 16px rgba(0,229,255,0.25);}
+.fecha-apt{font-size:0.55rem;color:rgba(0,229,255,0.22);text-align:center;letter-spacing:0.38em;margin-bottom:0;}
 .narr-box{background:rgba(0,0,0,0.78);border-left:2px solid var(--cyan);padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:clamp(0.7rem,2.5vw,0.85rem);line-height:1.8;color:var(--blanco-suave);opacity:0;transform:translateY(10px);animation:aparecer 0.8s ease forwards;cursor:pointer;transition:opacity 0.6s ease,transform 0.6s ease,margin 0.6s ease,padding 0.6s ease,max-height 0.6s ease;}
 @keyframes aparecer{to{opacity:1;transform:translateY(0)}}
 .narr-box.cerrada{opacity:0 !important;transform:translateY(-8px);max-height:0;margin:0;padding:0 1.2rem;overflow:hidden;pointer-events:none;border-left-color:transparent;}
@@ -170,6 +176,19 @@
      Así las opciones bajan hacia la barra y la imagen gana sitio arriba. */
   padding-bottom: 78px;
 }
+
+/* ACCIONES MÁS ARRIBA (v0.78.6) — antes las opciones quedaban pegadas
+   abajo y sobraba pantalla negra entre ellas y la foto. El contenedor
+   .interior-apt está anclado abajo (bottom:0) y crece con su contenido,
+   así que para SUBIR las acciones les damos un margen inferior amplio:
+   el bloque entero se levanta desde la barra hacia la franja del reloj. */
+#apartamento .opciones-apt{ margin-bottom: 2.2rem; }
+
+/* AMBIENTAL EN COOLDOWN (v0.78.6) — botón gris con tick ✓ y el tiempo
+   de juego que le queda. El tick marca "ya realizada / descansando". */
+.opcion-btn .amb-tick{ color: rgba(0,229,255,0.5); margin-right:0.15rem; font-size:0.8em; }
+.opcion-btn .amb-cd{ opacity:0.55; font-size:0.82em; letter-spacing:0.02em; }
+.opcion-btn.deshabilitado .amb-tick{ color: rgba(0,229,255,0.35); }
 
 
 /* ============================================================

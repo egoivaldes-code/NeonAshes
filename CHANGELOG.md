@@ -2,6 +2,15 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.78.6] - 2026-06-03
+### Fixed
+- Apartamento: el reloj deja de moverse con el texto y deja de tapar las acciones (ahora se puede pulsar a través de él). Va más pequeño y anclado en la franja bajo la foto.
+### Added
+- Cinco nuevas acciones de apartamento: fumar, leer el periódico digital, ducharte, mirarte al espejo y limpiar el apartamento.
+### Changed
+- Las acciones de ambiente ahora se muestran de tres en tres y se rigen por un cooldown de juego de 4h por acción (en vez de "una por visita"). Al hacer una, entra otra distinta en su lugar, ya en cooldown, para evitar encadenarlas. Salir y volver a entrar al apartamento ya no las recarga.
+- Acciones del apartamento subidas para aprovechar el hueco que sobraba bajo la foto.
+
 ## [0.78.5] - 2026-06-03
 ### Added
 - Nuevo objeto apilable "Chatarra": se acumula en el inventario y será la materia prima para refinar en la profesión Scavenger.
