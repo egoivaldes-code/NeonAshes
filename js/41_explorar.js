@@ -94,6 +94,18 @@ function _planificarViaje(){
   // Repartir 3 objetos en escenas intermedias distintas (2..8).
   _repartir(plan, 3, 1, 8, (e) => { e.item = (typeof itemExplorarAleatorio === 'function') ? itemExplorarAleatorio() : null; });
 
+  // Repartir CHATARRA en 2 escenas intermedias más (sin objeto especial).
+  // Es el consuelo frecuente: registras un sitio, no hay nada de valor,
+  // pero te llevas chatarra para refinar luego. Marcamos con 'esChatarra'
+  // para que la narración use un tono de "no había nada... salvo esto".
+  _repartir(plan, 2, 2, 8, (e) => {
+    if(e.item) return; // no pisar una escena que ya tiene objeto especial
+    e.item = { id:'chatarra', nombre:'Chatarra', tipo:'material',
+      desc:'Metal retorcido, cable, plástico quemado. No vale nada tal cual, pero alguien con paciencia podría sacarle unos créditos.',
+      cantidad: 1 + Math.floor(Math.random() * 2) };
+    e.esChatarra = true;
+  });
+
   // Repartir 3 momentos de daño físico (sube fatiga 6..16).
   _repartir(plan, 3, 2, 8, (e) => { e.daño = 6 + Math.floor(Math.random() * 11); e.tono = 'peligro'; });
 
@@ -430,6 +442,13 @@ function _escenaRespaldo(num, escenaPlan){
       'Algo se tuerce. Un encontronazo en un hueco sin salida, un golpe que no ves venir.',
       'No lo ves llegar. Cuando recuperas el aire, el dolor ya está instalado.',
       'Un mal paso, una mano de más. El cuerpo se queja antes que la cabeza.'
+    ]);
+  } else if(escenaPlan.esChatarra){
+    narr = pick([
+      'Abres el contenedor con cuidado. Nada de valor, claro. Pero entre los restos hay metal y cable aprovechable. Chatarra. Alguien le sacará unos créditos.',
+      'Registras el hueco a oscuras. No hay nada que merezca la pena... salvo un puñado de chatarra. Te lo llevas. No estás para despreciar nada.',
+      'Miras dentro. Lo de siempre: basura. Pero la basura de aquí abajo a veces se funde en créditos. Recoges la chatarra y sigues.',
+      'Otra trampilla, otro registro vacío. Casi. Queda chatarra utilizable. La metes en el zurrón sin entusiasmo.'
     ]);
   } else if(escenaPlan.item){
     narr = pick([

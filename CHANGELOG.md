@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.78.5] - 2026-06-03
+### Added
+- Nuevo objeto apilable "Chatarra": se acumula en el inventario y será la materia prima para refinar en la profesión Scavenger.
+- Al explorar la ciudad ahora aparece chatarra como pequeño botín de consuelo en registros que no dan nada de valor, con su propia narración.
+### Changed
+- Apartamento: el reloj y la fecha se anclan a una posición fija y dejan de moverse cuando cambia el texto de las acciones.
+
 ## [0.78.4] - 2026-06-03
 ### Fixed
 - El badge de novedad de Profesiones ahora aparece correctamente en cualquier partida nueva (antes no salía según cómo se empezara).

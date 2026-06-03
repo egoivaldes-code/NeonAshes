@@ -4,10 +4,20 @@
    y barra del hub (contactos, noticias, trabajos).
    ============================================================ */
 
-.apt-overlay{background:linear-gradient(180deg,rgba(3,5,8,0.15) 0%,rgba(3,5,8,0.28) 48%,rgba(3,5,8,0.85) 72%,rgba(3,5,8,1) 82%);}
+.apt-overlay{background:linear-gradient(180deg,rgba(3,5,8,0.25) 0%,rgba(3,5,8,0.45) 38%,rgba(3,5,8,0.97) 63%,rgba(3,5,8,1) 100%);}
 .interior-apt{position:absolute;bottom:0;left:0;width:100%;padding:1.5rem 1.5rem 0 1.5rem;z-index:5;display:flex;flex-direction:column;}
 /* La barra inferior del hub (CONTACTOS/NOTICIAS/TRABAJOS) va dentro del flujo, justo después de las opciones. */
-.reloj-apt{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,7vw,3.5rem);font-weight:700;color:rgba(0,229,255,0.55);text-align:center;margin-top:-3.5rem;margin-bottom:0.5rem;letter-spacing:0.1em;text-shadow:0 0 20px rgba(0,229,255,0.3);}
+/* RELOJ Y FECHA — anclados a posición FIJA en la escena, fuera de
+   .interior-apt. Ese bloque está anclado abajo y crece hacia arriba
+   según el largo de la narración (que aparece y desaparece con las
+   acciones), lo que hacía que el reloj se moviera cada vez que cambiaba
+   el texto. Sacándolos a posición absoluta respecto a la escena, quedan
+   quietos. El 'top' los sitúa en la franja bajo la imagen de fondo. */
+#apartamento .reloj-apt,
+#apartamento .fecha-apt{ position:absolute; left:0; width:100%; z-index:6; margin:0; }
+#apartamento .reloj-apt{ top:56%; }
+#apartamento .fecha-apt{ top:calc(56% + 3.4rem); }
+.reloj-apt{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,7vw,3.5rem);font-weight:700;color:rgba(0,229,255,0.55);text-align:center;margin-bottom:0.5rem;letter-spacing:0.1em;text-shadow:0 0 20px rgba(0,229,255,0.3);}
 .fecha-apt{font-size:0.6rem;color:rgba(0,229,255,0.25);text-align:center;letter-spacing:0.4em;margin-bottom:2rem;}
 .narr-box{background:rgba(0,0,0,0.78);border-left:2px solid var(--cyan);padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:clamp(0.7rem,2.5vw,0.85rem);line-height:1.8;color:var(--blanco-suave);opacity:0;transform:translateY(10px);animation:aparecer 0.8s ease forwards;cursor:pointer;transition:opacity 0.6s ease,transform 0.6s ease,margin 0.6s ease,padding 0.6s ease,max-height 0.6s ease;}
 @keyframes aparecer{to{opacity:1;transform:translateY(0)}}
