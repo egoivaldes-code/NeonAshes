@@ -2,6 +2,12 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.82] - 2026-06-04
+### Added
+- Dos cadenas de misión de cinco partes que avanzan entre exploraciones: "La señal del nivel 9" (una transmisión desde un nivel sellado, afín al Colectivo Sin Nombre) y "El nombre en la lista" (tu unidad marcada para reubicación, afín al Sindicato Ferro). Cada parte se desbloquea al haber visto la anterior, con recompensa final al completarlas.
+### Fixed
+- La imagen de día del apartamento se mostraba con más zoom que la de noche. Ahora ambas usan el mismo encuadre y el fundido día/noche cuadra.
+
 ## [0.81] - 2026-06-04
 ### Added
 - Cuatro eventos largos de exploración, de cuatro a seis escenas cada uno, con decisiones que abren caminos distintos: un ascensor averiado, la deuda de un vecino, el taller de un relojero ciego y una redada en el mercado. El banco de momentos escritos a mano sube a 54.
