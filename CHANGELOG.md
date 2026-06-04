@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.83] - 2026-06-04
+### Fixed
+- La profesión activa, su rango y su progreso se perdían al cerrar y volver a abrir el juego. Ahora se guardan con la partida.
+- Las imágenes de las escenas de exploración se mostraban con zoom en móvil. Ahora se ven enteras, sin recorte.
+### Changed
+- La acción de refinar (Procesar chatarra) ahora requiere y consume 5 unidades de chatarra. El botón indica el coste y se bloquea si no tienes suficiente.
+
 ## [0.82] - 2026-06-04
 ### Added
 - Dos cadenas de misión de cinco partes que avanzan entre exploraciones: "La señal del nivel 9" (una transmisión desde un nivel sellado, afín al Colectivo Sin Nombre) y "El nombre en la lista" (tu unidad marcada para reubicación, afín al Sindicato Ferro). Cada parte se desbloquea al haber visto la anterior, con recompensa final al completarlas.
@@ -605,7 +612,7 @@
 
 ## v1–v30 — Prehistoria del proyecto (no documentada)
 
-No hay registro detallado de estas versiones en el historial accesible. Cuando empieza la documentación (mayo 2026), el proyecto ya estaba en v31 con un vertical slice funcional. Lo que ya existía:
+No hay registro detallado de estas versiones en el historial accesible. Cuando empieza la documentation (mayo 2026), el proyecto ya estaba en v31 con un vertical slice funcional. Lo que ya existía:
 
 - Flujo completo: intro cinematográfica (5 frames) → carga → pantalla de nombre → apartamento → terminal con mensaje cifrado → tránsito al bar → diálogo con Mara Vex → aparición de Cero-Ocho.
 - HUD con créditos (1200 iniciales), reputación, inventario.

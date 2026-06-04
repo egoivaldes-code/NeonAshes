@@ -173,6 +173,21 @@ function renderTrabajosOficio(){
             botonesAccion += `
               <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
                 onclick="abrirLugaresDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
+          } else if(a.costeChatarra && a.costeChatarra > 0){
+            // Acción que consume chatarra (refinar). Mostrar el requisito
+            // y, si no hay suficiente, dejar el botón deshabilitado.
+            const tieneCh = (typeof contarChatarra === 'function') ? contarChatarra() : 0;
+            const llega = tieneCh >= a.costeChatarra;
+            if(llega){
+              botonesAccion += `
+              <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+                onclick="ejercerProfesionDesdePanel('${p.id}','${a.id}')">${a.nombre}
+                <span style="opacity:0.6;font-size:0.85em;">· cuesta ${a.costeChatarra} chatarra</span></button>`;
+            } else {
+              botonesAccion += `
+              <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;opacity:0.4;" disabled>
+                ${a.nombre} <span style="font-size:0.85em;">· requiere ${a.costeChatarra} chatarra (tienes ${tieneCh})</span></button>`;
+            }
           } else {
             botonesAccion += `
               <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
@@ -267,7 +282,13 @@ function ejercerLugarDesdePanel(idProf, idAccion, idLugar){
 function ejercerProfesionDesdePanel(idProf, idAccion){
   if(typeof ejercerProfesion === 'function'){
     const r = ejercerProfesion(idProf, idAccion);
-    if(r && !r.bloqueado) _ultimoResultadoProfesion = r;
+    if(r && r.bloqueadoChatarra){
+      if(typeof notificarCambio === 'function'){
+        notificarCambio(`Necesitas ${r.requiere} de chatarra (tienes ${r.tiene})`, 'aviso');
+      }
+    } else if(r && !r.bloqueado){
+      _ultimoResultadoProfesion = r;
+    }
   }
   _refrescarSubcuerpoTrabajos();
 }

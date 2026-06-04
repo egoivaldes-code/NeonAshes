@@ -21,7 +21,7 @@ const CLAVE_PARTIDA = LAUNCHER.CLAVE_PARTIDA;
 function guardarPartida(){
   try {
     const datos = {
-      version: 2,
+      version: 3,
       jugador: Estado.jugador,
       memoria: Estado.memoria,
       humano: Estado.humano,
@@ -39,6 +39,10 @@ function guardarPartida(){
       reputacion: Estado.reputacion || 0,
       inventario: Estado.inventario || [],
       condiciones: Estado.condiciones || [],
+      // v3: el estado de las profesiones (oficio activo, rango, progreso,
+      // cooldown). Sin esto, cerrar y abrir el juego perdía el oficio y
+      // obligaba a volver a elegir profesión.
+      profesiones: Estado.profesiones || {},
       guardadoEn: Date.now()
     };
     localStorage.setItem(CLAVE_PARTIDA, JSON.stringify(datos));
@@ -56,7 +60,7 @@ function cargarPartida(){
     if(!raw) return null;
     const datos = JSON.parse(raw);
     // Aceptamos v1 y v2 (compatibilidad hacia atrás).
-    if(!datos || (datos.version !== 1 && datos.version !== 2)) return null;
+    if(!datos || (datos.version !== 1 && datos.version !== 2 && datos.version !== 3)) return null;
     return datos;
   } catch(e){
     return null;

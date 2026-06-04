@@ -67,7 +67,10 @@ const PROFESIONES = [
         minutos: 60,
         pagaBase: [30, 45],
         progreso: 15,
-        nota: 'Desmontar, clasificar, separar lo que vale de lo que no. Trabajo lento, pago seguro.'
+        // Refinar consume materia prima: 5 unidades de chatarra por tanda.
+        // El panel muestra el requisito y bloquea la acción si no se llega.
+        costeChatarra: 5,
+        nota: 'Desmontar, clasificar, separar lo que vale de lo que no. Requiere 5 de chatarra. Trabajo lento, pago seguro.'
       }
     ],
     // Lugares donde rebuscar al elegir "Salir a buscar chatarra".
@@ -250,9 +253,25 @@ function ejercerProfesion(idProf, idAccion, idLugar){
   const cd = cooldownProfesion(idProf);
   if(!cd.puede) return { bloqueado: true, minutosRestantes: cd.minutosRestantes };
 
+  // Coste en materiales: si la acción exige chatarra (p.ej. refinar pide
+  // 5), comprobar que el jugador tiene suficiente ANTES de gastar tiempo.
+  // Si no llega, devolver un bloqueo informativo para que lo muestre el panel.
+  if(accion.costeChatarra && accion.costeChatarra > 0){
+    const tiene = (typeof contarChatarra === 'function') ? contarChatarra() : 0;
+    if(tiene < accion.costeChatarra){
+      return { bloqueadoChatarra: true, requiere: accion.costeChatarra, tiene: tiene };
+    }
+  }
+
   // 1) Tiempo de juego (puede cruzar medianoche y cobrar alquiler).
   if(typeof avanzarTiempoJuego === 'function') avanzarTiempoJuego(accion.minutos);
   if(typeof comprobarCobrosDiarios === 'function') comprobarCobrosDiarios();
+
+  // 1b) Consumir los materiales que exija la acción (refinar gasta 5 de
+  //     chatarra). Ya se comprobó arriba que hay suficiente.
+  if(accion.costeChatarra && accion.costeChatarra > 0 && typeof quitarItem === 'function'){
+    quitarItem('chatarra', accion.costeChatarra);
+  }
 
   // 2) Resolver el resultado de la acción.
   let pagaRango = [0, 0];   // [min,max] base de paga antes del rango
