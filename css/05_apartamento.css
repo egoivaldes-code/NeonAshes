@@ -7,24 +7,16 @@
 .apt-overlay{background:linear-gradient(180deg,rgba(3,5,8,0.25) 0%,rgba(3,5,8,0.45) 38%,rgba(3,5,8,0.97) 63%,rgba(3,5,8,1) 100%);}
 .interior-apt{position:absolute;bottom:0;left:0;width:100%;padding:1.5rem 1.5rem 0 1.5rem;z-index:5;display:flex;flex-direction:column;}
 /* La barra inferior del hub (CONTACTOS/NOTICIAS/TRABAJOS) va dentro del flujo, justo después de las opciones. */
-/* RELOJ Y FECHA (v0.78.6) — el reloj daba guerra porque vivía dentro
-   de .interior-apt, un bloque anclado ABAJO que crece según el texto
-   de la narración: cada acción cambiaba el texto y el reloj se movía.
-   Y los parches con 'top:NN%' bailaban entre pantallas porque la foto
-   (background-size:contain) no termina nunca en el mismo punto.
-   SOLUCIÓN DEFINITIVA: el reloj+fecha forman una BANDA propia anclada
-   con 'top' fijo a la escena, fuera del flujo del texto y de la caja
-   de acciones. No se mueve con la narración. Va pequeño y discreto,
-   en la franja bajo la foto, casi pegado al borde inferior de la
-   imagen. Las acciones suben para aprovechar el hueco. */
+/* RELOJ CENTRAL RETIRADO (v0.79) — el reloj grande del centro daba
+   guerra sin fin: anclado a un 'top' en %, caía sobre las acciones en
+   según qué pantalla, porque la foto es 'contain' y su borde inferior
+   cambia con cada móvil, así que ningún % acierta en todas. La hora YA
+   se muestra arriba, en la barra diegética (#reloj-diegetico: "25 DIC
+   2247 // 22:17"), de modo que este reloj central era redundante.
+   Se oculta por completo. El JS que actualiza #reloj-apt sigue
+   funcionando; simplemente no se ve. */
 #apartamento .reloj-apt,
-#apartamento .fecha-apt{ position:absolute; left:0; width:100%; z-index:6; margin:0; pointer-events:none; }
-#apartamento .reloj-apt{ top:50%; }
-#apartamento .fecha-apt{ top:calc(50% + 2.1rem); }
-/* Reloj más pequeño que antes (era un numerote enorme que tapaba y
-   competía con las acciones). Ahora es discreto. */
-.reloj-apt{font-family:'Orbitron',sans-serif;font-size:clamp(1.4rem,5vw,2.2rem);font-weight:700;color:rgba(0,229,255,0.5);text-align:center;margin-bottom:0.4rem;letter-spacing:0.1em;text-shadow:0 0 16px rgba(0,229,255,0.25);}
-.fecha-apt{font-size:0.55rem;color:rgba(0,229,255,0.22);text-align:center;letter-spacing:0.38em;margin-bottom:0;}
+#apartamento .fecha-apt{ display:none !important; }
 .narr-box{background:rgba(0,0,0,0.78);border-left:2px solid var(--cyan);padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:clamp(0.7rem,2.5vw,0.85rem);line-height:1.8;color:var(--blanco-suave);opacity:0;transform:translateY(10px);animation:aparecer 0.8s ease forwards;cursor:pointer;transition:opacity 0.6s ease,transform 0.6s ease,margin 0.6s ease,padding 0.6s ease,max-height 0.6s ease;}
 @keyframes aparecer{to{opacity:1;transform:translateY(0)}}
 .narr-box.cerrada{opacity:0 !important;transform:translateY(-8px);max-height:0;margin:0;padding:0 1.2rem;overflow:hidden;pointer-events:none;border-left-color:transparent;}

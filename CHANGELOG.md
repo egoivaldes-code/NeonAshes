@@ -2,6 +2,12 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.79] - 2026-06-04
+### Added
+- Veinte eventos nuevos de una escena para la exploración de la ciudad: dieciséis con decisiones y efectos, y cuatro de puro ambiente. El banco de momentos escritos a mano sube de 20 a 40.
+### Fixed
+- Apartamento: retirado el reloj grande del centro, que seguía cayendo sobre las acciones en algunas pantallas. La hora se sigue viendo arriba en la barra.
+
 ## [0.78.6] - 2026-06-03
 ### Fixed
 - Apartamento: el reloj deja de moverse con el texto y deja de tapar las acciones (ahora se puede pulsar a través de él). Va más pequeño y anclado en la franja bajo la foto.
