@@ -305,6 +305,10 @@ function aplicarPartidaCargada(datos){
   if(typeof datos.reputacion === 'number') Estado.reputacion = datos.reputacion;
   if(Array.isArray(datos.inventario)) Estado.inventario = datos.inventario;
   if(Array.isArray(datos.condiciones)) Estado.condiciones = datos.condiciones;
+  // v3: restaurar el estado de las profesiones (oficio activo, rango,
+  // progreso, cooldown). Si la partida es v1/v2 (sin este campo), se
+  // deja el contenedor vacío y el jugador empezará sin oficio, como antes.
+  if(datos.profesiones && typeof datos.profesiones === 'object') Estado.profesiones = datos.profesiones;
 }
 
 

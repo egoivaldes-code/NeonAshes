@@ -280,9 +280,14 @@
 @media (max-width: 767px){
   .explorar-fondo{
     background-position:center top;
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-color:#03050a;
   }
   .explorar-flash{
     background-position:center top;
+    background-size:contain;
+    background-repeat:no-repeat;
   }
   /* Zoom de entrada (Ken Burns) más leve: 1.06 -> 1.02. */
   @keyframes expFlashKen{
