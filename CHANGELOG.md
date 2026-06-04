@@ -2,6 +2,11 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.84] - 2026-06-04
+### Changed
+- Las dos acciones de la profesión recolector tienen ahora enfriamiento independiente: buscar chatarra 8 horas, refinar 4 horas. Cada una se puede usar por separado sin esperar a la otra.
+- La exploración de la ciudad ya no usa la IA de relleno: funciona solo con los eventos escritos a mano, que son más coherentes. La IA queda desactivada a la espera de más pruebas (se puede reactivar fácilmente).
+
 ## [0.83] - 2026-06-04
 ### Fixed
 - La profesión activa, su rango y su progreso se perdían al cerrar y volver a abrir el juego. Ahora se guardan con la partida.

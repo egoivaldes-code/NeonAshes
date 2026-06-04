@@ -29,6 +29,16 @@
 
 const EXPLORAR_TOTAL_ESCENAS = 10;
 
+// INTERRUPTOR DE IA EN EXPLORAR (v0.84)
+// ------------------------------------------------------------
+// Con el banco de escenas escritas a mano ya grande (lotes 1-5 + las
+// cadenas), la exploración no necesita la IA de relleno y rinde mejor
+// solo con contenido handcrafted, que está más pulido y es coherente.
+// Mientras se hace más testeo, la IA queda DESACTIVADA. Para volver a
+// activarla en el futuro, basta con poner esto en true: el código de IA
+// sigue intacto, solo está puenteado.
+const EXPLORAR_USAR_IA = false;
+
 let _expEscenaActual = 0;
 let _expPlan = [];        // la espina dorsal calculada al empezar
 let _expHistorial = [];   // resumen breve de lo ocurrido (contexto IA)
@@ -196,10 +206,13 @@ async function mostrarSiguienteEscenaExplorar(){
   // --- MOMENTOS (mixto): a mano prioritarios, IA de 1 escena como relleno ---
   // No en la primera ni en la última escena, para no romper el ritmo.
   if(num > 0 && num < EXPLORAR_TOTAL_ESCENAS - 1){
-    // 1) Momento escrito a MANO (45_escenas_datos): prioritario, ~45%.
+    // 1) Momento escrito a MANO (45 + lotes): prioritario. Con la IA
+    //    desactivada subimos su probabilidad para aprovechar el banco
+    //    grande de contenido handcrafted.
+    const probManual = EXPLORAR_USAR_IA ? 0.45 : 0.70;
     if(typeof hayEscenaGuionDisponible === 'function'
        && hayEscenaGuionDisponible()
-       && Math.random() < 0.45){
+       && Math.random() < probManual){
       const idMomento = elegirEscenaGuion();
       if(idMomento){
         _expResolviendo = false;
@@ -213,8 +226,9 @@ async function mostrarSiguienteEscenaExplorar(){
         return;
       }
     }
-    // 2) Momento de IA de UNA escena (46_momentos_ia): relleno, ~30%.
-    if(typeof generarMomentoIA === 'function' && Math.random() < 0.30){
+    // 2) Momento de IA de UNA escena (46_momentos_ia): SOLO si la IA está
+    //    activada. Desactivada por defecto (ver EXPLORAR_USAR_IA).
+    if(EXPLORAR_USAR_IA && typeof generarMomentoIA === 'function' && Math.random() < 0.30){
       const cont0 = document.getElementById('explorar-cuerpo');
       if(cont0) cont0.innerHTML = `<div class="exp-progreso">DERIVA · ${num + 1} / ${EXPLORAR_TOTAL_ESCENAS}</div>`;
       const escIA = await generarMomentoIA();
@@ -286,6 +300,10 @@ async function mostrarSiguienteEscenaExplorar(){
 // sistema ya sabe parsear. Si algo falla, devuelve un respaldo.
 async function _generarEscenaIA(num, escenaPlan){
   const respaldo = _escenaRespaldo(num, escenaPlan);
+
+  // IA desactivada (v0.84): devolver directamente el texto de respaldo
+  // escrito a mano, sin llamar al modelo. Reactivar con EXPLORAR_USAR_IA.
+  if(!EXPLORAR_USAR_IA) return respaldo;
 
   if(typeof IA === 'undefined' || typeof IA.llamar !== 'function'){
     return respaldo;

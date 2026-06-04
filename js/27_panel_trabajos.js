@@ -154,52 +154,54 @@ function renderTrabajosOficio(){
     // Bloque de acciones: solo dentro del apartamento.
     let bloqueAcciones = '';
     if(enApartamento){
-      const cd = (typeof cooldownProfesion === 'function') ? cooldownProfesion(p.id) : { puede:true };
-      if(!cd.puede){
-        // En cooldown: no se puede trabajar todavía.
-        const h = Math.floor(cd.minutosRestantes / 60);
-        const m = cd.minutosRestantes % 60;
-        const tiempo = h > 0 ? `${h} h ${m} min` : `${m} min`;
-        bloqueAcciones = `
-          <div style="margin-top:0.8rem;font-size:0.55rem;letter-spacing:0.15em;opacity:0.6;text-align:center;border:1px solid rgba(255,160,120,0.2);padding:0.6rem;">
-            DESCANSANDO · podrás volver a trabajar<br>en ${tiempo} de juego
-          </div>`;
-      } else {
-        let botonesAccion = '';
-        (p.acciones || []).forEach(a => {
-          if(a.conLugares && _lugarAbierto && _lugarAbierto.prof === p.id && _lugarAbierto.accion === a.id){
-            botonesAccion += _renderSelectorLugares(p, a);
-          } else if(a.conLugares){
+      let botonesAccion = '';
+      (p.acciones || []).forEach(a => {
+        // Cooldown POR ACCIÓN: cada acción (buscar 8h / refinar 4h) se
+        // evalúa por separado. Si esta acción está descansando, se muestra
+        // su botón en gris con el tiempo que le queda, sin bloquear las demás.
+        const cdA = (typeof cooldownProfesion === 'function')
+          ? cooldownProfesion(p.id, a.id) : { puede:true };
+        if(!cdA.puede){
+          const h = Math.floor(cdA.minutosRestantes / 60);
+          const m = cdA.minutosRestantes % 60;
+          const tiempo = h > 0 ? `${h} h ${m} min` : `${m} min`;
+          botonesAccion += `
+            <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;opacity:0.4;" disabled>
+              ${a.nombre} <span style="font-size:0.85em;">· descansando ${tiempo}</span></button>`;
+          return;
+        }
+        if(a.conLugares && _lugarAbierto && _lugarAbierto.prof === p.id && _lugarAbierto.accion === a.id){
+          botonesAccion += _renderSelectorLugares(p, a);
+        } else if(a.conLugares){
+          botonesAccion += `
+            <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+              onclick="abrirLugaresDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
+        } else if(a.costeChatarra && a.costeChatarra > 0){
+          // Acción que consume chatarra (refinar). Mostrar el requisito
+          // y, si no hay suficiente, dejar el botón deshabilitado.
+          const tieneCh = (typeof contarChatarra === 'function') ? contarChatarra() : 0;
+          const llega = tieneCh >= a.costeChatarra;
+          if(llega){
             botonesAccion += `
-              <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
-                onclick="abrirLugaresDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
-          } else if(a.costeChatarra && a.costeChatarra > 0){
-            // Acción que consume chatarra (refinar). Mostrar el requisito
-            // y, si no hay suficiente, dejar el botón deshabilitado.
-            const tieneCh = (typeof contarChatarra === 'function') ? contarChatarra() : 0;
-            const llega = tieneCh >= a.costeChatarra;
-            if(llega){
-              botonesAccion += `
-              <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
-                onclick="ejercerProfesionDesdePanel('${p.id}','${a.id}')">${a.nombre}
-                <span style="opacity:0.6;font-size:0.85em;">· cuesta ${a.costeChatarra} chatarra</span></button>`;
-            } else {
-              botonesAccion += `
-              <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;opacity:0.4;" disabled>
-                ${a.nombre} <span style="font-size:0.85em;">· requiere ${a.costeChatarra} chatarra (tienes ${tieneCh})</span></button>`;
-            }
+            <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+              onclick="ejercerProfesionDesdePanel('${p.id}','${a.id}')">${a.nombre}
+              <span style="opacity:0.6;font-size:0.85em;">· cuesta ${a.costeChatarra} chatarra</span></button>`;
           } else {
             botonesAccion += `
-              <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
-                onclick="ejercerProfesionDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
+            <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;opacity:0.4;" disabled>
+              ${a.nombre} <span style="font-size:0.85em;">· requiere ${a.costeChatarra} chatarra (tienes ${tieneCh})</span></button>`;
           }
-        });
-        bloqueAcciones = `
-          <div style="margin-top:0.8rem;">
-            <div style="font-size:0.5rem;letter-spacing:0.2em;opacity:0.5;margin-bottom:0.2rem;">TRABAJAR:</div>
-            ${botonesAccion}
+        } else {
+          botonesAccion += `
+            <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+              onclick="ejercerProfesionDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
+        }
+      });
+      bloqueAcciones = `
+        <div style="margin-top:0.8rem;">
+          <div style="font-size:0.5rem;letter-spacing:0.2em;opacity:0.5;margin-bottom:0.2rem;">TRABAJAR:</div>
+          ${botonesAccion}
           </div>`;
-      }
     } else {
       // Fuera del apartamento: solo lectura.
       bloqueAcciones = `
