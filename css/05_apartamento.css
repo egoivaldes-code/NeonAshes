@@ -5,6 +5,16 @@
    ============================================================ */
 
 .apt-overlay{background:linear-gradient(180deg,rgba(3,5,8,0.25) 0%,rgba(3,5,8,0.45) 38%,rgba(3,5,8,0.97) 63%,rgba(3,5,8,1) 100%);}
+
+/* CICLO DÍA/NOCHE DEL APARTAMENTO (v0.80) — dos imágenes superpuestas:
+   #bg-apt (noche, debajo) y #bg-apt-dia (día, encima). La de día ajusta
+   su OPACIDAD según la hora del juego: 0 de noche (solo se ve la de
+   noche), 1 de día. En las transiciones (amanecer/anochecer) la opacidad
+   es intermedia, lo que mezcla ambas y da sensación de que clarea u
+   oscurece. La transición CSS hace que el cambio sea un fundido suave
+   en lugar de un salto. La capa de día va justo encima de la de noche
+   (z-index 1) pero debajo del degradado y del contenido. */
+#bg-apt-dia{ z-index:1; opacity:0; transition:opacity 2.5s ease; }
 .interior-apt{position:absolute;bottom:0;left:0;width:100%;padding:1.5rem 1.5rem 0 1.5rem;z-index:5;display:flex;flex-direction:column;}
 /* La barra inferior del hub (CONTACTOS/NOTICIAS/TRABAJOS) va dentro del flujo, justo después de las opciones. */
 /* RELOJ CENTRAL RETIRADO (v0.79) — el reloj grande del centro daba
