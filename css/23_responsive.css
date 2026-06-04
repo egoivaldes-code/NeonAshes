@@ -392,9 +392,14 @@ html, body {
    (no pegada al borde) para dejar aire arriba para el reloj de fecha
    y que el encuadre respire. */
 @media (max-width: 768px) {
+  /* Imágenes verticales del apartamento (v0.85): traen la habitación
+     arriba y una banda negra abajo pensada para apoyar las acciones.
+     Usamos 'cover' anclado arriba para que la habitación se vea entera
+     y la banda negra cubra el resto en cualquier proporción de móvil,
+     sin barras ni recortes feos (el sobrante es negro plano). */
   #bg-apt,
   #bg-apt-dia {
-    background-size: contain;
+    background-size: cover;
     background-position: center top;
     background-color: #03050a;
     background-repeat: no-repeat;

@@ -194,3 +194,27 @@
 
 
 /* ============================================================
+/* ===============================================================
+   MÓVIL — APARTAMENTO CON IMAGEN VERTICAL Y BANDA NEGRA (v0.85)
+   La imagen móvil ocupa toda la pantalla: habitación en la mitad
+   superior, banda negra en la inferior. Las acciones se colocan
+   sobre esa banda negra. Anclamos el bloque de acciones a la zona
+   baja y le damos un techo (no sube por encima de ~52% para no
+   invadir la habitación). El scroll interno cubre el caso de un
+   móvil corto donde no quepan todas las acciones a la vez.
+   =============================================================== */
+@media (max-width: 768px) {
+  #apartamento .interior-apt {
+    /* Arranca por debajo de la habitación (la banda negra) y llega
+       hasta la barra inferior. Centrado vertical dentro de esa franja. */
+    top: 52%;
+    bottom: 0;
+    justify-content: center;
+    padding-top: 0.5rem;
+    padding-bottom: 78px;
+    overflow-y: auto;
+  }
+  /* En móvil las acciones ya no necesitan el margen que las subía:
+     viven dentro de la banda negra, centradas. */
+  #apartamento .opciones-apt{ margin-bottom: 0; }
+}
