@@ -2,6 +2,11 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.85] - 2026-06-04
+### Changed
+- En móvil, el apartamento usa dos imágenes verticales nuevas (día y noche) con la habitación arriba y una banda negra abajo donde se apoyan las acciones, adaptándose a cualquier pantalla. En PC se mantienen las apaisadas.
+- En móvil, el texto y las opciones de los eventos de exploración se anclan abajo (sobre la barra de estado) y crecen hacia arriba, dejando la imagen de la escena despejada. Si el texto es muy largo, hace scroll interno en vez de tapar la imagen.
+
 ## [0.84] - 2026-06-04
 ### Changed
 - Las dos acciones de la profesión recolector tienen ahora enfriamiento independiente: buscar chatarra 8 horas, refinar 4 horas. Cada una se puede usar por separado sin esperar a la otra.

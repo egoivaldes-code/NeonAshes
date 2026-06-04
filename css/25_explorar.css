@@ -280,14 +280,9 @@
 @media (max-width: 767px){
   .explorar-fondo{
     background-position:center top;
-    background-size:contain;
-    background-repeat:no-repeat;
-    background-color:#03050a;
   }
   .explorar-flash{
     background-position:center top;
-    background-size:contain;
-    background-repeat:no-repeat;
   }
   /* Zoom de entrada (Ken Burns) más leve: 1.06 -> 1.02. */
   @keyframes expFlashKen{
@@ -300,3 +295,40 @@
 .exp-opcion.eg-bloqueada{opacity:0.4;cursor:not-allowed;filter:grayscale(0.4);}
 .eg-pista{font-size:0.82em;opacity:0.7;font-style:italic;}
 .eg-resultado{opacity:0.95;}
+
+/* ===============================================================
+   MÓVIL — TEXTO DE EXPLORAR ANCLADO ABAJO (v0.85)
+   El texto + opciones se apoyan en la parte baja (sobre la barra de
+   estado) y crecen hacia ARRIBA, dejando la imagen de la escena
+   despejada en lo alto. Crecen libremente mientras el texto sea
+   corto; cuando el contenido fuera a invadir la imagen, el bloque
+   topa (~52% de la altura) y hace scroll INTERNO en vez de seguir
+   subiendo. Así la imagen nunca se tapa.
+   =============================================================== */
+@media (max-width: 768px) {
+  /* El wrap deja de hacer scroll global y solo sirve de contenedor
+     que empuja su contenido hacia abajo. */
+  .explorar-wrap{
+    justify-content:flex-end;
+    overflow:visible;
+    padding:0 0.9rem;
+    padding-bottom:7rem;   /* hueco para la barra de estado inferior */
+  }
+  /* El título y el progreso quedan arriba, sobre la imagen, sin caja. */
+  .explorar-titulo{ position:absolute; top:1rem; left:0; right:0; margin:0; }
+  .exp-progreso{ position:absolute; top:2.6rem; left:0; right:0; margin:0; }
+
+  /* El cuerpo (narración + opciones) es el panel anclado abajo. Crece
+     hacia arriba con el texto, pero NO pasa de ~55% de la altura: ahí
+     topa y hace scroll interno, dejando la mitad superior para la
+     imagen. Textos cortos ocupan poco y dejan ver más imagen. */
+  #explorar-cuerpo{
+    max-height:55vh;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+  }
+  .exp-narracion{ margin-bottom:0.7rem; }
+}
