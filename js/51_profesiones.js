@@ -57,6 +57,7 @@ const PROFESIONES = [
         nombre: 'Salir a buscar chatarra',
         minutos: 120,
         progreso: 35,
+        cooldownHoras: 8,
         conLugares: true
       },
       {
@@ -67,6 +68,7 @@ const PROFESIONES = [
         minutos: 60,
         pagaBase: [30, 45],
         progreso: 15,
+        cooldownHoras: 4,
         // Refinar consume materia prima: 5 unidades de chatarra por tanda.
         // El panel muestra el requisito y bloquea la acción si no se llega.
         costeChatarra: 5,
@@ -182,7 +184,8 @@ function _multiplicadorRango(idxRango){
   return 1 + (idxRango * 0.35);
 }
 
-// Cooldown entre acciones de trabajar: 8 horas de juego.
+// Cooldown por defecto entre acciones de trabajar, si una acción no
+// declara el suyo: 8 horas de juego.
 const COOLDOWN_TRABAJO_MS = 8 * 60 * 60 * 1000;
 
 // Hora de juego actual en milisegundos (o null si no hay reloj).
@@ -193,17 +196,63 @@ function _ahoraJuegoMs(){
   return null;
 }
 
-// ¿Puede el jugador trabajar ya en esta profesión, o sigue en cooldown?
+// Duración del cooldown de una acción concreta, en ms. Si la acción
+// declara cooldownHoras (p.ej. buscar 8, refinar 4) se usa eso; si no,
+// el valor por defecto.
+function _cooldownMsAccion(prof, idAccion){
+  const acc = prof && (prof.acciones || []).find(a => a.id === idAccion);
+  if(acc && typeof acc.cooldownHoras === 'number'){
+    return acc.cooldownHoras * 60 * 60 * 1000;
+  }
+  return COOLDOWN_TRABAJO_MS;
+}
+
+// ¿Puede el jugador hacer YA esta acción de esta profesión, o sigue en
+// cooldown? Ahora el cooldown es POR ACCIÓN: buscar y refinar tienen
+// temporizadores independientes. Si no se pasa idAccion, devuelve el
+// estado general (compatibilidad: true si ninguna acción está en espera
+// según el sello antiguo).
 // Devuelve { puede:bool, minutosRestantes:int }.
-function cooldownProfesion(idProf){
+function cooldownProfesion(idProf, idAccion){
   const est = estadoProfesion(idProf);
-  if(!est || !est.ultimoTrabajoMs) return { puede: true, minutosRestantes: 0 };
+  if(!est) return { puede: true, minutosRestantes: 0 };
+  const prof = profesionPorId(idProf);
   const ahora = _ahoraJuegoMs();
   if(ahora === null) return { puede: true, minutosRestantes: 0 };
-  const transcurrido = ahora - est.ultimoTrabajoMs;
-  if(transcurrido >= COOLDOWN_TRABAJO_MS) return { puede: true, minutosRestantes: 0 };
-  const restanteMs = COOLDOWN_TRABAJO_MS - transcurrido;
-  return { puede: false, minutosRestantes: Math.ceil(restanteMs / 60000) };
+
+  // Sello por acción (nuevo). Compatibilidad: si una partida vieja solo
+  // tiene est.ultimoTrabajoMs, se respeta como sello de cualquier acción
+  // hasta que se vuelva a trabajar y se cree el registro por acción.
+  const sellos = est.cooldownAcciones || {};
+
+  // Si piden una acción concreta:
+  if(idAccion){
+    let sello = sellos[idAccion];
+    if(sello == null && est.ultimoTrabajoMs) sello = est.ultimoTrabajoMs; // compat
+    if(sello == null) return { puede: true, minutosRestantes: 0 };
+    const dur = _cooldownMsAccion(prof, idAccion);
+    const transcurrido = ahora - sello;
+    if(transcurrido >= dur) return { puede: true, minutosRestantes: 0 };
+    return { puede: false, minutosRestantes: Math.ceil((dur - transcurrido) / 60000) };
+  }
+
+  // Sin acción concreta: el bloque general se considera "puede" si AL MENOS
+  // una acción está disponible. (El panel pregunta por acción de todos modos.)
+  if(!prof || !Array.isArray(prof.acciones)) return { puede: true, minutosRestantes: 0 };
+  let algunaDisponible = false;
+  let minRestante = Infinity;
+  prof.acciones.forEach(a => {
+    let sello = sellos[a.id];
+    if(sello == null && est.ultimoTrabajoMs) sello = est.ultimoTrabajoMs;
+    if(sello == null){ algunaDisponible = true; return; }
+    const dur = _cooldownMsAccion(prof, a.id);
+    const transcurrido = ahora - sello;
+    if(transcurrido >= dur){ algunaDisponible = true; }
+    else { minRestante = Math.min(minRestante, Math.ceil((dur - transcurrido)/60000)); }
+  });
+  return algunaDisponible
+    ? { puede: true, minutosRestantes: 0 }
+    : { puede: false, minutosRestantes: (minRestante === Infinity ? 0 : minRestante) };
 }
 
 // Elige un desenlace de una tabla según los pesos relativos.
@@ -249,8 +298,8 @@ function ejercerProfesion(idProf, idAccion, idLugar){
   if(!accion) return null;
   if(Estado.muerto) return null;
 
-  // Cooldown: no se puede trabajar otra vez hasta que pasen 8h de juego.
-  const cd = cooldownProfesion(idProf);
+  // Cooldown por acción: buscar y refinar tienen temporizadores propios.
+  const cd = cooldownProfesion(idProf, idAccion);
   if(!cd.puede) return { bloqueado: true, minutosRestantes: cd.minutosRestantes };
 
   // Coste en materiales: si la acción exige chatarra (p.ej. refinar pide
@@ -340,6 +389,9 @@ function ejercerProfesion(idProf, idAccion, idLugar){
   //    cooldown (hora de juego en que se trabajó por última vez).
   est.ultimoDiaISO = (typeof diaJuegoActual === 'function') ? diaJuegoActual() : est.ultimoDiaISO;
   est.ultimoTrabajoMs = _ahoraJuegoMs();
+  // Sello de cooldown POR ACCIÓN (buscar 8h / refinar 4h independientes).
+  if(!est.cooldownAcciones || typeof est.cooldownAcciones !== 'object') est.cooldownAcciones = {};
+  est.cooldownAcciones[idAccion] = _ahoraJuegoMs();
   if(typeof guardarPartida === 'function') guardarPartida();
 
   if(paga > 0 && typeof notificarCambio === 'function'){
