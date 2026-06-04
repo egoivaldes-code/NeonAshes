@@ -8,7 +8,7 @@
 
 // Versión actual del juego. ACTUALIZAR EN CADA ENTREGA.
 // Se muestra en el panel de depuración (Ctrl+D / tap arriba-izquierda).
-const JUEGO_VERSION = "0.79";
+const JUEGO_VERSION = "0.80";
 window.JUEGO_VERSION = JUEGO_VERSION;
 
 // ------------------------------------------------------------
@@ -61,6 +61,7 @@ const ASSETS = {
   TREATMENT_WING: "assets/images/treatment_wing.webp",
   WEST_CORRIDOR_LOCKER218: "assets/images/west_corridor_locker218.webp",
   APT: "assets/images/apt.jpg",
+  APT_DIA: "assets/images/apt_dia.webp",
   PASILLO: "assets/images/pasillo.jpg",
   MERCADO: "assets/images/mercado.jpg",
   BAR: "assets/images/bar.jpg",

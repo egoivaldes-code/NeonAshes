@@ -13,6 +13,7 @@ function setBgPos(elId, pos){const el=document.getElementById(elId);if(el)el.sty
 setBg('bg-carga','BOOT'); setBgPos('bg-carga','center top');
 setBg('bg-nombre','PASILLO'); setBgPos('bg-nombre','center');
 setBg('bg-apt','APT'); setBgPos('bg-apt','center top');
+setBg('bg-apt-dia','APT_DIA'); setBgPos('bg-apt-dia','center top');
 setBg('bg-terminal','APT'); setBgPos('bg-terminal','center');
 setBg('bg-transito','TREN'); setBgPos('bg-transito','center');
 setBg('bg-mercado','BAR'); setBgPos('bg-mercado','center top');

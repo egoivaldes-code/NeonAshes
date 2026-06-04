@@ -4,7 +4,46 @@
 //   terminal, dormir, salir) cambian según la hora del juego.
 // ============================================================
 
+// ============================================================
+// CICLO DÍA/NOCHE DEL APARTAMENTO (v0.80)
+// ------------------------------------------------------------
+// Calcula cuánto se ve la imagen de DÍA (#bg-apt-dia) encima de la de
+// NOCHE (#bg-apt) según la hora del juego, y lo aplica como opacidad.
+// El CSS hace el fundido suave. Tiempos pedidos: es de NOCHE de 19:00
+// a 08:00. Día pleno entre medias. Para que amanecer y anochecer no
+// sean un salto, metemos una hora de transición en cada borde:
+//   · 08:00–09:00  amanece: la capa de día sube de 0 a 1
+//   · 09:00–18:00  día pleno: 1
+//   · 18:00–19:00  anochece: la capa de día baja de 1 a 0
+//   · 19:00–08:00  noche: 0 (solo se ve la imagen de noche)
+// Devuelve la opacidad usada (0..1), por comodidad de pruebas.
+function opacidadDiaApartamento(fecha){
+  let f = fecha;
+  if(!f){
+    try { f = obtenerFechaJuego(); } catch(e){ return 0; }
+  }
+  if(!f) return 0;
+  // Hora con minutos como fracción (p.ej. 8:30 -> 8.5).
+  const hora = f.getHours() + f.getMinutes()/60;
+  // Noche cerrada.
+  if(hora < 8 || hora >= 19) return 0;
+  // Amanecer: 08:00 -> 09:00, sube 0..1.
+  if(hora < 9) return hora - 8;
+  // Día pleno.
+  if(hora < 18) return 1;
+  // Anochecer: 18:00 -> 19:00, baja 1..0.
+  return 19 - hora;
+}
+
+function actualizarLuzApartamento(){
+  const capaDia = document.getElementById('bg-apt-dia');
+  if(!capaDia) return;
+  const op = opacidadDiaApartamento();
+  capaDia.style.opacity = String(op);
+}
+
 function iniciarApartamento(){
+
   // Dormir sigue siendo una sola vez por visita (su flujo cierra el día).
   Estado.durmioEstaVisita = false;
 
@@ -32,6 +71,9 @@ function iniciarApartamento(){
     const h = String(f.getHours()).padStart(2,'0');
     const m = String(f.getMinutes()).padStart(2,'0');
     r.textContent = `${h}:${m}`;
+    // Actualiza también la luz (día/noche) en vivo: si dentro del
+    // apartamento cruzas el amanecer o el anochecer, lo verás fundirse.
+    actualizarLuzApartamento();
   };
   refrescarRelojApt();
   _intervaloRelojApt = setInterval(refrescarRelojApt, 1000);

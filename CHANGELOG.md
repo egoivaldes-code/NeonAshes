@@ -2,6 +2,11 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.80] - 2026-06-04
+### Added
+- Ciclo día/noche en el apartamento: la imagen de la habitación cambia según la hora del juego con un fundido suave. Es de noche de 19:00 a 08:00, de día entre medias, con transición gradual al amanecer y al anochecer.
+- Diez eventos nuevos de exploración de dos y tres escenas, con decisiones encadenadas. El banco de momentos escritos a mano sube a 50.
+
 ## [0.79] - 2026-06-04
 ### Added
 - Veinte eventos nuevos de una escena para la exploración de la ciudad: dieciséis con decisiones y efectos, y cuatro de puro ambiente. El banco de momentos escritos a mano sube de 20 a 40.
