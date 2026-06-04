@@ -2,6 +2,10 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.81] - 2026-06-04
+### Added
+- Cuatro eventos largos de exploración, de cuatro a seis escenas cada uno, con decisiones que abren caminos distintos: un ascensor averiado, la deuda de un vecino, el taller de un relojero ciego y una redada en el mercado. El banco de momentos escritos a mano sube a 54.
+
 ## [0.80] - 2026-06-04
 ### Added
 - Ciclo día/noche en el apartamento: la imagen de la habitación cambia según la hora del juego con un fundido suave. Es de noche de 19:00 a 08:00, de día entre medias, con transición gradual al amanecer y al anochecer.
@@ -186,7 +190,7 @@
 
 ## [0.74.2] - 2026-05-31
 ### Added
-- Sistema de escenas de exploración escritas a mano: momentos con texto e imagen fijos, opciones que cierran el momento o encadenan a otra escena, condiciones de aparición, opciones bloqueadas por estado (dinero/fuerza/objeto), efectos (créditos, fatiga, heridas, objetos, facción), resultados con azar y agotamiento (un momento visto no se repite).
+- Sistema de escenas de exploración escritas a mano: momentos con texto e imagen fijos, opciones que cierren el momento o encadenan a otra escena, condiciones de aparición, opciones bloqueadas por estado (dinero/fuerza/objeto), efectos (créditos, fatiga, heridas, objetos, facción), resultados con azar y agotamiento (un momento visto no se repite).
 - 24 momentos jugables anclados en el mundo (HELIX, las Pilas, las cuatro facciones, la señal): 20 de ellos de 4 escenas con ramas y consecuencias, más varios cortos de ejemplo.
 - La IA puede generar momentos de UNA escena como relleno durante la exploración, aprendiendo la estructura; sus efectos están limitados a rangos seguros para que no descuadre la partida. Las cadenas y los momentos importantes siguen siendo a mano.
 
@@ -582,7 +586,7 @@
 ## v32 — Bug del botón CONTINUAR colgado
 
 - El velo oscuro (`.transito-overlay`) interceptaba los toques sobre el botón en la escena de tránsito de Mara.
-- Arreglado con `pointer-events:none` en el velo y `z-index:5` al contenedor `#tarjetas-loc-mision`.
+- Arreglado con `pointer-events:none` en el velo and `z-index:5` al contenedor `#tarjetas-loc-mision`.
 
 ## v31 — Rediseño del flujo del apartamento
 
