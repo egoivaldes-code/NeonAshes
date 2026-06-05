@@ -43,14 +43,16 @@
 }
 
 .explorar-titulo{
-  font-size:0.62rem;
-  letter-spacing:0.32em;
-  color:var(--cyan);
+  font-family:'Rajdhani',sans-serif;
+  font-weight:600;
+  font-size:0.85rem;
+  letter-spacing:0.2em;
+  color:var(--magenta);
   text-transform:uppercase;
-  opacity:0.85;
+  opacity:0.95;
   margin-bottom:1.1rem;
   text-align:center;
-  text-shadow:0 1px 6px rgba(3,5,8,0.9);
+  text-shadow:0 0 12px rgba(255,0,110,0.35), 0 1px 6px rgba(3,5,8,0.9);
 }
 
 .exp-progreso{
@@ -64,19 +66,17 @@
 }
 
 /* En MÓVIL el texto va sobre un panel oscuro con borde, para que se
-   lea bien por encima de la imagen de fondo. */
+   lea bien por encima de la imagen de fondo. Canon tránsito/viaje:
+   borde magenta, fondo opaco, sin backdrop-filter. */
 .exp-narracion{
+  font-family:'Share Tech Mono',monospace;
   font-size:0.82rem;
-  line-height:1.55;
-  color:var(--blanco-suave);
+  line-height:1.6;
+  color:rgba(200,216,224,0.92);
   margin-bottom:1.2rem;
-  padding:0.95rem 1rem;
-  background:rgba(3,5,8,0.72);
-  border:1px solid rgba(0,229,255,0.18);
-  border-left:2px solid var(--cyan);
-  border-radius:3px;
-  backdrop-filter:blur(2px);
-  -webkit-backdrop-filter:blur(2px);
+  padding:1rem 1.2rem;
+  background:rgba(0,0,0,0.82);
+  border-left:2px solid var(--magenta);
   animation:expFadeIn 0.6s ease;
 }
 
@@ -92,24 +92,23 @@
 }
 
 .exp-opcion{
-  background:rgba(3,5,8,0.68);
-  border:1px solid rgba(0,229,255,0.22);
+  background:rgba(255,0,110,0.08);
+  border:1px solid rgba(255,0,110,0.3);
+  border-left:2px solid var(--magenta);   /* acento por defecto; los tonos lo sobrescriben */
   color:var(--blanco-suave);
-  font-size:0.78rem;
-  line-height:1.35;
-  letter-spacing:0.03em;
+  font-family:'Share Tech Mono',monospace;
+  font-size:0.74rem;
+  line-height:1.4;
+  letter-spacing:0.08em;
   text-align:left;
-  padding:0.65rem 0.85rem;
-  border-radius:2px;
+  padding:0.8rem 1rem;
   cursor:pointer;
-  transition:border-color 0.25s ease, background 0.25s ease;
-  font-family:inherit;
-  backdrop-filter:blur(2px);
-  -webkit-backdrop-filter:blur(2px);
+  transition:border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
 }
 .exp-opcion:hover:not(:disabled){
-  border-color:rgba(0,229,255,0.6);
-  background:rgba(0,229,255,0.12);
+  background:rgba(255,0,110,0.16);
+  border-color:var(--magenta);
+  box-shadow:0 0 20px rgba(255,0,110,0.2);
 }
 .exp-opcion:disabled{ opacity:0.4; cursor:default; }
 
@@ -170,14 +169,14 @@
     padding:2.4rem 2rem 3rem;
     justify-content:center;   /* en PC no hay barra inferior fija que estorbe */
   }
-  .explorar-titulo{ font-size:0.72rem; letter-spacing:0.4em; margin-bottom:1.4rem; }
+  .explorar-titulo{ font-size:1rem; letter-spacing:0.2em; margin-bottom:1.4rem; }
   .exp-progreso{ font-size:0.58rem; margin-bottom:1.4rem; }
   .exp-narracion{
     font-size:1rem;
-    line-height:1.75;
+    line-height:1.8;
     padding:1.6rem 1.8rem;
     margin-bottom:1.8rem;
-    background:rgba(3,5,8,0.6);
+    background:rgba(0,0,0,0.82);
     border-left-width:3px;
     box-shadow:0 8px 40px rgba(0,0,0,0.5);
   }
