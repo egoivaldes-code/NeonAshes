@@ -2,6 +2,10 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.86.3] - 2026-06-05
+### Fixed
+- Apartamento en móvil: el intento anterior de colocar las acciones en una franja fija fallaba cuando había mucho contenido (narración larga + varias opciones): las acciones se hundían tras la barra de estado y el scroll saltaba al chocar con la imagen. Replanteado para que el contenido se ancle abajo y haga scroll de forma natural, como en las escenas de tránsito, con la imagen de fondo completa detrás.
+
 ## [0.86.2] - 2026-06-05
 ### Changed
 - La pantalla de explorar la ciudad ahora comparte el mismo lenguaje visual que las escenas de tránsito y los eventos de viaje: acento magenta, tipografía Rajdhani en el título y paneles de texto con el estilo común del juego, en lugar de su antiguo estilo propio en cyan. Los colores de las opciones según su tono (violento, empático, frío...) se mantienen, porque indican el tipo de elección.

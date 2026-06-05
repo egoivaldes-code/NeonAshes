@@ -392,36 +392,20 @@ html, body {
    (no pegada al borde) para dejar aire arriba para el reloj de fecha
    y que el encuadre respire. */
 @media (max-width: 768px) {
-  /* Imágenes verticales del apartamento (v0.85), FIX v0.86.1.
-     Problema anterior: con 'cover' el punto del 52% bailaba según el
-     móvil, y con '100% auto' las capas día/noche podían no solapar y se
-     veían "dobles" durante el fundido.
-     Solución: las dos capas (#bg-apt noche y #bg-apt-dia día) ocupan
-     EXACTAMENTE el mismo rectángulo: la MITAD SUPERIOR de la pantalla
-     (la habitación), con 'cover' anclado arriba. Por debajo, fondo de
-     color plano (la "banda negra" la pone el CSS, no la imagen). Al
-     compartir el mismo alto y posición, el fundido día/noche solapa
-     perfecto y nunca se ve doble. Las acciones (.interior-apt) viven en
-     la mitad inferior, sobre ese negro. */
+  /* v0.86.3 — La imagen del apartamento vuelve a ser fondo COMPLETO
+     (no se trocea). Ambas capas (#bg-apt noche y #bg-apt-dia día) usan
+     EXACTAMENTE el mismo encaje: 'cover' anclado arriba. Al compartir
+     tamaño y posición idénticos sobre la misma imagen-ratio, el fundido
+     día/noche solapa perfecto y no se ve "doble". El velo .apt-overlay
+     (en 05_apartamento.css) oscurece la mitad inferior para el texto. */
   #bg-apt,
   #bg-apt-dia {
     top: 0;
-    height: 54%;            /* solo la habitación, mitad superior */
+    height: 100%;
     background-size: cover;
     background-position: center top;
     background-color: #03050a;
     background-repeat: no-repeat;
-  }
-  /* Degradado de cierre bajo la habitación para fundir la imagen con el
-     negro de las acciones, sin un corte duro. Se apoya en el overlay
-     que ya existe (.apt-overlay). */
-  #apartamento .apt-overlay{
-    background: linear-gradient(180deg,
-      rgba(3,5,8,0) 0%,
-      rgba(3,5,8,0) 38%,
-      rgba(3,5,8,0.85) 52%,
-      rgba(3,5,8,1) 60%,
-      rgba(3,5,8,1) 100%);
   }
 }
 

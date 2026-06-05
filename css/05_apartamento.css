@@ -204,19 +204,37 @@
    móvil corto donde no quepan todas las acciones a la vez.
    =============================================================== */
 @media (max-width: 768px) {
+  /* v0.86.3 — REPLANTEAMIENTO. El enfoque anterior (top:54%/bottom:0)
+     troceaba la pantalla en una franja fija para las acciones, pero el
+     apartamento mete mucho contenido (reloj, fecha, narración de varias
+     líneas y 4-5 botones) que NO cabe en el 46% inferior: se desbordaba
+     sobre la imagen y el scroll "saltaba". 
+     Ahora: .interior-apt ocupa toda la altura, ancla su contenido ABAJO
+     (como las escenas de tránsito) y desplaza con scroll natural si no
+     cabe. La imagen queda fija detrás; el velo .apt-overlay oscurece la
+     mitad inferior para que el texto se lea. Nada de porcentajes rígidos. */
   #apartamento .interior-apt {
-    /* v0.86.1: la imagen (habitación) ocupa el 54% superior; las acciones
-       viven en el 46% inferior, sobre negro plano. Anclamos por arriba al
-       54% y por abajo a la barra: el bloque ocupa esa franja y centra su
-       contenido. Sin 'max-height' rígido ni 52% que baile: la franja la
-       define el mismo 54% que la imagen, así que siempre cuadran. */
-    top: 54%;
+    top: 0;
     bottom: 0;
-    justify-content: center;
-    padding-top: 0.8rem;
-    padding-bottom: 78px;
+    justify-content: flex-end;   /* contenido pegado abajo, imagen respira arriba */
+    padding-top: 1rem;
+    padding-bottom: 84px;        /* libra la barra permanente */
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
-  #apartamento .opciones-apt{ margin-bottom: 0; }
+  /* El reloj y la fecha viven arriba del bloque inferior; un margen
+     superior automático empuja todo el grupo hacia abajo cuando sobra
+     espacio (flex-end ya lo hace, esto solo asegura separación). */
+  #apartamento .opciones-apt{ margin-bottom: 0; margin-top: 0.4rem; }
+
+  /* Velo: oscurecer con fuerza la mitad inferior para asentar el texto
+     sobre la imagen, sin corte duro. */
+  #apartamento .apt-overlay{
+    background: linear-gradient(180deg,
+      rgba(3,5,8,0) 0%,
+      rgba(3,5,8,0) 40%,
+      rgba(3,5,8,0.75) 58%,
+      rgba(3,5,8,0.96) 72%,
+      rgba(3,5,8,1) 100%);
+  }
 }
