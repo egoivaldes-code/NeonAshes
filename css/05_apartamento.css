@@ -205,16 +205,18 @@
    =============================================================== */
 @media (max-width: 768px) {
   #apartamento .interior-apt {
-    /* Arranca por debajo de la habitación (la banda negra) y llega
-       hasta la barra inferior. Centrado vertical dentro de esa franja. */
-    top: 52%;
+    /* v0.86.2: la imagen (habitación) ocupa el 54% superior; las acciones
+       viven en el 46% inferior, sobre negro plano. Anclamos por arriba al
+       54% y por abajo a la barra: el bloque ocupa esa franja y centra su
+       contenido. Sin 'max-height' rígido ni 52% que baile: la franja la
+       define el mismo 54% que la imagen, así que siempre cuadran. */
+    top: 54%;
     bottom: 0;
     justify-content: center;
-    padding-top: 0.5rem;
+    padding-top: 0.8rem;
     padding-bottom: 78px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
-  /* En móvil las acciones ya no necesitan el margen que las subía:
-     viven dentro de la banda negra, centradas. */
   #apartamento .opciones-apt{ margin-bottom: 0; }
 }
