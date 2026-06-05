@@ -126,6 +126,12 @@ function _ponerBadgeIcono(idIcono, hayAviso){
 function cerrarTerminalHelix(){
   document.body.classList.remove('terminal-escritorio-activo');
   cambiarEscena('terminal-escena','apartamento');
+  // v0.86: al volver del terminal, regenerar las opciones del apartamento
+  // y reponer el texto narrativo, que si no quedaba con contenido fantasma
+  // (el "texto invisible" que descuadraba el layout).
+  const narr = document.getElementById('narr-apt');
+  if(narr) narr.innerHTML = 'Apagas el terminal. La pantalla se funde a negro y el cuarto vuelve a su penumbra de siempre.';
+  if(typeof regenerarOpcionesAptCierre === 'function') regenerarOpcionesAptCierre();
 }
 
 // ------------------------------------------------------------

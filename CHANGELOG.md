@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.86] - 2026-06-05
+### Fixed
+- Al volver de la misión al apartamento ya aparecen las acciones de ambiente (antes solo salían las fijas).
+- Corregido un texto vacío que descuadraba el menú del apartamento al volver de la misión.
+- Al encender el terminal ya se entra directo al escritorio, sin un texto previo que no daba tiempo a leer.
+- Al cerrar el terminal ya no queda un texto fantasma; el apartamento se repone correctamente.
+
 ## [0.85] - 2026-06-04
 ### Changed
 - En móvil, el apartamento usa dos imágenes verticales nuevas (día y noche) con la habitación arriba y una banda negra abajo donde se apoyan las acciones, adaptándose a cualquier pantalla. En PC se mantienen las apaisadas.
