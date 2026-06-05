@@ -392,7 +392,7 @@ html, body {
    (no pegada al borde) para dejar aire arriba para el reloj de fecha
    y que el encuadre respire. */
 @media (max-width: 768px) {
-  /* Imágenes verticales del apartamento (v0.85), FIX v0.86.2.
+  /* Imágenes verticales del apartamento (v0.85), FIX v0.86.1.
      Problema anterior: con 'cover' el punto del 52% bailaba según el
      móvil, y con '100% auto' las capas día/noche podían no solapar y se
      veían "dobles" durante el fundido.

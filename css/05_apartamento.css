@@ -205,7 +205,7 @@
    =============================================================== */
 @media (max-width: 768px) {
   #apartamento .interior-apt {
-    /* v0.86.2: la imagen (habitación) ocupa el 54% superior; las acciones
+    /* v0.86.1: la imagen (habitación) ocupa el 54% superior; las acciones
        viven en el 46% inferior, sobre negro plano. Anclamos por arriba al
        54% y por abajo a la barra: el bloque ocupa esa franja y centra su
        contenido. Sin 'max-height' rígido ni 52% que baile: la franja la
