@@ -148,9 +148,74 @@ const ITEMS_EXPLORAR = [
     desc:'Una credencial cifrada del Nodo Fantasma. Te abre puertas en la red que HELIX cree cerradas. El Colectivo confía en ti; eso, hoy, vale más que créditos.' }
 ];
 
-// Da un item del catálogo de explorar por su id (para escenas de guion).
+// ============================================================
+// CATÁLOGO DE EXPEDICIÓN (v0.86.4 — capa 1 del loop Scavenger)
+// ------------------------------------------------------------
+// Estos objetos son la materia prima del futuro loop de expedición
+// (preparar equipo → zona → expedición → refinar → vender). A día de
+// hoy son CÁSCARAS: están definidos con su nombre, descripción y tipo,
+// pero todavía NO tienen lógica de consumo (curar, disparar, bajar la
+// alerta, etc.). Esa lógica se colgará en capas siguientes.
+//
+// IMPORTANTE: este catálogo va APARTE de ITEMS_EXPLORAR a propósito.
+// No deben salir como loot aleatorio del paseo por la ciudad. Se
+// conseguirán comprando, looteando en expedición o como recompensa.
+//
+// Campos:
+//   id, nombre, tipo, desc  — igual que el resto de items.
+//   apilable                — true si se acumulan (x2, x3...); las
+//                             baterías y consumibles repetibles lo son.
+//   usos                    — (informativo, sin lógica aún) cuántos
+//                             usos tiene el objeto antes de gastarse.
+// ============================================================
+const ITEMS_EXPEDICION = [
+
+  // ── RESCATE / SALUD ──────────────────────────────────────
+  { id:'kit_trauma', nombre:'Kit de trauma', tipo:'rescate', usos:1, apilable:false,
+    desc:'Un parche de campo de los caros: sellante, torniquete inteligente, un chute que no preguntas qué es. Cuando todo se va al infierno, esto te saca una vez. Solo una.' },
+  { id:'medkit', nombre:'Medkit', tipo:'consumible', usos:1, apilable:false,
+    desc:'Caja blanca con la hélice borrada. Cierra heridas y calma el dolor lo justo para seguir. Un solo uso: después es plástico vacío.' },
+
+  // ── MUNICIÓN ─────────────────────────────────────────────
+  { id:'cargador', nombre:'Cargador', tipo:'municion', usos:6, apilable:true,
+    desc:'Seis disparos. En las Pilas, seis es mucho y es nada a la vez. Pesa poco hasta que lo necesitas.' },
+
+  // ── CONSUMIBLES ──────────────────────────────────────────
+  { id:'racion_deshidratada', nombre:'Ración deshidratada', tipo:'comida', usos:1, apilable:true,
+    desc:'Un sobre que infla en agua y finge ser comida. Sabe a cartón con sal. Pero llena, y aquí abajo eso ya es un lujo.' },
+  { id:'licor', nombre:'Licor', tipo:'consumible', usos:1, apilable:true,
+    desc:'Botella sin etiqueta. Nunca se sabe de qué es. Quema al bajar, calienta un rato, y a veces es lo único que hay entre tú y el frío.' },
+  { id:'bateria_2v', nombre:'Batería 2V', tipo:'bateria', apilable:true,
+    desc:'Celda pequeña, carga corta. Para chismes de poca monta: una linterna, un descodificador barato. Se agota antes de que te fíes de ella.' },
+  { id:'bateria_4v', nombre:'Batería 4V', tipo:'bateria', apilable:true,
+    desc:'Carga media. El estándar de la calle: la usa medio aparato de las Pilas. Ni buena ni mala, simplemente está.' },
+  { id:'bateria_8v', nombre:'Batería 8V', tipo:'bateria', apilable:true,
+    desc:'Celda gruesa, carga seria. Mueve cosas que importan: una herramienta pesada, un implante exigente. Cara, y se nota que lo es.' },
+  { id:'palanca_termica', nombre:'Palanca térmica', tipo:'herramienta', apilable:false,
+    desc:'Barra corta que calienta la punta hasta el rojo. Funde cerrojos, cede bisagras, abre lo que la ciudad quiere cerrado. Hace ruido y huele a metal quemado.' },
+  { id:'senuelo', nombre:'Señuelo', tipo:'utilidad', usos:1, apilable:true,
+    desc:'Un emisor del tamaño de un mechero. Lanza ruido y firma falsa a unos metros para que la atención mire a otro lado. Un solo uso, y reza por que cuele.' }
+
+  // ── IMPLANTES (estructura reservada, sin items aún) ───────
+  // Los implantes serán botín raro de expedición: mejoran stats (fatiga
+  // que sube más lenta, % de éxito en ciertas acciones, etc.). Vendrán
+  // en cuatro grados: 1, 2, 3 y ESPECIAL. Todavía no se define ninguno
+  // concreto: solo dejamos anotada la categoría para clonarlos luego.
+  // Tipo previsto: 'implante'. Grado previsto en un campo 'grado'.
+];
+
+// GRADOS DE IMPLANTE previstos (etiqueta, sin items asociados todavía).
+// Sirve de referencia para cuando se creen los implantes concretos.
+const GRADOS_IMPLANTE = ['grado_1', 'grado_2', 'grado_3', 'especial'];
+window.ITEMS_EXPEDICION = ITEMS_EXPEDICION;
+window.GRADOS_IMPLANTE = GRADOS_IMPLANTE;
+
+// Da un item por su id. Busca PRIMERO en el catálogo de explorar y, si
+// no está, en el de expedición. Así las escenas de guion y el futuro
+// loop pueden entregar cualquier objeto definido por su id.
 function darItemPorId(id){
-  const it = ITEMS_EXPLORAR.find(x => x.id === id);
+  let it = ITEMS_EXPLORAR.find(x => x.id === id);
+  if(!it) it = ITEMS_EXPEDICION.find(x => x.id === id);
   if(it && typeof darItem === 'function') return darItem(it);
   return false;
 }

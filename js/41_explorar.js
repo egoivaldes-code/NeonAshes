@@ -438,66 +438,202 @@ async function _generarEscenaIA(num, escenaPlan){
   return respaldo;
 }
 
-// Texto de respaldo si la IA no responde. Sobrio, con variedad para no
-// repetir siempre lo mismo. Sirve para testear el loop sin conexión.
+// Texto de respaldo cuando no toca un momento de guion (o la IA está
+// apagada). REESCRITO v0.86.4: cada escena trae narración Y opciones
+// QUE ENCAJAN con lo que cuenta. Antes las 3 opciones eran siempre las
+// mismas (Seguir/Detenerte/Cambiar) y no cambiaban nada, así que varias
+// seguidas se sentían vacías. Ahora cada tipo de momento ofrece 3
+// respuestas con sentido y matiz: un tono (que mueve facciones) y, donde
+// procede, un pequeño efecto 'ef' coherente con la elección. El efecto
+// GORDO (daño, objeto, créditos) lo sigue poniendo el plan; 'ef' solo
+// añade el matiz de haber elegido una salida u otra.
+//
+// Una escena de respaldo es { narracion, opciones:[ {texto,tono,ef?} x3 ] }.
+// Para que narración y opciones nunca se contradigan, se eligen JUNTAS:
+// cada tipo tiene varias "piezas" completas y se escoge una al azar.
 function _escenaRespaldo(num, escenaPlan){
   const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
-  let narr;
+
+  // ENTRADA — salir a la ciudad. Tono observador, sin amenaza.
   if(escenaPlan.tono === 'entrada'){
-    narr = pick([
-      'Sales sin rumbo. El frío del corredor se pega a la ropa. Caminas porque quedarte quieto era peor.',
-      'Empiezas a andar sin saber adónde. Las Pilas respiran a tu alrededor, ajenas a ti.',
-      'La puerta se cierra a tu espalda. Hay menos gente de la que esperabas. Avanzas.'
-    ]);
-  } else if(escenaPlan.tono === 'salida'){
-    narr = pick([
-      'Las piernas pesan. La ciudad te ha dado lo que tenía. Empiezas a desandar el camino.',
-      'Ya está. Reconoces las esquinas de vuelta. Vuelves más vacío y más lleno a la vez.',
-      'El cansancio te alcanza de golpe. Es hora de volver, y lo sabes.'
-    ]);
-  } else if(escenaPlan.daño > 0){
-    narr = pick([
-      'Algo se tuerce. Un encontronazo en un hueco sin salida, un golpe que no ves venir.',
-      'No lo ves llegar. Cuando recuperas el aire, el dolor ya está instalado.',
-      'Un mal paso, una mano de más. El cuerpo se queja antes que la cabeza.'
-    ]);
-  } else if(escenaPlan.esChatarra){
-    narr = pick([
-      'Abres el contenedor con cuidado. Nada de valor, claro. Pero entre los restos hay metal y cable aprovechable. Chatarra. Alguien le sacará unos créditos.',
-      'Registras el hueco a oscuras. No hay nada que merezca la pena... salvo un puñado de chatarra. Te lo llevas. No estás para despreciar nada.',
-      'Miras dentro. Lo de siempre: basura. Pero la basura de aquí abajo a veces se funde en créditos. Recoges la chatarra y sigues.',
-      'Otra trampilla, otro registro vacío. Casi. Queda chatarra utilizable. La metes en el zurrón sin entusiasmo.'
-    ]);
-  } else if(escenaPlan.item){
-    narr = pick([
-      `Entre los escombros hay algo que no encaja. Te agachas. Es ${escenaPlan.item.nombre.toLowerCase()}.`,
-      `Casi lo pisas sin verlo: ${escenaPlan.item.nombre.toLowerCase()}. Lo coges antes de pensarlo.`
-    ]);
-  } else if(escenaPlan.creditos > 0){
-    narr = pick([
-      'Un descuido ajeno, una moneda en el sitio justo. Hoy la suerte mira para otro lado, pero a tu favor.',
-      'Alguien te debía un favor pequeño. Lo cobras sin hacer ruido.'
-    ]);
-  } else if(escenaPlan.creditos < 0){
-    narr = pick([
-      'Hay un peaje que no estaba escrito en ninguna parte. Pagas y sigues.',
-      'Un roce en la multitud. Tardas un segundo de más en notar que algo falta.'
-    ]);
-  } else {
-    narr = pick([
-      'Una esquina cualquiera. Alguien te observa desde un portal y aparta la vista cuando le miras.',
-      'El pasaje se estrecha. Un zumbido eléctrico, una puerta entreabierta, nadie dentro.',
-      'Pasos que no son los tuyos a media distancia. Se detienen cuando tú te detienes.'
+    return pick([
+      { narracion: 'Sales sin rumbo. El frío del corredor se pega a la ropa. Caminas porque quedarte quieto era peor.',
+        opciones: [
+          { texto: 'Bajar hacia donde hay más luz.', tono: 'FRIO' },
+          { texto: 'Meterte por los pasajes muertos.', tono: 'EVASIVO', ef:{ aislamiento:+2 } },
+          { texto: 'Dejar que los pies decidan.', tono: 'EMPATICO' }
+        ] },
+      { narracion: 'Empiezas a andar sin saber adónde. Las Pilas respiran a tu alrededor, ajenas a ti.',
+        opciones: [
+          { texto: 'Seguir el ruido de gente.', tono: 'EMPATICO', ef:{ aislamiento:-2 } },
+          { texto: 'Buscar las zonas vacías.', tono: 'EVASIVO', ef:{ aislamiento:+2 } },
+          { texto: 'Avanzar sin pensarlo.', tono: 'FRIO' }
+        ] },
+      { narracion: 'La puerta se cierra a tu espalda. Hay menos gente de la que esperabas. Avanzas.',
+        opciones: [
+          { texto: 'Pegarte a las paredes.', tono: 'EVASIVO' },
+          { texto: 'Caminar por el centro del pasaje.', tono: 'FRIO' },
+          { texto: 'Saludar al primero que veas.', tono: 'EMPATICO', ef:{ aislamiento:-2 } }
+        ] }
     ]);
   }
-  return {
-    narracion: narr,
-    opciones: [
-      { texto: 'Seguir adelante', tono: 'FRIO' },
-      { texto: 'Detenerte un momento', tono: 'EMPATICO' },
-      { texto: 'Cambiar de rumbo', tono: 'EVASIVO' }
-    ]
-  };
+
+  // SALIDA — cierre del paseo. Cansancio, vuelta.
+  if(escenaPlan.tono === 'salida'){
+    return pick([
+      { narracion: 'Las piernas pesan. La ciudad te ha dado lo que tenía. Empiezas a desandar el camino.',
+        opciones: [
+          { texto: 'Volver por el camino corto.', tono: 'FRIO' },
+          { texto: 'Dar un último rodeo, por mirar.', tono: 'EMPATICO', ef:{ fatiga:+2 } },
+          { texto: 'Apretar el paso. A casa.', tono: 'EVASIVO', ef:{ fatiga:-1 } }
+        ] },
+      { narracion: 'Ya está. Reconoces las esquinas de vuelta. Vuelves más vacío y más lleno a la vez.',
+        opciones: [
+          { texto: 'Pararte a respirar un momento.', tono: 'EMPATICO', ef:{ fatiga:-2 } },
+          { texto: 'No mirar atrás.', tono: 'FRIO' },
+          { texto: 'Contar lo que llevas encima.', tono: 'EVASIVO' }
+        ] },
+      { narracion: 'El cansancio te alcanza de golpe. Es hora de volver, y lo sabes.',
+        opciones: [
+          { texto: 'Arrastrarte hasta la unidad.', tono: 'FRIO', ef:{ fatiga:+1 } },
+          { texto: 'Sentarte un segundo antes de seguir.', tono: 'EMPATICO', ef:{ fatiga:-2 } },
+          { texto: 'Volver sin detenerte.', tono: 'EVASIVO' }
+        ] }
+    ]);
+  }
+
+  // DAÑO — el golpe YA llega: las opciones son cómo lo encajas, no cómo
+  // lo evitas (ese era el fallo viejo: "esquivar" algo ya recibido).
+  if(escenaPlan.daño > 0){
+    return pick([
+      { narracion: 'Algo se tuerce. Un encontronazo en un hueco sin salida, un golpe que no ves venir. Para cuando reaccionas, ya estás contra el suelo.',
+        opciones: [
+          { texto: 'Devolverlo. Que sepan quién eres.', tono: 'VIOLENTO', ef:{ fatiga:+3 } },
+          { texto: 'Cubrirte y aguantar el chaparrón.', tono: 'FRIO' },
+          { texto: 'Hacerte el muerto hasta que pase.', tono: 'EVASIVO', ef:{ aislamiento:+2 } }
+        ] },
+      { narracion: 'No lo ves llegar. Cuando recuperas el aire, el dolor ya está instalado y unas botas se alejan sin prisa.',
+        opciones: [
+          { texto: 'Levantarte y maldecir en voz alta.', tono: 'VIOLENTO' },
+          { texto: 'Quedarte abajo, contar hasta que pare.', tono: 'EMPATICO', ef:{ fatiga:-2 } },
+          { texto: 'Comprobar qué te falta.', tono: 'FRIO' }
+        ] },
+      { narracion: 'Un mal paso, una mano de más en la oscuridad. El cuerpo se queja antes que la cabeza. Te ha pillado, y bien.',
+        opciones: [
+          { texto: 'Buscar al que ha sido.', tono: 'VIOLENTO', ef:{ fatiga:+2 } },
+          { texto: 'Apoyarte en la pared y respirar.', tono: 'EMPATICO', ef:{ fatiga:-2 } },
+          { texto: 'Seguir cojeando, sin más.', tono: 'EVASIVO' }
+        ] }
+    ]);
+  }
+
+  // CHATARRA — registras un sitio, no hay nada de valor salvo chatarra.
+  if(escenaPlan.esChatarra){
+    return pick([
+      { narracion: 'Abres el contenedor con cuidado. Nada de valor, claro. Pero entre los restos hay metal y cable aprovechable. Chatarra. Alguien le sacará unos créditos.',
+        opciones: [
+          { texto: 'Cargar con todo lo que puedas.', tono: 'VENAL', ef:{ fatiga:+2 } },
+          { texto: 'Coger solo lo bueno y seguir.', tono: 'FRIO' },
+          { texto: 'Dejar la mitad para el siguiente.', tono: 'EMPATICO', ef:{ aislamiento:-1 } }
+        ] },
+      { narracion: 'Registras el hueco a oscuras. No hay nada que merezca la pena... salvo un puñado de chatarra. No estás para despreciar nada.',
+        opciones: [
+          { texto: 'Meterla en el zurrón sin pensar.', tono: 'FRIO' },
+          { texto: 'Rebuscar a fondo, por si acaso.', tono: 'VENAL', ef:{ fatiga:+2 } },
+          { texto: 'Llevarte lo justo y largarte.', tono: 'EVASIVO' }
+        ] },
+      { narracion: 'Miras dentro. Lo de siempre: basura. Pero la basura de aquí abajo a veces se funde en créditos. Recoges la chatarra y sigues.',
+        opciones: [
+          { texto: 'Vaciar el contenedor entero.', tono: 'VENAL', ef:{ fatiga:+3 } },
+          { texto: 'Elegir las piezas con cabeza.', tono: 'FRIO' },
+          { texto: 'Un puñado y adiós.', tono: 'EVASIVO' }
+        ] }
+    ]);
+  }
+
+  // OBJETO — aparece algo aprovechable. Las opciones son cómo lo tomas.
+  if(escenaPlan.item){
+    const nom = (escenaPlan.item.nombre || 'algo').toLowerCase();
+    return pick([
+      { narracion: `Entre los escombros hay algo que no encaja con el resto. Te agachas. Es ${nom}. Nadie a la vista, pero esto es de alguien.`,
+        opciones: [
+          { texto: 'Cogerlo sin dudar. Quien lo dejó, perdió.', tono: 'VENAL' },
+          { texto: 'Mirar alrededor antes de tocarlo.', tono: 'FRIO' },
+          { texto: 'Guardarlo rápido y seguir.', tono: 'EVASIVO', ef:{ fatiga:+1 } }
+        ] },
+      { narracion: `Casi lo pisas sin verlo: ${nom}. Lo recoges antes de pensarlo. Pesa más en la mano que en la cabeza.`,
+        opciones: [
+          { texto: 'Quedártelo. Hoy te toca a ti.', tono: 'VENAL' },
+          { texto: 'Examinarlo con calma.', tono: 'HONESTO' },
+          { texto: 'Esconderlo entre la ropa.', tono: 'EVASIVO' }
+        ] }
+    ]);
+  }
+
+  // CRÉDITOS + — entra algo de dinero. Cómo te lo tomas.
+  if(escenaPlan.creditos > 0){
+    return pick([
+      { narracion: 'Un descuido ajeno, una moneda en el sitio justo. Hoy la suerte mira para otro lado, pero a tu favor. Te lo embolsas.',
+        opciones: [
+          { texto: 'Sin remordimientos. Quien lo perdió, lo perdió.', tono: 'VENAL' },
+          { texto: 'Mirar si hay dueño cerca.', tono: 'HONESTO', ef:{ aislamiento:-1 } },
+          { texto: 'Cogerlo y desaparecer.', tono: 'EVASIVO' }
+        ] },
+      { narracion: 'Alguien te debía un favor pequeño y hoy aparece para saldarlo. Te paga en mano, sin mirarte a los ojos.',
+        opciones: [
+          { texto: 'Contar el dinero delante de él.', tono: 'FRIO' },
+          { texto: 'Darle las gracias de verdad.', tono: 'EMPATICO', ef:{ aislamiento:-2 } },
+          { texto: 'Guardarlo y largarte ya.', tono: 'EVASIVO' }
+        ] }
+    ]);
+  }
+
+  // CRÉDITOS − — pierdes dinero. Cómo reaccionas al peaje/robo.
+  if(escenaPlan.creditos < 0){
+    return pick([
+      { narracion: 'Hay un peaje que no estaba escrito en ninguna parte. Dos tipos, un pasaje estrecho, una mano abierta esperando. Pagas y sigues.',
+        opciones: [
+          { texto: 'Pagar sin rechistar.', tono: 'EVASIVO' },
+          { texto: 'Pagar, pero memorizar las caras.', tono: 'FRIO' },
+          { texto: 'Discutir el precio.', tono: 'VIOLENTO', ef:{ fatiga:+3 } }
+        ] },
+      { narracion: 'Un roce en la multitud, demasiado cercano. Tardas un segundo de más en notar que algo ya no está donde lo dejaste.',
+        opciones: [
+          { texto: 'Gritar y mirar a tu alrededor.', tono: 'VIOLENTO', ef:{ aislamiento:+1 } },
+          { texto: 'Tragártelo. Ya está hecho.', tono: 'FRIO' },
+          { texto: 'Apretar el paso, escarmentado.', tono: 'EVASIVO', ef:{ fatiga:+1 } }
+        ] }
+    ]);
+  }
+
+  // TRÁNSITO — momento de ambiente, sin amenaza ni premio. Aquí el matiz
+  // es puramente de carácter: ofrece formas distintas de habitar la calle.
+  return pick([
+    { narracion: 'Una esquina cualquiera. Alguien te observa desde un portal y aparta la vista cuando le miras. No es la primera vez esta noche.',
+      opciones: [
+        { texto: 'Devolverle la mirada hasta que se vaya.', tono: 'FRIO' },
+        { texto: 'Acercarte a ver qué quiere.', tono: 'EMPATICO', ef:{ aislamiento:-1 } },
+        { texto: 'Cambiar de acera sin mirar.', tono: 'EVASIVO', ef:{ aislamiento:+1 } }
+      ] },
+    { narracion: 'El pasaje se estrecha. Un zumbido eléctrico, una puerta entreabierta, nadie dentro. La clase de sitio donde no conviene quedarse.',
+      opciones: [
+        { texto: 'Asomarte un momento.', tono: 'HONESTO' },
+        { texto: 'Pasar de largo, deprisa.', tono: 'EVASIVO', ef:{ fatiga:+1 } },
+        { texto: 'Quedarte escuchando el zumbido.', tono: 'EMPATICO' }
+      ] },
+    { narracion: 'Pasos que no son los tuyos, a media distancia. Se detienen cuando tú te detienes. Arrancan cuando arrancas.',
+      opciones: [
+        { texto: 'Plantarte y esperar a ver quién es.', tono: 'VIOLENTO', ef:{ fatiga:+1 } },
+        { texto: 'Meterte entre la gente.', tono: 'EVASIVO', ef:{ aislamiento:-1 } },
+        { texto: 'Seguir igual, fingiendo no oírlo.', tono: 'FRIO' }
+      ] },
+    { narracion: 'Un puesto cerrado, una radio olvidada sonando para nadie. La voz del locutor habla de cosas que no pasan aquí abajo.',
+      opciones: [
+        { texto: 'Pararte a escuchar un rato.', tono: 'EMPATICO', ef:{ aislamiento:-2 } },
+        { texto: 'Apagarla al pasar.', tono: 'FRIO' },
+        { texto: 'Seguir sin hacerle caso.', tono: 'EVASIVO' }
+      ] }
+  ]);
 }
 
 // ── RESOLUCIÓN DE UNA ESCENA ────────────────────────────────
@@ -514,6 +650,21 @@ function resolverEscenaExplorar(num, escenaPlan, opcionElegida){
   // Bloquear botones para evitar doble clic.
   const opcDiv = document.getElementById('exp-opciones');
   if(opcDiv) opcDiv.querySelectorAll('button').forEach(b => b.disabled = true);
+
+  // 0) EFECTO DE LA OPCIÓN (v0.86.4): pequeño matiz coherente con lo que
+  // el jugador eligió (p.ej. "devolver el golpe" cansa un poco más;
+  // "pararte a respirar" alivia un poco). Es opcional y pequeño: el peso
+  // real lo siguen llevando los efectos del plan, más abajo.
+  if(opcionElegida && opcionElegida.ef && typeof ajustarHumano === 'function'){
+    const ef = opcionElegida.ef;
+    ['fatiga','aislamiento','hambre','disociacion'].forEach(k => {
+      if(typeof ef[k] === 'number') ajustarHumano(k, ef[k]);
+    });
+    if(typeof ef.creditos === 'number'){
+      if(typeof ajustarCreditos === 'function') ajustarCreditos(ef.creditos);
+      else Estado.creditos = Math.max(0, (Estado.creditos || 0) + ef.creditos);
+    }
+  }
 
   // 1) Daño físico → sube fatiga (puede disparar muerte si llega a 100).
   if(escenaPlan.daño > 0 && typeof ajustarHumano === 'function'){

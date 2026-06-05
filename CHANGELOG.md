@@ -2,6 +2,15 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.86.4] - 2026-06-05
+### Added
+- Nuevos objetos base del futuro loop de expedición (de momento solo definidos, todavía sin uso): kit de trauma, medkit, cargador, ración deshidratada, licor, baterías de 2V/4V/8V, palanca térmica y señuelo. Se prepara también la categoría de implantes (grados 1, 2, 3 y especial), sin objetos concretos aún.
+### Changed
+- Acciones del apartamento (mirar la ventana, ducharte, fumar...): al usar una, ahora desaparece de la lista mientras descansa, en lugar de quedarse en gris ocupando sitio. Su sitio queda libre y, cuando vuelve a estar lista, se rellena con otra acción distinta para que haya variedad. El descanso de cada acción sube de 4 a 24 horas de juego.
+- Explorar la ciudad: las escenas de relleno (las que no son momentos escritos a mano) ahora traen respuestas que encajan con lo que pasa en la escena y tienen matiz, en vez de las tres opciones de siempre que no cambiaban nada. Se acabó el "no ocurre nada" en cadenas de escenas seguidas.
+### Fixed
+- Dormir en el apartamento: si pulsabas "Dormir" y luego "Quedarte despierto", el botón de dormir desaparecía sin haber dormido. Ahora solo desaparece cuando duermes de verdad.
+
 ## [0.86.3] - 2026-06-05
 ### Fixed
 - Apartamento en móvil: el intento anterior de colocar las acciones en una franja fija fallaba cuando había mucho contenido (narración larga + varias opciones): las acciones se hundían tras la barra de estado y el scroll saltaba al chocar con la imagen. Replanteado para que el contenido se ancle abajo y haga scroll de forma natural, como en las escenas de tránsito, con la imagen de fondo completa detrás.

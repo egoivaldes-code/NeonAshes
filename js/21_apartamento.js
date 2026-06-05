@@ -120,8 +120,10 @@ function iniciarApartamento(){
 //     el tiempo de juego que le queda.
 // ============================================================
 
-// Cooldown de las acciones ambientales: 4 horas de JUEGO.
-const COOLDOWN_AMBIENTAL_MS = 4 * 60 * 60 * 1000;
+// Cooldown de las acciones ambientales: 24 horas de JUEGO (v0.86.4).
+// Antes eran 4h. Subido a un día entero para que las acciones de
+// ambiente no se puedan repetir el mismo día y la lista respire.
+const COOLDOWN_AMBIENTAL_MS = 24 * 60 * 60 * 1000;
 
 // Hora de juego actual en milisegundos (o null si aún no hay reloj).
 function _ahoraJuegoMsApt(){
@@ -186,18 +188,57 @@ function _formatoCdAmbiental(minutos){
   return `${minutos}min`;
 }
 
-// Devuelve las 3 ranuras ambientales actuales como lista de ids.
-// Las guarda en Estado.ranurasApt para que persistan entre visitas.
-// Si no hay ranuras (partida nueva o cargada antes de esta versión),
-// las inicializa eligiendo 3 acciones distintas y disponibles.
+// Devuelve las 3 ranuras ambientales actuales como lista. Cada ranura
+// es un id de acción o null (hueco vacío). Se guardan en
+// Estado.ranurasApt para que persistan entre visitas.
+//
+// COMPORTAMIENTO (v0.86.4):
+//   - Hay 3 ranuras fijas.
+//   - Al usar una acción, su ranura queda VACÍA (null) y la acción
+//     entra en cooldown de 24h. El hueco se queda vacío: ves menos de
+//     3 botones, como debe ser.
+//   - Cada vez que se pinta el menú, las ranuras vacías intentan
+//     rellenarse con una acción del pool que esté DISPONIBLE (no en
+//     cooldown, no visible ya en otra ranura, y que pase su 'requiere').
+//     Así, cuando una acción cumple sus 24h, un hueco se rellena con
+//     OTRA distinta (rotación), no con la que acabas de usar.
 function _ranurasAmbientales(){
   let ranuras = Array.isArray(Estado.ranurasApt) ? Estado.ranurasApt.slice() : null;
 
-  // Inicialización: elegir 3 acciones distintas, priorizando las que
-  // tienen sentido ahora (pasan su 'requiere') y no están en cooldown.
+  // Inicialización: partida nueva o cargada de una versión anterior.
   if(!ranuras || ranuras.length === 0){
     ranuras = _elegirRanurasIniciales();
-    Estado.ranurasApt = ranuras.slice();
+  }
+
+  // Normalizar a exactamente 3 posiciones (pueden venir menos de saves viejos).
+  while(ranuras.length < 3) ranuras.push(null);
+  if(ranuras.length > 3) ranuras = ranuras.slice(0, 3);
+
+  // Rellenar huecos vacíos con acciones disponibles distintas a las ya
+  // visibles. Esto es lo que produce la rotación al salir del cooldown.
+  _rellenarHuecosRanuras(ranuras);
+
+  Estado.ranurasApt = ranuras.slice();
+  return ranuras;
+}
+
+// Rellena, EN SITIO, las posiciones null de 'ranuras' con acciones del
+// pool que estén disponibles ahora mismo (no en cooldown, con sentido,
+// y no repetidas en otra ranura). Si no hay candidata para un hueco, se
+// queda en null. Devuelve la propia lista por comodidad.
+function _rellenarHuecosRanuras(ranuras){
+  for(let pos = 0; pos < ranuras.length; pos++){
+    if(ranuras[pos]) continue; // ya ocupada
+    const visibles = new Set(ranuras.filter(Boolean));
+    const candidatas = AMBIENTALES_APT.filter(a => {
+      if(visibles.has(a.id)) return false;
+      if(_cdAmbiental(a.id).enCd) return false;
+      if(typeof a.requiere === 'function' && !a.requiere()) return false;
+      return true;
+    });
+    if(candidatas.length === 0) continue; // no hay relevo: hueco vacío
+    const nueva = candidatas[Math.floor(Math.random() * candidatas.length)];
+    ranuras[pos] = nueva.id;
   }
   return ranuras;
 }
@@ -215,64 +256,40 @@ function _elegirRanurasIniciales(){
     [baraja[i], baraja[j]] = [baraja[j], baraja[i]];
   }
   const elegidas = baraja.slice(0, 3).map(a => a.id);
-  if(elegidas.length < 3){
-    const resto = AMBIENTALES_APT.filter(a => !elegidas.includes(a.id));
-    for(let i = resto.length - 1; i > 0; i--){
-      const j = Math.floor(Math.random() * (i + 1));
-      [resto[i], resto[j]] = [resto[j], resto[i]];
-    }
-    for(const a of resto){
-      if(elegidas.length >= 3) break;
-      elegidas.push(a.id);
-    }
-  }
+  // Completar hasta 3 con huecos vacíos si no hubo suficientes acciones
+  // disponibles (mejor un hueco que repetir o meter algo en cooldown).
+  while(elegidas.length < 3) elegidas.push(null);
   return elegidas;
 }
 
-// Tras hacer una acción (idx), la sustituye en su ranura por OTRA del
-// pool que no esté ya visible, y la deja EN COOLDOWN (sello = ahora).
-// Si no hay ninguna fuera de las ranuras, deja la misma (quedará en
-// cooldown igualmente, en gris con tick).
+// Tras hacer una acción (idx), su ranura queda VACÍA y la acción entra
+// en cooldown (24h). El hueco NO se rellena al instante: se queda vacío
+// y solo se ocupará más adelante con OTRA acción cuando el pool tenga
+// alguna disponible (lo hace _ranurasAmbientales al pintar el menú).
 function _rotarRanuraAmbiental(idHecha){
-  const ranuras = _ranurasAmbientales();
+  const ranuras = Array.isArray(Estado.ranurasApt) ? Estado.ranurasApt.slice() : _ranurasAmbientales();
   const pos = ranuras.indexOf(idHecha);
   if(pos === -1) return;
-  // Candidatas: no visibles en otras ranuras, y con sentido ahora.
-  const visibles = new Set(ranuras);
-  const candidatas = AMBIENTALES_APT.filter(a => {
-    if(visibles.has(a.id)) return false;
-    if(typeof a.requiere === 'function' && !a.requiere()) return false;
-    return true;
-  });
-  if(candidatas.length === 0){
-    // No hay relevo posible: la acción hecha se queda, en cooldown.
-    return;
-  }
-  const nueva = candidatas[Math.floor(Math.random() * candidatas.length)];
-  ranuras[pos] = nueva.id;
-  // La nueva entra YA EN COOLDOWN: no usable al instante (anti-spam).
-  _marcarCdAmbiental(nueva.id);
+  ranuras[pos] = null; // hueco vacío hasta que entre otra distinta
   Estado.ranurasApt = ranuras.slice();
 }
 
-// Genera el HTML de los 3 botones ambientales según ranuras + cooldown.
-// Activa → botón normal. En cooldown → gris, tick ✓ y tiempo restante.
+// Genera el HTML de los botones ambientales. Solo se pintan las ranuras
+// OCUPADAS por una acción disponible. Las acciones en cooldown ya no se
+// muestran (su ranura está vacía): el hueco desaparece de la pantalla.
 function botonesAmbientales(textoVentana){
   const ranuras = _ranurasAmbientales();
   let html = '';
   for(const id of ranuras){
+    if(!id) continue; // hueco vacío: no se pinta nada
     const acc = _ambientalPorId(id);
     if(!acc) continue;
+    // Si por lo que sea quedó en ranura una acción en cooldown, no la
+    // mostramos (coherencia con la regla de ocultar las que descansan).
+    if(_cdAmbiental(acc.id).enCd) continue;
     let etiqueta = acc.etiqueta;
     if(acc.id === 'ventana' && textoVentana) etiqueta = textoVentana;
-    const cd = _cdAmbiental(acc.id);
-    if(cd.enCd){
-      html += `<button class="opcion-btn deshabilitado" disabled>`
-            + `<span class="amb-tick">✓</span> ${etiqueta} `
-            + `<span class="amb-cd">· ${_formatoCdAmbiental(cd.minutos)}</span></button>`;
-    } else {
-      html += `<button class="opcion-btn" onclick="opcionApt(${acc.idx})">${etiqueta}</button>`;
-    }
+    html += `<button class="opcion-btn" onclick="opcionApt(${acc.idx})">${etiqueta}</button>`;
   }
   return html;
 }
@@ -618,9 +635,11 @@ function opcionApt(idx){
   } else if(idx === 2 && !misionCerrada){
     ajustarHumano('fatiga', -8);        // un respiro corto, no una noche entera
     ajustarHumano('aislamiento', 3);    // dormir solo es estar solo
-    // Solo se duerme una vez por visita en el menú base. En los flujos
-    // de "cerrar el día" o "amanecer" no aplica (esos salen del apto).
-    if(m.aceptoEncargo !== true) Estado.durmioEstaVisita = true;
+    // FIX v0.86.4: NO marcamos aquí "durmió esta visita". Pulsar Dormir
+    // solo abre un submenú (Dejar que el sueño te lleve / Quedarte
+    // despierto). Antes se marcaba aquí, así que al elegir "Quedarte
+    // despierto" el botón Dormir desaparecía sin haber dormido. Ahora la
+    // marca se pone solo al CONFIRMAR el sueño, en dormirYCerrarDia().
   } else if(idx === 4){
     // Comer: baja el hambre. Si comiste del inventario es gratis; si no,
     // pides reparto y te cobran (comida cara en las Pilas).
@@ -1189,6 +1208,11 @@ function dormirYCerrarDia(){
 
   // Cualquier otro caso (antes de misión, o ya viste el eco): solo descansas.
   saltoDeEscena();
+  // FIX v0.86.4: la marca de "ya durmió esta visita" se pone AQUÍ, al
+  // confirmar el sueño de verdad (no al abrir el submenú). Así "Quedarte
+  // despierto" ya no hace desaparecer el botón Dormir.
+  const m = Estado.memoria || {};
+  if(m.aceptoEncargo !== true) Estado.durmioEstaVisita = true;
   // Una noche completa de sueño descansa de verdad. -40 sobre 0-100
   // saca al jugador de las bandas alta/extrema casi siempre.
   ajustarHumano('fatiga', -40);
