@@ -3,7 +3,7 @@
 > Documento de trabajo. Define el rediseño de la profesión Scavenger:
 > de un clic → resultado, a un loop de extracción con preparación,
 > riesgo creciente y botín refinable.
-> Estado: DISEÑO APROBADO — pendiente de implementación.
+> Estado: DISEÑO Y BALANCE CERRADOS — listo para implementar.
 > Decisiones del autor: botín MIXTO (créditos + chatarra + objetos raros) ·
 > riesgo por MEDIDOR DE ALERTA + GASTO DE RECURSOS · construir tras este doc.
 
@@ -80,14 +80,15 @@ run sí. Si lo pierdes en una run fallida, lo pierdes de verdad.
 
 | id | nombre | tipo | qué hace en la run |
 |---|---|---|---|
-| `medkit` | Botiquín de campo | consumible | Cura una herida leve o frena una hemorragia. 1 uso. |
+| `medkit` | Botiquín de campo | consumible | Cura una herida leve o frena una hemorragia. **1 uso**. |
 | `arma_blanca` | Cuchillo de monofilo | equipo | Resuelve encuentros cuerpo a cuerpo sin gastar nada. No hace ruido (no sube alerta extra). |
-| `arma_fuego` | Pistola de raíl casera | equipo | Resuelve encuentros peligrosos, pero **gasta munición** y **sube alerta** (ruido). |
-| `municion` | Cargador improvisado | consumible | Munición para el arma de fuego. Apilable. Sin munición, el arma no dispara. |
-| `analizador` | Analizador portátil | equipo | Permite **identificar** objetos raros in situ (saber si vale la pena cargar con ellos) y abrir cerraduras de datos. Gasta **cargas**. |
+| `arma_fuego` | Pistola de raíl casera | equipo | Resuelve encuentros peligrosos, pero **gasta 1 munición/disparo** y **sube alerta** (ruido). |
+| `municion` | Cargador improvisado | consumible | **6 disparos** por cargador. Apilable. Sin munición, el arma no dispara. |
+| `analizador` | Analizador portátil | equipo | Permite **identificar** objetos raros in situ y abrir cerraduras de datos. Gasta **cargas**. |
 | `carga_analizador` | Célula del analizador | consumible | Recarga del analizador. Apilable. |
-| `ganzua` | Set de ganzúas | consumible | Abre cerraduras físicas sin romper sellos (evita multa HELIX). Se puede romper (consumo probabilístico). |
+| `ganzua` | Set de ganzúas | consumible | Abre cerraduras físicas sin romper sellos (evita multa HELIX). Puede romperse (consumo probabilístico). |
 | `mascara_filtro` | Máscara de filtro | equipo | Reduce fatiga/veneno en zonas tóxicas (pozo, canal). |
+| `kit_trauma` | Baliza de rescate | consumible RARO | **Salvavidas de 1 uso.** Si fueras a morir, se consume: sobrevives malherido y pierdes el botín bruto en vez de la partida. El objeto más codiciado del juego. |
 
 > Regla de oro: **ningún equipo es obligatorio**, pero cada uno abre una RUTA en
 > los eventos. Sin arma puedes huir (subes alerta, pierdes botín). Sin medkit
@@ -251,10 +252,47 @@ Cada paso es un commit independiente y deja el juego jugable.
 
 ---
 
-## 11. Preguntas abiertas para la siguiente sesión
+## 11. Balance (decisiones cerradas)
 
-- ¿Cuántos usos por medkit y cuánta munición por cargador? (números de balance)
-- ¿La run consume tiempo de juego por evento o solo al final? (afecta alquiler)
-- ¿Morir en una run = muerte real (`11_muerte`) o solo "te arrastras a casa
-  malherido y sin botín"? Recomiendo lo segundo salvo en zonas extremas.
-- ¿El mercado de equipo entra ya o se "encuentra" equipo de momento?
+### 11.1 Consumibles — escasos y tensos
+- **Medkit:** 1 uso. Cura una herida leve o frena una hemorragia, y se acabó.
+- **Cargador (`municion`):** 6 disparos. Cada disparo del arma de fuego gasta 1.
+- **Analizador / ganzúas:** consumo por uso, con posibilidad de rotura en ganzúas.
+
+La escasez es deliberada: te obliga a elegir cuándo gastar y empuja a retirarte
+cuando te quedas seco.
+
+### 11.2 Tiempo de juego — la run cuesta horas
+Cada evento/escena consume **50–70 minutos de juego** (mismo orden que las
+transiciones actuales). Una run de 5 eventos ≈ 4–6 h de juego: puede cruzar
+medianoche y disparar el cobro del alquiler (`comprobarCobrosDiarios`). El tiempo
+es, por tanto, otra forma de presión: alargar la expedición no solo sube la
+alerta, también te come el día.
+
+### 11.3 Muerte — real, pero con red de seguridad comprable
+La muerte en expedición usa el sistema real (`11_muerte`) y **puede ocurrir en
+cualquier zona** (las extremas, las que más). PERO antes de matar, el motor
+comprueba si el jugador lleva un **item de rescate**:
+
+- `baliza_rescate` / `kit_trauma` (provisional) — objeto raro de un solo uso.
+- Si lo llevas: se **consume**, sobrevives **malherido**, y pierdes el **botín
+  bruto** de la run en vez de la partida.
+- Si no lo llevas: muerte real.
+
+Esto convierte el item de rescate en uno de los objetos más codiciados del juego
+y da una razón fortísima para cargar con peso "por si acaso".
+
+### 11.4 Economía del equipo — todo se compra, vende y lootea
+Casi todo el equipo y el botín circula por las tres vías: **comprar** (mercado),
+**vender** (liquidar lo que sobra) y **lootear** (encontrarlo en expedición). La
+tensión está en el **precio**: el mercado es caro, así que el jugador siempre
+calcula si compra seguro o arriesga una run para conseguirlo. Lo verdaderamente
+raro (item de rescate, óptica militar) se encuentra mucho más que se compra, o se
+compra a precio de oro.
+
+---
+
+## 12. Preguntas abiertas para la siguiente sesión
+
+- Números finos de precio de mercado por item (cuando montemos la tienda).
+- Tabla exacta de peso del botín bruto perdido al usar la baliza de rescate.
