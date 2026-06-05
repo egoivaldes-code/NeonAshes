@@ -484,6 +484,19 @@ function opcionApt(idx){
   // En ese caso "Dormir" tiene un sentido distinto: cierra el día.
   const misionCerrada = Estado.mision === 'volvioApartamento' || Estado.mision === 'completada';
 
+  // TERMINAL (v0.86): al pulsar "encender terminal" entramos DIRECTO al
+  // escritorio HELIX, sin el breve texto de ambiente previo (no daba
+  // tiempo a leerlo y solo añadía un parpadeo). Si la misión está cerrada
+  // no hay terminal que abrir: se regenera el menú base.
+  if(idx === 1){
+    if(misionCerrada){
+      regenerarOpcionesAptCierre();
+    } else if(typeof irATerminal === 'function'){
+      irATerminal();
+    }
+    return;
+  }
+
   // Contexto para las variantes: franja horaria + día de la semana.
   const franja = franjaHoraria();
   const dia = tipoDia();
@@ -1104,8 +1117,29 @@ function textosSalir(misionCerrada, m, h, franja, dia){
 function regenerarOpcionesAptCierre(){
   const opc = document.getElementById('opciones-apt');
   if(!opc) return;
+  // GUARD (v0.86): este punto se alcanza también al VOLVER de la misión
+  // de Mara (volverApartamentoDesMapa), que NO pasa por iniciarApartamento.
+  // Sin esto, las ranuras/cooldowns de las acciones ambientales no están
+  // inicializados y los botones de ambiente salen incompletos. Aseguramos
+  // que existan antes de pintar.
+  if(typeof Estado.cooldownsApt !== 'object' || Estado.cooldownsApt === null){
+    Estado.cooldownsApt = {};
+  }
+  if(!Array.isArray(Estado.ranurasApt) || Estado.ranurasApt.length === 0){
+    if(typeof _elegirRanurasIniciales === 'function'){
+      Estado.ranurasApt = _elegirRanurasIniciales();
+    }
+  }
   const misionCerrada = Estado.mision === 'volvioApartamento' || Estado.mision === 'completada';
   if(misionCerrada){
+    // Al volver de la misión, asegurar que el texto narrativo tiene
+    // contenido real (si no, queda un nodo vacío que descuadra el layout
+    // empujando los botones — el "texto invisible"). Solo lo rellenamos
+    // si está vacío, para no pisar una narración recién mostrada.
+    const narr = document.getElementById('narr-apt');
+    if(narr && narr.textContent.trim() === ''){
+      narr.innerHTML = 'Vuelves a tu unidad. La puerta se cierra con el mismo chasquido de siempre.<br>El silencio te recibe, igual que lo dejaste.';
+    }
     // Versión post-misión: textos más cansados.
     opc.innerHTML = `
       ${botonesAmbientales("Mirar por la ventana")}
