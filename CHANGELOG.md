@@ -2,6 +2,11 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.86.1] - 2026-06-05
+### Fixed
+- En móvil, las imágenes de día y noche del apartamento se veían descuadradas entre sí y se solapaban ("doble") durante el cambio de hora. Ahora ambas comparten el mismo encuadre y el fundido día/noche es limpio.
+- En móvil, las acciones del apartamento se hundían y quedaban tapadas por la barra de estado. Ahora se apoyan en una franja fija bajo la habitación, sin solaparse con la barra.
+
 ## [0.86] - 2026-06-05
 ### Fixed
 - Al volver de la misión al apartamento ya aparecen las acciones de ambiente (antes solo salían las fijas).
