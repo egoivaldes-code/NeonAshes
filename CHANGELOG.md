@@ -2,6 +2,10 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.86.2] - 2026-06-05
+### Changed
+- La pantalla de explorar la ciudad ahora comparte el mismo lenguaje visual que las escenas de tránsito y los eventos de viaje: acento magenta, tipografía Rajdhani en el título y paneles de texto con el estilo común del juego, en lugar de su antiguo estilo propio en cyan. Los colores de las opciones según su tono (violento, empático, frío...) se mantienen, porque indican el tipo de elección.
+
 ## [0.86.1] - 2026-06-05
 ### Fixed
 - En móvil, las imágenes de día y noche del apartamento se veían descuadradas entre sí y se solapaban ("doble") durante el cambio de hora. Ahora ambas comparten el mismo encuadre y el fundido día/noche es limpio.
