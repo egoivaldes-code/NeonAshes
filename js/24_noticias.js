@@ -30,6 +30,68 @@ const NOTICIAS_ROTATIVAS = [
   { cat: 'INFO', txt: 'Operarios del Nivel 4 reportan "ruidos persistentes" en conductos de ventilación. Una unidad técnica investiga.' }
 ];
 
+// ============================================================
+// ECOS DE LA CALLE (v0.86.5)
+// ------------------------------------------------------------
+// Lo que el jugador hace al explorar la ciudad o en los eventos de
+// tránsito deja una HUELLA en Estado.memoria.ecosCalle. Las noticias
+// la leen y sueltan titulares acordes, para que el mundo "se entere"
+// de lo que pasó en la calle. Solo se guarda la ÚLTIMA salida: cada
+// nueva deriva resetea estas banderas (lo hace explorar al empezar).
+//
+// Tipos de eco:
+//   violencia   — hubo un golpe, una pelea, un encontronazo.
+//   rebusca     — registró contenedores/huecos en busca de chatarra.
+//   dineroSucio — se movió dinero turbio (peaje, robo, descuido ajeno).
+//   encuentro   — se cruzó con alguien (NPC, mendigo, desconocido).
+// ============================================================
+function _asegurarEcosCalle(){
+  if(!Estado.memoria) Estado.memoria = {};
+  if(typeof Estado.memoria.ecosCalle !== 'object' || Estado.memoria.ecosCalle === null){
+    Estado.memoria.ecosCalle = {};
+  }
+  return Estado.memoria.ecosCalle;
+}
+// Borra los ecos (nueva salida). La llaman explorar/tránsito al empezar.
+function reiniciarEcosCalle(){
+  if(!Estado.memoria) Estado.memoria = {};
+  Estado.memoria.ecosCalle = {};
+}
+// Marca un eco como ocurrido en la salida actual.
+function marcarEcoCalle(tipo){
+  if(!tipo) return;
+  const e = _asegurarEcosCalle();
+  e[tipo] = true;
+}
+window.reiniciarEcosCalle = reiniciarEcosCalle;
+window.marcarEcoCalle = marcarEcoCalle;
+
+// Titulares por tipo de suceso. Varias variantes por tipo: se elige una
+// al azar para que no se repita siempre el mismo. Tono HELIX/Pilas:
+// nunca se nombra al jugador; el suceso aparece como rumor o parte frío.
+const NOTICIAS_ECOS_CALLE = {
+  violencia: [
+    { cat:'PILAS', txt:'Reportan un altercado en un pasaje del Sector 7. Sin heridos "de consideración", según el parte. Nadie ha denunciado nada.' },
+    { cat:'PILAS', txt:'Vecinos oyen forcejeos en los corredores bajos durante la noche. Para cuando llega una patrulla, solo queda sangre en el suelo y ningún nombre.' },
+    { cat:'HELIX', txt:'HELIX recuerda que la violencia callejera "se contagia". Se aconseja a los ciudadanos no intervenir y reportar desde una distancia segura.' }
+  ],
+  rebusca: [
+    { cat:'PILAS', txt:'Aumentan los registros de contenedores volcados en los niveles bajos. La gestión de residuos pide "respeto por el material reciclable".' },
+    { cat:'PILAS', txt:'Recolectores informales se multiplican en el Sector 7. "Cada vez queda menos que rebuscar", se queja un veterano del oficio.' },
+    { cat:'VIDA', txt:'El precio de la chatarra metálica sube por tercer día. Los talleres de reciclaje no dan abasto con tanta materia de origen incierto.' }
+  ],
+  dineroSucio: [
+    { cat:'PILAS', txt:'Se reportan más "peajes informales" en los pasajes estrechos del Sector 7. La corporación niega tener constancia de ninguno.' },
+    { cat:'PILAS', txt:'Una racha de carteristas recorre los corredores concurridos. HELIX recomienda llevar los créditos en cuenta verificada, "más segura".' },
+    { cat:'VIDA', txt:'Circula dinero físico, manchado y sin rastrear, por los puestos del mercado bajo. Nadie pregunta de dónde sale. Nadie quiere saberlo.' }
+  ],
+  encuentro: [
+    { cat:'VIDA', txt:'Crece el trasiego nocturno en los corredores de las Pilas. "Hay más gente despierta de la que debería", comenta un tendero.' },
+    { cat:'INFO', txt:'Se detectan más contactos personales no registrados en zonas sin cobertura. HELIX recuerda que toda conversación "merece ser respaldada".' },
+    { cat:'PILAS', txt:'Un rostro nuevo se deja ver por los pasajes del Sector 7. En las Pilas, eso siempre significa algo, aunque nadie sepa todavía el qué.' }
+  ]
+};
+
 // Devuelve un array de titulares reactivas que correspondan al estado actual del jugador.
 function generarNoticiasReactivas(){
   const m = Estado.memoria || {};
@@ -97,10 +159,58 @@ function generarNoticiasReactivas(){
         neg: { cat:'PILAS', txt:'Tensión en un punto de control improvisado. Exsoldados "recomiendan no insistir".' }
       }
     };
+    // VARIANTES EXTRA por facción (v0.86.5): se suman a la noticia base
+    // de arriba para dar más variedad. Por cada facción y signo, juntamos
+    // la original con estas y elegimos una al azar.
+    const _noticiasFaccionExtra = {
+      sindicatos: {
+        pos: [{ cat:'PILAS', txt:'Una colecta vecinal del Distrito Ferro alcanza su objetivo "gracias a manos anónimas". Los Sindicatos no dan nombres, como siempre.' }],
+        neg: [{ cat:'PILAS', txt:'Un capataz del Ferro aparece con la cara marcada. "Accidente de taller", zanjan los Sindicatos, y cierran la verja.' }]
+      },
+      archivistas: {
+        pos: [{ cat:'INFO', txt:'Un fragmento de memoria recuperada circula de mano en mano entre los Archivistas. Lo llaman "una buena noche para no olvidar".' }],
+        neg: [{ cat:'INFO', txt:'Los Archivistas blindan un nodo tras "una visita poco grata". Nadie confirma qué se llevó, ni quién.' }]
+      },
+      eco: {
+        pos: [{ cat:'VIDA', txt:'La Iglesia del Eco reparte caldo caliente una noche más. "Quien escucha, recibe", repiten los fieles a quien quiera oírlo.' }],
+        neg: [{ cat:'VIDA', txt:'Un predicador del Eco alza la voz contra "los que solo vienen a tomar". La congregación asiente en incómodo silencio.' }]
+      },
+      loto: {
+        pos: [{ cat:'PILAS', txt:'En el Carmesí, una mesa queda reservada toda la noche para alguien que nunca llega del todo. El Loto sonríe y no explica.' }],
+        neg: [{ cat:'PILAS', txt:'Una puerta del Carmesí amanece tapiada. El Loto habla de "renovaciones". Nadie del barrio se lo cree.' }]
+      },
+      drifters: {
+        pos: [{ cat:'INFO', txt:'Un transporte fantasma deja mercancía donde hacía falta y desaparece sin cobrar de más. Cosas que pasan, dicen los Drifters.' }],
+        neg: [{ cat:'INFO', txt:'Una ruta de los Drifters queda "quemada" tras un malentendido. Los habituales buscan otro piloto, y otro silencio.' }]
+      },
+      orpheus: {
+        pos: [{ cat:'HELIX', txt:'ORPHEUS felicita "discretamente" a un colaborador del Sector 7. La felicitación, como todo en ORPHEUS, no figura en ningún registro público.' }],
+        neg: [{ cat:'HELIX', txt:'ORPHEUS abre un expediente "rutinario" sobre actividad en los niveles bajos. Rutinario, insisten, tres veces.' }]
+      },
+      ia: {
+        pos: [{ cat:'INFO', txt:'Una voz sin cuerpo agradece algo por los altavoces del Sector 7 antes de cortarse. HELIX lo atribuye a "ruido de línea".' }],
+        neg: [{ cat:'INFO', txt:'Un panel público repite una frase entrecortada toda la noche, como un reproche. Por la mañana, ya está reseteado.' }]
+      },
+      helix: {
+        pos: [{ cat:'HELIX', txt:'HELIX destaca "la colaboración ejemplar de un ciudadano modélico" sin dar nombre. El gesto, recuerdan, suma puntos de confianza.' }],
+        neg: [{ cat:'HELIX', txt:'HELIX activa un protocolo de "observación preventiva" en varios accesos. Nada que temer, si uno no tiene nada que ocultar.' }]
+      },
+      restos_militares: {
+        pos: [{ cat:'PILAS', txt:'Un grupo de exsoldados despeja un pasaje peligroso "por las buenas". El barrio respira; nadie pregunta qué cobran a cambio.' }],
+        neg: [{ cat:'PILAS', txt:'Un control improvisado de veteranos termina a empujones. "Recomiendan" no volver a pasar por ahí en una temporada.' }]
+      }
+    };
     const _set = _noticiasFaccion[m.ultimaFaccionTocada];
     if(_set){
       const _signo = (m.ultimaFaccionSigno === 'neg') ? 'neg' : 'pos';
-      if(_set[_signo]) reactivas.push(_set[_signo]);
+      // Juntar la noticia base con las variantes extra y elegir una.
+      const _opciones = [];
+      if(_set[_signo]) _opciones.push(_set[_signo]);
+      const _extra = _noticiasFaccionExtra[m.ultimaFaccionTocada];
+      if(_extra && Array.isArray(_extra[_signo])) _opciones.push(..._extra[_signo]);
+      if(_opciones.length){
+        reactivas.push(_opciones[Math.floor(Math.random() * _opciones.length)]);
+      }
     }
   }
 
@@ -137,6 +247,20 @@ function generarNoticiasReactivas(){
       reactivas.push({ cat: 'PILAS', txt: texto });
     }
   }
+
+  // ============================================================
+  // ECOS DE LA CALLE: lo que hiciste en la última salida a explorar
+  // o en los eventos de tránsito deja titulares aquí (v0.86.5).
+  // ============================================================
+  const ecos = (m.ecosCalle && typeof m.ecosCalle === 'object') ? m.ecosCalle : {};
+  Object.keys(NOTICIAS_ECOS_CALLE).forEach(tipo => {
+    if(ecos[tipo]){
+      const variantes = NOTICIAS_ECOS_CALLE[tipo];
+      if(variantes && variantes.length){
+        reactivas.push(variantes[Math.floor(Math.random() * variantes.length)]);
+      }
+    }
+  });
 
   return reactivas;
 }

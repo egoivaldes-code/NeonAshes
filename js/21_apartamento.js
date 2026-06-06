@@ -188,58 +188,85 @@ function _formatoCdAmbiental(minutos){
   return `${minutos}min`;
 }
 
-// Devuelve las 3 ranuras ambientales actuales como lista. Cada ranura
-// es un id de acción o null (hueco vacío). Se guardan en
-// Estado.ranurasApt para que persistan entre visitas.
+// Devuelve las 3 ranuras ambientales actuales. Cada ranura es un OBJETO:
+//   { id: 'fumar', libreEn: 0 }     -> ranura ocupada por una acción visible
+//   { id: null,   libreEn: 1234 }   -> ranura EN ESPERA (hueco vacío) hasta
+//                                       la hora de juego 'libreEn' (en ms)
 //
-// COMPORTAMIENTO (v0.86.4):
+// COMPORTAMIENTO (v0.86.4, corregido):
 //   - Hay 3 ranuras fijas.
-//   - Al usar una acción, su ranura queda VACÍA (null) y la acción
-//     entra en cooldown de 24h. El hueco se queda vacío: ves menos de
-//     3 botones, como debe ser.
-//   - Cada vez que se pinta el menú, las ranuras vacías intentan
-//     rellenarse con una acción del pool que esté DISPONIBLE (no en
-//     cooldown, no visible ya en otra ranura, y que pase su 'requiere').
-//     Así, cuando una acción cumple sus 24h, un hueco se rellena con
-//     OTRA distinta (rotación), no con la que acabas de usar.
-function _ranurasAmbientales(){
-  let ranuras = Array.isArray(Estado.ranurasApt) ? Estado.ranurasApt.slice() : null;
-
-  // Inicialización: partida nueva o cargada de una versión anterior.
-  if(!ranuras || ranuras.length === 0){
-    ranuras = _elegirRanurasIniciales();
-  }
-
-  // Normalizar a exactamente 3 posiciones (pueden venir menos de saves viejos).
-  while(ranuras.length < 3) ranuras.push(null);
+//   - Al usar una acción, SU ranura queda vacía y arranca una espera de
+//     24h de juego. Durante esas 24h el hueco se queda vacío (ves menos
+//     de 3 botones), NO se rellena al instante.
+//   - Cuando la espera de una ranura se cumple (pasan 24h), esa ranura
+//     rota a OTRA acción distinta del pool que esté libre. Si en ese
+//     momento no hay ninguna disponible, sigue vacía hasta que la haya.
+//   - La acción usada vuelve al pool y puede reaparecer más adelante en
+//     cualquier ranura, una vez cumplido su propio descanso.
+//
+// Se normaliza desde el formato viejo (lista de ids o nulls) por si hay
+// partidas guardadas con el modelo anterior.
+function _normalizarRanuras(raw){
+  let ranuras = Array.isArray(raw) ? raw.slice() : [];
+  ranuras = ranuras.map(r => {
+    if(r && typeof r === 'object') return { id: r.id || null, libreEn: r.libreEn || 0 };
+    if(typeof r === 'string') return { id: r, libreEn: 0 };   // formato viejo: id suelto
+    return { id: null, libreEn: 0 };                          // null/!=: hueco listo ya
+  });
+  while(ranuras.length < 3) ranuras.push({ id: null, libreEn: 0 });
   if(ranuras.length > 3) ranuras = ranuras.slice(0, 3);
-
-  // Rellenar huecos vacíos con acciones disponibles distintas a las ya
-  // visibles. Esto es lo que produce la rotación al salir del cooldown.
-  _rellenarHuecosRanuras(ranuras);
-
-  Estado.ranurasApt = ranuras.slice();
   return ranuras;
 }
 
-// Rellena, EN SITIO, las posiciones null de 'ranuras' con acciones del
-// pool que estén disponibles ahora mismo (no en cooldown, con sentido,
-// y no repetidas en otra ranura). Si no hay candidata para un hueco, se
-// queda en null. Devuelve la propia lista por comodidad.
-function _rellenarHuecosRanuras(ranuras){
-  for(let pos = 0; pos < ranuras.length; pos++){
-    if(ranuras[pos]) continue; // ya ocupada
-    const visibles = new Set(ranuras.filter(Boolean));
-    const candidatas = AMBIENTALES_APT.filter(a => {
-      if(visibles.has(a.id)) return false;
-      if(_cdAmbiental(a.id).enCd) return false;
-      if(typeof a.requiere === 'function' && !a.requiere()) return false;
-      return true;
-    });
-    if(candidatas.length === 0) continue; // no hay relevo: hueco vacío
-    const nueva = candidatas[Math.floor(Math.random() * candidatas.length)];
-    ranuras[pos] = nueva.id;
+function _ranurasAmbientales(){
+  let ranuras = _normalizarRanuras(Estado.ranurasApt);
+
+  // Si está todo a cero (partida nueva), sembrar las 3 ranuras iniciales.
+  const todasVacias = ranuras.every(r => !r.id && !r.libreEn);
+  if(todasVacias){
+    ranuras = _elegirRanurasIniciales();
   }
+
+  const ahora = _ahoraJuegoMsApt();
+
+  // Para cada ranura, decidir su estado actual:
+  for(let pos = 0; pos < ranuras.length; pos++){
+    const r = ranuras[pos];
+
+    // ¿La acción que ocupa la ranura está en cooldown? Si la usaste, sí:
+    // la vaciamos y arrancamos su espera (por si el vaciado no se hizo).
+    if(r.id && _cdAmbiental(r.id).enCd){
+      r.id = null;
+      // libreEn ya debería estar puesto por _rotarRanuraAmbiental; si no,
+      // lo calculamos a partir del cooldown de esa acción.
+      if(!r.libreEn && ahora !== null) r.libreEn = ahora + COOLDOWN_AMBIENTAL_MS;
+    }
+
+    // Si la ranura está EN ESPERA y aún no le toca, no se rellena.
+    if(!r.id && r.libreEn && ahora !== null && ahora < r.libreEn){
+      continue; // sigue vacía: el hueco permanece
+    }
+
+    // Si la ranura está libre (sin espera, o ya cumplida), rotar a una
+    // acción distinta del pool que esté disponible.
+    if(!r.id){
+      const visibles = new Set(ranuras.map(x => x.id).filter(Boolean));
+      const candidatas = AMBIENTALES_APT.filter(a => {
+        if(visibles.has(a.id)) return false;
+        if(_cdAmbiental(a.id).enCd) return false;
+        if(typeof a.requiere === 'function' && !a.requiere()) return false;
+        return true;
+      });
+      if(candidatas.length > 0){
+        const nueva = candidatas[Math.floor(Math.random() * candidatas.length)];
+        r.id = nueva.id;
+        r.libreEn = 0;
+      }
+      // Si no hay candidata, la ranura sigue vacía (libreEn ya cumplido).
+    }
+  }
+
+  Estado.ranurasApt = ranuras.map(r => ({ id: r.id, libreEn: r.libreEn }));
   return ranuras;
 }
 
@@ -248,45 +275,39 @@ function _elegirRanurasIniciales(){
     if(typeof a.requiere === 'function' && !a.requiere()) return false;
     return !_cdAmbiental(a.id).enCd;
   });
-  // Barajar y coger 3. Si no hay 3 disponibles, completar con las que
-  // queden (aunque estén en cooldown) para que siempre haya 3 ranuras.
   const baraja = candidatas.slice();
   for(let i = baraja.length - 1; i > 0; i--){
     const j = Math.floor(Math.random() * (i + 1));
     [baraja[i], baraja[j]] = [baraja[j], baraja[i]];
   }
-  const elegidas = baraja.slice(0, 3).map(a => a.id);
-  // Completar hasta 3 con huecos vacíos si no hubo suficientes acciones
-  // disponibles (mejor un hueco que repetir o meter algo en cooldown).
-  while(elegidas.length < 3) elegidas.push(null);
+  const elegidas = baraja.slice(0, 3).map(a => ({ id: a.id, libreEn: 0 }));
+  while(elegidas.length < 3) elegidas.push({ id: null, libreEn: 0 });
   return elegidas;
 }
 
-// Tras hacer una acción (idx), su ranura queda VACÍA y la acción entra
-// en cooldown (24h). El hueco NO se rellena al instante: se queda vacío
-// y solo se ocupará más adelante con OTRA acción cuando el pool tenga
-// alguna disponible (lo hace _ranurasAmbientales al pintar el menú).
+// Tras hacer una acción (idx), su ranura queda VACÍA y arranca su espera
+// de 24h de juego. El hueco NO se rellena hasta que esa espera se cumpla
+// (lo gestiona _ranurasAmbientales al repintar el menú).
 function _rotarRanuraAmbiental(idHecha){
-  const ranuras = Array.isArray(Estado.ranurasApt) ? Estado.ranurasApt.slice() : _ranurasAmbientales();
-  const pos = ranuras.indexOf(idHecha);
+  const ranuras = _normalizarRanuras(Estado.ranurasApt);
+  const pos = ranuras.findIndex(r => r.id === idHecha);
   if(pos === -1) return;
-  ranuras[pos] = null; // hueco vacío hasta que entre otra distinta
-  Estado.ranurasApt = ranuras.slice();
+  const ahora = _ahoraJuegoMsApt();
+  ranuras[pos] = { id: null, libreEn: (ahora !== null ? ahora + COOLDOWN_AMBIENTAL_MS : 0) };
+  Estado.ranurasApt = ranuras.map(r => ({ id: r.id, libreEn: r.libreEn }));
 }
 
 // Genera el HTML de los botones ambientales. Solo se pintan las ranuras
-// OCUPADAS por una acción disponible. Las acciones en cooldown ya no se
-// muestran (su ranura está vacía): el hueco desaparece de la pantalla.
+// OCUPADAS por una acción disponible. Las ranuras en espera (huecos) no
+// muestran nada: desaparecen de la pantalla.
 function botonesAmbientales(textoVentana){
   const ranuras = _ranurasAmbientales();
   let html = '';
-  for(const id of ranuras){
-    if(!id) continue; // hueco vacío: no se pinta nada
-    const acc = _ambientalPorId(id);
+  for(const r of ranuras){
+    if(!r.id) continue; // hueco en espera: no se pinta nada
+    const acc = _ambientalPorId(r.id);
     if(!acc) continue;
-    // Si por lo que sea quedó en ranura una acción en cooldown, no la
-    // mostramos (coherencia con la regla de ocultar las que descansan).
-    if(_cdAmbiental(acc.id).enCd) continue;
+    if(_cdAmbiental(acc.id).enCd) continue; // por si acaso, no mostrar en cooldown
     let etiqueta = acc.etiqueta;
     if(acc.id === 'ventana' && textoVentana) etiqueta = textoVentana;
     html += `<button class="opcion-btn" onclick="opcionApt(${acc.idx})">${etiqueta}</button>`;

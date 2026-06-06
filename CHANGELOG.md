@@ -2,6 +2,12 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.86.5] - 2026-06-05
+### Added
+- Las noticias del terminal ahora reaccionan a lo que haces en la calle: si hubo violencia, si rebuscaste chatarra, si se movió dinero turbio o si te cruzaste con alguien en tu última salida (explorar o eventos de tránsito), aparecen titulares acordes. Más variedad también de titulares por facción.
+### Fixed
+- Acciones del apartamento: al usar una, su hueco se rellenaba al instante con otra acción, y una vez vistas todas ya no salía ninguna. Ahora el hueco se queda vacío durante el descanso (24h de juego) y solo entonces rota a una acción distinta, como debía ser.
+
 ## [0.86.4] - 2026-06-05
 ### Added
 - Nuevos objetos base del futuro loop de expedición (de momento solo definidos, todavía sin uso): kit de trauma, medkit, cargador, ración deshidratada, licor, baterías de 2V/4V/8V, palanca térmica y señuelo. Se prepara también la categoría de implantes (grados 1, 2, 3 y especial), sin objetos concretos aún.

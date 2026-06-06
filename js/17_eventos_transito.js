@@ -353,6 +353,15 @@ function elegirOpcionEvento(opcion, callback){
   opc.innerHTML = `<div class="evento-resultado">${opcion.msg}</div>`;
   // Aplicar cambios
   aplicarCambios(opcion.cambios || {});
+  // ECOS DE LA CALLE (v0.86.5): el evento de tránsito también deja huella
+  // para las noticias. Inferimos el tipo de suceso desde los cambios.
+  if(typeof marcarEcoCalle === 'function'){
+    const c = opcion.cambios || {};
+    const h = c.humano || {};
+    if(typeof c.creditos === 'number' && c.creditos < 0) marcarEcoCalle('dineroSucio');
+    if((h.fatiga || 0) >= 4) marcarEcoCalle('violencia');
+    if(typeof c.aislamiento === 'number' || (h.aislamiento && h.aislamiento < 0)) marcarEcoCalle('encuentro');
+  }
   // Botón de cerrar
   const btn = document.createElement('button');
   btn.className = 'evento-opc';

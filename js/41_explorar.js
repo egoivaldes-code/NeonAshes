@@ -178,6 +178,10 @@ function iniciarExplorarCiudad(){
   _expEnCurso = true;
   _expResolviendo = false;
 
+  // ECOS DE LA CALLE (v0.86.5): nueva salida, se borran los ecos de la
+  // anterior. Solo las noticias reflejarán lo de ESTA deriva.
+  if(typeof reiniciarEcosCalle === 'function') reiniciarEcosCalle();
+
   if(typeof cambiarEscena === 'function'){
     cambiarEscena('mapa-escena', 'explorar-escena');
   } else {
@@ -650,6 +654,18 @@ function resolverEscenaExplorar(num, escenaPlan, opcionElegida){
   // Bloquear botones para evitar doble clic.
   const opcDiv = document.getElementById('exp-opciones');
   if(opcDiv) opcDiv.querySelectorAll('button').forEach(b => b.disabled = true);
+
+  // ECOS DE LA CALLE (v0.86.5): dejamos huella del tipo de suceso para
+  // que luego aparezca en las noticias. Lo marca tanto el plan (lo que
+  // pasó) como el tono de la opción elegida (cómo respondió el jugador).
+  if(typeof marcarEcoCalle === 'function'){
+    if(escenaPlan.daño > 0) marcarEcoCalle('violencia');
+    if(escenaPlan.esChatarra) marcarEcoCalle('rebusca');
+    if(escenaPlan.creditos < 0) marcarEcoCalle('dineroSucio');
+    if(escenaPlan.creditos > 0 && opcionElegida && opcionElegida.tono === 'VENAL') marcarEcoCalle('dineroSucio');
+    if(escenaPlan.npc) marcarEcoCalle('encuentro');
+    if(opcionElegida && opcionElegida.tono === 'VIOLENTO') marcarEcoCalle('violencia');
+  }
 
   // 0) EFECTO DE LA OPCIÓN (v0.86.4): pequeño matiz coherente con lo que
   // el jugador eligió (p.ej. "devolver el golpe" cansa un poco más;
