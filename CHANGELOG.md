@@ -2,6 +2,11 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.86.6] - 2026-06-05
+### Added
+- Catálogo de objetos de expedición completo: además de lo anterior, se añade el equipo (cuchillo de monofilo, pistola de raíl, analizador portátil y sus células, ganzúas, máscara de filtro) y los materiales de botín (chatarra en bruto, chatarra refinada) y los primeros hallazgos raros (núcleo óptico, servidor hundido). Siguen sin tener uso aún.
+- Motor interno del loop de expedición/scavenging: zonas (conducto, contenedor HELIX, vehículo, pozo, y dos zonas bloqueadas), eventos con opciones según el equipo, medidor de alerta, botín que se acumula durante la incursión y se recoge solo al salir con vida, riesgo de captura y reparto de pérdidas. De momento es solo la maquinaria por dentro: todavía no hay pantallas ni se juega.
+
 ## [0.86.5] - 2026-06-05
 ### Added
 - Las noticias del terminal ahora reaccionan a lo que haces en la calle: si hubo violencia, si rebuscaste chatarra, si se movió dinero turbio o si te cruzaste con alguien en tu última salida (explorar o eventos de tránsito), aparecen titulares acordes. Más variedad también de titulares por facción.

@@ -194,7 +194,40 @@ const ITEMS_EXPEDICION = [
   { id:'palanca_termica', nombre:'Palanca térmica', tipo:'herramienta', apilable:false,
     desc:'Barra corta que calienta la punta hasta el rojo. Funde cerrojos, cede bisagras, abre lo que la ciudad quiere cerrado. Hace ruido y huele a metal quemado.' },
   { id:'senuelo', nombre:'Señuelo', tipo:'utilidad', usos:1, apilable:true,
-    desc:'Un emisor del tamaño de un mechero. Lanza ruido y firma falsa a unos metros para que la atención mire a otro lado. Un solo uso, y reza por que cuele.' }
+    desc:'Un emisor del tamaño de un mechero. Lanza ruido y firma falsa a unos metros para que la atención mire a otro lado. Un solo uso, y reza por que cuele.' },
+
+  // ── EQUIPO DE EXPEDICIÓN (del documento de diseño, capa 2) ────
+  // Equipo que abre RUTAS en los eventos de la expedición. Ninguno es
+  // obligatorio: cada uno compra opciones, no victorias. Sin lógica aún.
+  { id:'arma_blanca', nombre:'Cuchillo de monofilo', tipo:'equipo', apilable:false,
+    desc:'Hoja de un átomo de grosor, mango envuelto en cinta. Resuelve un mal encuentro de cerca y sin ruido. Lo que no perdona es la duda.' },
+  { id:'arma_fuego', nombre:'Pistola de raíl casera', tipo:'equipo', apilable:false,
+    desc:'Soldada en algún taller del Ferro. Escupe un perno metálico con un chasquido seco que se oye a tres pasillos. Cada disparo gasta munición y atrae miradas.' },
+  { id:'analizador', nombre:'Analizador portátil', tipo:'equipo', apilable:false,
+    desc:'Una caja con pantalla rota que aún lee lo que toca. Identifica hallazgos sobre la marcha y fuerza cerraduras de datos. Se come las cargas como si fueran agua.' },
+  { id:'carga_analizador', nombre:'Célula del analizador', tipo:'consumible', usos:1, apilable:true,
+    desc:'Pila plana para el analizador. Una carga, un puñado de segundos de vida útil. Sin ella, el aparato es un pisapapeles caro.' },
+  { id:'ganzua', nombre:'Set de ganzúas', tipo:'consumible', apilable:true,
+    desc:'Varillas finas en una funda de cuero gastado. Abren cerraduras físicas sin romper el sello, así que sin multa. A veces una se parte dentro y te deja con cara de tonto.' },
+  { id:'mascara_filtro', nombre:'Máscara de filtro', tipo:'equipo', apilable:false,
+    desc:'Goma vieja y dos cartuchos que silban al respirar. En los pozos y canales tóxicos es la diferencia entre rebuscar tranquilo y escupir sangre.' },
+
+  // ── MATERIALES DE BOTÍN (refinado, del documento) ─────────────
+  // chatarra_cruda = lo que sale en bruto de la expedición (sin valor
+  // directo, hay que refinarla). chatarra_refinada = el producto vendible.
+  // El refinado convierte una en otra (lógica en capas siguientes).
+  { id:'chatarra_cruda', nombre:'Chatarra en bruto', tipo:'material', apilable:true,
+    desc:'Metal retorcido, cable enmarañado, plástico fundido. Tal cual sale de las entrañas de la ciudad. No vale casi nada hasta que alguien la separa con paciencia.' },
+  { id:'chatarra_refinada', nombre:'Chatarra refinada', tipo:'material', apilable:true,
+    desc:'Lo aprovechable de la chatarra, ya separado y limpio: cobre, contactos, fibra. Esto sí se vende, y bien. El trabajo está en llegar hasta aquí.' },
+
+  // ── HALLAZGOS RAROS (primeros de ejemplo, botín de expedición) ─
+  // Objetos con identidad: se venden, se analizan (lore/datos) o se
+  // guardan para misiones. Algunos serán llave de zona más adelante.
+  { id:'nucleo_optico', nombre:'Núcleo óptico', tipo:'raro', apilable:false,
+    desc:'Una esfera de cristal lechoso que guarda luz dentro mucho después de apagarse. Los compradores no preguntan de dónde sale. Pagan, y miran a otro lado.' },
+  { id:'servidor_hundido', nombre:'Servidor hundido', tipo:'raro', apilable:false,
+    desc:'Bloque de memoria rescatado del fango de un pozo. Pesa, gotea y huele a moho, pero si todavía arranca, lo que tiene dentro vale más que el peso en créditos.' }
 
   // ── IMPLANTES (estructura reservada, sin items aún) ───────
   // Los implantes serán botín raro de expedición: mejoran stats (fatiga
