@@ -368,6 +368,12 @@ function resolverOpcionExpedicion(evento, opcion){
   if(z && z.alertaPorEvento){
     run.alerta = Math.max(0, Math.min(100, run.alerta + z.alertaPorEvento));
   }
+  // COSTE DE TIEMPO (v0.86.8): cada tramo de expedición consume tiempo de
+  // juego como una escena normal (50-70 min). Una run larga puede cruzar
+  // medianoche y disparar el cobro del alquiler, que corre por su cuenta.
+  // Así alargar la incursión no solo sube la alerta: también te come el día.
+  if(typeof saltoDeEscena === 'function') saltoDeEscena();
+  if(typeof comprobarCobrosDiarios === 'function') comprobarCobrosDiarios();
   run.historial.push({ evento: evento && evento.id, opcion: opcion.texto, exito });
 
   resumen.texto = exito ? 'Sale bien.' : 'Sale mal.';

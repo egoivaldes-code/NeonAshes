@@ -2,6 +2,10 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.86.8] - 2026-06-05
+### Added
+- Las expediciones ahora cuestan tiempo: cada tramo de la incursión consume entre 50 y 70 minutos de juego, igual que cualquier escena. Una expedición larga puede llevarte varias horas, cruzar la medianoche y hacer que te caiga el cobro del alquiler. Alargar la incursión ya no solo sube la alerta: también te come el día.
+
 ## [0.86.7] - 2026-06-05
 ### Added
 - Loop de expedición jugable de principio a fin: elegir zona (con su riesgo, tramos y zonas bloqueadas), preparar el equipo que te llevas de la mochila, vivir la incursión tramo a tramo con opciones según el equipo y un medidor de alerta que sube según lo que haces, decidir en cada tramo si seguir adentro o retirarte con lo conseguido, y un desenlace: salir con el botín o, si la alerta se dispara, que te pillen y pierdas parte de lo reunido. El botín (créditos y objetos) solo se recoge si sales con vida. Estilo alineado al lenguaje visual del juego.

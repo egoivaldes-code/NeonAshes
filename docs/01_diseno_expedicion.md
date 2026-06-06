@@ -296,3 +296,27 @@ compra a precio de oro.
 
 - Números finos de precio de mercado por item (cuando montemos la tienda).
 - Tabla exacta de peso del botín bruto perdido al usar la baliza de rescate.
+
+---
+
+## 13. Estado de implementación (actualizado v0.86.8)
+
+HECHO:
+- Items completos (equipo + materiales de botín + raros) — v0.86.4 / v0.86.6.
+- Motor de expedición (zonas, eventos, alerta, botín bruto, captura) — v0.86.6.
+- Las 4 pantallas del loop (zona, equipo, incursión, desenlace) — v0.86.7.
+- Convivencia en profesión Scavenger ("Montar una expedición") — v0.86.7.
+- Item de rescate (kit_trauma salva una vez, malherido, sin botín) — v0.86.7.
+- Coste de tiempo por tramo (50-70 min, cruza medianoche, alquiler) — v0.86.8.
+
+PENDIENTE (orden sugerido):
+1. TIENDA / MERCADO completo: comprar equipo y VENDER botín (núcleo óptico,
+   servidor hundido, etc.). Hoy el botín raro se acumula sin poder liquidarse.
+   Es un sistema entero, merece su propia versión. Hay escena "mercado" pero
+   es diálogo con Mara, no compraventa: habrá que construir la tienda de cero.
+2. REFINADO chatarra_cruda -> chatarra_refinada (merma + hallazgo). Enlaza con
+   el minigame de refinado ya apuntado en ideas.
+3. DESBLOQUEO de zonas bloqueadas (nivel9 por llave_magnetica; deposito_orbital
+   por rango 'recuperador'). El motor ya comprueba el requisito; falta la vía
+   por la que el jugador consigue la llave / sube de rango para abrirlas.
+4. Despido por inactividad (7 días sin trabajar resetea rango) — ya apuntado.
