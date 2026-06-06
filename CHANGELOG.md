@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.86.7] - 2026-06-05
+### Added
+- Loop de expedición jugable de principio a fin: elegir zona (con su riesgo, tramos y zonas bloqueadas), preparar el equipo que te llevas de la mochila, vivir la incursión tramo a tramo con opciones según el equipo y un medidor de alerta que sube según lo que haces, decidir en cada tramo si seguir adentro o retirarte con lo conseguido, y un desenlace: salir con el botín o, si la alerta se dispara, que te pillen y pierdas parte de lo reunido. El botín (créditos y objetos) solo se recoge si sales con vida. Estilo alineado al lenguaje visual del juego.
+- El kit de trauma cumple su función: si llevas uno en una expedición y las cosas acaban fatal, se consume y te salva una vez (sales malherido y sin el botín de esa incursión, pero vivo). Sin kit, el mal final es real.
+- Nueva opción "Montar una expedición" en la profesión Scavenger, que convive con la búsqueda rápida de siempre: la búsqueda rápida sigue igual (un clic, un resultado) y la expedición es la incursión larga con riesgo y mejor botín. Tú eliges.
+- Acceso de prueba a la expedición desde el panel de desarrollo (oculto para el jugador normal).
+
 ## [0.86.6] - 2026-06-05
 ### Added
 - Catálogo de objetos de expedición completo: además de lo anterior, se añade el equipo (cuchillo de monofilo, pistola de raíl, analizador portátil y sus células, ganzúas, máscara de filtro) y los materiales de botín (chatarra en bruto, chatarra refinada) y los primeros hallazgos raros (núcleo óptico, servidor hundido). Siguen sin tener uso aún.

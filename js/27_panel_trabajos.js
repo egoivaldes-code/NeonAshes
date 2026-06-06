@@ -197,6 +197,16 @@ function renderTrabajosOficio(){
               onclick="ejercerProfesionDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
         }
       });
+      // CONVIVENCIA (v0.86.7): además de la búsqueda rápida de arriba, el
+      // Scavenger puede montar una EXPEDICIÓN (el loop largo: zona, equipo,
+      // tramos, alerta, botín). No tiene cooldown propio aquí; el coste es
+      // el riesgo de la incursión. Solo dentro del apartamento (ya estamos
+      // en esa rama) y solo para scavenger.
+      if(p.id === 'scavenger'){
+        botonesAccion += `
+          <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;border-color:rgba(255,0,110,0.4);color:var(--magenta);"
+            onclick="if(typeof abrirExpedicionDesdeTrabajo==='function'){abrirExpedicionDesdeTrabajo();}">Montar una expedición →</button>`;
+      }
       bloqueAcciones = `
         <div style="margin-top:0.8rem;">
           <div style="font-size:0.5rem;letter-spacing:0.2em;opacity:0.5;margin-bottom:0.2rem;">TRABAJAR:</div>

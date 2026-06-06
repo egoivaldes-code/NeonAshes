@@ -68,6 +68,7 @@ function actualizarDebug(){
   html += `<div class="debug-seccion">`;
   html += `<div class="debug-fila"><span class="clave">Versión</span><span class="valor">v${(typeof JUEGO_VERSION !== 'undefined') ? JUEGO_VERSION : '?'}</span></div>`;
   html += `<button class="debug-btn" style="margin-top:0.4rem;width:100%;" onclick="if(typeof toggleDebugIA==='function'){toggleDebugIA();}">ABRIR PANEL IA</button>`;
+  html += `<button class="debug-btn" style="margin-top:0.4rem;width:100%;" onclick="if(typeof toggleDebug==='function'){toggleDebug();} if(typeof abrirElegirZonaExpedicion==='function'){abrirElegirZonaExpedicion('apartamento-escena');}">PROBAR EXPEDICIÓN (elegir zona)</button>`;
   html += `</div>`;
 
   // === ESTADO HUMANO ===

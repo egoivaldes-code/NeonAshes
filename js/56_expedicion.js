@@ -419,6 +419,39 @@ function _expSumarBotinBruto(botin){
   });
 }
 
+// ¿Lleva el jugador un item de rescate en la run? (kit_trauma).
+function _expLlevaRescate(){
+  const eq = (Estado.expedicion && Estado.expedicion.equipoEnUso) || {};
+  const v = eq['kit_trauma'];
+  return (v === true) || (typeof v === 'number' && v > 0);
+}
+
+// Consume un item de rescate de la run (al usarlo para sobrevivir).
+function _expGastarRescate(){
+  const run = Estado.expedicion;
+  if(!run || !run.equipoEnUso) return;
+  const eq = run.equipoEnUso;
+  if(typeof eq['kit_trauma'] === 'number') eq['kit_trauma'] = Math.max(0, eq['kit_trauma'] - 1);
+  else if(eq['kit_trauma'] === true) delete eq['kit_trauma'];
+}
+
+// RESCATE: el jugador iba a caer, pero el kit_trauma lo salva una vez.
+// Consume el kit, marca la run para que el desenlace cuente que sobrevive
+// MALHERIDO, y pierde el botín bruto. No materializa nada salvo la herida
+// grave. Devuelve true si hubo rescate (había kit), false si no.
+function rescatarExpedicion(){
+  const run = Estado.expedicion;
+  if(!run || !run.activa) return false;
+  if(!_expLlevaRescate()) return false;
+  _expGastarRescate();
+  // Herida grave por el golpe que casi te mata.
+  if(typeof aplicarCondicion === 'function') aplicarCondicion('pierna_herida_grave');
+  // Se pierde el botín bruto entero (sobrevives, pero con las manos vacías).
+  run.activa = false;
+  Estado.expedicion = null;
+  return true;
+}
+
 // ¿Toca un evento de captura? Probabilidad creciente con la alerta.
 // A 100 de alerta, casi seguro. Devuelve true si capturan al jugador.
 function _expComprobarCaptura(){
@@ -500,3 +533,5 @@ window.resolverOpcionExpedicion = resolverOpcionExpedicion;
 window.extraerExpedicion = extraerExpedicion;
 window.fallarExpedicion = fallarExpedicion;
 window._expComprobarCaptura = _expComprobarCaptura;
+window.rescatarExpedicion = rescatarExpedicion;
+window._expLlevaRescate = _expLlevaRescate;
