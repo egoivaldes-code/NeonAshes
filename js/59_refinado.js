@@ -1,29 +1,38 @@
 // ============================================================
-// NEON ASHES — REFINADO / DESMONTAJE (match-3)  ·  CAPA 1
+// NEON ASHES — REFINADO / DESMONTAJE (match-3)  ·  CAPA 2
 // ------------------------------------------------------------
 // Minijuego de desguace tecnológico. El Scavenger desmonta objetos
 // dañados recuperados en expedición conectando componentes iguales.
 //
-// CAPA 1 (esta entrega): tablero jugable básico.
-//   - Tablero de NxM con tipos de componente.
-//   - Intercambiar dos fichas adyacentes (tocar una y luego la vecina).
-//   - Detectar líneas de 3+ iguales (horizontal y vertical).
-//   - Las fichas casadas se extraen, las de arriba CAEN (gravedad) y se
-//     rellena por arriba con fichas nuevas.
-//   - Combos en cadena: si al caer se forma otra línea, encadena solo.
-//   - Contador de componentes extraídos por tipo.
+// CAPA 1 (v0.89): tablero jugable básico (swap, líneas 3+, gravedad,
+//   relleno, combos en cadena, contador por tipo).
 //
-// NO en capa 1 (vienen después): formas especiales 4/5/L/T/cruz, hallazgos
-// (memoria, chip HELIX, núcleo CERO), barra de calidad, barra de chatarra,
-// temporizador, y enganche con el botín real de la expedición.
+// CAPA 2 (esta entrega):
+//   - PIEZAS ESPECIALES por casar 4, 5 o forma L/T:
+//       4 en línea  -> CARGA LINEAL: limpia su fila o columna entera.
+//       5 en línea  -> PULSO HELIX : limpia todas las fichas de ese tipo.
+//       L / T (5)   -> DESCARGA CRUZ: limpia un área 3x3 alrededor.
+//     Las especiales se activan al casarlas de nuevo (o al ser barridas
+//     por otra especial: reacción en cadena).
+//   - HALLAZGOS raros con gancho de lore (memoria intacta, chip HELIX
+//     corrupto, núcleo CERO). Aparecen al resolver combos grandes /
+//     cadenas largas. Se cuentan y disparan un flash narrativo. El
+//     enganche al inventario real es de una capa futura.
+//   - BARRA DE CALIDAD: sube con combos, especiales y hallazgos. De
+//     momento es solo feedback visual (sin consecuencias mecánicas aún).
+//   - Animaciones de aparición/carga/onda de las especiales y flash de
+//     hallazgo. Sonidos del pool FX existente.
 //
-// El estado del tablero vive en _refTablero. Es autónomo: no toca el
-// inventario ni el Estado del juego todavía (eso es de una capa futura).
+// NO en capa 2 (vienen después): metas/objetivos formales, barra de
+// chatarra, temporizador, y enganche con el botín real de la expedición.
+//
+// El estado del tablero vive en _refTablero (matriz de CELDAS, no de
+// claves: cada celda es { clave, especial }). Sigue siendo autónomo: no
+// toca el inventario ni el Estado del juego todavía.
 // ============================================================
 
 // Tipos de componente (ficha). 'clave' es el id interno; 'icono' el
-// glifo provisional (en capa visual real serán imágenes/SVG); 'color'
-// el acento. La chatarra es la "ficha basura" que estorba.
+// glifo provisional; 'color' el acento. La chatarra es la "ficha basura".
 const REF_COMPONENTES = [
   { clave: 'procesador', nombre: 'Procesadores', icono: '▣', color: '#00ff88' },
   { clave: 'bateria',    nombre: 'Baterías',     icono: '▮', color: '#ffb300' },
@@ -33,16 +42,46 @@ const REF_COMPONENTES = [
   { clave: 'chatarra',   nombre: 'Chatarra',     icono: '✕', color: '#5a4a4a' }
 ];
 
+// Tipos de PIEZA ESPECIAL. 'especial' es la marca que lleva una celda.
+//   linea_h  -> carga lineal horizontal (limpia su fila)
+//   linea_v  -> carga lineal vertical  (limpia su columna)
+//   pulso    -> pulso HELIX (limpia todas las del mismo tipo)
+//   cruz     -> descarga en cruz (limpia 3x3 alrededor)
+const REF_ESPECIALES = {
+  linea_h: { glifo: '⇆', halo: '#00e5ff' },
+  linea_v: { glifo: '⇅', halo: '#00e5ff' },
+  pulso:   { glifo: '✸', halo: '#c850ff' },
+  cruz:    { glifo: '✷', halo: '#ff006e' }
+};
+
+// HALLAZGOS raros. 'prob' es la probabilidad de que un combo "grande"
+// (>=4 fichas en una extracción, o cadena de combos) escupa el hallazgo.
+const REF_HALLAZGOS = [
+  { clave: 'memoria',    nombre: 'Memoria intacta', icono: '◈', color: '#00ff88', prob: 0.18,
+    susurro: 'Un fragmento de alguien. Todavía late.' },
+  { clave: 'chip_corr',  nombre: 'Chip HELIX corrupto', icono: '⬢', color: '#c850ff', prob: 0.12,
+    susurro: 'Datos corporativos. La mayoría, ruido. Algo, no.' },
+  { clave: 'nucleo_cero', nombre: 'Núcleo CERO', icono: '⊛', color: '#00e5ff', prob: 0.03,
+    susurro: 'No deberías tener esto. Y aun así, te estaba esperando.' }
+];
+
 const REF_FILAS = 8;
 const REF_COLS = 7;
 
-let _refTablero = null;   // matriz [fila][col] = clave de componente
-let _refSeleccion = null; // {f,c} de la primera ficha tocada
-let _refExtraidos = {};   // conteo por clave: { procesador: 5, ... }
-let _refAnimando = false;  // bloquea input mientras resuelve cascadas
+let _refTablero = null;     // matriz [fila][col] = { clave, especial }
+let _refSeleccion = null;   // {f,c} de la primera ficha tocada
+let _refExtraidos = {};     // conteo por clave: { procesador: 5, ... }
+let _refHallados = {};      // conteo de hallazgos: { memoria: 1, ... }
+let _refCalidad = 0;        // 0..100, barra de calidad (solo feedback)
+let _refAnimando = false;   // bloquea input mientras resuelve cascadas
 
 function _refCompPorClave(clave){ return REF_COMPONENTES.find(x => x.clave === clave) || null; }
-function _refRandClave(){ return REF_COMPONENTES[Math.floor(Math.random() * REF_COMPONENTES.length)].clave; }
+function _refRandClave(){
+  // La chatarra y los componentes normales pueblan el tablero por igual.
+  return REF_COMPONENTES[Math.floor(Math.random() * REF_COMPONENTES.length)].clave;
+}
+function _refCelda(clave){ return { clave: clave, especial: null }; }
+function _refFX(clave, vol){ if(typeof reproducirFX === 'function') reproducirFX(clave, vol); }
 
 // ── Crear tablero inicial SIN matches de salida (para no auto-resolver) ──
 function _refCrearTablero(){
@@ -50,40 +89,46 @@ function _refCrearTablero(){
   for(let f = 0; f < REF_FILAS; f++){
     t.push([]);
     for(let c = 0; c < REF_COLS; c++){
-      let clave;
-      let intentos = 0;
+      let clave, intentos = 0;
       do {
         clave = _refRandClave();
         intentos++;
       } while(intentos < 20 && _refCreariaMatch(t, f, c, clave));
-      t[f][c] = clave;
+      t[f][c] = _refCelda(clave);
     }
   }
   return t;
 }
 
 // ¿Colocar 'clave' en (f,c) crearía ya una línea de 3 con lo ya puesto?
-// Solo mira hacia arriba y hacia la izquierda (lo ya rellenado).
 function _refCreariaMatch(t, f, c, clave){
-  // horizontal: dos iguales a la izquierda
-  if(c >= 2 && t[f][c-1] === clave && t[f][c-2] === clave) return true;
-  // vertical: dos iguales arriba
-  if(f >= 2 && t[f-1][c] === clave && t[f-2][c] === clave) return true;
+  if(c >= 2 && t[f][c-1] && t[f][c-1].clave === clave && t[f][c-2] && t[f][c-2].clave === clave) return true;
+  if(f >= 2 && t[f-1][c] && t[f-1][c].clave === clave && t[f-2][c] && t[f-2][c].clave === clave) return true;
   return false;
 }
 
-// ── Detectar todas las fichas que forman parte de una línea de 3+ ──
-// Devuelve un Set de claves "f,c" a eliminar.
-function _refBuscarMatches(t){
-  const marcar = new Set();
+function _refClaveEn(t, f, c){ return (t[f] && t[f][c]) ? t[f][c].clave : null; }
+
+// ── Detectar líneas de 3+ y devolver INFO rica para crear especiales ──
+// Devuelve { celdas:Set("f,c"), grupos:[ {claves:[..keys], orient, clave} ] }
+// donde cada grupo es una corrida >=3 (sin fusionar cruces todavía).
+function _refDetectarGrupos(t){
+  const grupos = [];
+  const celdas = new Set();
   // Horizontales
   for(let f = 0; f < REF_FILAS; f++){
     let run = 1;
     for(let c = 1; c <= REF_COLS; c++){
-      const igual = (c < REF_COLS && t[f][c] === t[f][c-1] && t[f][c] !== null);
+      const aqui = (c < REF_COLS) ? _refClaveEn(t, f, c) : null;
+      const prev = _refClaveEn(t, f, c-1);
+      const igual = (aqui !== null && aqui === prev);
       if(igual){ run++; }
       else {
-        if(run >= 3){ for(let k = 1; k <= run; k++) marcar.add(f + ',' + (c-k)); }
+        if(run >= 3){
+          const keys = [];
+          for(let k = 1; k <= run; k++){ keys.push(f + ',' + (c-k)); celdas.add(f + ',' + (c-k)); }
+          grupos.push({ claves: keys, orient: 'h', clave: prev, len: run });
+        }
         run = 1;
       }
     }
@@ -92,21 +137,91 @@ function _refBuscarMatches(t){
   for(let c = 0; c < REF_COLS; c++){
     let run = 1;
     for(let f = 1; f <= REF_FILAS; f++){
-      const igual = (f < REF_FILAS && t[f][c] === t[f-1][c] && t[f][c] !== null);
+      const aqui = (f < REF_FILAS) ? _refClaveEn(t, f, c) : null;
+      const prev = _refClaveEn(t, f-1, c);
+      const igual = (aqui !== null && aqui === prev);
       if(igual){ run++; }
       else {
-        if(run >= 3){ for(let k = 1; k <= run; k++) marcar.add((f-k) + ',' + c); }
+        if(run >= 3){
+          const keys = [];
+          for(let k = 1; k <= run; k++){ keys.push((f-k) + ',' + c); celdas.add((f-k) + ',' + c); }
+          grupos.push({ claves: keys, orient: 'v', clave: prev, len: run });
+        }
         run = 1;
       }
     }
   }
-  return marcar;
+  return { celdas: celdas, grupos: grupos };
 }
 
-// ── Aplicar gravedad: las fichas caen a los huecos (null) y se rellena ──
+// A partir de los grupos detectados, decide qué especiales nacen y dónde.
+// - 5+ en línea            -> pulso
+// - cruce de 2 grupos (L/T)-> cruz (en la celda compartida)
+// - 4 en línea             -> linea_h o linea_v según orientación
+// Devuelve [ { f, c, especial } ] con la posición donde colocar la pieza.
+function _refDecidirEspeciales(grupos){
+  const nacer = [];
+  // Index de qué celdas pertenecen a qué grupos (para detectar cruces).
+  const porCelda = {};
+  grupos.forEach((g, idx) => g.claves.forEach(k => {
+    (porCelda[k] = porCelda[k] || []).push(idx);
+  }));
+  const usados = new Set();
+  // 1) Cruces L/T: una celda compartida por un grupo H y uno V.
+  Object.keys(porCelda).forEach(k => {
+    if(porCelda[k].length >= 2 && !usados.has(k)){
+      const [f, c] = k.split(',').map(Number);
+      nacer.push({ f, c, especial: 'cruz' });
+      usados.add(k);
+    }
+  });
+  // 2) Líneas largas: 5+ -> pulso; 4 -> carga lineal.
+  grupos.forEach(g => {
+    // Si el grupo ya aportó su celda de cruce, igual puede dar línea, pero
+    // para no amontonar, solo generamos línea si ninguna de sus celdas fue
+    // marcada como cruz.
+    const tieneCruce = g.claves.some(k => usados.has(k));
+    if(tieneCruce) return;
+    let especial = null;
+    if(g.len >= 5) especial = 'pulso';
+    else if(g.len === 4) especial = (g.orient === 'h' ? 'linea_h' : 'linea_v');
+    if(especial){
+      // Colocar en la celda central del grupo.
+      const mid = g.claves[Math.floor(g.claves.length / 2)];
+      const [f, c] = mid.split(',').map(Number);
+      nacer.push({ f, c, especial, clave: g.clave });
+      usados.add(mid);
+    }
+  });
+  return nacer;
+}
+
+// Expande el efecto de una pieza especial: devuelve un Set de celdas
+// "f,c" que esa especial barre al activarse. Puede encadenar con otras
+// especiales que caigan dentro de su radio (reacción en cadena).
+function _refBarridoEspecial(t, f, c, especial, visitadas){
+  const out = new Set();
+  const add = (ff, cc) => {
+    if(ff < 0 || ff >= REF_FILAS || cc < 0 || cc >= REF_COLS) return;
+    out.add(ff + ',' + cc);
+  };
+  if(especial === 'linea_h'){ for(let cc = 0; cc < REF_COLS; cc++) add(f, cc); }
+  else if(especial === 'linea_v'){ for(let ff = 0; ff < REF_FILAS; ff++) add(ff, c); }
+  else if(especial === 'cruz'){
+    for(let df = -1; df <= 1; df++) for(let dc = -1; dc <= 1; dc++) add(f+df, c+dc);
+  }
+  else if(especial === 'pulso'){
+    const objetivo = (t[f][c] && t[f][c].clave) || null;
+    for(let ff = 0; ff < REF_FILAS; ff++) for(let cc = 0; cc < REF_COLS; cc++){
+      if(t[ff][cc] && t[ff][cc].clave === objetivo) add(ff, cc);
+    }
+  }
+  return out;
+}
+
+// ── Aplicar gravedad: las celdas caen a los huecos (null) y se rellena ──
 function _refAplicarGravedad(t){
   for(let c = 0; c < REF_COLS; c++){
-    // Compactar hacia abajo.
     let escribir = REF_FILAS - 1;
     for(let f = REF_FILAS - 1; f >= 0; f--){
       if(t[f][c] !== null){
@@ -115,33 +230,18 @@ function _refAplicarGravedad(t){
         escribir--;
       }
     }
-    // Rellenar lo que queda arriba con fichas nuevas.
     for(let f = escribir; f >= 0; f--){
-      t[f][c] = _refRandClave();
+      t[f][c] = _refCelda(_refRandClave());
     }
   }
 }
 
-// ── Resolver cascadas: elimina matches, cuenta, aplica gravedad, repite.
-// Devuelve el nº de combos encadenados (0 si no había ningún match).
-function _refResolverCascadas(t){
-  let combos = 0;
-  while(true){
-    const matches = _refBuscarMatches(t);
-    if(matches.size === 0) break;
-    combos++;
-    // Contar extraídos por tipo y vaciar.
-    matches.forEach(key => {
-      const [f, c] = key.split(',').map(Number);
-      const clave = t[f][c];
-      if(clave && clave !== 'chatarra'){
-        _refExtraidos[clave] = (_refExtraidos[clave] || 0) + 1;
-      }
-      t[f][c] = null;
-    });
-    _refAplicarGravedad(t);
+// Cuenta una celda como extraída (por tipo) si no es chatarra.
+function _refContar(t, f, c){
+  const cel = t[f][c];
+  if(cel && cel.clave && cel.clave !== 'chatarra'){
+    _refExtraidos[cel.clave] = (_refExtraidos[cel.clave] || 0) + 1;
   }
-  return combos;
 }
 
 // ── ¿Son adyacentes dos casillas? (orto, no diagonal) ──
@@ -150,69 +250,104 @@ function _refAdyacentes(a, b){
   return (df + dc) === 1;
 }
 
-// Intercambia dos fichas en el tablero (sin validar).
+// Intercambia dos celdas en el tablero (sin validar).
 function _refSwap(t, a, b){
   const tmp = t[a.f][a.c];
   t[a.f][a.c] = t[b.f][b.c];
   t[b.f][b.c] = tmp;
 }
 
-// Intenta un movimiento: intercambia a<->b; si genera match, lo resuelve
-// y devuelve true. Si no, deshace el swap y devuelve false (movimiento
-// inválido, como en cualquier match-3).
+// ── Subir la barra de calidad (con tope 100). 'cuanto' por evento. ──
+function _refSumarCalidad(cuanto){
+  _refCalidad = Math.max(0, Math.min(100, _refCalidad + cuanto));
+}
+
+// ── Tirada de hallazgo: cuando un combo es "grande", puede aparecer un
+// hallazgo raro. Devuelve la clave del hallazgo o null.
+function _refTirarHallazgo(escala){
+  const mult = escala || 1;
+  for(let i = 0; i < REF_HALLAZGOS.length; i++){
+    const h = REF_HALLAZGOS[i];
+    if(Math.random() < h.prob * mult){
+      _refHallados[h.clave] = (_refHallados[h.clave] || 0) + 1;
+      return h.clave;
+    }
+  }
+  return null;
+}
+
+// ── Versión NO animada (para tests/lógica): resuelve todo de golpe. ──
+function _refResolverCascadas(t){
+  let combos = 0;
+  while(true){
+    const det = _refDetectarGrupos(t);
+    if(det.celdas.size === 0) break;
+    combos++;
+    const nacer = _refDecidirEspeciales(det.grupos);
+    const protegidas = new Set(nacer.map(n => n.f + ',' + n.c));
+    det.celdas.forEach(key => {
+      if(protegidas.has(key)) return;
+      const [f, c] = key.split(',').map(Number);
+      _refContar(t, f, c);
+      t[f][c] = null;
+    });
+    nacer.forEach(n => { if(t[n.f][n.c]) t[n.f][n.c].especial = n.especial; });
+    _refAplicarGravedad(t);
+  }
+  return combos;
+}
+
+// Intenta un movimiento sin animación (para tests). Devuelve true si vale.
 function refIntentarMovimiento(a, b){
   if(_refAnimando) return false;
   if(!_refAdyacentes(a, b)) return false;
   const t = _refTablero;
   _refSwap(t, a, b);
-  const matches = _refBuscarMatches(t);
-  if(matches.size === 0){
-    _refSwap(t, a, b); // deshacer
-    return false;
-  }
+  // ¿Alguno de los dos era especial? entonces el swap la dispara.
+  const det = _refDetectarGrupos(t);
+  if(det.celdas.size === 0){ _refSwap(t, a, b); return false; }
   _refResolverCascadas(t);
   return true;
 }
 
-// ── Inicializar una partida de refinado (capa 1: tablero suelto) ──
+// ── Inicializar una partida de refinado ──
 function iniciarRefinado(){
   _refTablero = _refCrearTablero();
   _refSeleccion = null;
   _refExtraidos = {};
+  _refHallados = {};
+  _refCalidad = 0;
   _refAnimando = false;
   return _refTablero;
 }
 
 // ============================================================
-// UI DEL TABLERO (capa 1)
-// ------------------------------------------------------------
-// Pinta el tablero como una rejilla de botones-ficha. Al tocar una
-// ficha se selecciona; al tocar una vecina se intenta el movimiento.
-// La cascada se anima por pasos (marcar → vaciar → caer → rellenar)
-// con pequeños delays para que se vea el desmontaje, no un salto seco.
+// UI DEL TABLERO (capa 2)
 // ============================================================
 
-// Abre la pantalla de refinado y pinta el tablero.
+let _refVolverA = 'apartamento';
+
 function abrirRefinado(volverA){
   _refVolverA = volverA || 'apartamento';
   iniciarRefinado();
   _refPintarObjetivos();
-  _refPintarTablero(true);
+  _refPintarCalidad();
+  _refPintarTablero();
   const desde = document.querySelector('.escena.activa');
   const idDesde = desde ? desde.id : _refVolverA;
   if(idDesde === 'refinado-escena') return;
   if(typeof cambiarEscena === 'function') cambiarEscena(idDesde, 'refinado-escena');
   else { const e = document.getElementById('refinado-escena'); if(e) e.classList.add('activa'); }
+  _refFX('panel_abrir', 0.5);
 }
-let _refVolverA = 'apartamento';
 
-// Pinta el contador de componentes extraídos (capa 1: sin metas aún).
+// Pinta el contador de componentes extraídos + hallazgos.
 function _refPintarObjetivos(){
   const cont = document.getElementById('ref-objetivos');
   if(!cont) return;
   let html = '';
   REF_COMPONENTES.forEach(comp => {
-    if(comp.clave === 'chatarra') return; // la chatarra no es objetivo
+    if(comp.clave === 'chatarra') return;
     const n = _refExtraidos[comp.clave] || 0;
     html += '<div class="ref-obj">'
       + '<span class="ref-obj-icono" style="color:'+comp.color+'">'+comp.icono+'</span>'
@@ -220,10 +355,28 @@ function _refPintarObjetivos(){
       + '<span class="ref-obj-num">'+n+'</span>'
       + '</div>';
   });
+  // Hallazgos solo se muestran si hay alguno.
+  REF_HALLAZGOS.forEach(h => {
+    const n = _refHallados[h.clave] || 0;
+    if(n <= 0) return;
+    html += '<div class="ref-obj ref-obj-hallazgo">'
+      + '<span class="ref-obj-icono" style="color:'+h.color+'">'+h.icono+'</span>'
+      + '<span class="ref-obj-nombre">'+h.nombre+'</span>'
+      + '<span class="ref-obj-num">'+n+'</span>'
+      + '</div>';
+  });
   cont.innerHTML = html;
 }
 
-// Pinta el tablero entero. Si 'inicial', sin animación.
+// Pinta la barra de calidad (solo feedback visual de momento).
+function _refPintarCalidad(){
+  const fill = document.getElementById('ref-calidad-fill');
+  const num = document.getElementById('ref-calidad-num');
+  if(fill) fill.style.width = Math.round(_refCalidad) + '%';
+  if(num) num.textContent = Math.round(_refCalidad) + '%';
+}
+
+// Pinta el tablero entero.
 function _refPintarTablero(){
   const cont = document.getElementById('ref-tablero');
   if(!cont || !_refTablero) return;
@@ -231,100 +384,195 @@ function _refPintarTablero(){
   let html = '';
   for(let f = 0; f < REF_FILAS; f++){
     for(let c = 0; c < REF_COLS; c++){
-      const clave = _refTablero[f][c];
-      const comp = _refCompPorClave(clave);
+      const cel = _refTablero[f][c];
+      const comp = cel ? _refCompPorClave(cel.clave) : null;
       const sel = (_refSeleccion && _refSeleccion.f === f && _refSeleccion.c === c) ? ' ref-ficha-sel' : '';
-      const icono = comp ? comp.icono : '';
-      const color = comp ? comp.color : '#888';
-      html += '<button class="ref-ficha'+sel+'" data-f="'+f+'" data-c="'+c+'" '
-        + 'style="color:'+color+'" onclick="refTocarFicha('+f+','+c+')">'+icono+'</button>';
+      const esp = (cel && cel.especial) ? ' ref-ficha-especial ref-esp-' + cel.especial : '';
+      let icono = comp ? comp.icono : '';
+      let color = comp ? comp.color : '#888';
+      // La pieza especial dibuja su glifo encima en una capa.
+      let capaEsp = '';
+      if(cel && cel.especial && REF_ESPECIALES[cel.especial]){
+        const e = REF_ESPECIALES[cel.especial];
+        capaEsp = '<span class="ref-esp-glifo" style="color:'+e.halo+'">'+e.glifo+'</span>';
+      }
+      html += '<button class="ref-ficha'+sel+esp+'" data-f="'+f+'" data-c="'+c+'" '
+        + 'style="color:'+color+'" onclick="refTocarFicha('+f+','+c+')">'
+        + '<span class="ref-ficha-glifo">'+icono+'</span>'+capaEsp
+        + '</button>';
     }
   }
   cont.innerHTML = html;
 }
 
-// Toca una ficha: primera selección, o intento de movimiento con la vecina.
+// Toca una ficha: primera selección, o intento de movimiento con vecina.
 function refTocarFicha(f, c){
   if(_refAnimando) return;
   if(!_refSeleccion){
     _refSeleccion = { f: f, c: c };
+    _refFX('click_metal', 0.4);
     _refPintarTablero();
     return;
   }
-  // Tocar la misma: deseleccionar.
   if(_refSeleccion.f === f && _refSeleccion.c === c){
     _refSeleccion = null;
     _refPintarTablero();
     return;
   }
   const a = _refSeleccion, b = { f: f, c: c };
-  // Si no son adyacentes, cambiar la selección a la nueva ficha.
   if(!_refAdyacentes(a, b)){
     _refSeleccion = b;
+    _refFX('click_metal', 0.4);
     _refPintarTablero();
     return;
   }
-  // Adyacentes: intentar el movimiento con animación.
   _refSeleccion = null;
   _refMovimientoAnimado(a, b);
 }
 
-// Movimiento con animación: hace el swap visual, y si vale, resuelve las
-// cascadas paso a paso; si no vale, lo deshace con un pequeño rebote.
+// Movimiento con animación.
 function _refMovimientoAnimado(a, b){
   const t = _refTablero;
   _refSwap(t, a, b);
-  const matches = _refBuscarMatches(t);
-  if(matches.size === 0){
-    // Movimiento inválido: repintar el swap y deshacer tras un instante.
+  const det = _refDetectarGrupos(t);
+  if(det.celdas.size === 0){
     _refPintarTablero();
     _refAnimando = true;
+    _refFX('click_metal', 0.3);
     setTimeout(() => { _refSwap(t, a, b); _refPintarTablero(); _refAnimando = false; }, 180);
     return;
   }
   _refPintarTablero();
   _refAnimando = true;
-  _refResolverCascadasAnimado();
+  _refResolverCascadasAnimado(0);
 }
 
 // Resuelve cascadas una a una, con delays, repintando entre paso y paso.
-function _refResolverCascadasAnimado(){
+// 'profundidad' es el nº de combo encadenado (para escalar calidad/hallazgo).
+function _refResolverCascadasAnimado(profundidad){
   const t = _refTablero;
-  const matches = _refBuscarMatches(t);
-  if(matches.size === 0){
+  const det = _refDetectarGrupos(t);
+  if(det.celdas.size === 0){
+    // Antes de cerrar: ¿hay especiales que se hayan formado y nadie activó?
+    // (Las especiales solo se activan al casarse de nuevo; aquí no forzamos.)
     _refAnimando = false;
     _refPintarTablero();
     _refPintarObjetivos();
+    _refPintarCalidad();
     return;
   }
-  // 1) Marcar visualmente las fichas que se van.
   const cont = document.getElementById('ref-tablero');
+  const combo = (profundidad || 0) + 1;
+
+  // Decidir especiales que nacen en esta resolución.
+  const nacer = _refDecidirEspeciales(det.grupos);
+  const protegidas = new Set(nacer.map(n => n.f + ',' + n.c));
+
+  // ¿Alguna celda casada es ya una especial? entonces se ACTIVA: su barrido
+  // se suma a las celdas que se van.
+  let barrido = new Set();
+  det.celdas.forEach(key => {
+    const [f, c] = key.split(',').map(Number);
+    const cel = t[f][c];
+    if(cel && cel.especial){
+      const b = _refBarridoEspecial(t, f, c, cel.especial);
+      b.forEach(k => barrido.add(k));
+    }
+  });
+  const irse = new Set(det.celdas);
+  barrido.forEach(k => irse.add(k));
+
+  // 1) Marcar visualmente las fichas que se van (y resaltar las especiales).
+  let huboEspecialActivada = barrido.size > 0;
   if(cont){
-    matches.forEach(key => {
+    irse.forEach(key => {
+      if(protegidas.has(key)) return; // las que se transforman, no se van
       const [f, c] = key.split(',').map(Number);
       const btn = cont.querySelector('.ref-ficha[data-f="'+f+'"][data-c="'+c+'"]');
       if(btn) btn.classList.add('ref-ficha-extrae');
     });
-  }
-  // 2) Tras el destello, contar, vaciar, aplicar gravedad y repintar.
-  setTimeout(() => {
-    matches.forEach(key => {
+    // Onda de las especiales que se activan.
+    det.celdas.forEach(key => {
       const [f, c] = key.split(',').map(Number);
-      const clave = t[f][c];
-      if(clave && clave !== 'chatarra') _refExtraidos[clave] = (_refExtraidos[clave] || 0) + 1;
-      t[f][c] = null;
+      const cel = t[f][c];
+      if(cel && cel.especial){
+        const btn = cont.querySelector('.ref-ficha[data-f="'+f+'"][data-c="'+c+'"]');
+        if(btn) btn.classList.add('ref-onda-' + cel.especial);
+      }
     });
+    // Nacimiento de nuevas especiales: destello en su celda.
+    nacer.forEach(n => {
+      const btn = cont.querySelector('.ref-ficha[data-f="'+n.f+'"][data-c="'+n.c+'"]');
+      if(btn) btn.classList.add('ref-nace');
+    });
+  }
+
+  // Sonido según lo que pasa en este paso.
+  if(huboEspecialActivada) _refFX('sci_plasma', 0.6);
+  else if(nacer.length > 0) _refFX('energia', 0.55);
+  else _refFX('sci_energia_corta', combo > 1 ? 0.6 : 0.45);
+
+  // Calidad: cada combo suma; especiales y cadenas suman más.
+  let ganaCalidad = 3 + (combo - 1) * 2;
+  if(nacer.length) ganaCalidad += 5 * nacer.length;
+  if(huboEspecialActivada) ganaCalidad += 6;
+  _refSumarCalidad(ganaCalidad);
+
+  // Hallazgo: solo en combos "grandes" (cadena >=2, especial activada, o
+  // un grupo de 4+). Escala con la profundidad de la cadena.
+  const grupoGrande = det.grupos.some(g => g.len >= 4);
+  let hallazgo = null;
+  if(combo >= 2 || huboEspecialActivada || grupoGrande){
+    hallazgo = _refTirarHallazgo(0.5 + combo * 0.25);
+  }
+
+  // 2) Tras el destello: contar, vaciar (respetando las que se transforman),
+  //    crear especiales, gravedad, repintar.
+  setTimeout(() => {
+    irse.forEach(key => {
+      if(protegidas.has(key)) return;
+      const [f, c] = key.split(',').map(Number);
+      if(t[f][c]){ _refContar(t, f, c); t[f][c] = null; }
+    });
+    nacer.forEach(n => { if(t[n.f][n.c]) t[n.f][n.c].especial = n.especial; });
     _refAplicarGravedad(t);
     _refPintarTablero();
     _refPintarObjetivos();
+    _refPintarCalidad();
+
+    if(hallazgo) _refMostrarHallazgo(hallazgo);
+
     // 3) Encadenar el siguiente combo, si lo hay.
-    setTimeout(_refResolverCascadasAnimado, 160);
-  }, 220);
+    setTimeout(() => _refResolverCascadasAnimado(combo), huboEspecialActivada ? 240 : 160);
+  }, huboEspecialActivada ? 300 : 220);
 }
 
-// Cierra el refinado (capa 1: solo vuelve; el enganche con botín es futuro).
+// Flash narrativo al encontrar un hallazgo raro.
+function _refMostrarHallazgo(clave){
+  const h = REF_HALLAZGOS.find(x => x.clave === clave);
+  if(!h) return;
+  // Sonido especial para el núcleo CERO; energía para el resto.
+  if(clave === 'nucleo_cero') _refFX('sci_void_shift', 0.7);
+  else if(clave === 'chip_corr') _refFX('sci_laser_cyber', 0.55);
+  else _refFX('sci_powerup', 0.55);
+
+  const cap = document.getElementById('ref-hallazgo');
+  if(!cap) return;
+  cap.className = 'ref-hallazgo ref-hallazgo-' + clave + ' activo';
+  cap.innerHTML = '<span class="ref-hallazgo-icono" style="color:'+h.color+'">'+h.icono+'</span>'
+    + '<div class="ref-hallazgo-txt">'
+    + '<div class="ref-hallazgo-nombre" style="color:'+h.color+'">'+h.nombre+'</div>'
+    + '<div class="ref-hallazgo-susurro">'+h.susurro+'</div>'
+    + '</div>';
+  clearTimeout(_refHallazgoTO);
+  _refHallazgoTO = setTimeout(() => { cap.classList.remove('activo'); }, 2600);
+}
+let _refHallazgoTO = null;
+
+// Cierra el refinado (capa 2: sigue sin enganche de botín; eso es futuro).
 function terminarRefinado(){
   _refSeleccion = null;
+  _refFX('terminal_cerrar', 0.5);
   if(typeof cambiarEscena === 'function') cambiarEscena('refinado-escena', _refVolverA);
   else { const e = document.getElementById('refinado-escena'); if(e) e.classList.remove('activa'); }
 }
@@ -335,7 +583,11 @@ window.terminarRefinado = terminarRefinado;
 window.iniciarRefinado = iniciarRefinado;
 window.refIntentarMovimiento = refIntentarMovimiento;
 window.REF_COMPONENTES = REF_COMPONENTES;
+window.REF_ESPECIALES = REF_ESPECIALES;
+window.REF_HALLAZGOS = REF_HALLAZGOS;
 window.REF_FILAS = REF_FILAS;
 window.REF_COLS = REF_COLS;
 window._refGetTablero = function(){ return _refTablero; };
 window._refGetExtraidos = function(){ return _refExtraidos; };
+window._refGetHallados = function(){ return _refHallados; };
+window._refGetCalidad = function(){ return _refCalidad; };

@@ -41,7 +41,13 @@ const FX_MAP = {
   // Acciones varias (reservados para enganches futuros)
   impacto:           'sci_impacto_metal.mp3',
   click_metal:       'weap_click_metal.mp3',
-  energia:           'sci_energia_corta.mp3'
+  energia:           'sci_energia_corta.mp3',
+  // Refinado / desmontaje (capa 2)
+  sci_energia_corta: 'sci_energia_corta.mp3',
+  sci_plasma:        'sci_plasma.mp3',
+  sci_laser_cyber:   'sci_laser_cyber.mp3',
+  sci_void_shift:    'sci_void_shift.mp3',
+  sci_powerup:       'sci_powerup.mp3'
 };
 
 // Pool de reproducción puntual: reutiliza objetos Audio por clave para no

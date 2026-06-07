@@ -1,5 +1,5 @@
 /* ============================================================
-   NEON ASHES — REFINADO / DESMONTAJE (match-3)  ·  CAPA 1
+   NEON ASHES — REFINADO / DESMONTAJE (match-3)  ·  CAPA 2
    Lenguaje canónico: fondo oscuro, acento magenta, Rajdhani en
    títulos, Share Tech Mono en datos. Inspirado en el mockup de
    "mesa de desguace".
@@ -26,6 +26,30 @@
   color:rgba(200,216,224,0.7); margin-top:0.2rem;
 }
 
+/* Barra de calidad (solo feedback visual de momento) */
+.ref-calidad{
+  display:flex; align-items:center; gap:0.6rem;
+}
+.ref-calidad-label{
+  font-family:'Share Tech Mono',monospace; font-size:0.6rem;
+  letter-spacing:0.1em; text-transform:uppercase; color:rgba(200,216,224,0.6);
+  white-space:nowrap;
+}
+.ref-calidad-barra{
+  flex:1; height:8px; background:rgba(10,14,20,0.9);
+  border:1px solid rgba(58,74,85,0.5); border-radius:6px; overflow:hidden;
+}
+.ref-calidad-fill{
+  height:100%; width:0%;
+  background:linear-gradient(90deg, #00e5ff, var(--magenta));
+  box-shadow:0 0 10px rgba(255,0,110,0.5);
+  transition:width 0.4s ease;
+}
+.ref-calidad-num{
+  font-family:'Share Tech Mono',monospace; font-size:0.7rem;
+  color:var(--blanco-suave); min-width:2.6rem; text-align:right;
+}
+
 /* Contador de componentes extraídos */
 .ref-objetivos{
   display:flex; flex-wrap:wrap; gap:0.5rem;
@@ -34,6 +58,16 @@
   display:flex; align-items:center; gap:0.4rem;
   background:rgba(10,14,20,0.85); border:1px solid rgba(58,74,85,0.4);
   border-radius:2px; padding:0.4rem 0.6rem;
+}
+.ref-obj-hallazgo{
+  border-color:rgba(255,0,110,0.45);
+  box-shadow:0 0 10px rgba(255,0,110,0.18) inset;
+  animation:ref-obj-aparece 0.4s ease;
+}
+@keyframes ref-obj-aparece{
+  0%{ transform:scale(0.7); opacity:0; }
+  60%{ transform:scale(1.08); }
+  100%{ transform:scale(1); opacity:1; }
 }
 .ref-obj-icono{ font-size:0.95rem; }
 .ref-obj-nombre{
@@ -47,6 +81,7 @@
 
 /* Tablero */
 .ref-tablero-marco{
+  position:relative;
   background:rgba(6,9,13,0.9); border:1px solid rgba(255,0,110,0.2);
   border-radius:3px; padding:0.5rem;
 }
@@ -54,6 +89,7 @@
   display:grid; gap:0.3rem; width:100%;
 }
 .ref-ficha{
+  position:relative; overflow:visible;
   aspect-ratio:1 / 1;
   display:flex; align-items:center; justify-content:center;
   background:linear-gradient(180deg, rgba(20,26,34,0.95), rgba(10,14,20,0.95));
@@ -62,12 +98,43 @@
   transition:transform 0.12s ease, box-shadow 0.15s ease, opacity 0.2s ease, background 0.15s ease;
   text-shadow:0 0 8px currentColor;
 }
+.ref-ficha-glifo{ position:relative; z-index:2; line-height:1; }
 .ref-ficha:hover{ border-color:rgba(255,0,110,0.4); }
 .ref-ficha-sel{
   border-color:var(--magenta);
   box-shadow:0 0 14px rgba(255,0,110,0.5), inset 0 0 10px rgba(255,0,110,0.2);
   transform:scale(1.06);
 }
+
+/* ── Piezas especiales ──────────────────────────────────────── */
+/* La especial lleva un anillo pulsante y un glifo superpuesto. */
+.ref-ficha-especial{
+  border-color:rgba(255,255,255,0.55);
+  box-shadow:0 0 0 rgba(255,255,255,0);
+  animation:ref-esp-pulso 1.4s ease-in-out infinite;
+}
+@keyframes ref-esp-pulso{
+  0%,100%{ box-shadow:0 0 6px rgba(255,255,255,0.25), inset 0 0 6px rgba(255,255,255,0.12); }
+  50%{ box-shadow:0 0 16px rgba(255,255,255,0.6), inset 0 0 12px rgba(255,255,255,0.25); }
+}
+.ref-esp-glifo{
+  position:absolute; z-index:3; top:1px; right:2px;
+  font-size:0.62rem; opacity:0.95;
+  text-shadow:0 0 8px currentColor; pointer-events:none;
+}
+.ref-esp-linea_h{ background:linear-gradient(90deg, rgba(0,229,255,0.18), rgba(10,14,20,0.95), rgba(0,229,255,0.18)); }
+.ref-esp-linea_v{ background:linear-gradient(180deg, rgba(0,229,255,0.18), rgba(10,14,20,0.95), rgba(0,229,255,0.18)); }
+.ref-esp-pulso{ background:radial-gradient(circle, rgba(200,80,255,0.28), rgba(10,14,20,0.95) 70%); }
+.ref-esp-cruz{ background:radial-gradient(circle, rgba(255,0,110,0.28), rgba(10,14,20,0.95) 70%); }
+
+/* Nacimiento de una especial: destello blanco que se asienta. */
+.ref-nace{ animation:ref-nace-anim 0.5s ease forwards; }
+@keyframes ref-nace-anim{
+  0%{ transform:scale(0.6) rotate(-8deg); box-shadow:0 0 0 rgba(255,255,255,0); }
+  45%{ transform:scale(1.3) rotate(4deg); box-shadow:0 0 26px rgba(255,255,255,0.95); background:rgba(255,255,255,0.4); }
+  100%{ transform:scale(1) rotate(0); }
+}
+
 /* Destello al extraerse (antes de caer) */
 .ref-ficha-extrae{
   animation:ref-extrae 0.22s ease forwards;
@@ -78,8 +145,78 @@
   100%{ transform:scale(0.2); opacity:0; }
 }
 
+/* Ondas al ACTIVAR una especial (sobre la propia ficha activada). */
+.ref-onda-linea_h::after, .ref-onda-linea_v::after,
+.ref-onda-pulso::after, .ref-onda-cruz::after{
+  content:''; position:absolute; inset:-2px; border-radius:3px;
+  pointer-events:none; z-index:4;
+}
+.ref-onda-linea_h::after{ animation:ref-onda-h 0.36s ease forwards; }
+.ref-onda-linea_v::after{ animation:ref-onda-v 0.36s ease forwards; }
+@keyframes ref-onda-h{
+  0%{ box-shadow:0 0 0 rgba(0,229,255,0); transform:scaleX(1); }
+  50%{ box-shadow:0 0 24px rgba(0,229,255,0.9); }
+  100%{ box-shadow:0 0 0 rgba(0,229,255,0); transform:scaleX(1.4); opacity:0; }
+}
+@keyframes ref-onda-v{
+  0%{ box-shadow:0 0 0 rgba(0,229,255,0); transform:scaleY(1); }
+  50%{ box-shadow:0 0 24px rgba(0,229,255,0.9); }
+  100%{ box-shadow:0 0 0 rgba(0,229,255,0); transform:scaleY(1.4); opacity:0; }
+}
+.ref-onda-pulso::after{ animation:ref-onda-pulso 0.45s ease forwards; }
+@keyframes ref-onda-pulso{
+  0%{ box-shadow:0 0 0 rgba(200,80,255,0); }
+  50%{ box-shadow:0 0 30px 8px rgba(200,80,255,0.85); }
+  100%{ box-shadow:0 0 0 rgba(200,80,255,0); opacity:0; }
+}
+.ref-onda-cruz::after{ animation:ref-onda-cruz 0.45s ease forwards; }
+@keyframes ref-onda-cruz{
+  0%{ box-shadow:0 0 0 rgba(255,0,110,0); transform:scale(0.8); }
+  50%{ box-shadow:0 0 28px 6px rgba(255,0,110,0.85); transform:scale(1.3); }
+  100%{ box-shadow:0 0 0 rgba(255,0,110,0); transform:scale(1.6); opacity:0; }
+}
+
+/* ── Flash narrativo de HALLAZGO ─────────────────────────────── */
+.ref-hallazgo{
+  position:absolute; left:50%; top:14%;
+  transform:translate(-50%, -12px) scale(0.92);
+  display:flex; align-items:center; gap:0.7rem;
+  max-width:88%;
+  background:rgba(4,7,11,0.96); border:1px solid rgba(255,255,255,0.3);
+  border-radius:4px; padding:0.7rem 0.9rem;
+  opacity:0; pointer-events:none; z-index:30;
+  transition:opacity 0.35s ease, transform 0.35s ease;
+}
+.ref-hallazgo.activo{
+  opacity:1; transform:translate(-50%, 0) scale(1);
+}
+.ref-hallazgo-icono{
+  font-size:1.6rem; text-shadow:0 0 14px currentColor;
+  animation:ref-hallazgo-late 1.4s ease-in-out infinite;
+}
+@keyframes ref-hallazgo-late{
+  0%,100%{ transform:scale(1); } 50%{ transform:scale(1.14); }
+}
+.ref-hallazgo-nombre{
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:0.92rem;
+  letter-spacing:0.1em; text-transform:uppercase;
+}
+.ref-hallazgo-susurro{
+  font-family:'Share Tech Mono',monospace; font-size:0.66rem;
+  color:rgba(200,216,224,0.78); margin-top:0.15rem; line-height:1.35;
+}
+/* El núcleo CERO glitchea un pelín. */
+.ref-hallazgo-nucleo_cero{ border-color:rgba(0,229,255,0.6); }
+.ref-hallazgo-nucleo_cero .ref-hallazgo-icono{ animation:ref-cero-glitch 0.9s steps(2) infinite; }
+@keyframes ref-cero-glitch{
+  0%{ transform:translate(0,0) scale(1); opacity:1; }
+  25%{ transform:translate(-1px,1px) scale(1.08); opacity:0.7; }
+  50%{ transform:translate(1px,-1px) scale(1.02); opacity:1; }
+  75%{ transform:translate(-1px,0) scale(1.1); opacity:0.8; }
+  100%{ transform:translate(0,0) scale(1); opacity:1; }
+}
+
 /* Pie */
-.ref-pie{ margin-top:0.3rem; }
 .ref-pie{
   position:sticky; bottom:0;
   margin-top:0.3rem; padding-top:0.6rem;
@@ -96,5 +233,8 @@
 
 @media (max-width:420px){
   .ref-ficha{ font-size:1.1rem; }
+  .ref-esp-glifo{ font-size:0.5rem; }
   .ref-titulo{ font-size:1.05rem; }
+  .ref-hallazgo-nombre{ font-size:0.82rem; }
+  .ref-hallazgo-susurro{ font-size:0.6rem; }
 }

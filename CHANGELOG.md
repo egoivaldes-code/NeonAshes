@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.89.2] - 2026-06-07
+### Added
+- Refinado (capa 2): piezas especiales al casar 4, 5 o formas en L/T. Cuatro en línea crea una carga que limpia su fila o columna; cinco en línea crea un pulso que barre todas las fichas de ese tipo; una L o T crea una descarga que limpia la zona de alrededor. Se activan al volver a casarlas y encadenan reacciones.
+- Refinado: hallazgos raros con un susurro narrativo al aparecer — memoria intacta, chip HELIX corrupto y, muy de vez en cuando, un núcleo CERO. De momento se cuentan y avisan; el enganche al inventario llegará después.
+- Refinado: barra de calidad que sube con combos, piezas especiales y hallazgos (por ahora solo indicador visual).
+- Refinado: animaciones de aparición y activación de las piezas especiales, y un destello al encontrar un hallazgo. Sonidos del banco de efectos ya existente.
+
 ## [0.89.1] - 2026-06-05
 ### Fixed
 - Arreglada la pantalla en negro que se quedaba al ser capturado en una expedición (al cerrar el desenlace volvía a una pantalla inexistente). Además, ahora si por lo que sea el destino no existe, siempre se vuelve al apartamento en vez de quedarse en negro.
