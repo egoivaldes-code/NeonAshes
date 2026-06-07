@@ -613,9 +613,9 @@
 }
 #expedicion-escena #expedicion-cuerpo{ position:relative; z-index:2; }
 /* El reloj diegético se oculta durante la expedición (body.explorar-activo,
-   gestionado en 57_expedicion_ui.js), así que basta un hueco superior
-   normal sin pelear con el reloj. */
-#expedicion-escena .explorar-wrap{ position:relative; z-index:2; padding-top:1.6rem; }
+   gestionado en 57_expedicion_ui.js). Dejamos un hueco superior cómodo
+   para que el título no quede pegado al borde de la pantalla. */
+#expedicion-escena .explorar-wrap{ position:relative; z-index:2; padding-top:3rem; }
 
 /* Destello de fondo al entrar a un tramo (v0.89): la imagen entra
    intensa y luego se atenúa al nivel de lectura. No tapa el texto. */

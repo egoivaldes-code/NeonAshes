@@ -172,7 +172,17 @@ document.addEventListener('touchstart', unlockAudio, {passive: true});
 document.addEventListener('click', unlockAudio);
 
 document.body.addEventListener('touchmove', e=>{
-  if(!e.target.closest('.terminal-body') && !e.target.closest('.mercado-inner') && !e.target.closest('.hub-panel-cuerpo') && !e.target.closest('.zona-detalle')) e.preventDefault();
+  const t = e.target;
+  // Zonas donde SÍ se permite el desplazamiento táctil. Si el toque no
+  // cae dentro de ninguna, se bloquea el scroll (para que el fondo del
+  // juego no se mueva). Hay que listar aquí cualquier panel scrollable.
+  const permitido = t.closest('.terminal-body')
+    || t.closest('.mercado-inner')
+    || t.closest('.hub-panel-cuerpo')
+    || t.closest('.zona-detalle')
+    || t.closest('.inv-tab-contenido')   /* lista del inventario */
+    || t.closest('.explorar-wrap');      /* exploración y expedición */
+  if(!permitido) e.preventDefault();
 }, {passive:false});
 
 

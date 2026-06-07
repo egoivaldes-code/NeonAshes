@@ -381,6 +381,7 @@ function _refPintarTablero(){
   const cont = document.getElementById('ref-tablero');
   if(!cont || !_refTablero) return;
   cont.style.gridTemplateColumns = 'repeat(' + REF_COLS + ', 1fr)';
+  cont.style.gridTemplateRows = 'repeat(' + REF_FILAS + ', 1fr)';
   let html = '';
   for(let f = 0; f < REF_FILAS; f++){
     for(let c = 0; c < REF_COLS; c++){

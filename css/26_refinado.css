@@ -10,8 +10,8 @@
   width:100%; max-width:560px; margin:0 auto;
   /* arriba: hueco para el reloj diegético. abajo: hueco para la barra
      permanente fija (créditos/estado/inventario). El wrap NO scrollea:
-     es una columna flex que reparte el alto y deja que el tablero use
-     el espacio sobrante (con su propio scroll si hiciera falta). */
+     es una columna flex que reparte el alto; el tablero ocupa el hueco
+     sobrante y sus fichas se ajustan para caber sin scroll. */
   padding:2.6rem 0.7rem 5.2rem;
   display:flex; flex-direction:column; gap:0.55rem;
   height:100dvh;
@@ -81,27 +81,29 @@
   color:var(--blanco-suave); font-weight:bold; min-width:1rem; text-align:right;
 }
 
-/* Tablero: ocupa TODO el espacio sobrante de la columna y, si aun así
-   no cupiera, scrollea por dentro (no la pantalla entera). Así la
-   cabecera y el botón nunca se mueven de sitio. */
+/* Tablero: ocupa TODO el espacio sobrante y reparte su alto entre las 8
+   filas. Las fichas se ajustan para caber siempre, sin scroll: la
+   cabecera y el botón quedan fijos y el tablero se adapta al hueco. */
 .ref-tablero-marco{
   position:relative; flex:1 1 auto; min-height:0;
   background:rgba(6,9,13,0.9); border:1px solid rgba(255,0,110,0.2);
   border-radius:3px; padding:0.4rem;
-  overflow-y:auto; -webkit-overflow-scrolling:touch;
-  display:flex; align-items:flex-start; justify-content:center;
+  overflow:hidden;
+  display:flex;
 }
 .ref-tablero{
-  display:grid; gap:0.25rem; width:100%;
-  /* el grid se autodimensiona; el tope de ficha evita que se hagan enormes */
+  display:grid; gap:0.22rem; width:100%; height:100%;
+  /* las filas se reparten el alto a partes iguales; aspect-ratio en la
+     ficha ya no manda, así que nunca desborda hacia abajo */
+  grid-auto-rows:1fr;
 }
 .ref-ficha{
   position:relative; overflow:visible;
-  aspect-ratio:1 / 1; width:100%; max-width:64px; margin:0 auto;
+  width:100%; height:100%; min-width:0; min-height:0;
   display:flex; align-items:center; justify-content:center;
   background:linear-gradient(180deg, rgba(20,26,34,0.95), rgba(10,14,20,0.95));
   border:1px solid rgba(58,74,85,0.45); border-radius:3px;
-  font-size:1.25rem; cursor:pointer; padding:0;
+  font-size:clamp(0.8rem, 4.2vw, 1.3rem); cursor:pointer; padding:0;
   transition:transform 0.12s ease, box-shadow 0.15s ease, opacity 0.2s ease, background 0.15s ease;
   text-shadow:0 0 8px currentColor;
 }

@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.89.6] - 2026-06-07
+### Changed
+- Refinado en móvil: el tablero ahora cabe entero en pantalla sin scroll. Las fichas se ajustan de tamaño para que las ocho filas siempre quepan entre la cabecera y el botón.
+### Fixed
+- El scroll con el dedo en la lista del inventario y en la exploración/expedición ya funciona (había un bloqueo de scroll táctil que solo lo permitía en algunas pantallas).
+- Expedición en móvil: la pantalla de elegir zona ya no queda tan pegada al borde de arriba.
+
 ## [0.89.4] - 2026-06-07
 ### Fixed
 - Refinado en móvil: rehecho el encaje de la pantalla. El tablero ahora cabe entero (se ajusta de tamaño y, si hiciera falta, hace scroll dentro de su marco) y el botón "Terminar desmontaje" vuelve a estar fijo abajo y siempre visible, en vez de quedar en mitad del tablero.
