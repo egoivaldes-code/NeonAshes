@@ -394,22 +394,29 @@ function cerrarExpedicionFin(){
   if(typeof detenerFXLoop === 'function') detenerFXLoop('exp_ambiente');
   if(typeof Estado !== 'undefined') Estado.expedicion = null;
   if(typeof Estado !== 'undefined' && Estado.muerto) return;
-  if(typeof cambiarEscena === 'function'){
-    cambiarEscena('expedicion-escena', _expVolverA);
-  } else {
-    const esc = document.getElementById('expedicion-escena');
-    if(esc) esc.classList.remove('activa');
-  }
+  _expSalirAEscena();
 }
 
 function cancelarExpedicion(){
   if(typeof detenerFXLoop === 'function') detenerFXLoop('exp_ambiente');
   if(typeof Estado !== 'undefined') Estado.expedicion = null;
+  _expSalirAEscena();
+}
+
+// Sale de la escena de expedición a la escena previa. Si el destino no
+// existe (id equivocado), cae al apartamento para no dejar pantalla
+// negra. Salvaguarda anti-bug (v0.89.1).
+function _expSalirAEscena(){
+  let destino = _expVolverA;
+  if(!destino || !document.getElementById(destino)) destino = 'apartamento';
+  if(!document.getElementById(destino)) destino = 'apartamento';
   if(typeof cambiarEscena === 'function'){
-    cambiarEscena('expedicion-escena', _expVolverA);
+    cambiarEscena('expedicion-escena', destino);
   } else {
     const esc = document.getElementById('expedicion-escena');
     if(esc) esc.classList.remove('activa');
+    const dst = document.getElementById(destino);
+    if(dst) dst.classList.add('activa');
   }
 }
 

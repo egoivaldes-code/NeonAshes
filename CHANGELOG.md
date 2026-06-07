@@ -2,6 +2,14 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.89.1] - 2026-06-05
+### Fixed
+- Arreglada la pantalla en negro que se quedaba al ser capturado en una expedición (al cerrar el desenlace volvía a una pantalla inexistente). Además, ahora si por lo que sea el destino no existe, siempre se vuelve al apartamento en vez de quedarse en negro.
+- Refinado en móvil: el título ya no choca con el reloj de arriba, y el botón "Terminar desmontaje" queda fijo abajo, siempre visible.
+- Expedición en móvil: la pantalla de elegir zona ya no choca con el reloj de arriba.
+### Changed
+- Expedición en móvil: las tarjetas de elegir zona son bastante más compactas (antes seguían ocupando demasiado).
+
 ## [0.89] - 2026-06-05
 ### Added
 - Sonido de efectos (FX) en el juego: al abrir y cerrar el terminal, al abrir paneles (con un toque distinto para noticias y mensajes), al elegir profesión, y al entrar a cada tramo de una expedición (con un latido de tensión si la alerta va alta). Mientras decides en una escena de expedición suena un ambiente grave de fondo que se corta al elegir. Todo respeta el botón de sonido general: si lo apagas, los FX callan. Se incorporan 59 sonidos al juego; se irán enganchando más eventos en futuras actualizaciones.
