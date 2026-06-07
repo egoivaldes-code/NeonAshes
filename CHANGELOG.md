@@ -2,6 +2,16 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.87] - 2026-06-05
+### Added
+- Las expediciones son más largas y variadas: más tramos por zona (el pozo ahora son 6-8, el conducto 3-4, etc.) y 9 tipos de escena nuevos (un terminal con datos, un cuerpo que registrar, un derrumbe, un mendigo que da un soplo a cambio de comida, cableado vivo, un silencio inquietante, otro carroñero rival, una zona de humedad tóxica y un generador caliente). De 5 a 14 situaciones distintas.
+- Imágenes de fondo en las expediciones: al entrar a cada tramo, una imagen ambienta la escena con un destello fuerte los primeros segundos y luego se atenúa al fondo para leer, como en explorar. Cada tipo de escena tiene su propia imagen.
+- En el mercado puedes elegir cuántas unidades comprar o vender con un selector −/+ y un botón "Todo". Ya no hay que ir de uno en uno.
+- Aviso abajo a la izquierda al comprar o vender: "ADQUIRIDO · [objeto] xN" o "VENDIDO · [objeto] xN" con los créditos movidos.
+### Changed
+- La alerta de las expediciones sube un poco más despacio, para dar más margen sin perder la tensión.
+- Comprar y vender en el mercado pide confirmación en la propia fila ("¿Seguro? Sí / No"), para no comprar ni vender de un toque accidental.
+
 ## [0.86.9] - 2026-06-05
 ### Added
 - MERCADO funcional en el terminal del apartamento (icono MERCADO, que antes salía "en mantenimiento"). Dos pestañas: VENDER (liquidas tu botín y materiales —núcleos, servidores, chatarra— por créditos) y COMPRAR (equipo para tus expediciones: medkit, kit de trauma, ganzúas, baterías, armas, máscara, analizador...). Cierra el círculo del loop: rebuscas, vendes lo que sacas y compras mejor equipo. El mercado es caro al comprar y paga por debajo al vender, a propósito. Precios provisionales, fáciles de ajustar.

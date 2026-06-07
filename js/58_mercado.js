@@ -68,6 +68,8 @@ function _mercCreditos(){ return (Estado && typeof Estado.creditos === 'number')
 // RENDER
 // ============================================================
 let _mercTab = 'vender';
+let _mercConfirmando = null;   // fila pidiendo confirmación: { modo, id }
+let _mercCantidades = {};      // cantidad elegida por fila, clave 'modo:id'
 
 function renderMercado(tab){
   _mercTab = (tab === 'comprar') ? 'comprar' : 'vender';
@@ -83,6 +85,8 @@ function renderMercado(tab){
 }
 
 function cambiarTabMercado(tab){
+  _mercConfirmando = null;
+  _mercCantidades = {};
   _mercTab = (tab === 'comprar') ? 'comprar' : 'vender';
   const cuerpo = document.getElementById('hub-panel-cuerpo');
   if(cuerpo) cuerpo.innerHTML = renderMercado(_mercTab);
@@ -107,10 +111,10 @@ function _renderVender(){
   inv.forEach(it => {
     const p = MERCADO_PRECIOS[it.id];
     const cant = it.cantidad || 1;
-    html += '<div class="merc-fila">'
+    html += '<div class="merc-fila merc-fila-col">'
       + '<div class="merc-fila-info"><span class="merc-fila-nombre">'+it.nombre+'</span>'
       + '<span class="merc-fila-meta">tienes '+cant+' · te dan '+p.venta+' CR c/u</span></div>'
-      + '<button class="merc-btn merc-btn-vender" onclick="venderItemMercado(\''+it.id+'\')">Vender →</button>'
+      + _mercControles('vender', it.id, _mercMax('vender', it.id))
       + '</div>';
   });
   return html;
@@ -123,49 +127,160 @@ function _renderComprar(){
   _MERCADO_COMPRABLE.forEach(id => {
     const p = MERCADO_PRECIOS[id];
     if(!p || p.compra <= 0) return;
-    const puede = saldo >= p.compra;
-    html += '<div class="merc-fila">'
+    const max = _mercMax('comprar', id);
+    html += '<div class="merc-fila merc-fila-col">'
       + '<div class="merc-fila-info"><span class="merc-fila-nombre">'+_mercNombre(id)+'</span>'
-      + '<span class="merc-fila-meta">'+p.compra+' CR</span></div>';
-    if(puede){
-      html += '<button class="merc-btn merc-btn-comprar" onclick="comprarItemMercado(\''+id+'\')">Comprar ←</button>';
+      + '<span class="merc-fila-meta">'+p.compra+' CR c/u</span></div>';
+    if(max >= 1){
+      html += _mercControles('comprar', id, max);
     } else {
-      html += '<button class="merc-btn merc-btn-no" disabled>Sin saldo</button>';
+      html += '<div class="merc-ctrl-fila"><button class="merc-btn merc-btn-no" disabled>Sin saldo</button></div>';
     }
     html += '</div>';
   });
   return html;
 }
 
+// Máximo que se puede comprar/vender ahora mismo de un item.
+function _mercMax(modo, id){
+  const p = MERCADO_PRECIOS[id] || {};
+  if(modo === 'vender'){
+    const it = (Estado.inventario || []).find(i => i.id === id);
+    return it ? (it.cantidad || 0) : 0;
+  }
+  // comprar: lo que permita el saldo
+  if(!p.compra || p.compra <= 0) return 0;
+  return Math.floor(_mercCreditos() / p.compra);
+}
+
+// Cantidad elegida ahora para una fila (entre 1 y su máximo).
+function _mercCant(modo, id){
+  const key = modo + ':' + id;
+  const max = _mercMax(modo, id);
+  let v = _mercCantidades[key];
+  if(typeof v !== 'number' || v < 1) v = 1;
+  if(v > max) v = max;
+  return Math.max(1, v);
+}
+
+// Ajusta la cantidad de una fila (delta, o 'todo' para el máximo).
+function ajustarCantMercado(modo, id, delta){
+  const key = modo + ':' + id;
+  const max = _mercMax(modo, id);
+  let v;
+  if(delta === 'todo'){ v = max; }
+  else { v = _mercCant(modo, id) + delta; }
+  if(v < 1) v = 1;
+  if(v > max) v = max;
+  _mercCantidades[key] = v;
+  _mercRefrescar();
+}
+
+// Controles de una fila: selector −/cantidad/+, botón Todo y el botón de
+// acción (que pide confirmación). Si está pidiendo confirmación, muestra
+// "¿Seguro? Vender N · ±X CR  Sí / No".
+function _mercControles(modo, id, max){
+  const p = MERCADO_PRECIOS[id] || {};
+  const cant = _mercCant(modo, id);
+  const precioUnit = (modo === 'vender') ? p.venta : p.compra;
+  const total = precioUnit * cant;
+  const confirmando = _mercConfirmando && _mercConfirmando.modo === modo && _mercConfirmando.id === id;
+
+  if(confirmando){
+    const fn = (modo === 'vender') ? 'venderItemMercado' : 'comprarItemMercado';
+    const signo = (modo === 'vender') ? '+' : '−';
+    const verbo = (modo === 'vender') ? 'Vender' : 'Comprar';
+    return '<div class="merc-confirm">'
+      + '<span class="merc-confirm-txt">¿Seguro? '+verbo+' '+cant+' · '+signo+total+' CR</span>'
+      + '<button class="merc-btn merc-confirm-si" onclick="'+fn+'(\''+id+'\')">Sí</button>'
+      + '<button class="merc-btn merc-confirm-no" onclick="cancelarConfirmarMercado()">No</button>'
+      + '</div>';
+  }
+
+  const btnAccion = (modo === 'vender')
+    ? '<button class="merc-btn merc-btn-vender" onclick="pedirConfirmarMercado(\'vender\',\''+id+'\')">Vender '+cant+' →</button>'
+    : '<button class="merc-btn merc-btn-comprar" onclick="pedirConfirmarMercado(\'comprar\',\''+id+'\')">Comprar '+cant+' ←</button>';
+
+  return '<div class="merc-ctrl-fila">'
+    + '<div class="merc-cant">'
+    +   '<button class="merc-cant-btn" onclick="ajustarCantMercado(\''+modo+'\',\''+id+'\',-1)">−</button>'
+    +   '<span class="merc-cant-num">'+cant+'</span>'
+    +   '<button class="merc-cant-btn" onclick="ajustarCantMercado(\''+modo+'\',\''+id+'\',1)">+</button>'
+    +   '<button class="merc-cant-todo" onclick="ajustarCantMercado(\''+modo+'\',\''+id+'\',\'todo\')">Todo</button>'
+    + '</div>'
+    + btnAccion
+    + '</div>';
+}
+
 // ============================================================
-// OPERACIONES
+// OPERACIONES (con confirmación en la propia fila, v0.86.10)
+// ------------------------------------------------------------
+// Para no comprar/vender sin querer, el botón pide confirmación: al
+// pulsarlo, esa fila se repinta mostrando "¿Seguro? Sí / No". Solo el
+// "Sí" ejecuta la operación. Guardamos qué fila está pidiendo confirmar
+// en _mercConfirmando = { modo:'vender'|'comprar', id }.
 // ============================================================
+// (estado _mercConfirmando y _mercCantidades declarado arriba, junto a _mercTab)
+
+// Pulsar el botón de una fila: pide confirmación (no opera todavía).
+function pedirConfirmarMercado(modo, id){
+  _mercConfirmando = { modo: modo, id: id };
+  _mercRefrescar();
+}
+// Cancelar la confirmación: vuelve al botón normal.
+function cancelarConfirmarMercado(){
+  _mercConfirmando = null;
+  _mercRefrescar();
+}
+
 function venderItemMercado(id){
   const p = MERCADO_PRECIOS[id];
+  _mercConfirmando = null;
   if(!p || p.venta <= 0) return;
   const it = (Estado.inventario || []).find(i => i.id === id);
   if(!it) return;
-  // Vender de una en una (en móvil, control fino sin teclear cantidades).
-  if(typeof quitarItem === 'function') quitarItem(id, 1);
-  if(typeof ajustarCreditos === 'function') ajustarCreditos(p.venta);
-  else Estado.creditos = (Estado.creditos || 0) + p.venta;
-  if(typeof notificarCambio === 'function') notificarCambio('+'+p.venta+' CR', 'creditos');
+  // Cantidad elegida, acotada a lo que realmente tienes.
+  let n = _mercCant('vender', id);
+  n = Math.min(n, it.cantidad || 1);
+  if(n < 1) return;
+  if(typeof quitarItem === 'function') quitarItem(id, n);
+  const total = p.venta * n;
+  if(typeof ajustarCreditos === 'function') ajustarCreditos(total);
+  else Estado.creditos = (Estado.creditos || 0) + total;
+  delete _mercCantidades['vender:' + id];
+  if(typeof notificarCambio === 'function'){
+    notificarCambio('VENDIDO · ' + _mercNombre(id) + (n>1?(' x'+n):'') + ' · +' + total + ' CR', 'pos');
+  }
   _mercRefrescar();
 }
 
 function comprarItemMercado(id){
   const p = MERCADO_PRECIOS[id];
+  _mercConfirmando = null;
   if(!p || p.compra <= 0) return;
-  if(_mercCreditos() < p.compra) return;
-  if(typeof ajustarCreditos === 'function') ajustarCreditos(-p.compra);
-  else Estado.creditos = (Estado.creditos || 0) - p.compra;
-  if(typeof darItemPorId === 'function') darItemPorId(id);
-  if(typeof notificarCambio === 'function') notificarCambio('OBJETO · '+_mercNombre(id), 'creditos');
+  // Cantidad elegida, acotada a lo que puedes pagar.
+  let n = _mercCant('comprar', id);
+  n = Math.min(n, _mercMax('comprar', id));
+  if(n < 1) return;
+  const total = p.compra * n;
+  if(_mercCreditos() < total) return;
+  if(typeof ajustarCreditos === 'function') ajustarCreditos(-total);
+  else Estado.creditos = (Estado.creditos || 0) - total;
+  if(typeof darItemPorId === 'function'){
+    for(let i = 0; i < n; i++) darItemPorId(id);
+  }
+  delete _mercCantidades['comprar:' + id];
+  if(typeof notificarCambio === 'function'){
+    notificarCambio('ADQUIRIDO · ' + _mercNombre(id) + (n>1?(' x'+n):'') + ' · −' + total + ' CR', 'neg');
+  }
   _mercRefrescar();
 }
 
 window.MERCADO_PRECIOS = MERCADO_PRECIOS;
 window.renderMercado = renderMercado;
 window.cambiarTabMercado = cambiarTabMercado;
+window.pedirConfirmarMercado = pedirConfirmarMercado;
+window.cancelarConfirmarMercado = cancelarConfirmarMercado;
+window.ajustarCantMercado = ajustarCantMercado;
 window.venderItemMercado = venderItemMercado;
 window.comprarItemMercado = comprarItemMercado;

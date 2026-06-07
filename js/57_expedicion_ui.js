@@ -23,6 +23,52 @@ const _EXP_RIESGO_LABEL = {
   extremo: { txt: 'RIESGO EXTREMO', clase: 'riesgo-extremo' }
 };
 
+// Imagen de fondo por TIPO de evento (clave de ASSETS). Al entrar a un
+// tramo, la imagen aparece casi a pantalla ~2s (destello) y luego se
+// atenúa al fondo para leer. Reusa imágenes del pool existente.
+const _EXP_IMG_EVENTO = {
+  cerradura: 'MAINTENANCE_ACCESS12',
+  rebusca:   'EXP_TALLER_REUTILIZA',
+  encuentro: 'EXP_CALLEJON_NIVELES',
+  toxico:    'EXP_PLANTA_AGUA',
+  patrulla:  'SECTOR7_BLACK_MARKET',
+  terminal:  'EXP_ALMACEN_HELIX',
+  cuerpo:    'EXP_ALMACEN_OKUPA',
+  derrumbe:  'SERVICE_CONDUIT_RAMP_E',
+  mendigo:   'EXP_CALLEJON_NIVELES',
+  cableado:  'EXP_TALLER_REUTILIZA',
+  silencio:  'DOCK_ACCESS_TUNNEL',
+  rival:     'EXP_PUERTO_CARGA',
+  humedad:   'EXP_CANAL_PILAS',
+  generador: 'INDUSTRIAL_WALKWAY9'
+};
+
+// Imagen de respaldo si un evento no tiene asignada (no debería pasar).
+const _EXP_IMG_FALLBACK = 'EXP_ALMACEN_ZONA7';
+
+// Aplica la imagen del evento: destello fuerte ~2s y luego al fondo.
+// Limpia la imagen de fondo/destello (al iniciar o salir del loop).
+function _expLimpiarFondo(){
+  const fondo = document.getElementById('expedicion-fondo');
+  const flash = document.getElementById('expedicion-flash');
+  if(fondo) fondo.style.backgroundImage = '';
+  if(flash){ flash.style.backgroundImage = ''; flash.classList.remove('visible'); }
+}
+
+function _expAplicarImagen(ev){
+  const clave = (_EXP_IMG_EVENTO[ev && ev.id]) || _EXP_IMG_FALLBACK;
+  const src = (typeof ASSETS !== 'undefined' && ASSETS[clave]) ? ASSETS[clave] : null;
+  if(!src) return;
+  const fondo = document.getElementById('expedicion-fondo');
+  const flash = document.getElementById('expedicion-flash');
+  if(fondo) fondo.style.backgroundImage = "url('"+src+"')";
+  if(flash){
+    flash.style.backgroundImage = "url('"+src+"')";
+    flash.classList.add('visible');
+    setTimeout(() => { flash.classList.remove('visible'); }, 2000);
+  }
+}
+
 function _expMotivoBloqueo(zona){
   const req = zona.requisito;
   if(!req) return 'Acceso restringido.';
@@ -54,6 +100,7 @@ function abrirElegirZonaExpedicion(volverA){
   _expEventoActual = null;
   _expEquipoMochila = {};
   _expZonaElegida = null;
+  _expLimpiarFondo();
 
   const cont = _expCuerpo();
   if(!cont) return;
@@ -179,6 +226,9 @@ function _expSiguienteTramo(){
 function _expPintarEvento(ev, resumen){
   const cont = _expCuerpo();
   if(!cont) return;
+  // Imagen del tramo: solo al MOSTRAR el evento nuevo (resumen === null),
+  // no al repintar con el resultado (que es la misma escena).
+  if(!resumen) _expAplicarImagen(ev);
   const run = Estado.expedicion;
   const alerta = run ? run.alerta : 0;
   const tramo = run ? run.eventoActual + 1 : 1;

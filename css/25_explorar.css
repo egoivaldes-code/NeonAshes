@@ -601,3 +601,15 @@
   padding:0.15rem 0;
 }
 .exp-fin-nada{ color:rgba(200,216,224,0.6); font-style:italic; }
+
+/* La escena de expedición reusa el tratamiento visual de explorar
+   (fondo atenuado + velo noir), para coherencia. v0.86.12 */
+#expedicion-escena .bg-overlay{
+  z-index:1;
+  background:linear-gradient(180deg,
+    rgba(3,5,8,0.55) 0%,
+    rgba(3,5,8,0.45) 40%,
+    rgba(3,5,8,0.9) 100%);
+}
+#expedicion-escena #expedicion-cuerpo{ position:relative; z-index:2; }
+#expedicion-escena .explorar-wrap{ position:relative; z-index:2; }

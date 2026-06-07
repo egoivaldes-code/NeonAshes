@@ -508,3 +508,35 @@
 .merc-btn-vender:hover{ background:rgba(0,255,136,0.1); }
 .merc-btn-comprar:hover{ background:rgba(255,0,110,0.12); }
 .merc-btn-no{ border-color:rgba(58,74,85,0.5); color:rgba(200,216,224,0.4); cursor:default; }
+
+/* Confirmación en la fila del mercado (¿Seguro? Sí / No) — v0.86.10 */
+.merc-confirm{ display:flex; align-items:center; gap:0.4rem; flex-shrink:0; }
+.merc-confirm-txt{
+  font-family:'Share Tech Mono',monospace; font-size:0.62rem;
+  letter-spacing:0.06em; color:rgba(200,216,224,0.7); text-transform:uppercase;
+}
+.merc-confirm-si{ border-color:rgba(0,255,136,0.6); color:#00ff88; padding:0.45rem 0.7rem; }
+.merc-confirm-si:hover{ background:rgba(0,255,136,0.12); }
+.merc-confirm-no{ border-color:rgba(255,0,110,0.5); color:var(--magenta); padding:0.45rem 0.7rem; }
+.merc-confirm-no:hover{ background:rgba(255,0,110,0.12); }
+
+/* Selector de cantidad en el mercado (−/+ /Todo) — v0.86.11 */
+.merc-fila-col{ flex-direction:column; align-items:stretch; gap:0.55rem; }
+.merc-ctrl-fila{ display:flex; justify-content:space-between; align-items:center; gap:0.5rem; flex-wrap:wrap; }
+.merc-cant{ display:flex; align-items:center; gap:0.35rem; }
+.merc-cant-btn{
+  width:1.9rem; height:1.9rem; background:transparent; border:1px solid rgba(0,229,255,0.4);
+  color:var(--cyan); font-family:'Share Tech Mono',monospace; font-size:0.95rem;
+  border-radius:2px; cursor:pointer; transition:background 0.15s ease;
+}
+.merc-cant-btn:hover{ background:rgba(0,229,255,0.12); }
+.merc-cant-num{
+  min-width:1.8rem; text-align:center; font-family:'Share Tech Mono',monospace;
+  font-size:0.85rem; color:var(--blanco-suave);
+}
+.merc-cant-todo{
+  background:transparent; border:1px solid rgba(0,229,255,0.3); color:rgba(0,229,255,0.8);
+  font-family:'Share Tech Mono',monospace; font-size:0.6rem; letter-spacing:0.08em;
+  text-transform:uppercase; padding:0.35rem 0.5rem; border-radius:2px; cursor:pointer; margin-left:0.2rem;
+}
+.merc-cant-todo:hover{ background:rgba(0,229,255,0.12); }

@@ -47,9 +47,9 @@ const ZONAS_EXPEDICION = {
     desc: 'Tubos estrechos y calientes entre los niveles. Poca gente baja aquí. Poco que encontrar, pero casi nadie con quien cruzarte.',
     riesgo: 'bajo',
     alertaInicial: 0,
-    alertaPorEvento: 8,
-    eventosMin: 2,
-    eventosMax: 3,
+    alertaPorEvento: 5,
+    eventosMin: 3,
+    eventosMax: 4,
     bloqueada: false,
     tablaBotin: [
       { peso: 5, creditos: [10, 30], items: [{ id:'chatarra_cruda', cant:[1,3] }] },
@@ -64,9 +64,9 @@ const ZONAS_EXPEDICION = {
     desc: 'Un módulo de carga corporativo, sellado y olvidado. Lo que hay dentro vale, pero romper un sello HELIX deja rastro.',
     riesgo: 'medio',
     alertaInicial: 10,
-    alertaPorEvento: 14,
-    eventosMin: 3,
-    eventosMax: 4,
+    alertaPorEvento: 9,
+    eventosMin: 4,
+    eventosMax: 6,
     bloqueada: false,
     tablaBotin: [
       { peso: 4, creditos: [30, 70], items: [{ id:'chatarra_cruda', cant:[2,5] }] },
@@ -81,9 +81,9 @@ const ZONAS_EXPEDICION = {
     desc: 'Un transporte varado, oxidándose. Lotería pura: o alguien lo dejó vacío, o se dejó algo que valía la pena.',
     riesgo: 'medio',
     alertaInicial: 5,
-    alertaPorEvento: 12,
-    eventosMin: 2,
-    eventosMax: 3,
+    alertaPorEvento: 8,
+    eventosMin: 3,
+    eventosMax: 5,
     bloqueada: false,
     tablaBotin: [
       { peso: 4, creditos: [0, 20], items: [{ id:'chatarra_cruda', cant:[1,2] }] },
@@ -98,9 +98,9 @@ const ZONAS_EXPEDICION = {
     desc: 'Bajo el nivel de la calle, agua negra y aire que pica. Lo mejor se hunde aquí... y casi nadie vuelve entero a buscarlo.',
     riesgo: 'alto',
     alertaInicial: 15,
-    alertaPorEvento: 16,
-    eventosMin: 4,
-    eventosMax: 5,
+    alertaPorEvento: 10,
+    eventosMin: 6,
+    eventosMax: 8,
     bloqueada: false,
     recomiendaEquipo: ['mascara_filtro'],
     tablaBotin: [
@@ -117,9 +117,9 @@ const ZONAS_EXPEDICION = {
     desc: 'Una planta entera clausurada por HELIX. Nadie dice qué hay dentro, y los que entraron no lo cuentan.',
     riesgo: 'extremo',
     alertaInicial: 25,
-    alertaPorEvento: 18,
-    eventosMin: 5,
-    eventosMax: 6,
+    alertaPorEvento: 12,
+    eventosMin: 6,
+    eventosMax: 8,
     bloqueada: true,
     requisito: { tipo: 'llave', id: 'llave_magnetica' },
     tablaBotin: [
@@ -134,9 +134,9 @@ const ZONAS_EXPEDICION = {
     desc: 'Restos de un almacén de órbita baja caídos sobre las Pilas. Óptica militar, implantes sin estrenar. Y la muerte rondando cada rincón.',
     riesgo: 'extremo',
     alertaInicial: 20,
-    alertaPorEvento: 17,
-    eventosMin: 4,
-    eventosMax: 6,
+    alertaPorEvento: 11,
+    eventosMin: 6,
+    eventosMax: 8,
     bloqueada: true,
     requisito: { tipo: 'rango', rango: 'recuperador' },
     tablaBotin: [
@@ -220,6 +220,105 @@ const EVENTOS_EXPEDICION = [
       { texto: 'Soltar un señuelo', tono:'FRIO', requiere:'senuelo', gasta:{ senuelo:1 }, alerta:-20, botin:false },
       { texto: 'Esconderte y esperar', tono:'EVASIVO', alerta:-6, botin:false },
       { texto: 'Seguir rebuscando con ellos cerca', tono:'VIOLENTO', alerta:20, botin:true }
+    ]
+  },
+
+  {
+    id: 'terminal',
+    peso: 3,
+    narracion: 'Un terminal a medio apagar parpadea en un rincón. Si todavía guarda algo dentro, alguien pagará por leerlo.',
+    opciones: [
+      { texto: 'Volcar los datos con el analizador', tono:'FRIO', requiere:'analizador', gasta:{ carga_analizador:1 }, alerta:3, botin:true },
+      { texto: 'Arrancar la unidad entera y cargarla', tono:'VENAL', alerta:8, botin:true },
+      { texto: 'Dejarlo, pesa demasiado', tono:'EVASIVO', alerta:0, botin:false }
+    ]
+  },
+
+  {
+    id: 'cuerpo',
+    peso: 2,
+    narracion: 'Hay un cuerpo entre los escombros. Lleva ahí lo suyo. Aún conserva el equipo encima, y a él ya no le sirve.',
+    opciones: [
+      { texto: 'Registrarlo sin pensarlo', tono:'VENAL', alerta:4, botin:true },
+      { texto: 'Registrarlo, pero cerrarle los ojos antes', tono:'EMPATICO', alerta:4, botin:true, botinReducido:true },
+      { texto: 'No tocar a un muerto', tono:'HONESTO', alerta:0, botin:false }
+    ]
+  },
+
+  {
+    id: 'derrumbe',
+    peso: 2,
+    narracion: 'El paso se ha venido abajo. Al otro lado se intuye una sala sin tocar, pero la estructura cruje a cada movimiento.',
+    opciones: [
+      { texto: 'Forzar el hueco con la palanca', tono:'FRIO', requiere:'palanca_termica', alerta:5, botin:true },
+      { texto: 'Colarte por la grieta a pulso', tono:'VIOLENTO', alerta:6, botin:true, probExito:0.55, herida:'costillas' },
+      { texto: 'Buscar otro camino', tono:'EVASIVO', alerta:2, botin:false }
+    ]
+  },
+
+  {
+    id: 'mendigo',
+    peso: 2,
+    narracion: 'Una figura encogida contra la pared te observa sin miedo. "Hay cosas buenas más adentro", murmura. "Pero hoy no he comido."',
+    opciones: [
+      { texto: 'Darle una ración a cambio del soplo', tono:'EMPATICO', requiere:'racion_deshidratada', gasta:{ racion_deshidratada:1 }, alerta:0, botin:true },
+      { texto: 'Apartarlo y seguir', tono:'FRIO', alerta:3, botin:false },
+      { texto: 'Amenazarle para que hable', tono:'VIOLENTO', alerta:8, botin:true, botinReducido:true }
+    ]
+  },
+
+  {
+    id: 'cableado',
+    peso: 3,
+    narracion: 'Un nudo de cableado vivo recorre la pared. Cobre del bueno, conectores intactos. Vale, pero muerde si lo tocas mal.',
+    opciones: [
+      { texto: 'Cortar la corriente con una batería puente', tono:'FRIO', requiere:'bateria_4v', gasta:{ bateria_4v:1 }, alerta:2, botin:true },
+      { texto: 'Arrancarlo en caliente, rápido', tono:'VIOLENTO', alerta:5, botin:true, probExito:0.7, herida:'herida_brazo_d_leve' },
+      { texto: 'No merece el riesgo', tono:'EVASIVO', alerta:0, botin:false }
+    ]
+  },
+
+  {
+    id: 'silencio',
+    peso: 2,
+    narracion: 'De pronto, nada. Ni goteo, ni zumbido. El tipo de silencio que en las Pilas siempre va antes de algo. Se te eriza la piel.',
+    opciones: [
+      { texto: 'Quedarte quieto y escuchar', tono:'EVASIVO', alerta:-8, botin:false },
+      { texto: 'Aprovechar para rebuscar deprisa', tono:'VENAL', alerta:6, botin:true },
+      { texto: 'Salir de ahí cuanto antes', tono:'FRIO', alerta:-2, botin:false }
+    ]
+  },
+
+  {
+    id: 'rival',
+    peso: 2,
+    narracion: 'Otro carroñero ya está vaciando el sitio. No te ha visto. Lleva un buen fardo a la espalda. Tú decides.',
+    opciones: [
+      { texto: 'Encañonarle y quedarte su fardo', tono:'VIOLENTO', requiere:'arma_fuego', gasta:{ cargador:1 }, alerta:14, botin:true, probExito:0.8 },
+      { texto: 'Esperar a que se vaya y coger las sobras', tono:'EVASIVO', alerta:2, botin:true, botinReducido:true },
+      { texto: 'Compartir la zona sin buscar bronca', tono:'EMPATICO', alerta:0, botin:true, botinReducido:true }
+    ]
+  },
+
+  {
+    id: 'humedad',
+    peso: 2,
+    narracion: 'El aire se vuelve irrespirable, espeso de esporas y óxido. Más adelante brilla algo que merece la pena, pero esto castiga los pulmones.',
+    opciones: [
+      { texto: 'Avanzar protegido con la máscara', tono:'FRIO', requiere:'mascara_filtro', alerta:3, botin:true },
+      { texto: 'Un trago de licor y tirar para dentro', tono:'VIOLENTO', requiere:'licor', gasta:{ licor:1 }, alerta:5, botin:true, probExito:0.6, herida:'envenenado' },
+      { texto: 'Retroceder, no vale la pena ahogarse', tono:'EVASIVO', alerta:0, botin:false }
+    ]
+  },
+
+  {
+    id: 'generador',
+    peso: 2,
+    narracion: 'Un viejo generador sigue caliente, zumbando solo en la oscuridad. Dentro lleva celdas que en el mercado valen su peso en créditos.',
+    opciones: [
+      { texto: 'Extraer las celdas con cuidado', tono:'FRIO', alerta:4, botin:true },
+      { texto: 'Reventarlo para sacarlo todo de golpe', tono:'VENAL', alerta:12, botin:true, probExito:0.65, herida:'herida_brazo_d_leve' },
+      { texto: 'No fiarte de algo que aún respira', tono:'EVASIVO', alerta:0, botin:false }
     ]
   }
 ];
