@@ -2,6 +2,11 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.89.3] - 2026-06-07
+### Fixed
+- Refinado en móvil: el botón "Terminar desmontaje" ya no queda tapado por la barra de abajo (créditos/estado/inventario); ahora se eleva por encima de ella y siempre es visible y tocable.
+- Expedición en móvil: el título de la primera zona ("Conducto de servicio") ya no choca con el reloj de arriba; se ha dado más hueco superior para librarlo siempre.
+
 ## [0.89.2] - 2026-06-07
 ### Added
 - Refinado (capa 2): piezas especiales al casar 4, 5 o formas en L/T. Cuatro en línea crea una carga que limpia su fila o columna; cinco en línea crea un pulso que barre todas las fichas de ese tipo; una L o T crea una descarga que limpia la zona de alrededor. Se activan al volver a casarlas y encadenan reacciones.

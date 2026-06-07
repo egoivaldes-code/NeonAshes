@@ -612,7 +612,13 @@
     rgba(3,5,8,0.9) 100%);
 }
 #expedicion-escena #expedicion-cuerpo{ position:relative; z-index:2; }
-#expedicion-escena .explorar-wrap{ position:relative; z-index:2; padding-top:2.8rem; }
+/* Hueco superior para el reloj diegético: 2.8rem se quedaba corto en
+   móvil y el título de la primera zona chocaba con el reloj. Se sube a
+   4.2rem (con safe-area por si hay notch) para librarlo siempre. */
+#expedicion-escena .explorar-wrap{
+  position:relative; z-index:2;
+  padding-top:max(4.2rem, calc(env(safe-area-inset-top) + 3.6rem));
+}
 
 /* Destello de fondo al entrar a un tramo (v0.89): la imagen entra
    intensa y luego se atenúa al nivel de lectura. No tapa el texto. */
