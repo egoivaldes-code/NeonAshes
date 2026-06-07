@@ -60,12 +60,20 @@ function _expAplicarImagen(ev){
   const src = (typeof ASSETS !== 'undefined' && ASSETS[clave]) ? ASSETS[clave] : null;
   if(!src) return;
   const fondo = document.getElementById('expedicion-fondo');
-  const flash = document.getElementById('expedicion-flash');
-  if(fondo) fondo.style.backgroundImage = "url('"+src+"')";
-  if(flash){
-    flash.style.backgroundImage = "url('"+src+"')";
-    flash.classList.add('visible');
-    setTimeout(() => { flash.classList.remove('visible'); }, 2000);
+  if(!fondo) return;
+  // En vez de un flash a pantalla completa (que tapaba el texto y causaba
+  // el parpadeo "texto-fade-texto"), ponemos la imagen de fondo y la
+  // intensificamos un instante, luego se atenúa al nivel de lectura. El
+  // texto nunca queda cubierto: solo cambia la fuerza del fondo.
+  fondo.style.backgroundImage = "url('"+src+"')";
+  fondo.classList.add('exp-fondo-intro');
+  setTimeout(() => { fondo.classList.remove('exp-fondo-intro'); }, 1400);
+  // Sonido de entrada al tramo (v0.89). Si la alerta va alta, un latido
+  // de tensión en vez del tono neutro.
+  if(typeof reproducirFX === 'function'){
+    const run = (typeof Estado !== 'undefined') ? Estado.expedicion : null;
+    if(run && run.alerta >= 60) reproducirFX('escena_tension', 0.7);
+    else reproducirFX('escena_entra', 0.5);
   }
 }
 
@@ -217,6 +225,7 @@ function arrancarExpedicion(){
 }
 
 function _expSiguienteTramo(){
+  if(typeof detenerFXLoop === 'function') detenerFXLoop('exp_ambiente');
   const ev = (typeof siguienteEventoExpedicion === 'function') ? siguienteEventoExpedicion() : null;
   if(!ev){ _expDesenlaceExtraccion(); return; }
   _expEventoActual = ev;
@@ -254,6 +263,12 @@ function _expPintarEvento(ev, resumen){
     html += '</div>';
   }
   cont.innerHTML = html;
+  // Ambiente en bucle mientras el jugador decide (solo cuando hay
+  // opciones de verdad, no en la pantalla de resultado). Se corta en
+  // cuanto elige o avanza. v0.89.
+  if(!resumen && typeof reproducirFXLoop === 'function'){
+    reproducirFXLoop('amb_grave', 'exp_ambiente', 0.28);
+  }
 }
 
 function _expBarraAlerta(alerta){
@@ -296,6 +311,7 @@ function elegirOpcionExpedicion(idx){
   if(!ev) return;
   const op = (ev.opciones || [])[idx];
   if(!op || typeof resolverOpcionExpedicion !== 'function') return;
+  if(typeof detenerFXLoop === 'function') detenerFXLoop('exp_ambiente');
   const res = resolverOpcionExpedicion(ev, op);
 
   if(typeof _expComprobarCaptura === 'function' && _expComprobarCaptura()){
@@ -375,6 +391,7 @@ function _expDesenlaceRescate(){
 
 function cerrarExpedicionFin(){
   _expEventoActual = null;
+  if(typeof detenerFXLoop === 'function') detenerFXLoop('exp_ambiente');
   if(typeof Estado !== 'undefined') Estado.expedicion = null;
   if(typeof Estado !== 'undefined' && Estado.muerto) return;
   if(typeof cambiarEscena === 'function'){
@@ -386,6 +403,7 @@ function cerrarExpedicionFin(){
 }
 
 function cancelarExpedicion(){
+  if(typeof detenerFXLoop === 'function') detenerFXLoop('exp_ambiente');
   if(typeof Estado !== 'undefined') Estado.expedicion = null;
   if(typeof cambiarEscena === 'function'){
     cambiarEscena('expedicion-escena', _expVolverA);

@@ -175,6 +175,7 @@ function elegirProfesion(id){
     ultimoDiaISO: (typeof diaJuegoActual === 'function') ? diaJuegoActual() : null
   };
   if(typeof guardarPartida === 'function') guardarPartida();
+  if(typeof reproducirFX === 'function') reproducirFX('profesion', 0.7);
   return true;
 }
 

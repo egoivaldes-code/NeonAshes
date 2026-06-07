@@ -20,6 +20,12 @@ function abrirPanelHub(seccion){
   // Pausar el reloj del juego mientras el panel está abierto.
   // Consultar tus stats o noticias no debe costar minutos de juego.
   pausarTiempoJuego();
+  // Sonido de apertura de panel (v0.89). Noticias y mensajes con su tono.
+  if(typeof reproducirFX === 'function'){
+    if(seccion === 'noticias') reproducirFX('noticia_nueva', 0.7);
+    else if(seccion === 'mensajes' || seccion === 'contactos') reproducirFX('mensaje_nuevo', 0.7);
+    else reproducirFX('panel_abrir', 0.6);
+  }
   // Marcar body para que el reloj diegético se oculte y no se solape.
   document.body.classList.add('panel-abierto');
 

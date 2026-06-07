@@ -8,6 +8,7 @@
 function irATerminal(){
   ajustarHumano('fatiga', 4);
   saltoDeEscena();
+  if(typeof reproducirFX === 'function') reproducirFX('terminal_abrir');
   cambiarEscena('apartamento', 'terminal-escena');
   setTimeout(mostrarEscritorioHelix, 300);
 }
@@ -125,6 +126,7 @@ function _ponerBadgeIcono(idIcono, hayAviso){
 // body (para que el reloj y la cabecera vuelvan) y sale al apartamento.
 function cerrarTerminalHelix(){
   document.body.classList.remove('terminal-escritorio-activo');
+  if(typeof reproducirFX === 'function') reproducirFX('terminal_cerrar');
   cambiarEscena('terminal-escena','apartamento');
   // v0.86: al volver del terminal, regenerar las opciones del apartamento
   // y reponer el texto narrativo, que si no quedaba con contenido fantasma

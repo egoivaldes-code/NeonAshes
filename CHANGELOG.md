@@ -2,6 +2,18 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.89] - 2026-06-05
+### Added
+- Sonido de efectos (FX) en el juego: al abrir y cerrar el terminal, al abrir paneles (con un toque distinto para noticias y mensajes), al elegir profesión, y al entrar a cada tramo de una expedición (con un latido de tensión si la alerta va alta). Mientras decides en una escena de expedición suena un ambiente grave de fondo que se corta al elegir. Todo respeta el botón de sonido general: si lo apagas, los FX callan. Se incorporan 59 sonidos al juego; se irán enganchando más eventos en futuras actualizaciones.
+- Primera versión jugable del minijuego de REFINADO/DESMONTAJE: un tablero tipo match-3 tematizado como mesa de desguace, donde conectas componentes iguales (procesadores, baterías, sensores, mecánicos, chips HELIX) para extraerlos. Intercambias fichas adyacentes; al formar líneas de 3 o más, se extraen, las de arriba caen y se rellena por arriba, encadenando combos. De momento es el tablero base jugable (sin metas ni combinaciones especiales todavía); accesible para pruebas desde el panel de desarrollo.
+- Nueva sección "Moralidad" en la ventana de reputaciones: refleja cómo te ve la calle según tus decisiones (lo que antes era el dato de "reputación" del inventario, ahora con más sentido y mejor sitio).
+### Fixed
+- Inventario en móvil: la lista de objetos ahora hace scroll correctamente sin cortarse ni empujar el botón de cerrar.
+- Expedición: el texto de cada escena ya no parpadea (salía, se desvanecía y volvía a salir); ahora la imagen de fondo entra con un destello y se atenúa sin tapar el texto.
+### Changed
+- Expedición en móvil: las tarjetas y cajas son más compactas, para que quepa más en pantalla.
+- La "reputación" se quita de la ventana de inventario (pasa a llamarse Moralidad y vive en la ventana de reputaciones).
+
 ## [0.87] - 2026-06-05
 ### Added
 - Las expediciones son más largas y variadas: más tramos por zona (el pozo ahora son 6-8, el conducto 3-4, etc.) y 9 tipos de escena nuevos (un terminal con datos, un cuerpo que registrar, un derrumbe, un mendigo que da un soplo a cambio de comida, cableado vivo, un silencio inquietante, otro carroñero rival, una zona de humedad tóxica y un generador caliente). De 5 a 14 situaciones distintas.

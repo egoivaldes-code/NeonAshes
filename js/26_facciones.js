@@ -256,7 +256,33 @@ function renderContactos(){
       + '</div></div>';
   });
 
-  return htmlContactos + htmlZonas + htmlFacciones;
+  // SECCIÓN: MORALIDAD (antes "reputación" del inventario, v0.89)
+  // Refleja cómo te ve la calle según tus decisiones (sobre todo en los
+  // eventos de tránsito). Va de turbio (negativo) a honorable (positivo).
+  const mor = (typeof Estado.reputacion === 'number') ? Estado.reputacion : 0;
+  let morLabel, morColor;
+  if(mor > 25){ morLabel = 'HONORABLE'; morColor = '#00ff88'; }
+  else if(mor > 10){ morLabel = 'DE FIAR'; morColor = 'rgba(120,255,160,0.8)'; }
+  else if(mor < -25){ morLabel = 'TURBIO'; morColor = '#ff006e'; }
+  else if(mor < -10){ morLabel = 'SOSPECHOSO'; morColor = 'rgba(255,160,120,0.85)'; }
+  else { morLabel = 'ANÓNIMO'; morColor = 'rgba(200,216,224,0.5)'; }
+  const morAbs = Math.min(100, Math.abs(mor));
+  const morWidth = morAbs / 2;
+  const morLeft = mor >= 0 ? '50%' : (50 - morWidth) + '%';
+  const morNum = mor > 0 ? ('+'+mor) : String(mor);
+  let htmlMoral = '<div class="facciones-titulo-seccion">MORALIDAD</div>'
+    + '<div class="faccion-ficha"><div class="faccion-header" style="cursor:default">'
+    + '<div class="faccion-icono" style="color:'+morColor+'">◈</div>'
+    + '<div class="faccion-header-info">'
+    + '<div class="faccion-nombre-row"><span class="faccion-nombre" style="color:'+morColor+'">CÓMO TE VE LA CALLE</span>'
+    +   '<span class="faccion-rep-num" style="color:'+morColor+'">'+morNum+'</span></div>'
+    + '<div class="faccion-rep-mini" style="color:'+morColor+'">'+morLabel+'</div>'
+    + '<div class="faccion-barra-wrap">'
+    +   '<div class="faccion-barra-centro"></div>'
+    +   '<div class="faccion-barra-fill" style="width:'+morWidth+'%;background:'+morColor+';left:'+morLeft+';box-shadow:0 0 6px '+morColor+';"></div>'
+    + '</div></div></div></div>';
+
+  return htmlContactos + htmlZonas + htmlMoral + htmlFacciones;
 }
 
 function toggleFaccion(id){

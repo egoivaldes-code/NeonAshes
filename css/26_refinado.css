@@ -1,0 +1,92 @@
+/* ============================================================
+   NEON ASHES — REFINADO / DESMONTAJE (match-3)  ·  CAPA 1
+   Lenguaje canónico: fondo oscuro, acento magenta, Rajdhani en
+   títulos, Share Tech Mono en datos. Inspirado en el mockup de
+   "mesa de desguace".
+   ============================================================ */
+#refinado-escena{ background:#04060a; }
+.ref-wrap{
+  position:relative; z-index:2;
+  width:100%; max-width:560px; margin:0 auto;
+  padding:1rem 0.9rem 1.4rem;
+  display:flex; flex-direction:column; gap:0.9rem;
+  height:100%; box-sizing:border-box; overflow-y:auto;
+}
+.ref-cabecera{ border-left:3px solid var(--magenta); padding-left:0.7rem; }
+.ref-titulo{
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1.3rem;
+  letter-spacing:0.14em; text-transform:uppercase; color:var(--magenta);
+  text-shadow:0 0 14px rgba(255,0,110,0.3);
+}
+.ref-subtitulo{
+  font-family:'Share Tech Mono',monospace; font-size:0.72rem;
+  color:rgba(200,216,224,0.7); margin-top:0.2rem;
+}
+
+/* Contador de componentes extraídos */
+.ref-objetivos{
+  display:flex; flex-wrap:wrap; gap:0.5rem;
+}
+.ref-obj{
+  display:flex; align-items:center; gap:0.4rem;
+  background:rgba(10,14,20,0.85); border:1px solid rgba(58,74,85,0.4);
+  border-radius:2px; padding:0.4rem 0.6rem;
+}
+.ref-obj-icono{ font-size:0.95rem; }
+.ref-obj-nombre{
+  font-family:'Share Tech Mono',monospace; font-size:0.6rem;
+  letter-spacing:0.06em; text-transform:uppercase; color:rgba(200,216,224,0.7);
+}
+.ref-obj-num{
+  font-family:'Share Tech Mono',monospace; font-size:0.8rem;
+  color:var(--blanco-suave); font-weight:bold; min-width:1.2rem; text-align:right;
+}
+
+/* Tablero */
+.ref-tablero-marco{
+  background:rgba(6,9,13,0.9); border:1px solid rgba(255,0,110,0.2);
+  border-radius:3px; padding:0.5rem;
+}
+.ref-tablero{
+  display:grid; gap:0.3rem; width:100%;
+}
+.ref-ficha{
+  aspect-ratio:1 / 1;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(180deg, rgba(20,26,34,0.95), rgba(10,14,20,0.95));
+  border:1px solid rgba(58,74,85,0.45); border-radius:3px;
+  font-size:1.4rem; cursor:pointer; padding:0;
+  transition:transform 0.12s ease, box-shadow 0.15s ease, opacity 0.2s ease, background 0.15s ease;
+  text-shadow:0 0 8px currentColor;
+}
+.ref-ficha:hover{ border-color:rgba(255,0,110,0.4); }
+.ref-ficha-sel{
+  border-color:var(--magenta);
+  box-shadow:0 0 14px rgba(255,0,110,0.5), inset 0 0 10px rgba(255,0,110,0.2);
+  transform:scale(1.06);
+}
+/* Destello al extraerse (antes de caer) */
+.ref-ficha-extrae{
+  animation:ref-extrae 0.22s ease forwards;
+}
+@keyframes ref-extrae{
+  0%{ transform:scale(1); box-shadow:0 0 0 rgba(0,255,136,0); }
+  50%{ transform:scale(1.18); box-shadow:0 0 18px rgba(0,255,136,0.8); background:rgba(0,255,136,0.25); }
+  100%{ transform:scale(0.2); opacity:0; }
+}
+
+/* Pie */
+.ref-pie{ margin-top:0.3rem; }
+.ref-terminar{
+  display:block; width:100%;
+  background:rgba(255,0,110,0.1); border:1px solid var(--magenta);
+  border-radius:2px; color:var(--blanco-suave);
+  font-family:'Share Tech Mono',monospace; font-size:0.82rem; letter-spacing:0.1em;
+  padding:0.9rem; cursor:pointer; transition:background 0.2s ease;
+}
+.ref-terminar:hover{ background:rgba(255,0,110,0.22); }
+
+@media (max-width:420px){
+  .ref-ficha{ font-size:1.1rem; }
+  .ref-titulo{ font-size:1.1rem; }
+}

@@ -208,6 +208,7 @@
   <link rel="stylesheet" href="css/23_responsive.css">
   <link rel="stylesheet" href="css/24_debug_ia.css">
   <link rel="stylesheet" href="css/25_explorar.css">
+  <link rel="stylesheet" href="css/26_refinado.css">
 
 </head>
 <body>
@@ -485,7 +486,26 @@
      El bar donde el jugador habla con Mara Vex.
      ============================================================ -->
 
-<!-- MERCADO / MARA -->
+<!-- ============================================================
+     BLOQUE HTML-59 — REFINADO / DESMONTAJE (match-3)
+     ============================================================ -->
+<div class="escena" id="refinado-escena">
+  <div class="bg-art" style="background:#04060a;"></div>
+  <div class="bg-overlay"></div>
+  <div class="ref-wrap">
+    <div class="ref-cabecera">
+      <div class="ref-titulo">REFINADO: DESMONTAJE</div>
+      <div class="ref-subtitulo">Recupera componentes útiles de la chatarra.</div>
+    </div>
+    <div class="ref-objetivos" id="ref-objetivos"></div>
+    <div class="ref-tablero-marco">
+      <div class="ref-tablero" id="ref-tablero"></div>
+    </div>
+    <div class="ref-pie">
+      <button class="ref-terminar" id="ref-terminar" onclick="terminarRefinado()">TERMINAR DESMONTAJE →</button>
+    </div>
+  </div>
+</div>
 <div class="escena" id="mercado-escena">
   <div class="bg-art" id="bg-mercado"></div>
   <div class="bg-overlay mercado-overlay"></div>
@@ -887,6 +907,8 @@
   <script src="js/56_expedicion.js"></script>
   <script src="js/57_expedicion_ui.js"></script>
   <script src="js/58_mercado.js"></script>
+  <script src="js/59_refinado.js"></script>
+  <script src="js/60_fx.js"></script>
   <script src="js/46_momentos_ia.js"></script>
   <script src="js/41_explorar.js"></script>
   <script src="js/42_npcs.js"></script>
@@ -980,7 +1002,6 @@
     <div class="inv-sub">PERFIL CIUDADANO</div>
     <div class="inv-stats">
       <div><div class="inv-stat-label">CRÉDITOS</div><div class="inv-stat-valor" id="inv-cr">1200 CR</div></div>
-      <div><div class="inv-stat-label">REPUTACIÓN</div><div class="inv-stat-valor" id="inv-rep">NEUTRAL (0)</div></div>
     </div>
     <!-- PESTAÑAS: Objetos / Recibos -->
     <div class="inv-tabs">

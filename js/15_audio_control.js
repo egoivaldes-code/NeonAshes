@@ -102,6 +102,8 @@ function toggleMute(){
   } else {
     // No quiere sonido: pausamos y punto. Nadie debe reanudar solo.
     try{ a.pause(); }catch(e){}
+    // Callar también los bucles de FX al instante (v0.89).
+    if(typeof detenerTodosFXLoops === 'function') detenerTodosFXLoops();
   }
   sincronizarBotonesAudio();
 }

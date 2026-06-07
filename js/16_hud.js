@@ -21,15 +21,8 @@ function actualizarHUD(){
   if(permCr) permCr.textContent = Estado.creditos;
   const invCr = document.getElementById('inv-cr');
   if(invCr) invCr.textContent = Estado.creditos + ' CR';
-  const invRep = document.getElementById('inv-rep');
-  if(invRep){
-    let label = 'NEUTRAL';
-    if(Estado.reputacion > 10) label = 'CONOCIDO';
-    if(Estado.reputacion > 25) label = 'RESPETADO';
-    if(Estado.reputacion < -10) label = 'SOSPECHOSO';
-    if(Estado.reputacion < -25) label = 'MARCADO';
-    invRep.textContent = `${label} (${Estado.reputacion >= 0 ? '+' : ''}${Estado.reputacion})`;
-  }
+  // La reputación (ahora "Moralidad") se muestra en la ventana de
+  // reputaciones/facciones, ya no en el inventario (v0.89).
   const lista = document.getElementById('inv-lista');
   if(lista){
     if(Estado.inventario.length === 0){

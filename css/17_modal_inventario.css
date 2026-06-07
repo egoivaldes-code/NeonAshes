@@ -8,18 +8,22 @@
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
+  height: 100dvh;             /* respeta la barra del navegador en móvil */
   background: rgba(3,5,8,0.92);
   z-index: 700;
   display: none;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 1.2rem;
+  box-sizing: border-box;
 }
 .modal-inventario.visible { display: flex; }
 .inv-panel {
   width: 100%;
   max-width: 520px;
-  max-height: 85vh;           /* no se sale de la pantalla */
+  max-height: 88vh;
+  max-height: 88dvh;          /* móvil: respeta barra del navegador */
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;     /* título arriba, lista en medio, botón abajo */
   background: rgba(0,0,0,0.85);
