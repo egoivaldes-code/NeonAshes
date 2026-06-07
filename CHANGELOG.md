@@ -2,6 +2,10 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.86.9] - 2026-06-05
+### Added
+- MERCADO funcional en el terminal del apartamento (icono MERCADO, que antes salía "en mantenimiento"). Dos pestañas: VENDER (liquidas tu botín y materiales —núcleos, servidores, chatarra— por créditos) y COMPRAR (equipo para tus expediciones: medkit, kit de trauma, ganzúas, baterías, armas, máscara, analizador...). Cierra el círculo del loop: rebuscas, vendes lo que sacas y compras mejor equipo. El mercado es caro al comprar y paga por debajo al vender, a propósito. Precios provisionales, fáciles de ajustar.
+
 ## [0.86.8] - 2026-06-05
 ### Added
 - Las expediciones ahora cuestan tiempo: cada tramo de la incursión consume entre 50 y 70 minutos de juego, igual que cualquier escena. Una expedición larga puede llevarte varias horas, cruzar la medianoche y hacer que te caiga el cobro del alquiler. Alargar la incursión ya no solo sube la alerta: también te come el día.

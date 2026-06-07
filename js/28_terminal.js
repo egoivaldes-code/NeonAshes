@@ -269,7 +269,8 @@ function abrirTerminalNoticias(){
 // MÓDULOS NO DISPONIBLES (Mercado, Contactos, Banco)
 // ------------------------------------------------------------
 function abrirTerminalMercado(){
-  mostrarModuloNoDisponible('MERCADO', 'Sistema de intercambio en mantenimiento programado.');
+  document.body.classList.remove('terminal-escritorio-activo');
+  abrirPanelHub('mercado');
 }
 function abrirTerminalContactos(){
   document.body.classList.remove('terminal-escritorio-activo');

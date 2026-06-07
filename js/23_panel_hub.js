@@ -46,6 +46,9 @@ function abrirPanelHub(seccion){
       const badge = btn.querySelector('.badge');
       if(badge) badge.remove();
     }
+  } else if(seccion === 'mercado'){
+    titulo.textContent = 'MERCADO';
+    cuerpo.innerHTML = (typeof renderMercado === 'function') ? renderMercado('vender') : '';
   }
 
   panel.classList.add('activo');
