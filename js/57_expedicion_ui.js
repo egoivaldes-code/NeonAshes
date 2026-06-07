@@ -88,6 +88,10 @@ function _expMotivoBloqueo(zona){
 function _expCuerpo(){ return document.getElementById('expedicion-cuerpo'); }
 
 function _expMostrarEscena(){
+  // Ocultar el reloj diegético mientras estamos en expedición: está fijo
+  // arriba y se solapaba con el título de la primera zona en móvil. Es el
+  // mismo mecanismo que usa la exploración (body.explorar-activo).
+  document.body.classList.add('explorar-activo');
   const desde = document.querySelector('.escena.activa');
   const idDesde = desde ? desde.id : _expVolverA;
   if(idDesde === 'expedicion-escena') return;
@@ -407,6 +411,8 @@ function cancelarExpedicion(){
 // existe (id equivocado), cae al apartamento para no dejar pantalla
 // negra. Salvaguarda anti-bug (v0.89.1).
 function _expSalirAEscena(){
+  // Restaurar el reloj diegético al salir (lo ocultamos al entrar).
+  document.body.classList.remove('explorar-activo');
   let destino = _expVolverA;
   if(!destino || !document.getElementById(destino)) destino = 'apartamento';
   if(!document.getElementById(destino)) destino = 'apartamento';

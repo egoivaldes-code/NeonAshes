@@ -2,6 +2,11 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.89.4] - 2026-06-07
+### Fixed
+- Refinado en móvil: rehecho el encaje de la pantalla. El tablero ahora cabe entero (se ajusta de tamaño y, si hiciera falta, hace scroll dentro de su marco) y el botón "Terminar desmontaje" vuelve a estar fijo abajo y siempre visible, en vez de quedar en mitad del tablero.
+- Expedición en móvil: el título de la primera zona ya no choca con el reloj de arriba. Durante la expedición el reloj se oculta (como ya pasa al explorar) y vuelve a aparecer al salir.
+
 ## [0.89.3] - 2026-06-07
 ### Fixed
 - Refinado en móvil: el botón "Terminar desmontaje" ya no queda tapado por la barra de abajo (créditos/estado/inventario); ahora se eleva por encima de ella y siempre es visible y tocable.
