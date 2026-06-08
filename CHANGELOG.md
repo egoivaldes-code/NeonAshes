@@ -2,6 +2,11 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.91] - 2026-06-08
+### Added
+- Refinado capa 3: temporizador de 90 s, encargo con bonus, barra de chatarra que penaliza, y bomba de desguace (barrido 5x5).
+- Control del tablero por arrastre (ratón y táctil), con el doble toque como respaldo.
+
 ## [0.90.8] - 2026-06-08
 ### Fixed
 - El Depósito Orbital ya se puede desbloquear. La comprobación de rango estaba rota (comparaba texto con un número) y la zona era inalcanzable. Ahora se desbloquea al alcanzar el rango Buzo de Chatarra.

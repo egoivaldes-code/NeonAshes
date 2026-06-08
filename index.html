@@ -208,7 +208,7 @@
   <link rel="stylesheet" href="css/23_responsive.css">
   <link rel="stylesheet" href="css/24_debug_ia.css">
   <link rel="stylesheet" href="css/25_explorar.css">
-  <link rel="stylesheet" href="css/26_refinado.css">
+  <link rel="stylesheet" href="css/26_refinado.css?v=0910">
 
 </head>
 <body>
@@ -497,10 +497,20 @@
       <div class="ref-titulo">REFINADO: DESMONTAJE</div>
       <div class="ref-subtitulo">Recupera componentes útiles de la chatarra.</div>
     </div>
+    <div class="ref-reloj" id="ref-reloj">
+      <span class="ref-reloj-label">Tiempo</span>
+      <div class="ref-reloj-barra"><div class="ref-reloj-fill" id="ref-reloj-fill"></div></div>
+      <span class="ref-reloj-num" id="ref-reloj-num">90s</span>
+    </div>
+    <div class="ref-pedido" id="ref-pedido"></div>
     <div class="ref-calidad">
       <span class="ref-calidad-label">Calidad</span>
       <div class="ref-calidad-barra"><div class="ref-calidad-fill" id="ref-calidad-fill"></div></div>
       <span class="ref-calidad-num" id="ref-calidad-num">0%</span>
+    </div>
+    <div class="ref-chatarra" id="ref-chatarra">
+      <span class="ref-chatarra-label">Chatarra</span>
+      <div class="ref-chatarra-barra"><div class="ref-chatarra-fill" id="ref-chatarra-fill"></div></div>
     </div>
     <div class="ref-objetivos" id="ref-objetivos"></div>
     <div class="ref-tablero-marco">
@@ -857,7 +867,7 @@
 
   <!-- ===== SCRIPTS MODULARES (ORDEN IMPORTA) ===== -->
   <script src="00_LAUNCHER.js"></script>
-  <script src="js/01_recursos.js"></script>
+  <script src="js/01_recursos.js?v=0910"></script>
   <script src="js/02_utilidades_fondo.js"></script>
   <script src="js/03_audio_referencia.js"></script>
   <script src="js/04_estado_jugador.js"></script>
@@ -914,7 +924,7 @@
   <script src="js/56_expedicion.js"></script>
   <script src="js/57_expedicion_ui.js"></script>
   <script src="js/58_mercado.js"></script>
-  <script src="js/59_refinado.js?v=0907"></script>
+  <script src="js/59_refinado.js?v=0910"></script>
   <script src="js/60_fx.js"></script>
   <script src="js/46_momentos_ia.js"></script>
   <script src="js/41_explorar.js"></script>
