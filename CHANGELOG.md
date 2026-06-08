@@ -2,6 +2,11 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.90.2] - 2026-06-08
+### Fixed
+- Reforzada la apertura del minijuego de refinado para que siempre muestre la pantalla, con varios respaldos si el cambio de escena fallaba.
+- Añadido un aviso temporal al abrir el desmontaje para diagnóstico.
+
 ## [0.90] - 2026-06-08
 ### Added
 - El minijuego de refinado ya está conectado con el botín real. El botón "Procesar chatarra" del Scavenger lanza el desmontaje en vez de resolverse solo.

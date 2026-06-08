@@ -343,17 +343,24 @@ function iniciarRefinado(){
 
 let _refVolverA = 'apartamento';
 
-function abrirRefinado(volverA){
-  // Coste de entrada: consume REF_COSTE_CHATARRA de materia prima (chatarra
-  // normal + en bruto cuentan juntas). Si no llega, avisa y no entra.
-  const total = (typeof contarChatarraTotal === 'function') ? contarChatarraTotal() : 0;
-  if(total < REF_COSTE_CHATARRA){
-    if(typeof notificarCambio === 'function'){
-      notificarCambio(`Necesitas ${REF_COSTE_CHATARRA} de chatarra para desmontar (tienes ${total})`, 'error');
+function abrirRefinado(volverA, opciones){
+  // [DIAGNÓSTICO v0.90.2] traza visible para confirmar que este código se
+  // ejecuta. Si ves este aviso al pulsar, el módulo carga bien.
+  try { if(typeof notificarCambio === 'function') notificarCambio('Abriendo desmontaje…', 'aviso'); } catch(e){}
+  opciones = opciones || {};
+  const cobrar = opciones.cobrar !== false;   // por defecto cobra chatarra
+  if(cobrar){
+    // Coste de entrada: consume REF_COSTE_CHATARRA de materia prima (chatarra
+    // normal + en bruto cuentan juntas). Si no llega, avisa y no entra.
+    const total = (typeof contarChatarraTotal === 'function') ? contarChatarraTotal() : 0;
+    if(total < REF_COSTE_CHATARRA){
+      if(typeof notificarCambio === 'function'){
+        notificarCambio(`Necesitas ${REF_COSTE_CHATARRA} de chatarra para desmontar (tienes ${total})`, 'error');
+      }
+      return false;
     }
-    return false;
+    if(typeof consumirChatarraTotal === 'function') consumirChatarraTotal(REF_COSTE_CHATARRA);
   }
-  if(typeof consumirChatarraTotal === 'function') consumirChatarraTotal(REF_COSTE_CHATARRA);
 
   _refVolverA = volverA || 'apartamento';
   iniciarRefinado();
@@ -362,9 +369,27 @@ function abrirRefinado(volverA){
   _refPintarTablero();
   const desde = document.querySelector('.escena.activa');
   const idDesde = desde ? desde.id : _refVolverA;
+  const escRef = document.getElementById('refinado-escena');
   if(idDesde === 'refinado-escena'){ return true; }
-  if(typeof cambiarEscena === 'function') cambiarEscena(idDesde, 'refinado-escena');
-  else { const e = document.getElementById('refinado-escena'); if(e) e.classList.add('activa'); }
+  // Cambio de escena con respaldo: si cambiarEscena no existe o falla,
+  // activamos la escena a mano para que SIEMPRE se abra.
+  let ok = false;
+  try {
+    if(typeof cambiarEscena === 'function'){ cambiarEscena(idDesde, 'refinado-escena'); ok = true; }
+  } catch(e){ ok = false; }
+  if(!ok && escRef){
+    if(desde) desde.classList.remove('activa');
+    escRef.classList.add('activa');
+  }
+  // Garantía final: tras un instante, si la escena no quedó activa, forzarla.
+  setTimeout(() => {
+    const e = document.getElementById('refinado-escena');
+    if(e && !e.classList.contains('activa')){
+      const act = document.querySelector('.escena.activa');
+      if(act && act.id !== 'refinado-escena') act.classList.remove('activa');
+      e.classList.add('activa');
+    }
+  }, 700);
   _refFX('panel_abrir', 0.5);
   return true;
 }

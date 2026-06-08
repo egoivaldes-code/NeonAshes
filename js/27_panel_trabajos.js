@@ -313,28 +313,36 @@ function ejercerProfesionDesdePanel(idProf, idAccion){
 // (refinada + créditos + hallazgos) la entrega el minijuego al terminar.
 function procesarChatarraMinijuego(idProf, idAccion){
   const COSTE = (typeof REF_COSTE_CHATARRA !== 'undefined') ? REF_COSTE_CHATARRA : 3;
+  const aviso = (m) => { if(typeof notificarCambio === 'function') notificarCambio(m, 'aviso'); };
+
+  // 1) Chatarra suficiente (normal + en bruto cuentan juntas).
   const tiene = (typeof contarChatarraTotal === 'function') ? contarChatarraTotal() : 0;
-  if(tiene < COSTE){
-    if(typeof notificarCambio === 'function'){
-      notificarCambio(`Necesitas ${COSTE} de chatarra para desmontar (tienes ${tiene})`, 'aviso');
-    }
-    return;
-  }
-  // Aplicar costes y progreso de la profesión (sin paga).
+  if(tiene < COSTE){ aviso(`Necesitas ${COSTE} de chatarra para desmontar (tienes ${tiene})`); return; }
+
+  // 2) Aplicar costes y progreso de la profesión (sin paga). Si está
+  //    bloqueado, avisar SIEMPRE del motivo (nunca fallar en silencio).
   if(typeof aplicarTrabajoRefinado === 'function'){
-    const r = aplicarTrabajoRefinado(idProf, idAccion);
-    if(r && r.bloqueado){
-      if(r.minutosRestantes && typeof notificarCambio === 'function'){
+    const r = aplicarTrabajoRefinado(idProf, idAccion) || {};
+    if(r.bloqueado){
+      if(r.minutosRestantes){
         const h = Math.floor(r.minutosRestantes / 60), m = r.minutosRestantes % 60;
-        notificarCambio(`Aún no puedes procesar (faltan ${h>0?h+' h ':''}${m} min)`, 'aviso');
+        aviso(`Aún no puedes procesar (faltan ${h>0?h+' h ':''}${m} min)`);
+      } else {
+        aviso('No puedes procesar chatarra ahora mismo.');
       }
-      _refrescarSubcuerpoTrabajos();
+      if(typeof _refrescarSubcuerpoTrabajos === 'function') _refrescarSubcuerpoTrabajos();
       return;
     }
   }
-  // Abrir el minijuego (consume la chatarra él mismo y da la recompensa).
-  if(typeof abrirRefinado === 'function') abrirRefinado('apartamento');
-  _refrescarSubcuerpoTrabajos();
+
+  // 3) Abrir el minijuego (consume la chatarra él mismo y da la recompensa).
+  if(typeof abrirRefinado === 'function'){
+    const abierto = abrirRefinado('apartamento');
+    if(!abierto) aviso('No se pudo abrir el desmontaje.');
+  } else {
+    aviso('El módulo de refinado no está disponible.');
+  }
+  if(typeof _refrescarSubcuerpoTrabajos === 'function') _refrescarSubcuerpoTrabajos();
 }
 
 // Re-renderiza solo el cuerpo de la subpestaña activa.
