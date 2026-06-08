@@ -81,7 +81,10 @@ function _expMotivoBloqueo(zona){
   const req = zona.requisito;
   if(!req) return 'Acceso restringido.';
   if(req.tipo === 'llave') return 'Necesitas una llave que aún no tienes.';
-  if(req.tipo === 'rango') return 'Reservada a carroñeros de mayor rango.';
+  if(req.tipo === 'rango'){
+    const r = req.rango || '';
+    return 'Reservada a rango ' + r + ' o superior.';
+  }
   return 'Acceso restringido.';
 }
 

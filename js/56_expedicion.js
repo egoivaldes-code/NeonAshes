@@ -138,7 +138,7 @@ const ZONAS_EXPEDICION = {
     eventosMin: 6,
     eventosMax: 8,
     bloqueada: true,
-    requisito: { tipo: 'rango', rango: 'recuperador' },
+    requisito: { tipo: 'rango', rango: 'Buzo de Chatarra' },
     tablaBotin: [
       { peso: 3, creditos: [90, 180], items: [{ id:'nucleo_optico', cant:[1,2] }] },
       { peso: 2, creditos: [120, 240], items: [{ id:'servidor_hundido', cant:[1,1] }] }
@@ -338,14 +338,40 @@ function zonaDisponible(idZona){
     return (typeof tieneItem === 'function') ? tieneItem(req.id) : false;
   }
   if(req.tipo === 'rango'){
-    // Engancha con profesiones en el paso 3; de momento, defensivo.
-    if(typeof estadoProfesion === 'function'){
-      const est = estadoProfesion('scavenger');
-      return !!(est && est.rango && String(est.rango).toLowerCase().includes(req.rango));
-    }
-    return false;
+    // Comparar por ÍNDICE de rango (est.rango es un número 0..5), no por
+    // texto. Mapeamos el nombre de rango requerido a su índice en la
+    // profesión y comprobamos que el jugador lo alcanza o supera.
+    if(typeof estadoProfesion !== 'function') return false;
+    const est = estadoProfesion('scavenger');
+    if(!est || !est.activa) return false;
+    const idxReq = _refIndiceRango(req.rango);
+    if(idxReq < 0) return false;
+    return (est.rango || 0) >= idxReq;
   }
   return false;
+}
+
+// Devuelve el índice del rango del scavenger cuyo nombre coincide (sin
+// distinguir mayúsculas/acentos), o -1 si no se encuentra. Usa una tabla
+// fija para no depender del orden de carga de PROFESIONES.
+function _refIndiceRango(nombreRango){
+  const norm = (s) => String(s || '').toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  // Orden oficial de rangos del scavenger (debe coincidir con 51_profesiones).
+  const RANGOS_SCAVENGER = [
+    'rastreador', 'carronero', 'buzo de chatarra',
+    'desguazador', 'recuperador', 'arqueotecnico'
+  ];
+  // Si PROFESIONES está disponible, preferimos su lista real.
+  let lista = RANGOS_SCAVENGER;
+  try {
+    if(typeof PROFESIONES !== 'undefined'){
+      const prof = PROFESIONES.find(p => p.id === 'scavenger');
+      if(prof && Array.isArray(prof.rangos)) lista = prof.rangos.map(r => norm(r.nombre));
+    }
+  } catch(e){}
+  const objetivo = norm(nombreRango);
+  return lista.findIndex(r => norm(r).includes(objetivo) || objetivo.includes(norm(r)));
 }
 
 // Inicia una run en la zona dada. Copia el equipo elegido a la run.

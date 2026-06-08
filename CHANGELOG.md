@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.90.8] - 2026-06-08
+### Fixed
+- El Depósito Orbital ya se puede desbloquear. La comprobación de rango estaba rota (comparaba texto con un número) y la zona era inalcanzable. Ahora se desbloquea al alcanzar el rango Buzo de Chatarra.
+### Changed
+- El Depósito Orbital pide ahora rango Buzo de Chatarra (antes Recuperador).
+- El candado de las zonas por rango indica el rango concreto que hace falta.
+
 ## [0.90.7] - 2026-06-08
 ### Fixed
 - Al abrir el refinado desde "Procesar chatarra", el panel de profesiones se cierra solo. Antes quedaba por encima y había que cerrarlo a mano para ver el tablero.
