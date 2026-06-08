@@ -320,6 +320,53 @@ const EVENTOS_EXPEDICION = [
       { texto: 'Reventarlo para sacarlo todo de golpe', tono:'VENAL', alerta:12, botin:true, probExito:0.65, herida:'herida_brazo_d_leve' },
       { texto: 'No fiarte de algo que aún respira', tono:'EVASIVO', alerta:0, botin:false }
     ]
+  },
+
+  // ============================================================
+  // EVENTOS QUE REACCIONAN AL INVENTARIO REAL (v0.92)
+  // requiereItem/vetaItem filtran por inventario del catálogo; itemFijo
+  // concede un id concreto (raros). Encajan con el botín del refinado.
+  // ============================================================
+  {
+    id: 'nicho_servidor',
+    peso: 2,
+    narracion: 'Tras una placa suelta hay un nicho sellado, de los que HELIX usaba para enterrar memoria que no quería perder ni encontrar. Un servidor antiguo, intacto, late despacio en la penumbra.',
+    opciones: [
+      { texto: 'Extraerlo con el analizador', tono:'FRIO', requiere:'analizador', gasta:{ carga_analizador:1 }, alerta:5, botin:false, itemFijo:{ id:'servidor_hundido', cant:1 }, probExito:0.9 },
+      { texto: 'Arrancarlo a lo bruto', tono:'VENAL', alerta:14, botin:false, itemFijo:{ id:'servidor_hundido', cant:1 }, probExito:0.55, herida:'herida_brazo_d_leve' },
+      { texto: 'Dejarlo: algo así pesa de más', tono:'EVASIVO', alerta:0, botin:false }
+    ]
+  },
+  {
+    id: 'comprador_campo',
+    peso: 2,
+    narracion: 'Un perista con un carrito blindado ha montado tienda entre los escombros. No vende: compra. Ve cómo cargas y entrecierra los ojos. «Tú sabes dónde se encuentran las cosas buenas. Comparte y te indico un alijo que nadie ha tocado.»',
+    opciones: [
+      { texto: 'Enseñarle lo que has sacado', tono:'VENAL', requiereItem:'servidor_hundido', alerta:2, botin:true },
+      { texto: 'Preguntar qué compra hoy', tono:'FRIO', alerta:1, botin:true, botinReducido:true },
+      { texto: 'No te fías, sigues', tono:'EVASIVO', alerta:0, botin:false }
+    ]
+  },
+  {
+    id: 'puerta_imantada',
+    peso: 2,
+    narracion: 'Una puerta de seguridad con cerradura magnética corta un pasillo entero. Lo que sea que guardan ahí, lo guardan en serio.',
+    opciones: [
+      { texto: 'Abrir con la llave magnética', tono:'FRIO', requiereItem:'llave_magnetica', alerta:1, botin:true },
+      { texto: 'Forzar el panel con ganzúa', tono:'FRIO', requiere:'ganzua', gasta:{ ganzua:1 }, alerta:6, botin:true, botinReducido:true, probExito:0.7 },
+      { texto: 'Reventar la bisagra a la fuerza', tono:'VIOLENTO', alerta:18, botin:true, botinReducido:true, probExito:0.8, multa:50 },
+      { texto: 'Buscar otra ruta', tono:'EVASIVO', alerta:0, botin:false }
+    ]
+  },
+  {
+    id: 'vena_optica',
+    peso: 1,
+    narracion: 'Un haz de fibra óptica recorre la pared como una vena, y en su nudo central algo brilla con una luz que no debería seguir encendida después de tantos años. Un núcleo. De los raros.',
+    opciones: [
+      { texto: 'Cortar la fibra con cuidado quirúrgico', tono:'FRIO', requiere:'palanca_termica', alerta:6, botin:false, itemFijo:{ id:'nucleo_optico', cant:1 }, probExito:0.85 },
+      { texto: 'Arrancar el nudo de un tirón', tono:'VENAL', alerta:10, botin:false, itemFijo:{ id:'nucleo_optico', cant:1 }, probExito:0.5, herida:'herida_brazo_d_leve' },
+      { texto: 'No tocarlo: esa luz no es natural', tono:'EVASIVO', alerta:0, botin:false }
+    ]
   }
 ];
 
@@ -422,9 +469,13 @@ function siguienteEventoExpedicion(){
   if(!elegido) return null;
 
   // Filtrar opciones: si una 'requiere' equipo que no llevas, se cae.
+  // (v0.92) Además, 'requiereItem'/'vetaItem' filtran por el inventario
+  // REAL del jugador (catálogo), no por el equipo de la run.
   const opcionesDisponibles = (elegido.opciones || []).filter(op => {
-    if(!op.requiere) return true;
-    return _expTieneEquipo(op.requiere);
+    if(op.requiere && !_expTieneEquipo(op.requiere)) return false;
+    if(op.requiereItem && !(typeof tieneItem==='function' && tieneItem(op.requiereItem))) return false;
+    if(op.vetaItem && (typeof tieneItem==='function' && tieneItem(op.vetaItem))) return false;
+    return true;
   });
 
   return Object.assign({}, elegido, { opciones: opcionesDisponibles });
@@ -474,6 +525,15 @@ function resolverOpcionExpedicion(evento, opcion){
     const botin = _expTirarBotin(z, opcion.botinReducido);
     _expSumarBotinBruto(botin);
     resumen.botin = botin;
+  }
+  // 4b) Item FIJO concedido por la opción (v0.92): un id concreto del
+  // catálogo (p.ej. un raro), independiente de la tabla de la zona. Se
+  // suma al botín bruto para materializarse al extraer, como el resto.
+  if(opcion.itemFijo && exito){
+    const fijo = { creditos:0, items:[{ id: opcion.itemFijo.id, cantidad: opcion.itemFijo.cant || 1 }] };
+    _expSumarBotinBruto(fijo);
+    if(!resumen.botin) resumen.botin = { creditos:0, items:[] };
+    resumen.botin.items = (resumen.botin.items || []).concat(fijo.items);
   }
 
   // 5) Herida probabilística (si falla y la opción puede herir).

@@ -182,6 +182,16 @@ function aplicarCambios(c){
       notificarCambio('+ ' + c.item.toUpperCase(), 'pos');
     }, 2000);
   }
+  // Items REALES del catálogo (v0.92). A diferencia de c.item (string de
+  // adorno antiguo), estos entran al inventario real por su id y pueden
+  // consultarse luego con tieneItem() para ramificar otros eventos.
+  if(c.itemId && typeof darItemPorId === 'function'){
+    darItemPorId(c.itemId);
+    setTimeout(()=>{ notificarCambio('+ OBJETO', 'pos'); }, 2000);
+  }
+  if(c.quitaItemId && typeof quitarItem === 'function'){
+    quitarItem(c.quitaItemId, c.quitaItemCant || 1);
+  }
   // Cambios al estado humano (fatiga, aislamiento, hambre, disociacion).
   // No mostramos notificación: el panel ESTADO lo refleja con sus textos.
   if(c.humano){

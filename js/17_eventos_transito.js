@@ -317,6 +317,63 @@ const eventos = [
       {txt:'Pasar sin más.', cambios:{}, msg:'No te llama. Pero al final de la calle, aún notas su mirada en la nuca.'},
     ]
   },
+
+  // ============================================================
+  // EVENTOS QUE REACCIONAN AL INVENTARIO REAL (v0.92)
+  // Las opciones con requiereItem / vetaItem solo aparecen según lo
+  // que llevas encima. Los efectos usan itemId/quitaItemId del catálogo.
+  // ============================================================
+  {
+    titulo: 'COMPRADOR DE RAREZAS',
+    narr: 'Un hombre flaco con guantes sin dedos te corta el paso bajo un toldo que gotea. No mira tu cara: mira tus bolsillos. «Corre el rumor de que alguien lleva un servidor hundido. De los de antes. De los que aún hablan.» Espera, paciente como un buitre educado.',
+    opciones: [
+      {txt:'Vender el servidor hundido (200 CR).', requiereItem:'servidor_hundido',
+        cambios:{ quitaItemId:'servidor_hundido', creditos:+200, humano:{aislamiento:+2} },
+        msg:'Lo envuelve en tela antes de que termines de soltarlo, como quien recoge algo vivo. Te paga sin regatear, y eso es lo que más te inquieta. «No preguntes para quién es», dice. No ibas a hacerlo.'},
+      {txt:'«No sé de qué me hablas.»', vetaItem:'servidor_hundido', cambios:{},
+        msg:'Te estudia un segundo más, decide que dices la verdad, y se disuelve entre la gente. Te quedas con la sensación de que sabía algo que tú no.'},
+      {txt:'Negarte a vender, lo necesitas.', requiereItem:'servidor_hundido', cambios:{reputacion:+1},
+        msg:'«Como quieras. Pero ese trasto pesa más de lo que crees, y no hablo de kilos.» Se va. La frase se te queda dentro.'},
+    ]
+  },
+  {
+    titulo: 'NIÑO DEL NÚCLEO',
+    narr: 'Un crío descalzo te sigue media calle sin pedir nada. Cuando por fin habla, no pide dinero. «Eso que llevas zumba. Bajito. ¿Lo oyes?» Y tú, que no habías querido pensarlo, también lo oías.',
+    opciones: [
+      {txt:'Enseñarle el núcleo óptico.', requiereItem:'nucleo_optico',
+        cambios:{ humano:{disociacion:+8, aislamiento:-2} },
+        msg:'El crío acerca la oreja sin tocarlo. Sonríe con una calma que no es de niño. «Dice que ya casi.» Antes de que preguntes qué, ya ha echado a correr. El zumbido, ahora lo notas, sigue tu pulso.'},
+      {txt:'«No llevo nada. Vete a casa.»', cambios:{humano:{aislamiento:+1}},
+        msg:'Se encoge de hombros y se queda mirando cómo te alejas. No te sigue. Pero el zumbido no se va.'},
+    ]
+  },
+  {
+    titulo: 'CONTROL DE DATOS',
+    narr: 'Un escáner portátil montado en un trípode barre la acera. Un técnico de HELIX con cara de no cobrar suficiente revisa los resultados en una tablet. Tu bolsillo, de pronto, pesa.',
+    opciones: [
+      {txt:'Tirar el chip corrupto antes de pasar.', requiereItem:'chip_datos_corrupto',
+        cambios:{ quitaItemId:'chip_datos_corrupto', humano:{aislamiento:+3} },
+        msg:'Lo dejas caer por una rejilla sin frenar el paso. El escáner pita en verde. El técnico ni levanta la vista. Mejor perder un objeto que una tarde en una sala sin ventanas.'},
+      {txt:'Pasar con el chip encima y rezar.', requiereItem:'chip_datos_corrupto',
+        cambios:{}, msg:'El escáner duda. Parpadea. El técnico frunce el ceño, da un golpecito a la tablet... y lo achaca a un fallo del trasto. Pasas. Las piernas tardan en creérselo.'},
+      {txt:'Cruzar tranquilo, no llevas nada raro.', vetaItem:'chip_datos_corrupto',
+        cambios:{}, msg:'El escáner te despacha en verde. El técnico bosteza. Por una vez, no tener nada que esconder es un lujo.'},
+    ]
+  },
+  {
+    titulo: 'PUERTA QUE NO ABRE',
+    narr: 'Un hombre forcejea con una puerta de servicio atascada, cargado con cajas que se le resbalan. Te ve. «Eh, tú. ¿No tendrás una palanca o algo de esas? Esta mierda lleva años sin abrir bien.»',
+    opciones: [
+      {txt:'Prestarle la palanca térmica.', requiereItem:'palanca_termica',
+        cambios:{ reputacion:+3, humano:{aislamiento:-2} },
+        msg:'En treinta segundos la puerta cede con un chasquido. Te devuelve la palanca y mete medio cuerpo en el almacén. «Me has salvado el turno. Si vuelves por aquí, pregunta por Beto.» Un nombre. En esta ciudad, un nombre vale.'},
+      {txt:'Echarle una mano a pulso.', vetaItem:'palanca_termica',
+        cambios:{ humano:{fatiga:+5, aislamiento:-1}, reputacion:+1 },
+        msg:'Entre los dos, a base de hombros y blasfemias, la puerta acaba cediendo. Acabas sudando y con el hombro dolorido, pero él te aprieta el brazo con algo parecido a la gratitud.'},
+      {txt:'Seguir, no es tu problema.', cambios:{humano:{aislamiento:+1}},
+        msg:'«Ya, claro. Nadie ayuda a nadie aquí.» Lo dice sin rencor, como quien constata el tiempo. Sigues caminando bajo esa verdad.'},
+    ]
+  },
 ];
 
 function intentarEventoAleatorio(callback){
@@ -339,12 +396,26 @@ function mostrarEvento(ev, callback){
   const opc = document.getElementById('evt-opciones');
   opc.innerHTML = '';
   ev.opciones.forEach(o=>{
+    // Filtrado por inventario REAL del catálogo (v0.92):
+    //   requiereItem — la opción solo aparece si tienes ese id.
+    //   vetaItem     — la opción solo aparece si NO tienes ese id.
+    if(o.requiereItem && !(typeof tieneItem==='function' && tieneItem(o.requiereItem))) return;
+    if(o.vetaItem && (typeof tieneItem==='function' && tieneItem(o.vetaItem))) return;
     const btn = document.createElement('button');
     btn.className = 'evento-opc';
     btn.textContent = o.txt;
     btn.onclick = ()=> elegirOpcionEvento(o, callback);
     opc.appendChild(btn);
   });
+  // Si tras el filtrado no queda ninguna opción visible, garantizamos una
+  // salida para no dejar al jugador atascado.
+  if(opc.children.length === 0){
+    const btn = document.createElement('button');
+    btn.className = 'evento-opc';
+    btn.textContent = 'Seguir adelante.';
+    btn.onclick = ()=> elegirOpcionEvento({ txt:'Seguir adelante.', msg:'Sigues tu camino.', cambios:{} }, callback);
+    opc.appendChild(btn);
+  }
   document.getElementById('modal-evento').classList.add('visible');
 }
 

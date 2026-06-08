@@ -2,6 +2,12 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.92] - 2026-06-08
+### Added
+- Nuevos eventos de exploración, de scavenger y de tránsito cuyas opciones y desenlaces cambian según los objetos que lleva el jugador.
+### Changed
+- Los eventos de tránsito ahora entregan objetos reales del inventario en vez de objetos de adorno.
+
 ## [0.91] - 2026-06-08
 ### Added
 - Refinado capa 3: temporizador de 90 s, encargo con bonus, barra de chatarra que penaliza, y bomba de desguace (barrido 5x5).
