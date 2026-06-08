@@ -2,6 +2,10 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.90.4] - 2026-06-08
+### Fixed
+- El botón "Procesar chatarra" ya abre el minijuego de refinado. Se fuerza la recarga de los archivos del juego para evitar versiones antiguas guardadas en el navegador, y se retiran los avisos de diagnóstico.
+
 ## [0.90.3] - 2026-06-08
 ### Fixed
 - Diagnóstico del botón "Procesar chatarra": añadido aviso al pulsarlo y reforzada la conexión con el minijuego de refinado.

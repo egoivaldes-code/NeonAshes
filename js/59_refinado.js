@@ -344,9 +344,6 @@ function iniciarRefinado(){
 let _refVolverA = 'apartamento';
 
 function abrirRefinado(volverA, opciones){
-  // [DIAGNÓSTICO v0.90.2] traza visible para confirmar que este código se
-  // ejecuta. Si ves este aviso al pulsar, el módulo carga bien.
-  try { if(typeof notificarCambio === 'function') notificarCambio('Abriendo desmontaje…', 'aviso'); } catch(e){}
   opciones = opciones || {};
   const cobrar = opciones.cobrar !== false;   // por defecto cobra chatarra
   if(cobrar){
