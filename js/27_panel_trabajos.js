@@ -177,19 +177,21 @@ function renderTrabajosOficio(){
             <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
               onclick="abrirLugaresDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
         } else if(a.costeChatarra && a.costeChatarra > 0){
-          // Acción que consume chatarra (refinar). Mostrar el requisito
-          // y, si no hay suficiente, dejar el botón deshabilitado.
-          const tieneCh = (typeof contarChatarra === 'function') ? contarChatarra() : 0;
-          const llega = tieneCh >= a.costeChatarra;
+          // Acción que consume chatarra: ahora lanza el MINIJUEGO de
+          // refinado. El coste es REF_COSTE_CHATARRA (chatarra normal y en
+          // bruto cuentan juntas). Si no llega, botón deshabilitado.
+          const coste = (typeof REF_COSTE_CHATARRA !== 'undefined') ? REF_COSTE_CHATARRA : 3;
+          const tieneCh = (typeof contarChatarraTotal === 'function') ? contarChatarraTotal() : 0;
+          const llega = tieneCh >= coste;
           if(llega){
             botonesAccion += `
             <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
-              onclick="ejercerProfesionDesdePanel('${p.id}','${a.id}')">${a.nombre}
-              <span style="opacity:0.6;font-size:0.85em;">· cuesta ${a.costeChatarra} chatarra</span></button>`;
+              onclick="procesarChatarraMinijuego('${p.id}','${a.id}')">${a.nombre}
+              <span style="opacity:0.6;font-size:0.85em;">· cuesta ${coste} chatarra</span></button>`;
           } else {
             botonesAccion += `
             <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;opacity:0.4;" disabled>
-              ${a.nombre} <span style="font-size:0.85em;">· requiere ${a.costeChatarra} chatarra (tienes ${tieneCh})</span></button>`;
+              ${a.nombre} <span style="font-size:0.85em;">· requiere ${coste} chatarra (tienes ${tieneCh})</span></button>`;
           }
         } else {
           botonesAccion += `
@@ -302,6 +304,36 @@ function ejercerProfesionDesdePanel(idProf, idAccion){
       _ultimoResultadoProfesion = r;
     }
   }
+  _refrescarSubcuerpoTrabajos();
+}
+
+// Lanza el minijuego de refinado desde el botón "Procesar chatarra".
+// Comprueba chatarra suficiente, aplica los costes/progreso de la
+// profesión (tiempo, cooldown 4h, rango) y abre el tablero. La recompensa
+// (refinada + créditos + hallazgos) la entrega el minijuego al terminar.
+function procesarChatarraMinijuego(idProf, idAccion){
+  const COSTE = (typeof REF_COSTE_CHATARRA !== 'undefined') ? REF_COSTE_CHATARRA : 3;
+  const tiene = (typeof contarChatarraTotal === 'function') ? contarChatarraTotal() : 0;
+  if(tiene < COSTE){
+    if(typeof notificarCambio === 'function'){
+      notificarCambio(`Necesitas ${COSTE} de chatarra para desmontar (tienes ${tiene})`, 'aviso');
+    }
+    return;
+  }
+  // Aplicar costes y progreso de la profesión (sin paga).
+  if(typeof aplicarTrabajoRefinado === 'function'){
+    const r = aplicarTrabajoRefinado(idProf, idAccion);
+    if(r && r.bloqueado){
+      if(r.minutosRestantes && typeof notificarCambio === 'function'){
+        const h = Math.floor(r.minutosRestantes / 60), m = r.minutosRestantes % 60;
+        notificarCambio(`Aún no puedes procesar (faltan ${h>0?h+' h ':''}${m} min)`, 'aviso');
+      }
+      _refrescarSubcuerpoTrabajos();
+      return;
+    }
+  }
+  // Abrir el minijuego (consume la chatarra él mismo y da la recompensa).
+  if(typeof abrirRefinado === 'function') abrirRefinado('apartamento');
   _refrescarSubcuerpoTrabajos();
 }
 

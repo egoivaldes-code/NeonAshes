@@ -2,6 +2,12 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.90] - 2026-06-08
+### Added
+- El minijuego de refinado ya está conectado con el botín real. El botón "Procesar chatarra" del Scavenger lanza el desmontaje en vez de resolverse solo.
+- El refinado cuesta 3 de chatarra (la normal y la "en bruto" de expediciones cuentan juntas) y mantiene el tiempo de juego, el cooldown de 4 h y la subida de rango de la acción anterior.
+- Al terminar, una pantalla de resumen entrega chatarra refinada (vendible), créditos según la calidad alcanzada, y los hallazgos (memoria, chip HELIX, núcleo CERO) convertidos en objetos reales del inventario. Cuanto mejor se juega, más se obtiene.
+
 ## [0.89.6] - 2026-06-07
 ### Changed
 - Refinado en móvil: el tablero ahora cabe entero en pantalla sin scroll. Las fichas se ajustan de tamaño para que las ocho filas siempre quepan entre la cabecera y el botón.

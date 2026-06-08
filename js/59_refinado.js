@@ -68,6 +68,22 @@ const REF_HALLAZGOS = [
 const REF_FILAS = 8;
 const REF_COLS = 7;
 
+// ── BALANCE DEL REFINADO (enganche con el botín real) ──────────
+// Coste de entrada: cada partida consume materia prima (chatarra). La
+// normal y la "en bruto" de expedición cuentan como una sola.
+const REF_COSTE_CHATARRA = 3;
+// Conversión a la salida: por cada N componentes extraídos se obtiene 1
+// de chatarra refinada (vendible). La calidad final da un plus de créditos.
+const REF_COMPONENTES_POR_REFINADA = 5;
+const REF_CREDITOS_POR_CALIDAD = 0.8;   // créditos ≈ calidad(0..100) × esto
+// Mapeo de los hallazgos del minijuego a items REALES del catálogo, para
+// volcarlos al inventario al terminar.
+const REF_HALLAZGO_ITEM = {
+  memoria:     'servidor_hundido',
+  chip_corr:   'chip_datos_corrupto',
+  nucleo_cero: 'nucleo_optico'
+};
+
 let _refTablero = null;     // matriz [fila][col] = { clave, especial }
 let _refSeleccion = null;   // {f,c} de la primera ficha tocada
 let _refExtraidos = {};     // conteo por clave: { procesador: 5, ... }
@@ -328,6 +344,17 @@ function iniciarRefinado(){
 let _refVolverA = 'apartamento';
 
 function abrirRefinado(volverA){
+  // Coste de entrada: consume REF_COSTE_CHATARRA de materia prima (chatarra
+  // normal + en bruto cuentan juntas). Si no llega, avisa y no entra.
+  const total = (typeof contarChatarraTotal === 'function') ? contarChatarraTotal() : 0;
+  if(total < REF_COSTE_CHATARRA){
+    if(typeof notificarCambio === 'function'){
+      notificarCambio(`Necesitas ${REF_COSTE_CHATARRA} de chatarra para desmontar (tienes ${total})`, 'error');
+    }
+    return false;
+  }
+  if(typeof consumirChatarraTotal === 'function') consumirChatarraTotal(REF_COSTE_CHATARRA);
+
   _refVolverA = volverA || 'apartamento';
   iniciarRefinado();
   _refPintarObjetivos();
@@ -335,10 +362,11 @@ function abrirRefinado(volverA){
   _refPintarTablero();
   const desde = document.querySelector('.escena.activa');
   const idDesde = desde ? desde.id : _refVolverA;
-  if(idDesde === 'refinado-escena') return;
+  if(idDesde === 'refinado-escena'){ return true; }
   if(typeof cambiarEscena === 'function') cambiarEscena(idDesde, 'refinado-escena');
   else { const e = document.getElementById('refinado-escena'); if(e) e.classList.add('activa'); }
   _refFX('panel_abrir', 0.5);
+  return true;
 }
 
 // Pinta el contador de componentes extraídos + hallazgos.
@@ -570,17 +598,96 @@ function _refMostrarHallazgo(clave){
 }
 let _refHallazgoTO = null;
 
-// Cierra el refinado (capa 2: sigue sin enganche de botín; eso es futuro).
-function terminarRefinado(){
+// Calcula la recompensa de la partida a partir de lo extraído, la calidad
+// y los hallazgos. Devuelve un objeto-resumen y aplica los efectos reales
+// (chatarra refinada + créditos + hallazgos al inventario).
+function _refResolverRecompensa(){
+  // 1) Total de componentes extraídos (sin contar chatarra basura).
+  let totalComp = 0;
+  Object.keys(_refExtraidos).forEach(k => { totalComp += (_refExtraidos[k] || 0); });
+
+  // 2) Chatarra refinada: 1 por cada N componentes, con un plus por calidad.
+  const factorCalidad = 1 + (_refCalidad / 100) * 0.5;   // hasta +50% a calidad máxima
+  let refinada = Math.floor((totalComp / REF_COMPONENTES_POR_REFINADA) * factorCalidad);
+  if(totalComp > 0 && refinada < 1) refinada = 1;        // algo siempre sale
+
+  // 3) Créditos directos por calidad (pico modesto).
+  const creditos = Math.round(_refCalidad * REF_CREDITOS_POR_CALIDAD);
+
+  // 4) Aplicar efectos.
+  if(refinada > 0 && typeof darItem === 'function'){
+    darItem({ id:'chatarra_refinada', nombre:'Chatarra refinada', tipo:'material',
+      apilable:true,
+      desc:'Material limpio y clasificado, listo para vender. Vale bastante más que la chatarra en bruto.',
+      cantidad:refinada });
+  }
+  if(creditos > 0 && typeof ajustarCreditos === 'function') ajustarCreditos(creditos);
+
+  // 5) Hallazgos: volcar al inventario como items reales del catálogo.
+  const hallazgosDados = [];
+  Object.keys(_refHallados).forEach(clave => {
+    const n = _refHallados[clave] || 0;
+    if(n <= 0) return;
+    const itemId = REF_HALLAZGO_ITEM[clave];
+    const h = REF_HALLAZGOS.find(x => x.clave === clave);
+    if(itemId && typeof darItemPorId === 'function'){
+      for(let i = 0; i < n; i++) darItemPorId(itemId);
+    }
+    hallazgosDados.push({ nombre: h ? h.nombre : clave, n: n,
+      color: h ? h.color : '#fff', icono: h ? h.icono : '◆' });
+  });
+
+  if(typeof guardarPartida === 'function') guardarPartida();
+  return { totalComp, refinada, creditos, calidad: Math.round(_refCalidad), hallazgos: hallazgosDados };
+}
+
+// Pinta la pantalla de resumen sobre el tablero y espera a que el jugador
+// la cierre para salir de verdad.
+function _refMostrarResumen(r){
+  const cap = document.getElementById('ref-resumen');
+  if(!cap){ _refSalir(); return; }
+  let html = '<div class="ref-resumen-caja">'
+    + '<div class="ref-resumen-titulo">DESMONTAJE COMPLETADO</div>'
+    + '<div class="ref-resumen-linea"><span>Calidad alcanzada</span><span class="ref-resumen-val">'+r.calidad+'%</span></div>'
+    + '<div class="ref-resumen-linea"><span>Componentes recuperados</span><span class="ref-resumen-val">'+r.totalComp+'</span></div>'
+    + '<div class="ref-resumen-linea ref-resumen-premio"><span>Chatarra refinada</span><span class="ref-resumen-val">+'+r.refinada+'</span></div>'
+    + '<div class="ref-resumen-linea ref-resumen-premio"><span>Créditos</span><span class="ref-resumen-val">+'+r.creditos+' CR</span></div>';
+  if(r.hallazgos.length){
+    html += '<div class="ref-resumen-hallazgos-tit">Hallazgos</div>';
+    r.hallazgos.forEach(h => {
+      html += '<div class="ref-resumen-linea ref-resumen-hallazgo">'
+        + '<span style="color:'+h.color+'">'+h.icono+' '+h.nombre+'</span>'
+        + '<span class="ref-resumen-val">×'+h.n+'</span></div>';
+    });
+  }
+  html += '<button class="ref-resumen-cerrar" onclick="_refSalir()">RECOGER Y SALIR</button>'
+    + '</div>';
+  cap.innerHTML = html;
+  cap.classList.add('activo');
+  _refFX('sci_powerup', 0.55);
+}
+
+// Salida real de la escena (tras recoger el resumen).
+function _refSalir(){
   _refSeleccion = null;
+  const cap = document.getElementById('ref-resumen');
+  if(cap){ cap.classList.remove('activo'); cap.innerHTML = ''; }
   _refFX('terminal_cerrar', 0.5);
   if(typeof cambiarEscena === 'function') cambiarEscena('refinado-escena', _refVolverA);
   else { const e = document.getElementById('refinado-escena'); if(e) e.classList.remove('activa'); }
 }
 
+// Terminar: calcula y aplica la recompensa, luego muestra el resumen.
+function terminarRefinado(){
+  if(_refAnimando) return;   // no cerrar en mitad de una cascada
+  const r = _refResolverRecompensa();
+  _refMostrarResumen(r);
+}
+
 window.abrirRefinado = abrirRefinado;
 window.refTocarFicha = refTocarFicha;
 window.terminarRefinado = terminarRefinado;
+window._refSalir = _refSalir;
 window.iniciarRefinado = iniciarRefinado;
 window.refIntentarMovimiento = refIntentarMovimiento;
 window.REF_COMPONENTES = REF_COMPONENTES;

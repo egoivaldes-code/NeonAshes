@@ -69,10 +69,11 @@ const PROFESIONES = [
         pagaBase: [30, 45],
         progreso: 15,
         cooldownHoras: 4,
-        // Refinar consume materia prima: 5 unidades de chatarra por tanda.
-        // El panel muestra el requisito y bloquea la acción si no se llega.
-        costeChatarra: 5,
-        nota: 'Desmontar, clasificar, separar lo que vale de lo que no. Requiere 5 de chatarra. Trabajo lento, pago seguro.'
+        // Refinar consume materia prima: 3 unidades de chatarra por tanda
+        // (la normal y la "en bruto" de expedición cuentan juntas). Lanza
+        // el minijuego de desmontaje; la paga depende de cómo se juegue.
+        costeChatarra: 3,
+        nota: 'Desmontar pieza a pieza en la mesa de trabajo. Requiere 3 de chatarra. Lo que saques depende de tu pulso.'
       }
     ],
     // Lugares donde rebuscar al elegir "Salir a buscar chatarra".
@@ -410,3 +411,54 @@ function ejercerProfesion(idProf, idAccion, idLugar){
     rangoNuevo: rangoNuevo
   };
 }
+
+// ── Refinado vía minijuego (enganche del botín) ─────────────────
+// La acción "procesar" del Scavenger ya no resuelve sola: lanza el
+// minijuego de refinado. Esta función aplica los COSTES y el PROGRESO de
+// la profesión (tiempo de juego, cooldown 4h, avance de rango) PERO NO la
+// paga: los créditos, la chatarra refinada y los hallazgos los entrega el
+// propio minijuego al terminar, según cómo se haya jugado.
+// Devuelve { ok:true } si se puede entrar, o un objeto de bloqueo.
+function aplicarTrabajoRefinado(idProf, idAccion){
+  const prof = PROFESIONES.find(p => p.id === idProf);
+  if(!prof) return { bloqueado: true };
+  const est = estadoProfesion(idProf);
+  if(!est || !est.activa) return { bloqueado: true };
+  const accion = (prof.acciones || []).find(a => a.id === idAccion);
+  if(!accion) return { bloqueado: true };
+  if(Estado.muerto) return { bloqueado: true };
+
+  // Cooldown por acción.
+  const cd = cooldownProfesion(idProf, idAccion);
+  if(!cd.puede) return { bloqueado: true, minutosRestantes: cd.minutosRestantes };
+
+  // Tiempo de juego (puede cruzar medianoche y cobrar alquiler).
+  if(typeof avanzarTiempoJuego === 'function') avanzarTiempoJuego(accion.minutos || 60);
+  if(typeof comprobarCobrosDiarios === 'function') comprobarCobrosDiarios();
+
+  // Progreso y ascenso (igual que la acción vieja, sin paga).
+  est.progreso = (est.progreso || 0) + (accion.progreso || 0);
+  let ascendio = false, rangoNuevo = null;
+  const rangoActual = prof.rangos[est.rango || 0];
+  if(rangoActual && rangoActual.umbral > 0 && est.progreso >= rangoActual.umbral){
+    if((est.rango || 0) < prof.rangos.length - 1){
+      est.rango = (est.rango || 0) + 1;
+      est.progreso = est.progreso - rangoActual.umbral;
+      ascendio = true;
+      rangoNuevo = prof.rangos[est.rango].nombre;
+    }
+  }
+
+  // Actividad + sello de cooldown.
+  est.ultimoDiaISO = (typeof diaJuegoActual === 'function') ? diaJuegoActual() : est.ultimoDiaISO;
+  est.ultimoTrabajoMs = _ahoraJuegoMs();
+  if(!est.cooldownAcciones || typeof est.cooldownAcciones !== 'object') est.cooldownAcciones = {};
+  est.cooldownAcciones[idAccion] = _ahoraJuegoMs();
+  if(typeof guardarPartida === 'function') guardarPartida();
+
+  if(ascendio && typeof notificarCambio === 'function'){
+    notificarCambio(`ASCENSO · ${rangoNuevo}`, 'rango');
+  }
+  return { ok: true, ascendio: ascendio, rangoNuevo: rangoNuevo };
+}
+window.aplicarTrabajoRefinado = aplicarTrabajoRefinado;

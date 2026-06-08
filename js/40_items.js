@@ -274,8 +274,37 @@ function contarChatarra(){
   const it = Estado.inventario.find(i => i.id === 'chatarra');
   return it ? (it.cantidad || 0) : 0;
 }
+
+// ── Chatarra combinada: para el refinado, la chatarra normal ('chatarra')
+// y la "en bruto" de expediciones ('chatarra_cruda') cuentan como una sola
+// materia prima. Estos helpers suman ambas y consumen del total, gastando
+// primero la normal y luego la en bruto.
+function contarChatarraTotal(){
+  _asegurarInventario();
+  let n = 0;
+  Estado.inventario.forEach(i => {
+    if(i.id === 'chatarra' || i.id === 'chatarra_cruda') n += (i.cantidad || 0);
+  });
+  return n;
+}
+function consumirChatarraTotal(cantidad){
+  let restante = Math.max(0, cantidad || 0);
+  if(restante <= 0) return true;
+  if(contarChatarraTotal() < restante) return false;
+  // Gastar primero la normal, luego la en bruto.
+  ['chatarra', 'chatarra_cruda'].forEach(id => {
+    if(restante <= 0) return;
+    const it = Estado.inventario.find(i => i.id === id);
+    if(!it) return;
+    const usa = Math.min(it.cantidad || 0, restante);
+    if(usa > 0){ quitarItem(id, usa); restante -= usa; }
+  });
+  return restante <= 0;
+}
 window.darChatarra = darChatarra;
 window.contarChatarra = contarChatarra;
+window.contarChatarraTotal = contarChatarraTotal;
+window.consumirChatarraTotal = consumirChatarraTotal;
 
 window.darItem = darItem;
 window.quitarItem = quitarItem;
