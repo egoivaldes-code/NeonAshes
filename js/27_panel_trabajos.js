@@ -312,6 +312,9 @@ function ejercerProfesionDesdePanel(idProf, idAccion){
 // profesión (tiempo, cooldown 4h, rango) y abre el tablero. La recompensa
 // (refinada + créditos + hallazgos) la entrega el minijuego al terminar.
 function procesarChatarraMinijuego(idProf, idAccion){
+  // [DIAGNÓSTICO v0.90.3] traza para confirmar que este botón ejecuta el
+  // código nuevo. Si NO ves este aviso al pulsar, el panel no se actualizó.
+  if(typeof notificarCambio === 'function') notificarCambio('Procesando chatarra…', 'aviso');
   const COSTE = (typeof REF_COSTE_CHATARRA !== 'undefined') ? REF_COSTE_CHATARRA : 3;
   const aviso = (m) => { if(typeof notificarCambio === 'function') notificarCambio(m, 'aviso'); };
 

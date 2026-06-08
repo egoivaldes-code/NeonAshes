@@ -2,6 +2,10 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.90.3] - 2026-06-08
+### Fixed
+- Diagnóstico del botón "Procesar chatarra": añadido aviso al pulsarlo y reforzada la conexión con el minijuego de refinado.
+
 ## [0.90.2] - 2026-06-08
 ### Fixed
 - Reforzada la apertura del minijuego de refinado para que siempre muestre la pantalla, con varios respaldos si el cambio de escena fallaba.
