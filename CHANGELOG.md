@@ -2,6 +2,10 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.90.7] - 2026-06-08
+### Fixed
+- Al abrir el refinado desde "Procesar chatarra", el panel de profesiones se cierra solo. Antes quedaba por encima y había que cerrarlo a mano para ver el tablero.
+
 ## [0.90.6] - 2026-06-08
 ### Fixed
 - El botón "Procesar chatarra" ahora abre el minijuego de refinado de forma directa, igual que el botón de prueba. Cobra la chatarra y mantiene el tiempo de juego, el cooldown y la subida de rango.

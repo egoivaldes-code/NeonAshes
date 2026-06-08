@@ -346,6 +346,9 @@ let _refVolverA = 'apartamento';
 function abrirRefinado(volverA, opciones){
   opciones = opciones || {};
   const cobrar = opciones.cobrar !== false;   // por defecto cobra chatarra
+  // Cerrar el panel hub (profesiones) si está abierto, para que no tape
+  // el tablero del refinado.
+  if(typeof cerrarPanelHub === 'function'){ try { cerrarPanelHub(); } catch(e){} }
   if(cobrar){
     // Coste de entrada: consume REF_COSTE_CHATARRA de materia prima (chatarra
     // normal + en bruto cuentan juntas). Si no llega, avisa y no entra.
