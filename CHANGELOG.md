@@ -2,6 +2,10 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.90.6] - 2026-06-08
+### Fixed
+- El botón "Procesar chatarra" ahora abre el minijuego de refinado de forma directa, igual que el botón de prueba. Cobra la chatarra y mantiene el tiempo de juego, el cooldown y la subida de rango.
+
 ## [0.90.4] - 2026-06-08
 ### Fixed
 - El botón "Procesar chatarra" ya abre el minijuego de refinado. Se fuerza la recarga de los archivos del juego para evitar versiones antiguas guardadas en el navegador, y se retiran los avisos de diagnóstico.

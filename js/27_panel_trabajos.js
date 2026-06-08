@@ -186,7 +186,7 @@ function renderTrabajosOficio(){
           if(llega){
             botonesAccion += `
             <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
-              onclick="procesarChatarraMinijuego('${p.id}','${a.id}')">${a.nombre}
+              onclick="if(typeof abrirRefinado==='function'){abrirRefinado('apartamento');}">${a.nombre}
               <span style="opacity:0.6;font-size:0.85em;">· cuesta ${coste} chatarra</span></button>`;
           } else {
             botonesAccion += `

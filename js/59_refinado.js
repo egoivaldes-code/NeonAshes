@@ -352,11 +352,16 @@ function abrirRefinado(volverA, opciones){
     const total = (typeof contarChatarraTotal === 'function') ? contarChatarraTotal() : 0;
     if(total < REF_COSTE_CHATARRA){
       if(typeof notificarCambio === 'function'){
-        notificarCambio(`Necesitas ${REF_COSTE_CHATARRA} de chatarra para desmontar (tienes ${total})`, 'error');
+        notificarCambio(`Necesitas ${REF_COSTE_CHATARRA} de chatarra para desmontar (tienes ${total})`, 'aviso');
       }
       return false;
     }
     if(typeof consumirChatarraTotal === 'function') consumirChatarraTotal(REF_COSTE_CHATARRA);
+    // Aplicar tiempo de juego, cooldown 4h y progreso de la profesión
+    // (sin paga: la paga la da el propio minijuego al terminar).
+    if(typeof aplicarTrabajoRefinado === 'function'){
+      try { aplicarTrabajoRefinado('scavenger', 'procesar'); } catch(e){}
+    }
   }
 
   _refVolverA = volverA || 'apartamento';
