@@ -170,12 +170,14 @@ function renderTrabajosOficio(){
               ${a.nombre} <span style="font-size:0.85em;">· descansando ${tiempo}</span></button>`;
           return;
         }
-        if(a.conLugares && _lugarAbierto && _lugarAbierto.prof === p.id && _lugarAbierto.accion === a.id){
-          botonesAccion += _renderSelectorLugares(p, a);
-        } else if(a.conLugares){
+        if(a.conLugares){
+          // v0.95.1: "Salir a buscar chatarra" ABRE LA EXPEDICIÓN
+          // (antes mostraba una tirada rápida en 4 lugares, ya retirada;
+          // buscar chatarra y expedición eran lo mismo). El botón de
+          // expedición independiente se eliminó por redundante.
           botonesAccion += `
             <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
-              onclick="abrirLugaresDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
+              onclick="if(typeof abrirExpedicionDesdeTrabajo==='function'){abrirExpedicionDesdeTrabajo();}">${a.nombre}</button>`;
         } else if(a.costeChatarra && a.costeChatarra > 0){
           // Acción que consume chatarra: ahora lanza el MINIJUEGO de
           // refinado. El coste es REF_COSTE_CHATARRA (chatarra normal y en
@@ -204,16 +206,6 @@ function renderTrabajosOficio(){
               onclick="ejercerProfesionDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
         }
       });
-      // CONVIVENCIA (v0.86.7): además de la búsqueda rápida de arriba, el
-      // Scavenger puede montar una EXPEDICIÓN (el loop largo: zona, equipo,
-      // tramos, alerta, botín). No tiene cooldown propio aquí; el coste es
-      // el riesgo de la incursión. Solo dentro del apartamento (ya estamos
-      // en esa rama) y solo para scavenger.
-      if(p.id === 'scavenger'){
-        botonesAccion += `
-          <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;border-color:rgba(255,0,110,0.4);color:var(--magenta);"
-            onclick="if(typeof abrirExpedicionDesdeTrabajo==='function'){abrirExpedicionDesdeTrabajo();}">Montar una expedición →</button>`;
-      }
       bloqueAcciones = `
         <div style="margin-top:0.8rem;">
           <div style="font-size:0.5rem;letter-spacing:0.2em;opacity:0.5;margin-bottom:0.2rem;">TRABAJAR:</div>

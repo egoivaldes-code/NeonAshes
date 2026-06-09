@@ -24,11 +24,19 @@ let _casoVolverA = 'apartamento';
 
 const INV_PROF_ID = 'investigador';
 
+// Helper de sonido: respeta el sistema global de audio.
+function _invFX(clave, vol){
+  if(typeof reproducirFX === 'function') reproducirFX(clave, vol);
+}
+
 // ── Helpers de pistas ────────────────────────────────────────
 function _casoTienePista(id){ return !!_casoPistas[id]; }
 function _casoDarPista(id){
   if(!id) return;
-  _casoPistas[id] = true;
+  if(!_casoPistas[id]){
+    _casoPistas[id] = true;
+    _invFX('inv_pista', 0.5);   // chasquido de dato registrado
+  }
 }
 function _casoNumPistas(){ return Object.keys(_casoPistas).length; }
 
@@ -63,11 +71,12 @@ const CASOS_INVESTIGADOR = [
       },
       escena_conducto: {
         tiempo: 90,
-        narr: 'El conducto V-9 sigue precintado con cinta de HELIX, pero nadie vigila un sitio que ya han decidido olvidar. Bajas. Huele a humedad y a ozono quemado. En el suelo, la marca de tiza donde estuvo el cuerpo. Calix cayó —o lo tiraron— desde la pasarela superior. A cuatro metros, en un panel eléctrico, hay marcas de manipulación recientes: alguien forzó la caja de breakers poco antes. Y en el borde de la pasarela, un arañazo profundo, como de tacón arrastrado.',
+        narr: 'El conducto V-9 sigue precintado con cinta de HELIX, pero nadie vigila un sitio que ya han decidido olvidar. Bajas. El aire sabe a humedad y a ozono quemado, y el goteo constante marca un ritmo que no es el tuyo. En el suelo, la marca de tiza donde estuvo el cuerpo: pequeña, como si Calix se hubiera encogido al caer. A cuatro metros, un panel eléctrico con marcas de manipulación recientes. Y en el borde de la pasarela superior, un arañazo profundo, como de tacón arrastrado. La caída no cuenta una historia. El conducto, sí.',
         pistasAlEntrar: ['panel_forzado', 'arrastre'],
         opciones: [
-          { txt: 'Examinar el panel eléctrico forzado', va: 'escena_conducto', msg: 'Los tornillos tienen marcas de un destornillador de impacto, no de herramienta de mantenimiento estándar. Quien lo abrió tenía prisa. La caja controla la iluminación del tramo: si saltaba, el conducto quedaba a oscuras.' , da:'panel_forzado'},
-          { txt: 'Seguir el arañazo del borde', va: 'escena_conducto', msg: 'El arañazo no lo deja una caída. Lo deja un cuerpo arrastrado hasta el borde. Calix no se cayó andando: alguien lo movió hasta ahí.', da:'arrastre' },
+          { txt: 'Examinar el panel eléctrico forzado', va: 'escena_conducto', msg: 'Los tornillos tienen marcas de un destornillador de impacto, no de la herramienta reglamentaria de mantenimiento. Quien lo abrió tenía prisa y no le importó que se notara. El panel controla la luz de todo el tramo: si saltaba, el conducto quedaba a oscuras justo el tiempo necesario para que un hombre no viera venir el empujón.', da:'panel_forzado'},
+          { txt: 'Seguir el arañazo del borde', va: 'escena_conducto', msg: 'Te agachas y sigues la marca con el dedo. No es de una caída: es de un cuerpo arrastrado hasta el filo y soltado. Calix no se desplomó andando. Alguien lo llevó hasta ahí cuando ya no podía caminar solo. La gravedad solo puso la firma.', da:'arrastre' },
+          { txt: 'Buscar el termo o efectos personales de Calix', va: 'escena_conducto', msg: 'Encuentras su termo, intacto, rodando en una esquina. Huele a café frío, no a otra cosa. Quien quiera que lo de "borracho que resbaló" miente: Calix estaba sobrio. Lo apuntas, aunque la aseguradora preferiría que no.', da:'sobrio' },
           { txt: '← Volver', va: 'briefing' }
         ]
       },
@@ -140,13 +149,13 @@ const CASOS_INVESTIGADOR = [
         // 2 aciertos: parcial.
         parcial: {
           titulo: 'CASO CERRADO · A MEDIAS',
-          narr: 'Entregas un informe que apunta a homicidio, pero con cabos sueltos. La aseguradora aprovecha las grietas para rebajar tu conclusión a "circunstancias no concluyentes". Cobras, pero menos: una verdad incompleta vale menos en este mercado. La viuda recibe una indemnización parcial. Es más de lo que tenía. Es menos de lo que merecía.',
+          narr: 'Entregas un informe que apunta a homicidio, pero con cabos sueltos que un abogado de la aseguradora deshace en una tarde. Rebajan tu conclusión a "circunstancias no concluyentes" y archivan el resto. Cobras, pero menos: una verdad incompleta vale poco en este mercado. Ama Ndour recibe una indemnización parcial y un sobre con el sello de Demeter que no se molesta en abrir delante de ti. "Gracias por intentarlo", dice, y la palabra "intentarlo" te acompaña hasta casa. Es más de lo que tenía. Es mucho menos de lo que su marido merecía.',
           pagaMult: 0.5, rep: 2, parcial:true
         },
         // 0-1 aciertos: fallo grave, final malo.
         fallo: {
           titulo: 'CASO CERRADO · EL PATO EQUIVOCADO',
-          narr: 'Firmas una conclusión que no se sostiene. Peor: tu informe señala a Renko, el capataz, que solo tuvo miedo. HELIX lo usa de chivo expiatorio: lo despiden, le retiran la vivienda, desaparece de las capas bajas en una semana. La aseguradora paga lo justo por un caso "resuelto" y la verdadera causa queda enterrada con Calix. Cobras una miseria y algo en ti sabe que has hecho el trabajo sucio de alguien.',
+          narr: 'Firmas una conclusión que no se sostiene. Peor: tu informe señala a Renko, el capataz, que solo tuvo miedo y obedeció. HELIX agradece el chivo expiatorio servido en bandeja: lo despiden, le retiran la vivienda vinculada al contrato y en una semana ha desaparecido de las capas bajas, tragado por niveles donde no se vuelve. La verdadera causa queda enterrada con Calix, en un conducto que reabrieron esa misma noche para no perder un turno de producción. La aseguradora te paga una miseria por un caso "resuelto" y te estrecha la mano. Esa noche, en tu apartamento, entiendes que has hecho el trabajo sucio de alguien con traje. Y que lo harás otra vez, porque hay que comer.',
           pagaMult: 0.15, rep: -5, parcial:false, malo:true
         }
       }
@@ -173,6 +182,9 @@ CASOS_INVESTIGADOR.forEach(c => { CASOS_POR_ID[c.id] = c; });
 // ============================================================
 function abrirCasos(volverA){
   _casoVolverA = volverA || 'apartamento';
+  // Cerrar el panel de Trabajos/hub para que la escena de casos no quede
+  // detrás (mismo patrón que abrirRefinado).
+  if(typeof cerrarPanelHub === 'function'){ try { cerrarPanelHub(); } catch(e){} }
   // Si hay un caso en curso, retomarlo; si no, mostrar el tablón.
   if(typeof saltoDeEscena === 'function') saltoDeEscena();
   const desde = document.querySelector('.escena.activa');
@@ -185,7 +197,7 @@ function abrirCasos(volverA){
     if(e) e.classList.add('activa');
   }
   if(_casoActivo) _pintarEscenaCaso();
-  else _pintarTablon();
+  else { _invFX('panel_abrir', 0.5); _pintarTablon(); }
   return true;
 }
 
@@ -241,6 +253,7 @@ function _marcarCasoResuelto(id){
 function aceptarCaso(id){
   const c = CASOS_POR_ID[id];
   if(!c || c.enPreparacion) return;
+  _invFX('inv_papel', 0.55);   // abres el expediente
   _casoActivo = c;
   _casoPistas = {};
   _casoVisitadas = {};
@@ -350,11 +363,13 @@ function elegirOpcionCaso(i){
 //  DEDUCCIÓN FINAL
 // ============================================================
 let _deduccionRespuestas = {};
+let _deduccionEntrada = false;
 function _pintarDeduccion(introExtra){
   const cont = document.getElementById('casos-wrap');
   if(!cont || !_casoActivo) return;
   const ded = _casoActivo.deduccion;
   if(!ded){ _pintarTablon(); return; }
+  if(!_deduccionEntrada){ _deduccionEntrada = true; _invFX('inv_deduccion', 0.45); }
   _deduccionRespuestas = _deduccionRespuestas || {};
 
   let html = '<div class="caso-hud"><span class="caso-hud-titulo">' + _casoActivo.titulo + '</span>'
@@ -384,6 +399,7 @@ function marcarDeduccion(pregId, optIdx){
 }
 
 function volverDelDeduccion(){
+  _deduccionEntrada = false;
   _casoEscena = _casoActivo.escenaInicial || Object.keys(_casoActivo.escenas)[0];
   _pintarEscenaCaso();
 }
@@ -402,6 +418,8 @@ function firmarDeduccion(){
   if(aciertos === total) clave = 'completo';
   else if(aciertos >= total - 1) clave = 'parcial';
   const des = ded.desenlaces[clave];
+  // Sonido del desenlace.
+  _invFX(clave === 'fallo' ? 'inv_fallo' : 'inv_acierto', 0.55);
 
   // Recompensa.
   const paga = Math.round((c.pagaBase || 0) * (des.pagaMult || 0));
@@ -443,6 +461,7 @@ function cerrarCasoResuelto(){
   _casoPistas = {};
   _casoVisitadas = {};
   _deduccionRespuestas = {};
+  _deduccionEntrada = false;
   _pintarTablon();
 }
 
@@ -450,6 +469,7 @@ function cerrarCasoResuelto(){
 //  SALIR
 // ============================================================
 function cerrarCasos(){
+  _invFX('terminal_cerrar', 0.45);
   const destino = _casoVolverA || 'apartamento';
   if(typeof cambiarEscena === 'function'){
     cambiarEscena('casos-escena', destino);

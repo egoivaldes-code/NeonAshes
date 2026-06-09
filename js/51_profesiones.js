@@ -57,7 +57,7 @@ const PROFESIONES = [
         nombre: 'Salir a buscar chatarra',
         minutos: 120,
         progreso: 35,
-        cooldownHoras: 8,
+        cooldownHoras: 2,
         conLugares: true
       },
       {

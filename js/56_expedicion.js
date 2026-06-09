@@ -443,6 +443,22 @@ function iniciarExpedicion(idZona, equipoMochila){
   return Estado.expedicion;
 }
 
+// v0.95.1: "Salir a buscar chatarra" ES la expedición. Al cerrar una run
+// (de cualquier forma) marcamos el cooldown de la acción 'buscar' del
+// Scavenger, para que no se puedan encadenar expediciones sin descanso.
+function _expMarcarCooldownBuscar(){
+  try {
+    if(typeof estadoProfesion !== 'function') return;
+    const est = estadoProfesion('scavenger');
+    if(!est) return;
+    const ahora = (typeof _ahoraJuegoMs === 'function') ? _ahoraJuegoMs()
+                 : (typeof window._ahoraJuegoMs === 'function' ? window._ahoraJuegoMs() : Date.now());
+    if(!est.cooldownAcciones || typeof est.cooldownAcciones !== 'object') est.cooldownAcciones = {};
+    est.cooldownAcciones['buscar'] = ahora;
+    if(typeof guardarPartida === 'function') guardarPartida();
+  } catch(e){ /* sin bloquear el cierre de la expedición */ }
+}
+
 // ¿Hay una run activa?
 function expedicionActiva(){
   return !!(Estado.expedicion && Estado.expedicion.activa);
@@ -640,6 +656,7 @@ function rescatarExpedicion(){
   // Se pierde el botín bruto entero (sobrevives, pero con las manos vacías).
   run.activa = false;
   Estado.expedicion = null;
+  _expMarcarCooldownBuscar();
   return true;
 }
 
@@ -684,6 +701,7 @@ function extraerExpedicion(){
 
   run.activa = false;
   Estado.expedicion = null;
+  _expMarcarCooldownBuscar();
   return entregado;
 }
 
@@ -710,6 +728,7 @@ function fallarExpedicion(porcentajePerdida){
   });
   run.activa = false;
   Estado.expedicion = null;
+  _expMarcarCooldownBuscar();
   return quedan;
 }
 

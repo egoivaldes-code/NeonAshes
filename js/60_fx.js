@@ -47,7 +47,15 @@ const FX_MAP = {
   sci_plasma:        'sci_plasma.mp3',
   sci_laser_cyber:   'sci_laser_cyber.mp3',
   sci_void_shift:    'sci_void_shift.mp3',
-  sci_powerup:       'sci_powerup.mp3'
+  sci_powerup:       'sci_powerup.mp3',
+  // Investigador privado (v0.95.1) — claves a archivos ya existentes
+  inv_pista:         'sci_lectura_digital.mp3',   // se descubre una pista
+  inv_sonar:         'sci_sonar.mp3',             // analizar / rastrear
+  inv_deduccion:     'dron_latido.mp3',           // entrar a la deducción
+  inv_acierto:       'sci_powerup.mp3',           // caso resuelto bien
+  inv_fallo:         'sci_void_shift.mp3',        // final malo
+  inv_tos:           'hmn_tos.mp3',               // ambiente humano (cola, testigos)
+  inv_papel:         'weap_click_metal.mp3'       // pasar página / seleccionar
 };
 
 // Pool de reproducción puntual: reutiliza objetos Audio por clave para no

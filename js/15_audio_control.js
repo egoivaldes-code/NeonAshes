@@ -181,7 +181,8 @@ document.body.addEventListener('touchmove', e=>{
     || t.closest('.hub-panel-cuerpo')
     || t.closest('.zona-detalle')
     || t.closest('.inv-tab-contenido')   /* lista del inventario */
-    || t.closest('.explorar-wrap');      /* exploración y expedición */
+    || t.closest('.explorar-wrap')       /* exploración y expedición */
+    || t.closest('.casos-wrap');         /* investigador: tablón, casos y deducción */
   if(!permitido) e.preventDefault();
 }, {passive:false});
 

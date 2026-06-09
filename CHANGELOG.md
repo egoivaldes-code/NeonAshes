@@ -2,6 +2,15 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.95.1] - 2026-06-09
+### Fixed
+- El Investigador ya se puede desplazar (scroll) en el tablón de casos, en las escenas y en la deducción; antes no se podía bajar para leer o elegir.
+- Al abrir el tablón de casos desde Trabajos, ya no se queda detrás de la ventana: ahora se cierra Trabajos y se ve el panel directamente.
+### Changed
+- El Investigador usa efectos de sonido en sus momentos clave (abrir tablón, aceptar caso, descubrir pistas, entrar en la deducción y desenlace) para dar más inmersión.
+- Más texto y atmósfera en el caso "Expediente en gris" (escena del conducto y desenlaces).
+- Scavenger: el botón "Salir a buscar chatarra" ahora abre directamente la expedición (eran lo mismo); se elimina el botón redundante "Montar una expedición" y la antigua búsqueda rápida. Cooldown de la expedición ajustado a 2 horas.
+
 ## [0.95] - 2026-06-09
 ### Added
 - Nueva profesión: Investigador Privado. Trabaja por casos en vez de tiradas. Desde el botón TRABAJAR se abre un tablón con un pool de casos de distinto contratante y peligrosidad (los más peligrosos piden más rango).
