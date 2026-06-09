@@ -211,6 +211,45 @@ const ZONAS_MUNDO = [
       { txt:'Pasear y observar el orden', accion:'observar_ferro' },
       { txt:'← Volver al centro de la ciudad', accion:'volver_mapa_ciudad' }
     ]
+  },
+  {
+    id: 'hospital_helix',
+    nombre: 'CENTRO MÉDICO PÚBLICO HELIX',
+    nombreCorto: 'HOSPITAL',
+    faccion: 'HELIX INDUSTRIES — RED MÉDICA',
+    colorFaccion: '#00e5ff',
+    desc: 'Una red de clínicas repartidas por la ciudad bajo el sello de HELIX. Aquí se curan lesiones, se instalan implantes básicos y se hacen revisiones. No por caridad: HELIX lo mantiene porque una población mínimamente sana sigue siendo productiva. La salud, como todo, es un cálculo.',
+    peligro: '⚠ ACCESO PÚBLICO · LISTAS DE ESPERA · TODO QUEDA EN TU HISTORIAL',
+    posX: 180, posY: 250,
+    imgBg: 'HOSPITAL_ZONA',
+    eventos: [
+      { titulo:'COLA DE PACIENTES', narr:'La sala de espera está llena. Doscientas personas, quizá más, bajo luces que zumban. Un panel anuncia tiempos de espera que nadie se cree. Alguien tose sin parar tres asientos más allá.',
+        opciones:[
+          { txt:'Esperar tu turno con paciencia', cambios:{humano:{fatiga:4,aislamiento:-2}}, msg:'Dos horas después oyen tu número. Has visto a media ciudad pasar por delante. Algunos no llegaron a entrar.' },
+          { txt:'Buscar un atajo entre el personal', cambios:{humano:{fatiga:1,disociacion:2}}, msg:'Un celador te mira de arriba abajo. "Aquí todos tienen prisa." Pero te deja pasar a una sala lateral. No preguntas por qué.' }
+        ]
+      },
+      { titulo:'ERROR EN TU HISTORIAL', narr:'La pantalla del mostrador muestra tu ficha. Hay datos que no son tuyos: una operación que nunca te hicieron, una alergia que no tienes. El administrativo frunce el ceño. "¿Usted es quien dice ser?"',
+        opciones:[
+          { txt:'Insistir en que es un error', cambios:{humano:{fatiga:3,disociacion:3}}, msg:'Tardan cuarenta minutos en "corregirlo". No estás seguro de que lo hayan hecho. Tu nombre ahora convive con el de otro en algún servidor de HELIX.' },
+          { txt:'Dejarlo pasar para no complicarte', cambios:{humano:{disociacion:5}}, msg:'Aceptas el historial ajeno como si fuera tuyo. Es más fácil. Pero algo en ti registra que acabas de ceder una parte de quién eres.' }
+        ]
+      },
+      { titulo:'PACIENTE QUE NECESITA AYUDA', narr:'Un hombre mayor se ha caído junto a las máquinas expendedoras. Nadie se para. La gente lo rodea como agua a una piedra. Respira, pero no se levanta.',
+        opciones:[
+          { txt:'Ayudarle a incorporarse', cambios:{humano:{fatiga:2,aislamiento:-6}}, msg:'Pesa menos de lo que debería. "Gracias", murmura. Un celador llega tarde y se lo lleva. Te quedas con la sensación de haber hecho algo pequeño y necesario.' },
+          { txt:'Avisar a un sanitario y seguir', cambios:{humano:{aislamiento:1}}, msg:'Avisas a alguien de bata. Asiente sin mirarte. Cuando te vas, el hombre sigue en el suelo.' }
+        ]
+      }
+    ],
+    descripcionLlegada: 'El Centro Médico Público HELIX huele a desinfectante barato y a demasiada gente junta. Bajo el logo iluminado de HELIX, ambulancias descargan camillas sin descanso. Carteles en cuatro idiomas prometen que tu salud es su prioridad. Las listas de espera dicen otra cosa.',
+    opciones: [
+      { txt:'Buscar a la Dra. Lira Malk', accion:'contacto_lira' },
+      { txt:'Curar tus heridas', accion:'hospital_curar' },
+      { txt:'Pedir una revisión médica', accion:'hospital_revision' },
+      { txt:'Preguntar por implantes básicos', accion:'hospital_implantes' },
+      { txt:'← Volver al centro de la ciudad', accion:'volver_mapa_ciudad' }
+    ]
   }
 ];
 
@@ -330,14 +369,17 @@ function abrirMapa(){
     document.getElementById('mapa-escena').classList.add('activa');
   }
   // Fondo del mapa: en pantallas anchas (PC) usamos la versión
-  // horizontal preparada; en móvil, la vertical. Es el único sitio
-  // del juego con dos imágenes distintas según el dispositivo.
+  // horizontal preparada; en móvil, la vertical. La imagen se pinta en
+  // .mapa-img (dentro del marco con background:cover); #bg-mapa queda
+  // en negro para que no se duplique la imagen detrás del marco.
   (function(){
+    const img = document.getElementById('mapa-img');
     const bg = document.getElementById('bg-mapa');
-    if(!bg || typeof ASSETS === 'undefined') return;
+    if(bg) bg.style.background = '#030508';
+    if(!img || typeof ASSETS === 'undefined') return;
     const esPC = window.matchMedia('(min-width: 900px)').matches;
     const key = esPC ? 'MAPA_STRATA_PC' : 'MAPA_STRATA';
-    if(ASSETS[key]) bg.style.backgroundImage = `url('${ASSETS[key]}')`;
+    if(ASSETS[key]) img.style.backgroundImage = `url('${ASSETS[key]}')`;
   })();
   renderizarMapa();
   const sub = document.getElementById('mapa-subtitulo');
@@ -547,9 +589,9 @@ function generarParadasViaje(zona){
     descLlegada = poolAprox ? _aleatorio(poolAprox) : 'El sector cambia de tono a medida que te acercas. Diferente tipo de ruido. Diferente tipo de mirada.';
   }
 
-  const imgT1 = { distrito_ferro:'FERRO_TRANSITO_1', arrabal_carmesi:'CARMESI_TRANSITO_1', santuario_ix:'SANTUARIO_TRANSITO_1', nodo_cero:'NODO_TRANSITO_1' }[zona.id] || 'PASILLO';
-  const imgT2 = { distrito_ferro:'FERRO_TRANSITO_2', arrabal_carmesi:'CARMESI_TRANSITO_2', santuario_ix:'SANTUARIO_TRANSITO_2', nodo_cero:'NODO_TRANSITO_2' }[zona.id] || 'TREN';
-  const imgT3 = { distrito_ferro:'FERRO_TRANSITO_3', arrabal_carmesi:'CARMESI_TRANSITO_3', santuario_ix:'SANTUARIO_TRANSITO_3', nodo_cero:'NODO_TRANSITO_3' }[zona.id] || zona.imgBg;
+  const imgT1 = { distrito_ferro:'FERRO_TRANSITO_1', arrabal_carmesi:'CARMESI_TRANSITO_1', santuario_ix:'SANTUARIO_TRANSITO_1', nodo_cero:'NODO_TRANSITO_1', hospital_helix:'TRANSITO_HOSPITAL_1' }[zona.id] || 'PASILLO';
+  const imgT2 = { distrito_ferro:'FERRO_TRANSITO_2', arrabal_carmesi:'CARMESI_TRANSITO_2', santuario_ix:'SANTUARIO_TRANSITO_2', nodo_cero:'NODO_TRANSITO_2', hospital_helix:'TRANSITO_HOSPITAL_2' }[zona.id] || 'TREN';
+  const imgT3 = { distrito_ferro:'FERRO_TRANSITO_3', arrabal_carmesi:'CARMESI_TRANSITO_3', santuario_ix:'SANTUARIO_TRANSITO_3', nodo_cero:'NODO_TRANSITO_3', hospital_helix:'TRANSITO_HOSPITAL_3' }[zona.id] || zona.imgBg;
 
   return [
     { nombre:'SALIENDO DE UNIDAD 273-19A', desc:_aleatorio(_POOL_CORREDOR), color:'#00e5ff', img:imgT1 },
@@ -803,6 +845,14 @@ function accionZona(accion){
   const narr = document.getElementById('zona-llegada-desc');
   const opcEl = document.getElementById('zona-opciones');
 
+  // ── HOSPITAL PÚBLICO HELIX (v0.94) ──────────────────────────
+  // Acciones con lógica propia (curar según heridas reales, revisión
+  // según stats reales). Se resuelven aquí antes del mapa estático.
+  if(accion === 'hospital_curar' || accion === 'hospital_revision' || accion === 'hospital_implantes'){
+    _accionHospital(accion, zona, narr, opcEl);
+    return;
+  }
+
   const RESPUESTAS = {
     contacto_mano_roja: {
       narr: 'A Mano Roja la encuentras en un reservado del Teatro Sin Nombre, tras una cortina granate. El brazo derecho, mecánico hasta el hombro, descansa sobre la mesa cargado de anillos. No trafica con piezas: trafica con lo que la gente confiesa entre las sábanas. "¿Qué me traes? ¿Créditos o secretos? Porque sin una de las dos, esta cortina se cierra y tú no has estado nunca aquí."',
@@ -871,6 +921,11 @@ function accionZona(accion){
       cambios: { humano: { disociacion: 3, aislamiento: -2, fatiga: -2 } },
       rep: 1, faccion: 'sindicatos',
       botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
+    },
+    contacto_lira: {
+      narr: 'La Dra. Lira Malk te recibe entre dos urgencias, con bata manchada y ojeras de tres turnos seguidos. No sonríe; no le queda tiempo para eso. "¿Vienes roto o vienes a que te diga que estás roto? Aquí hacemos las dos cosas." Habla rápido, sin rodeos, como quien ha aprendido que la compasión también se raciona. Bajo el cansancio, sin embargo, queda algo que HELIX no ha conseguido apagarle del todo: le sigue importando la gente.',
+      rep: 5, faccion: 'helix',
+      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver al {NOMBRE_ZONA}</button>'
     }
   };
 
@@ -945,6 +1000,87 @@ function accionZona(accion){
 
   if(typeof guardarPartida === 'function') guardarPartida();
 }
+
+// ============================================================
+//  HOSPITAL PÚBLICO HELIX — acciones dinámicas (v0.94)
+//  Curar heridas reales, revisión narrativa de estado, e implantes.
+//  Dra. Lira Malk es la voz del centro.
+// ============================================================
+const HOSPITAL_TARIFA_CURA = { leve: 40, grave: 90, inutilizado: 160 };
+
+function _accionHospital(accion, zona, narr, opcEl){
+  const _nz = zona.nombreCorto || zona.nombre;
+  const volver = '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver al ' + _nz + '</button>';
+
+  // ── CURAR HERIDAS ──
+  if(accion === 'hospital_curar'){
+    const conds = (typeof Estado !== 'undefined' && Array.isArray(Estado.condiciones)) ? Estado.condiciones.slice() : [];
+    if(conds.length === 0){
+      narr.innerHTML = 'La Dra. Malk pasa un escáner por encima de ti sin demasiada ceremonia. "No tienes nada que tratar. Felicidades, eso aquí es casi un milagro." Te señala la salida con la barbilla. "Guarda el turno para quien sangre."';
+      opcEl.innerHTML = volver;
+      return;
+    }
+    // Calcular coste total según gravedad.
+    let coste = 0;
+    conds.forEach(c => { coste += (HOSPITAL_TARIFA_CURA[c.gravedad] || 60); });
+    const creditos = (typeof Estado !== 'undefined' ? (Estado.creditos || 0) : 0);
+    const lista = conds.map(c => c.nombre || c.id).join(', ');
+    if(creditos < coste){
+      narr.innerHTML = 'La Dra. Malk repasa tu historial. "Tienes esto pendiente: ' + lista + '. El sistema no trata gratis, ni siquiera el público; HELIX factura hasta el aire. Son ' + coste + ' créditos y no los llevas. Vuelve cuando puedas pagar… o cuando ya no puedas caminar. Lo que pase antes."';
+      opcEl.innerHTML = volver;
+      return;
+    }
+    // Cobrar y curar todo.
+    if(typeof ajustarCreditos === 'function') ajustarCreditos(-coste);
+    if(typeof notificarCambio === 'function') notificarCambio('-' + coste + ' CR', 'creditos');
+    conds.forEach(c => { if(typeof quitarCondicion === 'function') quitarCondicion(c.id); });
+    if(typeof cambiarRepFaccion === 'function') cambiarRepFaccion('helix', 2);
+    narr.innerHTML = 'La Dra. Malk trabaja rápido, con manos que han hecho esto diez mil veces. Suturas, un sellador de piel, un par de inyecciones que escuecen más de lo que deberían. "Listo. Te he arreglado: ' + lista + '. No es bonito, pero aguantará." Antes de que te vayas, sin levantar la vista: "Intenta no volver tan pronto. No por mí. Por ti."';
+    opcEl.innerHTML = volver;
+    if(typeof guardarPartida === 'function') guardarPartida();
+    return;
+  }
+
+  // ── REVISIÓN MÉDICA (resumen narrativo de stats) ──
+  if(accion === 'hospital_revision'){
+    const h = (typeof Estado !== 'undefined' && Estado.humano) ? Estado.humano : { fatiga:0, aislamiento:0, hambre:0, disociacion:0 };
+    const linea = (val, bajo, medio, alto) => (val >= 66 ? alto : (val >= 33 ? medio : bajo));
+    const fat = linea(h.fatiga||0,
+      'Tu cuerpo responde dentro de lo normal.',
+      'Arrastras un cansancio que el escáner marca en ámbar. "Duermes poco", afirma, no pregunta.',
+      'El cansancio acumulado le hace fruncir el ceño. "Estás funcionando con reservas que ya no tienes."');
+    const ham = linea(h.hambre||0,
+      'Nutrición aceptable.',
+      'Niveles bajos. "Comes mal. Como todos, pero tú peor."',
+      'El indicador de nutrición está en rojo. "Si sigues así, el cuerpo empezará a comerse a sí mismo."');
+    const ais = linea(h.aislamiento||0,
+      'Sin marcadores de estrés social agudo.',
+      'Hay señales de aislamiento. "Hablas con poca gente, ¿verdad? Se nota en el pulso."',
+      'El aislamiento te pesa en las constantes. "La soledad también deja huella clínica. La tuya ya es visible."');
+    const dis = linea(h.disociacion||0,
+      'Actividad neural estable.',
+      'El escáner detecta ruido en tu patrón cognitivo. "¿Lagunas? ¿Momentos que no recuerdas? Vigílalo."',
+      'Tu lectura neural la inquieta. Baja la voz: "Esto que veo aquí… no se lo enseñes a HELIX. Te marcarían. Cuídate."');
+    narr.innerHTML = 'La Dra. Malk te conecta a un terminal de diagnóstico que ha visto mejores décadas. Lee la pantalla en silencio unos segundos.<br><br>'
+      + '· ' + fat + '<br>'
+      + '· ' + ham + '<br>'
+      + '· ' + ais + '<br>'
+      + '· ' + dis + '<br><br>'
+      + '"Eso es todo lo que la máquina quiere contarme. El resto", dice mirándote por fin, "tendrás que contártelo tú."';
+    opcEl.innerHTML = volver;
+    if(typeof cambiarRepFaccion === 'function') cambiarRepFaccion('helix', 1);
+    if(typeof guardarPartida === 'function') guardarPartida();
+    return;
+  }
+
+  // ── IMPLANTES BÁSICOS ──
+  if(accion === 'hospital_implantes'){
+    narr.innerHTML = 'La Dra. Malk señala una vitrina con módulos sellados al vacío. "Implantes básicos homologados por HELIX. Filtros hepáticos, reguladores de sueño, mallas dérmicas. Nada de lujos: cosas que te mantienen funcionando un año más." Hace una pausa. "El catálogo completo aún no está abierto al público en esta clínica. Vuelve pronto; lo estarán cargando en el sistema." Lo dice como si no se lo creyera del todo ella misma.';
+    opcEl.innerHTML = volver;
+    return;
+  }
+}
+if(typeof window !== 'undefined'){ window._accionHospital = _accionHospital; }
 
 
 

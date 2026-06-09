@@ -11,47 +11,63 @@
   align-items: center; justify-content: flex-start; padding: 0; overflow: hidden;
 }
 .mapa-header {
-  width: 100%; padding: 3.2rem 5rem 0.6rem;
+  width: 100%; padding: 2.2rem 1.5rem 0.5rem;
   display: flex; flex-direction: column; align-items: center;
-  background: linear-gradient(180deg, rgba(3,5,8,0.98) 0%, rgba(3,5,8,0.8) 100%);
+  background: linear-gradient(180deg, rgba(3,5,8,0.98) 0%, rgba(3,5,8,0) 100%);
   z-index: 10; flex-shrink: 0;
+  position: absolute; top: 0; left: 0;
+  pointer-events: none;
 }
 .mapa-titulo {
   font-family: 'Orbitron', sans-serif; font-size: 0.6rem;
-  letter-spacing: 0.55em; color: var(--cyan); opacity: 0.7;
-  margin-bottom: 0.2rem; text-transform: uppercase;
+  letter-spacing: 0.45em; color: var(--cyan); opacity: 0.8;
+  margin-bottom: 0.2rem; text-transform: uppercase; text-align: center;
 }
 .mapa-subtitulo {
   font-family: 'Share Tech Mono', monospace; font-size: 0.5rem;
-  letter-spacing: 0.25em; color: rgba(200,216,224,0.3);
+  letter-spacing: 0.25em; color: rgba(200,216,224,0.4);
 }
-.mapa-canvas-wrap { flex: 1; width: 100%; position: relative; overflow: hidden; }
+.mapa-canvas-wrap { flex: 1; width: 100%; height: 100%; position: relative; overflow: hidden; }
 #mapa-svg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
 .zona-punto { cursor: pointer; transition: all 0.2s ease; }
 .zona-punto:active { transform: scale(0.95); }
 
-/* === MAPA STRATA I (imagen + marcadores anclados) === */
-/* El marco mantiene la proporción exacta de la imagen (900x1600 = 9:16)
-   y se centra dentro del área disponible. Los marcadores hijos usan
-   porcentaje relativo a este marco, así NUNCA se descolocan. */
+/* === MAPA DEL MUNDO (imagen + marcadores anclados) ===
+   El marco ocupa TODO el área disponible y muestra la imagen con
+   background:cover (la imagen llena el marco recortando lo que sobre).
+   Los marcadores se anclan en % sobre el marco, así caen siempre en el
+   mismo sitio de la imagen sin importar el tamaño de pantalla.
+   La imagen móvil es vertical; en PC se usa otra imagen (apaisada) y
+   distintas coordenadas por marcador (data-pc-*). */
 .mapa-frame {
   position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  aspect-ratio: 9 / 16;
-  /* Cabe en la altura disponible o el ancho, lo que sea menor.
-     min() asegura que la imagen siempre se vea entera. */
-  height: min(100%, calc(100vw * 16 / 9));
-  max-height: 100%;
-  max-width: 100%;
+  inset: 0;
+  width: 100%; height: 100%;
 }
 .mapa-img {
   position: absolute;
   inset: 0;
-  /* background-image se asigna abajo en el bloque dedicado al base64 */
-  background-size: 100% 100%;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+/* Viñeta: oscurece arriba y abajo para fundir los bordes de la imagen
+   con la cabecera y la barra inferior, y que no corte en seco. */
+.mapa-frame::after {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(3,5,8,0.65) 0%, rgba(3,5,8,0) 18%,
+                    rgba(3,5,8,0) 78%, rgba(3,5,8,0.85) 100%);
+}
+/* El marcador del Hospital HELIX usa el cian corporativo de HELIX. */
+.zona-marker-hospital .zm-label {
+  border-color: rgba(0,229,255,0.6);
+  color: var(--cyan);
+}
+.zona-marker-hospital .zm-dot {
+  background: #00e5ff;
+  box-shadow: 0 0 8px #00e5ff, 0 0 14px rgba(0,229,255,0.6), inset 0 0 3px rgba(255,255,255,0.5);
 }
 /* Marcador de zona: botón anclado con position:absolute en %.
    El left/top se ponen inline (cada zona tiene su sitio). El

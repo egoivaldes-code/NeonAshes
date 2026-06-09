@@ -194,7 +194,7 @@
   <link rel="stylesheet" href="css/09_final_muerte_eco.css">
   <link rel="stylesheet" href="css/10_mision_casillero.css">
   <link rel="stylesheet" href="css/11_facciones.css">
-  <link rel="stylesheet" href="css/12_mapa.css">
+  <link rel="stylesheet" href="css/12_mapa.css?v=0940">
   <link rel="stylesheet" href="css/13_barra_skip.css">
   <link rel="stylesheet" href="css/14_typewriter.css">
   <link rel="stylesheet" href="css/15_hud_viejo.css">
@@ -733,40 +733,48 @@
         <!-- Botones de zona anclados sobre los GRIDs de Lower Stacks.
              Cada uno es un punto pulsable con etiqueta arriba. -->
         <button class="zona-marker" data-zona="arrabal_carmesi"
-                style="left:30.5%; top:46.5%;"
-                data-pc-left="60%" data-pc-top="64%"
+                style="left:70%; top:30%;"
+                data-pc-left="33%" data-pc-top="61%"
                 onclick="seleccionarZona('arrabal_carmesi')">
           <span class="zm-label">ARRABAL CARMESÍ</span>
           <span class="zm-rep" id="zm-rep-arrabal_carmesi"></span>
           <span class="zm-dot"></span>
         </button>
         <button class="zona-marker" data-zona="distrito_ferro"
-                style="left:64%; top:46.5%;"
-                data-pc-left="38%" data-pc-top="64%"
+                style="left:30%; top:63%;"
+                data-pc-left="80%" data-pc-top="44%"
                 onclick="seleccionarZona('distrito_ferro')">
           <span class="zm-label">DISTRITO FERRO</span>
           <span class="zm-rep" id="zm-rep-distrito_ferro"></span>
           <span class="zm-dot"></span>
         </button>
         <button class="zona-marker" data-zona="nodo_cero"
-                style="left:31%; top:53%;"
-                data-pc-left="40%" data-pc-top="50%"
+                style="left:74%; top:40%;"
+                data-pc-left="70%" data-pc-top="25%"
                 onclick="seleccionarZona('nodo_cero')">
           <span class="zm-label">NODO FANTASMA</span>
           <span class="zm-rep" id="zm-rep-nodo_cero"></span>
           <span class="zm-dot"></span>
         </button>
         <button class="zona-marker" data-zona="santuario_ix"
-                style="left:64%; top:53%;"
-                data-pc-left="58%" data-pc-top="50%"
+                style="left:33%; top:30%;"
+                data-pc-left="28%" data-pc-top="25%"
                 onclick="seleccionarZona('santuario_ix')">
           <span class="zm-label">SANTUARIO IX</span>
           <span class="zm-rep" id="zm-rep-santuario_ix"></span>
           <span class="zm-dot"></span>
         </button>
+        <button class="zona-marker zona-marker-hospital" data-zona="hospital_helix"
+                style="left:50%; top:53%;"
+                data-pc-left="50%" data-pc-top="33%"
+                onclick="seleccionarZona('hospital_helix')">
+          <span class="zm-label">HOSPITAL HELIX</span>
+          <span class="zm-rep" id="zm-rep-hospital_helix"></span>
+          <span class="zm-dot"></span>
+        </button>
         <button class="zona-marker" data-zona="explorar_ciudad"
-                style="left:47.5%; top:62%;"
-                data-pc-left="49%" data-pc-top="57%"
+                style="left:47%; top:83%;"
+                data-pc-left="50%" data-pc-top="82%"
                 onclick="iniciarExplorarCiudad()">
           <span class="zm-label">EXPLORAR LA CIUDAD</span>
           <span class="zm-dot"></span>
@@ -869,7 +877,7 @@
 
   <!-- ===== SCRIPTS MODULARES (ORDEN IMPORTA) ===== -->
   <script src="00_LAUNCHER.js"></script>
-  <script src="js/01_recursos.js?v=0930"></script>
+  <script src="js/01_recursos.js?v=0940"></script>
   <script src="js/02_utilidades_fondo.js"></script>
   <script src="js/03_audio_referencia.js"></script>
   <script src="js/04_estado_jugador.js"></script>
@@ -897,7 +905,7 @@
   <script src="js/16_musica_misiones.js"></script>
   <script src="js/26_mini_barras_estado.js"></script>
   <script src="js/27_narr_apt_cierre.js"></script>
-  <script src="js/26_facciones.js"></script>
+  <script src="js/26_facciones.js?v=0940"></script>
   <script src="js/27_panel_trabajos.js?v=0907"></script>
   <script src="js/51_profesiones.js?v=0907"></script>
   <script src="js/28_terminal.js"></script>
@@ -907,7 +915,7 @@
   <script src="js/32_cero_final.js"></script>
   <script src="js/33_audio_sint.js"></script>
   <script src="js/34_reiniciar.js"></script>
-  <script src="js/35_mapa.js"></script>
+  <script src="js/35_mapa.js?v=0940"></script>
   <script src="js/36_ambiente_sonoro.js"></script>
   <script src="js/37_ia_cliente.js"></script>
   <script src="js/38_ia_debug.js"></script>

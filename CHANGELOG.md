@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.94] - 2026-06-09
+### Added
+- Nueva zona en el mapa: Centro Médico Público HELIX, con la Dra. Lira Malk. Permite curar heridas (con coste), pedir una revisión médica (resumen del estado del personaje) y consultar implantes básicos. Incluye eventos propios (cola de pacientes, error en el historial, paciente que necesita ayuda).
+- Imágenes propias de viaje hacia el hospital.
+### Changed
+- Rediseño del mapa del mundo en móvil y ordenador: imágenes nuevas, mejor encuadre (sin imagen duplicada ni espacio negro sobrante) y las seis zonas colocadas de forma clara y legible en ambos formatos.
+
 ## [0.93] - 2026-06-09
 ### Added
 - Capa 4 del refinado: el encargo ahora tiene dos fases. Al cumplir el primero aparece un segundo encargo más exigente, con aviso en pantalla y mayor bonus de calidad y créditos. No penaliza si no se completa.

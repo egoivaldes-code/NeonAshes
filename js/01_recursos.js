@@ -8,7 +8,7 @@
 
 // Versión actual del juego. ACTUALIZAR EN CADA ENTREGA.
 // Se muestra en el panel de depuración (Ctrl+D / tap arriba-izquierda).
-const JUEGO_VERSION = "0.93";
+const JUEGO_VERSION = "0.94";
 window.JUEGO_VERSION = JUEGO_VERSION;
 
 // ------------------------------------------------------------
@@ -136,7 +136,12 @@ const ASSETS = {
   REF_SENSOR: "assets/images/ref_sensor.webp",
   REF_MECANICO: "assets/images/ref_mecanico.webp",
   REF_CHIP_HELIX: "assets/images/ref_chip_helix.webp",
-  REF_CHATARRA: "assets/images/ref_chatarra.webp"
+  REF_CHATARRA: "assets/images/ref_chatarra.webp",
+  // --- Hospital Público HELIX (v0.94) ---
+  HOSPITAL_ZONA: "assets/images/hospital_zona.webp",
+  TRANSITO_HOSPITAL_1: "assets/images/transito_hospital_1.webp",
+  TRANSITO_HOSPITAL_2: "assets/images/transito_hospital_2.webp",
+  TRANSITO_HOSPITAL_3: "assets/images/transito_hospital_3.webp"
 };
 
 // Apply backgrounds

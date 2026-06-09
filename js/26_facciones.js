@@ -9,7 +9,7 @@
 //   sindicatos ⚔ loto   y   eco ⚔ ia
 // Subir rep con una baja la de su enemiga (ver cambiarRepFaccion).
 const FACCIONES_DATA = [
-  { id:'helix', nombre:'HELIX INDUSTRIES', icono:'⬡', color:'#00e5ff',
+  { id:'helix', nombre:'HELIX INDUSTRIES', icono:'⬡', color:'#00e5ff', zona:'hospital_helix',
     desc:'Megacorporación que controla infraestructura, medicina, implantes y seguridad. Indispensable y opresiva. Ignorarla es imposible. Oponerse tiene consecuencias silenciosas.',
     aliados:['División ORPHEUS'], rivales:['Sindicato Ferro','Células Autónomas de IA'],
     efectoPos:'Menores cargos HELIX Bank. Menos vigilancia.',
