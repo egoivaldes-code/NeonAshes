@@ -193,6 +193,11 @@ function renderTrabajosOficio(){
             <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;opacity:0.4;" disabled>
               ${a.nombre} <span style="font-size:0.85em;">· requiere ${coste} chatarra (tienes ${tieneCh})</span></button>`;
           }
+        } else if(a.conCasos){
+          // Investigador: abre el panel de casos (sistema propio).
+          botonesAccion += `
+            <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+              onclick="if(typeof abrirCasos==='function'){abrirCasos('apartamento');}">${a.nombre}</button>`;
         } else {
           botonesAccion += `
             <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"

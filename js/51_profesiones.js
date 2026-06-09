@@ -130,6 +130,37 @@ const PROFESIONES = [
         ]
       }
     ]
+  },
+  {
+    // ── INVESTIGADOR PRIVADO (v0.95) ──────────────────────────
+    // Profesión narrativa: trabaja por CASOS, no por tiradas. La acción
+    // "Revisar casos" abre un panel propio (js/62_investigador.js) con un
+    // pool de casos de distinta peligrosidad y contratante. Cada caso es
+    // un flujo de escenas con entrevistas y una deducción final.
+    id: 'investigador',
+    nombre: 'Investigador Privado',
+    desc: 'Todo deja un rastro. Mueren millones cada día, pero solo quien paga obtiene una respuesta. Tú eres esa respuesta.',
+    rangos: [
+      { nombre: 'Fisgón',        pagaMin: 0, umbral: 280 },
+      { nombre: 'Sabueso',       pagaMin: 0, umbral: 460 },
+      { nombre: 'Investigador',  pagaMin: 0, umbral: 700 },
+      { nombre: 'Ojo Privado',   pagaMin: 0, umbral: 1000 },
+      { nombre: 'Analista Forense', pagaMin: 0, umbral: 1360 },
+      { nombre: 'Detective de HELIX', pagaMin: 0, umbral: 0 } // último: no asciende
+    ],
+    acciones: [
+      {
+        // Acción especial: no se resuelve con el motor estándar. Abre el
+        // panel de casos (como 'procesar' abre el refinado).
+        id: 'casos',
+        nombre: 'Revisar casos disponibles',
+        minutos: 0,           // el tiempo lo consume cada caso al trabajarlo
+        progreso: 0,
+        cooldownHoras: 0,
+        conCasos: true,
+        nota: 'Repasar el tablón de encargos. Aceptar un caso y empezar a tirar del hilo.'
+      }
+    ]
   }
 ];
 
@@ -462,3 +493,47 @@ function aplicarTrabajoRefinado(idProf, idAccion){
   return { ok: true, ascendio: ascendio, rangoNuevo: rangoNuevo };
 }
 window.aplicarTrabajoRefinado = aplicarTrabajoRefinado;
+
+// ── Recompensa de profesión por CASO (Investigador, v0.95) ──────
+// El módulo de casos llama aquí al cerrar un caso: suma progreso (y
+// asciende si toca) y paga los créditos. Devuelve si ascendió.
+function otorgarRecompensaProfesion(idProf, creditos, progreso){
+  const prof = profesionPorId(idProf);
+  const est = estadoProfesion(idProf);
+  if(!prof || !est || !est.activa) return { ok: false };
+
+  if(creditos && creditos !== 0){
+    if(typeof ajustarCreditos === 'function') ajustarCreditos(creditos);
+    if(typeof notificarCambio === 'function'){
+      notificarCambio(`+${creditos} CR · ${prof.nombre.toUpperCase()}`, 'creditos');
+    }
+  }
+
+  est.progreso = (est.progreso || 0) + (progreso || 0);
+  let ascendio = false, rangoNuevo = null;
+  const rangoActual = prof.rangos[est.rango || 0];
+  if(rangoActual && rangoActual.umbral > 0 && est.progreso >= rangoActual.umbral){
+    if((est.rango || 0) < prof.rangos.length - 1){
+      est.rango = (est.rango || 0) + 1;
+      est.progreso = est.progreso - rangoActual.umbral;
+      ascendio = true;
+      rangoNuevo = prof.rangos[est.rango].nombre;
+    }
+  }
+
+  est.ultimoDiaISO = (typeof diaJuegoActual === 'function') ? diaJuegoActual() : est.ultimoDiaISO;
+  est.ultimoTrabajoMs = _ahoraJuegoMs();
+  if(typeof guardarPartida === 'function') guardarPartida();
+
+  if(ascendio && typeof notificarCambio === 'function'){
+    notificarCambio(`ASCENSO · ${rangoNuevo}`, 'rango');
+  }
+  return { ok: true, ascendio: ascendio, rangoNuevo: rangoNuevo };
+}
+window.otorgarRecompensaProfesion = otorgarRecompensaProfesion;
+// Rango actual del investigador (para filtrar casos por peligrosidad).
+function rangoActualProfesion(idProf){
+  const est = estadoProfesion(idProf);
+  return est ? (est.rango || 0) : 0;
+}
+window.rangoActualProfesion = rangoActualProfesion;

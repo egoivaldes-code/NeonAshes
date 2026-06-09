@@ -2,6 +2,11 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.95] - 2026-06-09
+### Added
+- Nueva profesión: Investigador Privado. Trabaja por casos en vez de tiradas. Desde el botón TRABAJAR se abre un tablón con un pool de casos de distinto contratante y peligrosidad (los más peligrosos piden más rango).
+- Caso completo de ejemplo, "Expediente en gris": investigación con varias líneas (escena del crimen, viuda, capataz), entrevistas con distintos enfoques (presionar, empatizar, mentir, sobornar) que dan pistas, y una deducción final (quién, por qué y cómo) con tres desenlaces según los aciertos: verdad completa, resolución parcial o final equivocado.
+
 ## [0.94] - 2026-06-09
 ### Added
 - Nueva zona en el mapa: Centro Médico Público HELIX, con la Dra. Lira Malk. Permite curar heridas (con coste), pedir una revisión médica (resumen del estado del personaje) y consultar implantes básicos. Incluye eventos propios (cola de pacientes, error en el historial, paciente que necesita ayuda).
