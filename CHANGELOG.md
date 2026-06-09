@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.93] - 2026-06-09
+### Added
+- Capa 4 del refinado: el encargo ahora tiene dos fases. Al cumplir el primero aparece un segundo encargo más exigente, con aviso en pantalla y mayor bonus de calidad y créditos. No penaliza si no se completa.
+- Iconos ilustrados para las piezas del refinado (procesador, batería, sensor, mecánico, chip HELIX y chatarra).
+### Changed
+- Rediseño visual del refinado: fichas con relieve, tablero con aspecto de máquina, barras y encargo más cuidados. Las casillas ahora son cuadradas (7×8) y el tablero se adapta para verse bien tanto en móvil vertical como en pantalla de ordenador.
+
 ## [0.92] - 2026-06-08
 ### Added
 - Nuevos eventos de exploración, de scavenger y de tránsito cuyas opciones y desenlaces cambian según los objetos que lleva el jugador.

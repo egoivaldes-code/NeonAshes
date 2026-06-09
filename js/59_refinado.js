@@ -51,14 +51,23 @@
 
 // Tipos de componente (ficha). 'clave' es el id interno; 'icono' el
 // glifo provisional; 'color' el acento. La chatarra es la "ficha basura".
+// 'img' es la clave del ASSETS con el icono ilustrado (v0.93). Si por lo que
+// sea no carga, el 'icono' de texto sigue valiendo como respaldo.
 const REF_COMPONENTES = [
-  { clave: 'procesador', nombre: 'Procesadores', icono: '▣', color: '#00ff88' },
-  { clave: 'bateria',    nombre: 'Baterías',     icono: '▮', color: '#ffb300' },
-  { clave: 'sensor',     nombre: 'Sensores',     icono: '◉', color: '#00e5ff' },
-  { clave: 'mecanico',   nombre: 'Mecánicos',    icono: '✦', color: '#9aa7b0' },
-  { clave: 'chip_helix', nombre: 'Chips HELIX',  icono: '⬡', color: '#c850ff' },
-  { clave: 'chatarra',   nombre: 'Chatarra',     icono: '✕', color: '#5a4a4a' }
+  { clave: 'procesador', nombre: 'Procesadores', icono: '▣', color: '#00ff88', img: 'REF_PROCESADOR' },
+  { clave: 'bateria',    nombre: 'Baterías',     icono: '▮', color: '#ffb300', img: 'REF_BATERIA' },
+  { clave: 'sensor',     nombre: 'Sensores',     icono: '◉', color: '#00e5ff', img: 'REF_SENSOR' },
+  { clave: 'mecanico',   nombre: 'Mecánicos',    icono: '✦', color: '#9aa7b0', img: 'REF_MECANICO' },
+  { clave: 'chip_helix', nombre: 'Chips HELIX',  icono: '⬡', color: '#c850ff', img: 'REF_CHIP_HELIX' },
+  { clave: 'chatarra',   nombre: 'Chatarra',     icono: '✕', color: '#5a4a4a', img: 'REF_CHATARRA' }
 ];
+
+// Devuelve la ruta física del icono de un componente, o '' si no hay.
+function _refImgComp(comp){
+  if(!comp || !comp.img) return '';
+  if(typeof ASSETS !== 'undefined' && ASSETS[comp.img]) return ASSETS[comp.img];
+  return '';
+}
 
 // Tipos de PIEZA ESPECIAL. 'especial' es la marca que lleva una celda.
 //   linea_h  -> carga lineal horizontal (limpia su fila)
@@ -123,12 +132,22 @@ const REF_PEDIDO_BONUS_CREDITOS = 40;
 // Posibles cantidades que pide un encargo (por componente).
 const REF_PEDIDO_CANTIDADES = [4, 5, 6];
 
+// ── BALANCE CAPA 4 — ENCARGO EN DOS FASES ──────────────────────
+// Al cumplir el primer encargo aparece uno más exigente (fase 2) con
+// cantidades mayores y bonus mayor. Cumplir la fase 2 nunca penaliza si
+// no se llega: simplemente se cobra el bonus de la fase ya alcanzada.
+const REF_PEDIDO_CANTIDADES_F2 = [6, 7, 8];
+const REF_PEDIDO_BONUS_CALIDAD_F2 = 25;
+const REF_PEDIDO_BONUS_CREDITOS_F2 = 90;
+
 let _refTiempo = REF_TIEMPO_TOTAL;  // segundos restantes
 let _refReloj = null;               // handle del setInterval
 let _refRelojActivo = false;        // ya arrancó (con la primera jugada)
 let _refChatarra = 0;               // chatarra basura acumulada sin limpiar
 let _refPedido = null;              // { items:[{clave,cantidad}], cumplido:false }
 let _refCerrando = false;           // evita doble cierre (reloj + botón)
+let _refFase = 1;                   // fase del encargo (1 o 2)
+let _refFaseMax = 0;                // fase máxima alcanzada y CUMPLIDA (0=ninguna)
 
 function _refCompPorClave(clave){ return REF_COMPONENTES.find(x => x.clave === clave) || null; }
 function _refRandClave(){
@@ -355,8 +374,10 @@ function _refTirarHallazgo(escala){
 // ============================================================
 
 // ── Genera un pedido aleatorio: 2 componentes distintos (no chatarra),
-//    cada uno con una cantidad de REF_PEDIDO_CANTIDADES.
-function _refGenerarPedido(){
+//    cada uno con una cantidad. La fase 2 pide cantidades mayores.
+function _refGenerarPedido(fase){
+  fase = fase || 1;
+  const tabla = (fase >= 2) ? REF_PEDIDO_CANTIDADES_F2 : REF_PEDIDO_CANTIDADES;
   const comps = REF_COMPONENTES.filter(c => c.clave !== 'chatarra');
   // Barajar y coger 2.
   const baraja = comps.slice();
@@ -367,15 +388,63 @@ function _refGenerarPedido(){
   const elegidos = baraja.slice(0, 2);
   const items = elegidos.map(c => ({
     clave: c.clave,
-    cantidad: REF_PEDIDO_CANTIDADES[Math.floor(Math.random() * REF_PEDIDO_CANTIDADES.length)]
+    cantidad: tabla[Math.floor(Math.random() * tabla.length)]
   }));
   return { items: items, cumplido: false };
 }
 
+// ── Bonus de calidad/créditos de la fase MÁXIMA cumplida. ──
+function _refBonusFase(){
+  if(_refFaseMax >= 2) return { calidad: REF_PEDIDO_BONUS_CALIDAD_F2, creditos: REF_PEDIDO_BONUS_CREDITOS_F2 };
+  if(_refFaseMax >= 1) return { calidad: REF_PEDIDO_BONUS_CALIDAD, creditos: REF_PEDIDO_BONUS_CREDITOS };
+  return { calidad: 0, creditos: 0 };
+}
+
+// ── Si el encargo actual está cumplido y aún estamos en fase 1, salta a
+//    la fase 2: nuevo encargo más exigente, con aviso. Devuelve true si saltó.
+function _refAvanzarFaseSiToca(){
+  if(_refFase >= 2) return false;
+  if(!_refPedidoCumplido()) return false;
+  // Fase 1 cumplida: registrarla y generar el encargo de fase 2 sobre el
+  // progreso YA acumulado (no se resetea lo extraído).
+  _refFaseMax = 1;
+  _refFase = 2;
+  _refPedido = _refGenerarPedido(2);
+  _refFX('sci_powerup', 0.5);
+  _refMostrarAvisoFase();
+  return true;
+}
+
+// ── Aviso flotante "NUEVO ENCARGO" que aparece y se desvanece solo. ──
+function _refMostrarAvisoFase(){
+  const marco = document.querySelector('.ref-tablero-marco');
+  if(!marco) return;
+  let aviso = document.getElementById('ref-fase-aviso');
+  if(!aviso){
+    aviso = document.createElement('div');
+    aviso.id = 'ref-fase-aviso';
+    aviso.className = 'ref-fase-aviso';
+    marco.appendChild(aviso);
+  }
+  aviso.innerHTML = '▲ Nuevo encargo';
+  aviso.classList.remove('ref-fase-aviso-show');
+  // forzar reflow para reiniciar la animación
+  void aviso.offsetWidth;
+  aviso.classList.add('ref-fase-aviso-show');
+  clearTimeout(_refAvisoTimer);
+  _refAvisoTimer = setTimeout(() => {
+    if(aviso) aviso.classList.remove('ref-fase-aviso-show');
+  }, 2200);
+}
+let _refAvisoTimer = null;
+
 // ── ¿Está el pedido cumplido con lo extraído hasta ahora? ──
 function _refPedidoCumplido(){
   if(!_refPedido) return false;
-  return _refPedido.items.every(it => (_refExtraidos[it.clave] || 0) >= it.cantidad);
+  const ok = _refPedido.items.every(it => (_refExtraidos[it.clave] || 0) >= it.cantidad);
+  // Si la fase 2 está cumplida, registrarla como fase máxima alcanzada.
+  if(ok && _refFase >= 2) _refFaseMax = 2;
+  return ok;
 }
 
 // ── Reloj: arranca con la primera jugada. Cuando llega a 0, cierra. ──
@@ -445,7 +514,9 @@ function iniciarRefinado(){
   _refRelojActivo = false;
   _refCerrando = false;
   _refChatarra = 0;
-  _refPedido = _refGenerarPedido();
+  _refFase = 1;
+  _refFaseMax = 0;
+  _refPedido = _refGenerarPedido(1);
   _refPararReloj();
   return _refTablero;
 }
@@ -489,6 +560,7 @@ function abrirRefinado(volverA, opciones){
   _refPintarChatarra();
   _refPintarTablero();
   _refConectarInput();
+  _refConectarResize();
   const desde = document.querySelector('.escena.activa');
   const idDesde = desde ? desde.id : _refVolverA;
   const escRef = document.getElementById('refinado-escena');
@@ -524,9 +596,12 @@ function _refPintarObjetivos(){
   REF_COMPONENTES.forEach(comp => {
     if(comp.clave === 'chatarra') return;
     const n = _refExtraidos[comp.clave] || 0;
+    const img = _refImgComp(comp);
+    const ic = img
+      ? '<img class="ref-obj-img" src="'+img+'" alt="">'
+      : '<span class="ref-obj-icono" style="color:'+comp.color+'">'+comp.icono+'</span>';
     html += '<div class="ref-obj">'
-      + '<span class="ref-obj-icono" style="color:'+comp.color+'">'+comp.icono+'</span>'
-      + '<span class="ref-obj-nombre">'+comp.nombre+'</span>'
+      + ic
       + '<span class="ref-obj-num">'+n+'</span>'
       + '</div>';
   });
@@ -536,7 +611,6 @@ function _refPintarObjetivos(){
     if(n <= 0) return;
     html += '<div class="ref-obj ref-obj-hallazgo">'
       + '<span class="ref-obj-icono" style="color:'+h.color+'">'+h.icono+'</span>'
-      + '<span class="ref-obj-nombre">'+h.nombre+'</span>'
       + '<span class="ref-obj-num">'+n+'</span>'
       + '</div>';
   });
@@ -574,19 +648,24 @@ function _refPintarPedido(){
   if(!cont || !_refPedido) return;
   const cumplido = _refPedidoCumplido();
   let html = '<span class="ref-pedido-label">ENCARGO</span>';
+  if(_refFase >= 2) html += '<span class="ref-pedido-fase">FASE 2</span>';
   _refPedido.items.forEach(it => {
     const comp = _refCompPorClave(it.clave);
     const tengo = _refExtraidos[it.clave] || 0;
     const ok = tengo >= it.cantidad;
+    const img = _refImgComp(comp);
+    const ic = img
+      ? '<img class="ref-pedido-img" src="'+img+'" alt="">'
+      : '<span class="ref-pedido-icono" style="color:'+(comp?comp.color:'#fff')+'">'+(comp?comp.icono:'◆')+'</span>';
     html += '<span class="ref-pedido-item' + (ok ? ' ref-pedido-ok' : '') + '">'
-      + '<span class="ref-pedido-icono" style="color:' + (comp ? comp.color : '#fff') + '">'
-        + (comp ? comp.icono : '◆') + '</span>'
+      + ic
       + '<span class="ref-pedido-prog">' + Math.min(tengo, it.cantidad) + '/' + it.cantidad + '</span>'
       + '</span>';
   });
   if(cumplido) html += '<span class="ref-pedido-sello">✓</span>';
   cont.innerHTML = html;
   cont.classList.toggle('ref-pedido-completo', cumplido);
+  cont.classList.toggle('ref-pedido-f2', _refFase >= 2);
 }
 
 // Pinta la barra de chatarra basura acumulada.
@@ -603,7 +682,8 @@ function _refPintarTablero(){
   const cont = document.getElementById('ref-tablero');
   if(!cont || !_refTablero) return;
   cont.style.gridTemplateColumns = 'repeat(' + REF_COLS + ', 1fr)';
-  cont.style.gridTemplateRows = 'repeat(' + REF_FILAS + ', 1fr)';
+  // Las filas las marca el aspect-ratio cuadrado de cada ficha (CSS), no aquí.
+  cont.style.gridTemplateRows = '';
   let html = '';
   for(let f = 0; f < REF_FILAS; f++){
     for(let c = 0; c < REF_COLS; c++){
@@ -611,8 +691,12 @@ function _refPintarTablero(){
       const comp = cel ? _refCompPorClave(cel.clave) : null;
       const sel = (_refSeleccion && _refSeleccion.f === f && _refSeleccion.c === c) ? ' ref-ficha-sel' : '';
       const esp = (cel && cel.especial) ? ' ref-ficha-especial ref-esp-' + cel.especial : '';
-      let icono = comp ? comp.icono : '';
       let color = comp ? comp.color : '#888';
+      // Contenido: imagen ilustrada si la hay; si no, glifo de texto.
+      const img = _refImgComp(comp);
+      let contenido = img
+        ? '<img class="ref-ficha-img" src="'+img+'" alt="" draggable="false">'
+        : '<span class="ref-ficha-glifo">'+(comp ? comp.icono : '')+'</span>';
       // La pieza especial dibuja su glifo encima en una capa.
       let capaEsp = '';
       if(cel && cel.especial && REF_ESPECIALES[cel.especial]){
@@ -621,14 +705,52 @@ function _refPintarTablero(){
       }
       html += '<button class="ref-ficha'+sel+esp+'" data-f="'+f+'" data-c="'+c+'" '
         + 'style="color:'+color+'">'
-        + '<span class="ref-ficha-glifo">'+icono+'</span>'+capaEsp
+        + contenido + capaEsp
         + '</button>';
     }
   }
   cont.innerHTML = html;
+  _refAjustarTablero();
 }
 
-// ── INPUT DEL TABLERO (Capa 3): arrastrar para mover ───────────
+// ── Ajusta el ancho del tablero para que, siendo las celdas cuadradas, las
+//    8 filas quepan en el alto disponible del marco (sin scroll). El lado
+//    de celda lo marca el menor entre (ancho/cols) y (alto/filas). ──
+function _refAjustarTablero(){
+  const marco = document.querySelector('.ref-tablero-marco');
+  const cont = document.getElementById('ref-tablero');
+  if(!marco || !cont) return;
+  const cs = getComputedStyle(marco);
+  const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+  const padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+  const dispW = marco.clientWidth - padX;
+  const dispH = marco.clientHeight - padY;
+  if(dispW <= 0 || dispH <= 0) return;
+  const gap = 0.26 * 16; // gap en px (0.26rem aprox)
+  // lado de celda que cabe por ancho y por alto
+  const ladoW = (dispW - gap * (REF_COLS - 1)) / REF_COLS;
+  const ladoH = (dispH - gap * (REF_FILAS - 1)) / REF_FILAS;
+  const lado = Math.max(8, Math.min(ladoW, ladoH));
+  const anchoTablero = lado * REF_COLS + gap * (REF_COLS - 1);
+  cont.style.width = Math.floor(anchoTablero) + 'px';
+}
+
+// Reajusta al cambiar tamaño/orientación. Se conecta una sola vez.
+let _refResizeConectado = false;
+function _refConectarResize(){
+  if(_refResizeConectado) return;
+  _refResizeConectado = true;
+  window.addEventListener('resize', () => {
+    clearTimeout(_refResizeTimer);
+    _refResizeTimer = setTimeout(_refAjustarTablero, 120);
+  });
+  // La escena puede no tener tamaño aún en el primer pintado: reajustar
+  // tras unos ticks para cuando ya esté activa y medida.
+  setTimeout(_refAjustarTablero, 60);
+  setTimeout(_refAjustarTablero, 260);
+  setTimeout(_refAjustarTablero, 600);
+}
+let _refResizeTimer = null;
 // Soporta dos formas, ambas con Pointer Events (ratón y táctil unificados):
 //   · ARRASTRE: pulsas sobre una ficha y arrastras hacia una vecina. Al
 //     cruzar el umbral hacia una casilla adyacente, se hace el swap.
@@ -773,6 +895,8 @@ function _refResolverCascadasAnimado(profundidad){
     _refPintarTablero();
     _refPintarObjetivos();
     _refPintarCalidad();
+    // Capa 4: si el encargo de fase 1 quedó cumplido, saltar a fase 2.
+    _refAvanzarFaseSiToca();
     _refPintarPedido();
     _refPintarChatarra();
     // Si el reloj llegó a 0 mientras resolvíamos la cascada, cerrar ahora.
@@ -910,10 +1034,16 @@ function _refResolverRecompensa(){
 
   // 2) Calidad efectiva: la barra menos la penalización por chatarra basura
   //    acumulada (el desguace sucio recorta calidad), más el bonus de pedido.
+  //    Capa 4: el bonus depende de la fase MÁXIMA cumplida (1 ó 2).
   const fracChatarra = Math.min(1, _refChatarra / REF_CHATARRA_TOPE);
   const penalChatarra = Math.round(fracChatarra * REF_PENAL_CHATARRA);
-  const pedidoOk = _refPedidoCumplido();
-  const bonusPedido = pedidoOk ? REF_PEDIDO_BONUS_CALIDAD : 0;
+  const faseActualOk = _refPedidoCumplido();   // actualiza _refFaseMax si aplica
+  // Si el encargo actual está cumplido pero seguimos en fase 1 (no llegó a
+  // saltar), cuenta como fase 1 alcanzada.
+  if(faseActualOk && _refFase === 1 && _refFaseMax < 1) _refFaseMax = 1;
+  const pedidoOk = _refFaseMax >= 1;
+  const bono = _refBonusFase();
+  const bonusPedido = bono.calidad;
   let calidadEfectiva = _refCalidad - penalChatarra + bonusPedido;
   calidadEfectiva = Math.max(0, Math.min(100, calidadEfectiva));
 
@@ -922,9 +1052,9 @@ function _refResolverRecompensa(){
   let refinada = Math.floor((totalComp / REF_COMPONENTES_POR_REFINADA) * factorCalidad);
   if(totalComp > 0 && refinada < 1) refinada = 1;            // algo siempre sale
 
-  // 4) Créditos: por calidad efectiva + bonus fijo si se cumplió el pedido.
+  // 4) Créditos: por calidad efectiva + bonus de la fase cumplida.
   let creditos = Math.round(calidadEfectiva * REF_CREDITOS_POR_CALIDAD);
-  if(pedidoOk) creditos += REF_PEDIDO_BONUS_CREDITOS;
+  creditos += bono.creditos;
 
   // 5) Aplicar efectos.
   if(refinada > 0 && typeof darItem === 'function'){
@@ -954,6 +1084,7 @@ function _refResolverRecompensa(){
     totalComp, refinada, creditos,
     calidad: Math.round(calidadEfectiva),
     penalChatarra, bonusPedido, pedidoOk,
+    bonusCreditos: bono.creditos, fase: _refFaseMax,
     hallazgos: hallazgosDados
   };
 }
@@ -969,7 +1100,8 @@ function _refMostrarResumen(r){
     + '<div class="ref-resumen-linea"><span>Calidad final</span><span class="ref-resumen-val">'+r.calidad+'%</span></div>'
     + '<div class="ref-resumen-linea"><span>Componentes recuperados</span><span class="ref-resumen-val">'+r.totalComp+'</span></div>';
   if(r.pedidoOk){
-    html += '<div class="ref-resumen-linea ref-resumen-bonus"><span>Encargo cumplido</span><span class="ref-resumen-val">+'+r.bonusPedido+' calidad · +'+REF_PEDIDO_BONUS_CREDITOS+' CR</span></div>';
+    const etqFase = (r.fase >= 2) ? 'Encargo cumplido · Fase 2' : 'Encargo cumplido';
+    html += '<div class="ref-resumen-linea ref-resumen-bonus"><span>'+etqFase+'</span><span class="ref-resumen-val">+'+r.bonusPedido+' calidad · +'+r.bonusCreditos+' CR</span></div>';
   }
   if(r.penalChatarra > 0){
     html += '<div class="ref-resumen-linea ref-resumen-penal"><span>Desguace sucio</span><span class="ref-resumen-val">−'+r.penalChatarra+' calidad</span></div>';

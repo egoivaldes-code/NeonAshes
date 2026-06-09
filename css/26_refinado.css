@@ -38,14 +38,19 @@
   white-space:nowrap;
 }
 .ref-calidad-barra{
-  flex:1; height:8px; background:rgba(10,14,20,0.9);
+  flex:1; height:9px; background:linear-gradient(180deg,#02040799,#0a0e14cc);
   border:1px solid rgba(58,74,85,0.5); border-radius:6px; overflow:hidden;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,0.6);
 }
 .ref-calidad-fill{
-  height:100%; width:0%;
+  height:100%; width:0%; position:relative;
   background:linear-gradient(90deg, #00e5ff, var(--magenta));
-  box-shadow:0 0 10px rgba(255,0,110,0.5);
+  box-shadow:0 0 12px rgba(255,0,110,0.55);
   transition:width 0.4s ease;
+}
+.ref-calidad-fill::after{
+  content:''; position:absolute; inset:0 0 50% 0;
+  background:linear-gradient(180deg,rgba(255,255,255,0.35),transparent);
 }
 .ref-calidad-num{
   font-family:'Share Tech Mono',monospace; font-size:0.7rem;
@@ -58,9 +63,12 @@
 }
 .ref-obj{
   display:flex; align-items:center; gap:0.3rem;
-  background:rgba(10,14,20,0.85); border:1px solid rgba(58,74,85,0.4);
-  border-radius:2px; padding:0.28rem 0.45rem;
+  background:linear-gradient(180deg,rgba(20,26,34,0.9),rgba(10,14,20,0.92));
+  border:1px solid rgba(58,74,85,0.45);
+  border-radius:4px; padding:0.18rem 0.45rem;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.04);
 }
+.ref-obj-img{ width:22px; height:22px; object-fit:contain; }
 .ref-obj-hallazgo{
   border-color:rgba(255,0,110,0.45);
   box-shadow:0 0 10px rgba(255,0,110,0.18) inset;
@@ -81,41 +89,62 @@
   color:var(--blanco-suave); font-weight:bold; min-width:1rem; text-align:right;
 }
 
-/* Tablero: ocupa TODO el espacio sobrante y reparte su alto entre las 8
-   filas. Las fichas se ajustan para caber siempre, sin scroll: la
-   cabecera y el botón quedan fijos y el tablero se adapta al hueco. */
+/* Tablero: 7 columnas, celdas CUADRADAS (aspect-ratio 1:1). El tablero se
+   centra en el hueco sobrante. Nunca scrollea: si no cabe, encoge. */
 .ref-tablero-marco{
   position:relative; flex:1 1 auto; min-height:0;
-  background:rgba(6,9,13,0.9); border:1px solid rgba(255,0,110,0.2);
-  border-radius:3px; padding:0.4rem;
+  background:
+    repeating-linear-gradient(0deg,transparent 0 22px,rgba(0,229,255,0.025) 22px 23px),
+    radial-gradient(120% 80% at 50% 0%,rgba(255,0,110,0.06),transparent 60%),
+    linear-gradient(180deg,rgba(8,12,17,0.96),rgba(4,6,10,0.98));
+  border:1px solid rgba(255,0,110,0.25);
+  border-radius:6px; padding:0.5rem;
   overflow:hidden;
-  display:flex;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:inset 0 0 30px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,229,255,0.05);
 }
+/* Tornillos decorativos en las esquinas superiores. */
+.ref-tablero-marco::before, .ref-tablero-marco::after{
+  content:''; position:absolute; top:6px; width:5px; height:5px; border-radius:50%;
+  background:radial-gradient(circle,#3a4a55,#0a0e14); z-index:1;
+}
+.ref-tablero-marco::before{ left:6px; }
+.ref-tablero-marco::after{ right:6px; }
 .ref-tablero{
-  display:grid; gap:0.22rem; width:100%; height:100%;
-  /* las filas se reparten el alto a partes iguales; aspect-ratio en la
-     ficha ya no manda, así que nunca desborda hacia abajo */
-  grid-auto-rows:1fr;
+  display:grid; gap:0.26rem;
+  width:100%; margin:0 auto;
   touch-action:none; -webkit-user-select:none; user-select:none;
 }
 .ref-ficha{
   position:relative; overflow:visible;
-  width:100%; height:100%; min-width:0; min-height:0;
+  aspect-ratio:1 / 1; width:100%; min-width:0;
   display:flex; align-items:center; justify-content:center;
-  background:linear-gradient(180deg, rgba(20,26,34,0.95), rgba(10,14,20,0.95));
-  border:1px solid rgba(58,74,85,0.45); border-radius:3px;
-  font-size:clamp(0.8rem, 4.2vw, 1.3rem); cursor:grab; padding:0;
+  background:linear-gradient(160deg, rgba(30,38,48,0.95), rgba(12,16,22,0.95));
+  border:1px solid rgba(70,86,98,0.5); border-radius:5px;
+  cursor:grab; padding:0;
   transition:transform 0.12s ease, box-shadow 0.15s ease, opacity 0.2s ease, background 0.15s ease;
-  text-shadow:0 0 8px currentColor;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -2px 4px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.4);
   -webkit-user-select:none; user-select:none;
   -webkit-touch-callout:none; touch-action:none;
 }
+/* brillo superior sutil tipo botón físico */
+.ref-ficha::before{
+  content:''; position:absolute; inset:0; border-radius:5px; pointer-events:none;
+  background:radial-gradient(circle at 50% 28%, rgba(255,255,255,0.10), transparent 55%);
+}
 .ref-ficha:active{ cursor:grabbing; }
-.ref-ficha-glifo{ position:relative; z-index:2; line-height:1; }
+/* icono ilustrado dentro de la ficha */
+.ref-ficha-img{
+  position:relative; z-index:2; width:82%; height:82%; object-fit:contain;
+  pointer-events:none; -webkit-user-drag:none; user-select:none;
+  filter:drop-shadow(0 0 4px currentColor);
+}
+/* respaldo de glifo de texto si no carga imagen */
+.ref-ficha-glifo{ position:relative; z-index:2; line-height:1; font-size:clamp(0.8rem,4.2vw,1.3rem); text-shadow:0 0 8px currentColor; }
 .ref-ficha:hover{ border-color:rgba(255,0,110,0.4); }
 .ref-ficha-sel{
   border-color:var(--magenta);
-  box-shadow:0 0 14px rgba(255,0,110,0.5), inset 0 0 10px rgba(255,0,110,0.2);
+  box-shadow:0 0 16px rgba(255,0,110,0.6), inset 0 0 12px rgba(255,0,110,0.25);
   transform:scale(1.06);
 }
 
@@ -245,10 +274,12 @@
 }
 .ref-terminar{
   display:block; width:100%;
-  background:rgba(255,0,110,0.12); border:1px solid var(--magenta);
-  border-radius:2px; color:var(--blanco-suave);
+  background:linear-gradient(180deg,rgba(255,0,110,0.18),rgba(255,0,110,0.08));
+  border:1px solid var(--magenta);
+  border-radius:4px; color:var(--blanco-suave);
   font-family:'Share Tech Mono',monospace; font-size:0.82rem; letter-spacing:0.1em;
   padding:0.9rem; cursor:pointer; transition:background 0.2s ease;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);
 }
 .ref-terminar:hover{ background:rgba(255,0,110,0.22); }
 
@@ -325,14 +356,19 @@
   white-space:nowrap;
 }
 .ref-reloj-barra{
-  flex:1; height:6px; background:rgba(10,14,20,0.9);
+  flex:1; height:8px; background:linear-gradient(180deg,#02040799,#0a0e14cc);
   border:1px solid rgba(58,74,85,0.5); border-radius:6px; overflow:hidden;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,0.6);
 }
 .ref-reloj-fill{
-  height:100%; width:100%;
+  height:100%; width:100%; position:relative;
   background:linear-gradient(90deg, #00e5ff, #00ff88);
-  box-shadow:0 0 8px rgba(0,229,255,0.4);
+  box-shadow:0 0 10px rgba(0,229,255,0.5);
   transition:width 1s linear, background 0.4s ease;
+}
+.ref-reloj-fill::after{
+  content:''; position:absolute; inset:0 0 50% 0;
+  background:linear-gradient(180deg,rgba(255,255,255,0.3),transparent);
 }
 .ref-reloj-num{
   font-family:'Share Tech Mono',monospace; font-size:0.72rem;
@@ -358,20 +394,28 @@
 /* ── Pedido (objetivo de la partida) ───────────────────────── */
 .ref-pedido{
   display:flex; align-items:center; flex-wrap:wrap; gap:0.4rem; flex:0 0 auto;
-  background:rgba(10,14,20,0.7); border:1px solid rgba(58,74,85,0.4);
-  border-left:2px solid rgba(0,229,255,0.6);
-  border-radius:2px; padding:0.3rem 0.5rem;
+  background:linear-gradient(180deg,rgba(12,18,26,0.85),rgba(8,11,16,0.9));
+  border:1px solid rgba(58,74,85,0.4);
+  border-left:3px solid rgba(0,229,255,0.6);
+  border-radius:4px; padding:0.32rem 0.55rem;
 }
 .ref-pedido-label{
   font-family:'Share Tech Mono',monospace; font-size:0.56rem;
   letter-spacing:0.12em; text-transform:uppercase; color:rgba(0,229,255,0.8);
 }
+/* Etiqueta FASE 2: chip ámbar. */
+.ref-pedido-fase{
+  font-family:'Share Tech Mono',monospace; font-size:0.5rem; font-weight:bold;
+  letter-spacing:0.08em; background:#ffb300; color:#1a1206;
+  padding:0.06rem 0.36rem; border-radius:3px;
+}
 .ref-pedido-item{
-  display:flex; align-items:center; gap:0.25rem;
-  font-family:'Share Tech Mono',monospace; font-size:0.7rem;
-  color:rgba(200,216,224,0.85);
+  display:flex; align-items:center; gap:0.28rem;
+  font-family:'Share Tech Mono',monospace; font-size:0.72rem;
+  color:rgba(200,216,224,0.9);
 }
 .ref-pedido-icono{ font-size:0.9rem; }
+.ref-pedido-img{ width:20px; height:20px; object-fit:contain; }
 .ref-pedido-prog{ min-width:2.2rem; }
 .ref-pedido-ok .ref-pedido-prog{ color:#00ff88; font-weight:bold; }
 .ref-pedido-sello{
@@ -381,6 +425,36 @@
 .ref-pedido-completo{
   border-left-color:#00ff88;
   box-shadow:0 0 10px rgba(0,255,136,0.15) inset;
+}
+/* En fase 2 el encargo se tiñe de ámbar (más exigente). */
+.ref-pedido-f2{
+  border-left-color:#ffb300;
+  box-shadow:0 0 14px rgba(255,179,0,0.12) inset;
+}
+.ref-pedido-f2.ref-pedido-completo{
+  border-left-color:#00ff88;
+  box-shadow:0 0 10px rgba(0,255,136,0.15) inset;
+}
+
+/* ── Aviso flotante de cambio de fase ──────────────────────── */
+.ref-fase-aviso{
+  position:absolute; top:34%; left:50%; z-index:10;
+  transform:translate(-50%, 8px); opacity:0; pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,179,0,0.96),rgba(255,138,0,0.96));
+  color:#1a1206; font-family:'Rajdhani',sans-serif; font-weight:700;
+  letter-spacing:0.16em; text-transform:uppercase; font-size:0.95rem;
+  padding:0.55rem 1.1rem; border-radius:4px; white-space:nowrap;
+  box-shadow:0 0 30px rgba(255,179,0,0.6);
+  transition:opacity 0.3s ease, transform 0.3s ease;
+}
+.ref-fase-aviso-show{
+  opacity:1; transform:translate(-50%, 0);
+  animation:ref-fase-late 0.6s ease;
+}
+@keyframes ref-fase-late{
+  0%{ transform:translate(-50%, 0) scale(0.8); }
+  55%{ transform:translate(-50%, 0) scale(1.08); }
+  100%{ transform:translate(-50%, 0) scale(1); }
 }
 
 /* ── Barra de chatarra basura ──────────────────────────────── */
@@ -393,13 +467,18 @@
   white-space:nowrap;
 }
 .ref-chatarra-barra{
-  flex:1; height:6px; background:rgba(10,14,20,0.9);
+  flex:1; height:8px; background:linear-gradient(180deg,#02040799,#0a0e14cc);
   border:1px solid rgba(58,74,85,0.5); border-radius:6px; overflow:hidden;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,0.6);
 }
 .ref-chatarra-fill{
-  height:100%; width:0%;
+  height:100%; width:0%; position:relative;
   background:linear-gradient(90deg, #6b5a4a, #8a6a4a);
   transition:width 0.4s ease, background 0.4s ease;
+}
+.ref-chatarra-fill::after{
+  content:''; position:absolute; inset:0 0 50% 0;
+  background:linear-gradient(180deg,rgba(255,255,255,0.2),transparent);
 }
 .ref-chatarra-alta .ref-chatarra-fill{
   background:linear-gradient(90deg, #c4602a, #ff5a2a);
@@ -409,3 +488,47 @@
 /* ── Nuevas líneas del resumen (bonus pedido / penalización) ── */
 .ref-resumen-bonus .ref-resumen-val{ color:#00ff88; }
 .ref-resumen-penal .ref-resumen-val{ color:#ff5a2a; }
+
+/* ============================================================
+   CAPA 4 — LAYOUT RESPONSIVE DE ESCRITORIO (PC HORIZONTAL)
+   En pantallas anchas: panel de datos a la izquierda, tablero
+   grande a la derecha. Los bloques de datos van envueltos en
+   .ref-panel-datos (ver index.html) para apilarse limpio.
+   ============================================================ */
+@media (min-width:900px){
+  .ref-wrap{
+    max-width:1180px; height:100dvh;
+    padding:2.4rem 1.4rem 1.4rem;
+    display:grid;
+    grid-template-columns:330px 1fr;
+    grid-template-rows:auto 1fr auto;
+    grid-template-areas:
+      "cab    cab"
+      "panel  tablero"
+      "panel  pie";
+    column-gap:1.4rem; row-gap:0.8rem; align-content:start;
+  }
+  .ref-cabecera{ grid-area:cab; }
+  .ref-panel-datos{ grid-area:panel; display:flex; flex-direction:column; gap:0.8rem; align-self:start; }
+  .ref-tablero-marco{ grid-area:tablero; }
+  .ref-pie{ grid-area:pie; }
+  /* cada bloque de datos como panel en la columna izquierda */
+  .ref-panel-datos > div{
+    background:linear-gradient(180deg,rgba(12,17,24,0.85),rgba(7,10,15,0.92));
+    border:1px solid rgba(58,74,85,0.45);
+    border-radius:8px; padding:0.7rem 0.9rem;
+  }
+  .ref-panel-datos .ref-pedido{ border-left:3px solid rgba(0,229,255,0.6); }
+  .ref-panel-datos .ref-pedido-f2{ border-left:3px solid #ffb300; }
+  .ref-objetivos{ gap:0.5rem; }
+  .ref-obj-img{ width:30px; height:30px; }
+  .ref-tablero{ max-width:680px; }
+  .ref-titulo{ font-size:1.7rem; }
+  .ref-subtitulo{ font-size:0.8rem; }
+  .ref-fase-aviso{ font-size:1.2rem; padding:0.7rem 1.5rem; }
+}
+/* En móvil .ref-panel-datos es transparente: no estorba la columna. */
+.ref-panel-datos{ display:contents; }
+@media (min-width:900px){
+  .ref-panel-datos{ display:flex; }
+}

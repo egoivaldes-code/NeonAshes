@@ -8,7 +8,7 @@
 
 // Versión actual del juego. ACTUALIZAR EN CADA ENTREGA.
 // Se muestra en el panel de depuración (Ctrl+D / tap arriba-izquierda).
-const JUEGO_VERSION = "0.92";
+const JUEGO_VERSION = "0.93";
 window.JUEGO_VERSION = JUEGO_VERSION;
 
 // ------------------------------------------------------------
@@ -129,7 +129,14 @@ const ASSETS = {
   INTRO_14: "assets/images/intro_14.jpg",
   INTRO_15: "assets/images/intro_15.jpg",
   INTRO_16: "assets/images/intro_16.jpg",
-  INTRO_LOGO: "assets/images/intro_17.jpg"
+  INTRO_LOGO: "assets/images/intro_17.jpg",
+  // --- Iconos del refinado / desmontaje (v0.93) ---
+  REF_PROCESADOR: "assets/images/ref_procesador.webp",
+  REF_BATERIA: "assets/images/ref_bateria.webp",
+  REF_SENSOR: "assets/images/ref_sensor.webp",
+  REF_MECANICO: "assets/images/ref_mecanico.webp",
+  REF_CHIP_HELIX: "assets/images/ref_chip_helix.webp",
+  REF_CHATARRA: "assets/images/ref_chatarra.webp"
 };
 
 // Apply backgrounds
