@@ -2,6 +2,12 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.97] - 2026-06-10
+### Added
+- Cuatro casos nuevos para el Investigador Privado: "La voz en la línea muerta", "El testigo que no recuerda", "Nadie pregunta por los vivos" y "El milagro de la Hermana Vael".
+### Changed
+- El tablón de casos ahora se ordena de menos a más exigente (rango, peligro y paga ascendentes).
+
 ## [0.96.1] - 2026-06-10
 ### Fixed
 - Pantalla de identidad: en algunos navegadores móviles (Opera GX) el teclado se abría y se cerraba al instante al tocar los campos de nombre y apellido, impidiendo escribir. Ya se puede escribir con normalidad. El arreglo no afecta al resto de navegadores.
