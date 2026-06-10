@@ -2,6 +2,12 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.98] - 2026-06-10
+### Added
+- "El Muro": nuevo minijuego de deducción para el Investigador Privado. El jugador criba las pistas reunidas (sólido/descartar) y luego respalda cada acusación con una pista sólida.
+### Changed
+- La deducción de los casos ya no es un test de respuestas: el resultado depende de acusar bien y de haber cribado y respaldado correctamente. Cribar mal baja la recompensa pero no hace fallar el caso.
+
 ## [0.97] - 2026-06-10
 ### Added
 - Cuatro casos nuevos para el Investigador Privado: "La voz en la línea muerta", "El testigo que no recuerda", "Nadie pregunta por los vivos" y "El milagro de la Hermana Vael".

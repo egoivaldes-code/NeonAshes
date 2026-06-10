@@ -140,3 +140,65 @@
   color: #ff6b00; font-style: italic;
   text-shadow: 0 0 8px rgba(255,107,0,0.3);
 }
+
+/* ============================================================
+   EL MURO — minijuego de deducción (v0.98)
+   ============================================================ */
+.muro-instr {
+  font-size: 0.8rem; line-height: 1.5; color: var(--blanco-suave);
+  opacity: 0.85; margin: 0.6rem 0 0.8rem; padding: 0.6rem 0.7rem;
+  border-left: 2px solid rgba(0,229,255,0.4); background: rgba(0,229,255,0.04);
+}
+.muro-instr b { color: var(--cyan); font-weight: 600; }
+.muro-vacio, .muro-zona-hint {
+  font-size: 0.78rem; color: var(--blanco-suave); opacity: 0.5;
+  font-style: italic; padding: 0.5rem 0.2rem;
+}
+.muro-tablero { display: flex; flex-direction: column; gap: 0.7rem; }
+.muro-banco {
+  border: 1px dashed rgba(255,255,255,0.18); border-radius: 4px;
+  padding: 0.5rem; min-height: 3rem; background: rgba(255,255,255,0.02);
+}
+.muro-cols { display: flex; gap: 0.6rem; }
+.muro-zona {
+  flex: 1; border-radius: 4px; padding: 0.5rem; min-height: 6rem;
+  border: 1px solid rgba(255,255,255,0.12); transition: background 0.2s;
+}
+.muro-solido { border-color: rgba(0,229,255,0.45); background: rgba(0,229,255,0.05); }
+.muro-descartar { border-color: rgba(255,107,0,0.45); background: rgba(255,107,0,0.05); }
+.muro-zona-tit {
+  font-size: 0.68rem; letter-spacing: 0.14em; opacity: 0.7;
+  margin-bottom: 0.45rem; text-transform: uppercase;
+}
+.muro-solido .muro-zona-tit { color: var(--cyan); }
+.muro-descartar .muro-zona-tit { color: #ff6b00; }
+.muro-banco .muro-zona-tit { color: var(--blanco-suave); }
+.muro-tarjeta {
+  font-size: 0.78rem; line-height: 1.35; color: var(--blanco-suave);
+  background: rgba(20,26,40,0.92); border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 3px; padding: 0.5rem 0.55rem; margin-bottom: 0.4rem;
+  cursor: grab; user-select: none; touch-action: manipulation;
+  transition: border-color 0.15s, transform 0.08s;
+}
+.muro-tarjeta:active { cursor: grabbing; transform: scale(0.98); }
+.muro-tarjeta:hover { border-color: rgba(0,229,255,0.5); }
+.muro-solido .muro-tarjeta { border-left: 3px solid var(--cyan); }
+.muro-descartar .muro-tarjeta { border-left: 3px solid #ff6b00; opacity: 0.8; }
+/* Fase 2: respaldo */
+.muro-respaldo {
+  margin-top: 0.5rem; padding-top: 0.5rem;
+  border-top: 1px dashed rgba(255,255,255,0.12);
+}
+.muro-respaldo-tit {
+  font-size: 0.64rem; letter-spacing: 0.14em; color: var(--magenta);
+  opacity: 0.85; margin-bottom: 0.4rem;
+}
+.muro-chip {
+  display: inline-block; font-size: 0.72rem; line-height: 1.25;
+  color: var(--blanco-suave); background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.18); border-radius: 3px;
+  padding: 0.35rem 0.5rem; margin: 0 0.35rem 0.35rem 0; cursor: pointer;
+  text-align: left; transition: border-color 0.15s, color 0.15s;
+}
+.muro-chip:hover { border-color: rgba(0,229,255,0.5); }
+.muro-chip-sel { border-color: var(--cyan); color: var(--cyan); background: rgba(0,229,255,0.08); }
