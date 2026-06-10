@@ -173,6 +173,13 @@ document.addEventListener('click', unlockAudio);
 
 document.body.addEventListener('touchmove', e=>{
   const t = e.target;
+  // No interferir NUNCA cuando se toca un campo de texto: en algunos
+  // navegadores (Opera GX móvil) bloquear el touchmove sobre un input
+  // cancela el foco y el teclado se abre y se cierra al instante.
+  if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable
+           || (t.closest && t.closest('input, textarea')))){
+    return;
+  }
   // Zonas donde SÍ se permite el desplazamiento táctil. Si el toque no
   // cae dentro de ninguna, se bloquea el scroll (para que el fondo del
   // juego no se mueva). Hay que listar aquí cualquier panel scrollable.

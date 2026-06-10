@@ -2,6 +2,10 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.96.1] - 2026-06-10
+### Fixed
+- Pantalla de identidad: en algunos navegadores móviles (Opera GX) el teclado se abría y se cerraba al instante al tocar los campos de nombre y apellido, impidiendo escribir. Ya se puede escribir con normalidad. El arreglo no afecta al resto de navegadores.
+
 ## [0.96] - 2026-06-10
 ### Changed
 - Investigador: los casos ya no se resuelven agotando todas las pistas. Ahora tienes un número limitado de diligencias antes de que el caso se cierre solo, así que debes elegir dónde mirar. Hay pistas falsas y vías engañosas mezcladas con las verdaderas. "Expediente en gris" reescrito con esa tensión.
