@@ -21,6 +21,8 @@ let _casoEscena = null;     // id de la escena actual
 let _casoPistas = {};       // { idPista: true } pistas reunidas
 let _casoVisitadas = {};    // escenas ya visitadas (para no repetir cobros)
 let _casoVolverA = 'apartamento';
+let _casoDiligencias = 0;   // diligencias restantes antes de cierre forzado
+let _casoDiligMax = 0;      // total de diligencias del caso
 
 const INV_PROF_ID = 'investigador';
 
@@ -56,56 +58,66 @@ const CASOS_INVESTIGADOR = [
     pagaBase: 220,
     progreso: 90,
     rangoMin: 0,
+    diligencias: 6,   // acciones de investigación antes del cierre forzado
     resumen: 'Un técnico de mantenimiento aparece muerto en un conducto de las capas bajas. HELIX lo cerró como accidente en doce minutos. La aseguradora —que no quiere pagar la indemnización a la viuda— te paga para "confirmar que fue accidente". Averigua qué pasó de verdad.',
-    intro: 'El despacho de la aseguradora Demeter huele a ambientador y a mentira corporativa. Una gestora con sonrisa de plástico desliza un expediente sobre la mesa. "Calix Ndour, 44 años, técnico de mantenimiento. Lo encontraron en el conducto V-9. HELIX dictaminó accidente. Solo necesitamos que usted lo confirme por escrito y cobra. Es una formalidad." La palabra "formalidad" se queda flotando, demasiado lisa. Si lo encontraran asesinado, la póliza obligaría a pagar el triple a la viuda. Por eso te pagan a ti, y no a un forense de verdad.',
+    intro: 'El despacho de la aseguradora Demeter huele a ambientador y a mentira corporativa. Una gestora con sonrisa de plástico desliza un expediente sobre la mesa. "Calix Ndour, 44 años, técnico de mantenimiento. Lo encontraron en el conducto V-9. HELIX dictaminó accidente. Solo necesitamos que usted lo confirme por escrito y cobra. Es una formalidad." La palabra "formalidad" se queda flotando, demasiado lisa. Si lo encontraran asesinado, la póliza obligaría a pagar el triple a la viuda. Por eso te pagan a ti, y no a un forense de verdad.\n\nNo tendrás tiempo para mirarlo todo. HELIX cierra los expedientes incómodos rápido. Elige bien dónde miras.',
     escenaInicial: 'briefing',
     escenas: {
       briefing: {
-        narr: 'El expediente es delgado. Una foto del conducto V-9, una nota de HELIX de doce líneas y un certificado de defunción firmado a las 03:14, apenas veinte minutos después de hallar el cuerpo. Nadie firma un certificado tan rápido salvo que ya supiera qué escribir. Decides empezar por algún sitio.',
+        narr: 'El expediente es delgado. Una foto del conducto V-9, una nota de HELIX de doce líneas y un certificado de defunción firmado a las 03:14, apenas veinte minutos después de hallar el cuerpo. Nadie firma un certificado tan rápido salvo que ya supiera qué escribir. Cada paso que des consume tiempo, y el caso no esperará para siempre. ¿Por dónde tiras?',
         opciones: [
           { txt: 'Ir al lugar: el conducto V-9', va: 'escena_conducto' },
           { txt: 'Hablar con la viuda, Ama Ndour', va: 'escena_viuda' },
           { txt: 'Buscar al capataz del turno, Renko', va: 'escena_capataz' },
-          { txt: '— Tengo suficiente. Pasar a la deducción', va: '_deduccion', requierePistas: 3 }
+          { txt: 'Tirar del rumor: dicen que Calix tenía deudas', va: 'escena_rumor' },
+          { txt: '— Creo que ya lo tengo. Pasar a la deducción', va: '_deduccion', requierePistas: 2 }
         ]
       },
       escena_conducto: {
         tiempo: 90,
-        narr: 'El conducto V-9 sigue precintado con cinta de HELIX, pero nadie vigila un sitio que ya han decidido olvidar. Bajas. El aire sabe a humedad y a ozono quemado, y el goteo constante marca un ritmo que no es el tuyo. En el suelo, la marca de tiza donde estuvo el cuerpo: pequeña, como si Calix se hubiera encogido al caer. A cuatro metros, un panel eléctrico con marcas de manipulación recientes. Y en el borde de la pasarela superior, un arañazo profundo, como de tacón arrastrado. La caída no cuenta una historia. El conducto, sí.',
-        pistasAlEntrar: ['panel_forzado', 'arrastre'],
+        narr: 'El conducto V-9 sigue precintado con cinta de HELIX, pero nadie vigila un sitio que ya han decidido olvidar. Bajas. El aire sabe a humedad y a ozono quemado, y el goteo constante marca un ritmo que no es el tuyo. En el suelo, la marca de tiza donde estuvo el cuerpo. A cuatro metros, un panel eléctrico con marcas de manipulación recientes. Y en el borde de la pasarela superior, un arañazo profundo. Hay varias cosas que mirar, pero no tendrás aliento para todas.',
         opciones: [
-          { txt: 'Examinar el panel eléctrico forzado', va: 'escena_conducto', msg: 'Los tornillos tienen marcas de un destornillador de impacto, no de la herramienta reglamentaria de mantenimiento. Quien lo abrió tenía prisa y no le importó que se notara. El panel controla la luz de todo el tramo: si saltaba, el conducto quedaba a oscuras justo el tiempo necesario para que un hombre no viera venir el empujón.', da:'panel_forzado'},
-          { txt: 'Seguir el arañazo del borde', va: 'escena_conducto', msg: 'Te agachas y sigues la marca con el dedo. No es de una caída: es de un cuerpo arrastrado hasta el filo y soltado. Calix no se desplomó andando. Alguien lo llevó hasta ahí cuando ya no podía caminar solo. La gravedad solo puso la firma.', da:'arrastre' },
-          { txt: 'Buscar el termo o efectos personales de Calix', va: 'escena_conducto', msg: 'Encuentras su termo, intacto, rodando en una esquina. Huele a café frío, no a otra cosa. Quien quiera que lo de "borracho que resbaló" miente: Calix estaba sobrio. Lo apuntas, aunque la aseguradora preferiría que no.', da:'sobrio' },
+          { txt: 'Examinar el panel eléctrico forzado', va: 'escena_conducto', cuesta:true, msg: 'Los tornillos tienen marcas de un destornillador de impacto, no de la herramienta reglamentaria. Quien lo abrió tenía prisa. El panel controla la luz de todo el tramo: si saltaba, el conducto quedaba a oscuras el tiempo justo para que un hombre no viera venir el empujón.', da:'panel_forzado'},
+          { txt: 'Seguir el arañazo del borde', va: 'escena_conducto', cuesta:true, msg: 'No es de una caída: es de un cuerpo arrastrado hasta el filo y soltado. Calix no se desplomó andando. Alguien lo llevó hasta ahí cuando ya no podía caminar solo.', da:'arrastre' },
+          { txt: 'Revisar el termo y los efectos personales', va: 'escena_conducto', cuesta:true, msg: 'Su termo, intacto, huele a café frío, no a alcohol. Quien quiera vender lo del "borracho que resbaló" miente: Calix estaba sobrio esa noche.', da:'sobrio' },
           { txt: '← Volver', va: 'briefing' }
         ]
       },
       escena_viuda: {
         tiempo: 60,
-        narr: 'Ama Ndour vive dos niveles más abajo, en un cubículo con olor a té y a ropa secándose. No llora; ya ha llorado bastante. "Calix no bebía en el turno. Llevaba veinte años en ese conducto, conocía cada tubo. ¿Que se cayó? No me hagan reír." Te mira con una dureza cansada. "La semana pasada volvió raro. Dijo que había visto algo en los registros de mantenimiento que no cuadraba. Que iba a preguntar arriba." Aquí decides cómo seguir.',
+        narr: 'Ama Ndour vive dos niveles más abajo, en un cubículo con olor a té y a ropa secándose. No llora; ya ha llorado bastante. "Calix no bebía en el turno. Llevaba veinte años en ese conducto, conocía cada tubo. ¿Que se cayó? No me hagan reír." Te mira con una dureza cansada. "La semana pasada volvió raro. Dijo que había visto algo en los registros que no cuadraba." Aquí decides cómo seguir; cada enfoque gasta tu tiempo.',
         entrevista: true,
         opciones: [
-          { txt: '[EMPATIZAR] "Sé que nadie la está escuchando. Yo sí."', tono:'empatizar', va:'escena_viuda', da:'calix_vio_registros', msg:'Algo se afloja en su cara. "Anotó un nombre en un papel, antes de salir el último día. Un sector: B-7. No sé qué significa, pero lo escondió como si quemara." Te da el papel arrugado.' },
-          { txt: '[PRESIONAR] "¿Tiene pruebas o solo rencor?"', tono:'presionar', va:'escena_viuda', da:null, msg:'Se cierra como una puerta blindada. "Fuera de mi casa." Pierdes su confianza; no sacarás nada más de ella.', marca:'viuda_hostil' },
-          { txt: '[SOBORNAR] Ofrecerle 30 CR por lo que sepa', tono:'sobornar', coste:30, va:'escena_viuda', da:'calix_vio_registros', msg:'Mira los créditos con desprecio, pero los coge. Los necesita. "Sector B-7. Lo escribió y lo escondió. Ahora váyase." El soborno funciona, pero te sientes parte del problema.' },
+          { txt: '[EMPATIZAR] "Sé que nadie la está escuchando. Yo sí."', tono:'empatizar', cuesta:true, va:'escena_viuda', da:'sector_b7', msg:'Algo se afloja en su cara. "Anotó un sector antes de salir el último día: B-7. Lo escondió como si quemara." Te da el papel arrugado. Es concreto, verificable, y ella no gana nada inventándolo.' },
+          { txt: '[PRESIONAR] "¿Tiene pruebas o solo rencor?"', tono:'presionar', cuesta:true, va:'escena_viuda', da:null, msg:'Se cierra como una puerta blindada. "Fuera de mi casa." Pierdes su confianza; no sacarás nada más de ella.', marca:'viuda_hostil' },
+          { txt: '[SOBORNAR] Ofrecerle 30 CR por lo que sepa', tono:'sobornar', coste:30, cuesta:true, va:'escena_viuda', da:'sector_b7', msg:'Mira los créditos con desprecio, pero los coge. "Sector B-7. Lo escribió y lo escondió. Ahora váyase." Funciona, pero te sientes parte del problema.' },
           { txt: '← Volver', va:'briefing' }
         ]
       },
       escena_capataz: {
         tiempo: 60,
-        narr: 'Renko, el capataz del turno, te recibe en una garita con tres pantallas y una petaca mal escondida. Suda aunque hace frío. "¿Otro que viene a remover el tema Ndour? Fue un accidente. Resbaló. Pasa." Pero no te mira a los ojos al decirlo, y sus dedos tamborilean sobre la mesa.',
+        narr: 'Renko, el capataz del turno, te recibe en una garita con tres pantallas y una petaca mal escondida. Suda aunque hace frío. "¿Otro que viene a remover el tema Ndour? Fue un accidente. Resbaló. Pasa." No te mira a los ojos, y sus dedos tamborilean sobre la mesa. Parece el culpable más obvio del mundo. Demasiado obvio, quizá.',
         entrevista: true,
         opciones: [
-          { txt: '[PRESIONAR] "El certificado se firmó en 20 minutos. ¿Quién corrió tanto?"', tono:'presionar', va:'escena_capataz', da:'firma_apresurada', msg:'Renko traga saliva. "Yo solo reporté lo que me dijeron que reportara. HELIX quería el conducto reabierto esa misma noche. Producción no espera a un muerto." Acaba de admitir que hubo prisa por enterrar el asunto.' },
-          { txt: '[MENTIR] "Tu propia gente ya te ha señalado, Renko."', tono:'mentir', va:'escena_capataz', da:'renko_cubrio', msg:'El farol funciona. Palidece. "¡Yo no lo toqué! Solo... me dijeron que cerrara el parte como accidente y que no preguntara por el sector B-7. Me dieron un sobre. Eso es todo, lo juro." Cae en su propia confesión.', azar:{prob:0.85} },
-          { txt: '[EMPATIZAR] "Sé que tú también tienes miedo de alguien."', tono:'empatizar', va:'escena_capataz', da:'renko_cubrio', msg:'Renko se derrumba despacio. "Tengo familia. Me dijeron que cerrara el parte y mirara para otro lado en el sector B-7. No pregunté de quién venía la orden. Aquí no se pregunta." ' },
+          { txt: '[PRESIONAR] "El certificado se firmó en 20 minutos. ¿Quién corrió tanto?"', tono:'presionar', cuesta:true, va:'escena_capataz', da:'firma_apresurada', msg:'Renko traga saliva. "Yo solo reporté lo que me dijeron que reportara. HELIX quería el conducto reabierto esa misma noche. Producción no espera a un muerto." Admite que hubo prisa de arriba por enterrarlo.' },
+          { txt: '[EMPATIZAR] "Sé que tú también tienes miedo de alguien."', tono:'empatizar', cuesta:true, va:'escena_capataz', da:'renko_obedecio', msg:'Renko se derrumba. "Tengo familia. Me dijeron que cerrara el parte y no mirara el sector B-7. No pregunté de quién venía la orden. Aquí no se pregunta." No mató a nadie: obedeció y calló. El miedo no es culpa.' },
+          { txt: '[MENTIR] "Tengo un testigo que te vio empujarlo, Renko."', tono:'mentir', cuesta:true, va:'escena_capataz', da:'renko_culpable_falso', msg:'Renko entra en pánico. "¡Vale, vale! Yo... yo discutí con él esa noche, ¿sí? Pero no lo toqué, lo juro." Tienes una confesión de que discutieron. Suena a culpa. Pero un hombre aterrado dice lo que sea para que pares: ¿confiesa un crimen o solo su miedo?', señalSutil:true, azar:{prob:0.9} },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_rumor: {
+        tiempo: 60,
+        narr: 'En el bar de la esquina del sector, un compañero de turno de Calix te suelta, entre trago y trago, que "todo el mundo sabía" que Calix debía dinero a gente fea. Lo dice rápido, sin que se lo preguntes, como si tuviera ganas de que alguien lo anotara. Demasiadas ganas.',
+        opciones: [
+          { txt: 'Anotar la pista de las deudas de juego', va:'escena_rumor', cuesta:true, da:'deudas_juego', señalSutil:true, msg:'Lo apuntas: deudas de juego, posible ajuste de cuentas. Encaja con un asesinato cualquiera de las capas bajas. Encaja demasiado bien, y llega demasiado servido. ¿Quién se beneficia de que mires hacia las apuestas y no hacia HELIX?' },
+          { txt: 'Preguntar quién le mandó contarte esto', va:'escena_rumor', cuesta:true, da:'rumor_plantado', msg:'El hombre se pone nervioso. "Nadie, nadie, yo solo... oí cosas." Miente fatal. Alguien le pagó el turno de copas para que sembrara la idea de las deudas. El rumor está plantado: es humo para tapar otra cosa.' },
           { txt: '← Volver', va:'briefing' }
         ]
       }
     },
     // ── DEDUCCIÓN: quién / por qué / cómo ──
     deduccion: {
-      intro: 'Te sientas con todo lo que tienes. La aseguradora quiere la palabra "accidente". El expediente quiere que mires hacia otro lado. Pero las piezas, si las pones en orden, cuentan otra cosa. Es hora de firmar una conclusión. Solo una.',
+      intro: 'Te sientas con lo que has podido reunir —que no es todo— y con lo que el caso quería que creyeras. La aseguradora quiere la palabra "accidente". Alguien quiere que mires hacia las deudas. Renko parece culpable, pero el miedo no es lo mismo que la culpa. Separa el grano de la paja. Firma una conclusión. Solo una.',
       preguntas: [
         {
           id: 'quien',
@@ -113,8 +125,8 @@ const CASOS_INVESTIGADOR = [
           opciones: [
             { txt: 'Nadie: fue un accidente real', correcta:false },
             { txt: 'Seguridad interna de HELIX, por orden de arriba', correcta:true },
-            { txt: 'El capataz Renko, para robarle', correcta:false },
-            { txt: 'La viuda, por dinero del seguro', correcta:false }
+            { txt: 'El capataz Renko, en una discusión', correcta:false },
+            { txt: 'Acreedores por sus deudas de juego', correcta:false }
           ]
         },
         {
@@ -122,8 +134,8 @@ const CASOS_INVESTIGADOR = [
           texto: '¿POR QUÉ lo mataron?',
           opciones: [
             { txt: 'Vio algo en los registros del sector B-7 que no debía', correcta:true },
-            { txt: 'Una deuda de juego', correcta:false },
-            { txt: 'Un lío de faldas', correcta:false },
+            { txt: 'Una deuda de juego que no pudo pagar', correcta:false },
+            { txt: 'Una discusión laboral que se fue de las manos', correcta:false },
             { txt: 'Por error, lo confundieron con otro', correcta:false }
           ]
         },
@@ -131,31 +143,27 @@ const CASOS_INVESTIGADOR = [
           id: 'como',
           texto: '¿CÓMO lo hicieron?',
           opciones: [
-            { txt: 'Lo empujaron y simularon una caída cortando la luz', correcta:true },
-            { txt: 'Veneno en el termo', correcta:false },
+            { txt: 'Cortaron la luz, lo empujaron y simularon la caída', correcta:true },
+            { txt: 'Una paliza que acabó mal', correcta:false },
             { txt: 'Un fallo eléctrico fortuito', correcta:false },
             { txt: 'Se desplomó por agotamiento', correcta:false }
           ]
         }
       ],
-      // Desenlaces según número de aciertos (0-3).
       desenlaces: {
-        // 3 aciertos: verdad completa.
         completo: {
           titulo: 'CASO RESUELTO · LA VERDAD',
-          narr: 'Lo tienes. Calix vio en los registros del sector B-7 algo que HELIX necesitaba enterrado. Seguridad interna cortó la luz del conducto, lo empujó desde la pasarela y dejó que la gravedad firmara el parte. Renko calló por miedo. La aseguradora te pidió la palabra "accidente"; les entregas la palabra "homicidio". No la van a usar —les cuesta el triple— pero tú sabes la verdad, y la viuda también la sabrá. A veces eso es lo único que un muerto pobre puede permitirse: que alguien lo sepa.',
+          narr: 'Lo tienes. Calix vio en los registros del sector B-7 algo que HELIX necesitaba enterrado. Seguridad interna cortó la luz del conducto, lo empujó desde la pasarela y dejó que la gravedad firmara el parte. Las deudas eran humo plantado; Renko, solo un hombre asustado. La aseguradora te pidió la palabra "accidente"; les entregas la palabra "homicidio". No la van a usar —les cuesta el triple— pero tú sabes la verdad, y la viuda también la sabrá. A veces eso es lo único que un muerto pobre puede permitirse: que alguien lo sepa.',
           pagaMult: 1.0, rep: 6, parcial:false
         },
-        // 2 aciertos: parcial.
         parcial: {
           titulo: 'CASO CERRADO · A MEDIAS',
-          narr: 'Entregas un informe que apunta a homicidio, pero con cabos sueltos que un abogado de la aseguradora deshace en una tarde. Rebajan tu conclusión a "circunstancias no concluyentes" y archivan el resto. Cobras, pero menos: una verdad incompleta vale poco en este mercado. Ama Ndour recibe una indemnización parcial y un sobre con el sello de Demeter que no se molesta en abrir delante de ti. "Gracias por intentarlo", dice, y la palabra "intentarlo" te acompaña hasta casa. Es más de lo que tenía. Es mucho menos de lo que su marido merecía.',
+          narr: 'Entregas un informe que apunta en la dirección correcta, pero con cabos sueltos que un abogado de la aseguradora deshace en una tarde. Rebajan tu conclusión a "circunstancias no concluyentes" y archivan el resto. Cobras, pero menos: una verdad incompleta vale poco en este mercado. Ama Ndour recibe una indemnización parcial. "Gracias por intentarlo", dice, y la palabra "intentarlo" te acompaña hasta casa.',
           pagaMult: 0.5, rep: 2, parcial:true
         },
-        // 0-1 aciertos: fallo grave, final malo.
         fallo: {
           titulo: 'CASO CERRADO · EL PATO EQUIVOCADO',
-          narr: 'Firmas una conclusión que no se sostiene. Peor: tu informe señala a Renko, el capataz, que solo tuvo miedo y obedeció. HELIX agradece el chivo expiatorio servido en bandeja: lo despiden, le retiran la vivienda vinculada al contrato y en una semana ha desaparecido de las capas bajas, tragado por niveles donde no se vuelve. La verdadera causa queda enterrada con Calix, en un conducto que reabrieron esa misma noche para no perder un turno de producción. La aseguradora te paga una miseria por un caso "resuelto" y te estrecha la mano. Esa noche, en tu apartamento, entiendes que has hecho el trabajo sucio de alguien con traje. Y que lo harás otra vez, porque hay que comer.',
+          narr: 'Te tragaste el anzuelo. Tu informe apunta a las deudas o a Renko —justo donde alguien quería que mirases— y la verdadera causa queda enterrada con Calix, en un conducto que reabrieron esa misma noche para no perder un turno. Si señalaste a Renko, HELIX lo usa de chivo expiatorio: lo despiden, le quitan la vivienda y desaparece de las capas bajas en una semana. La aseguradora te paga una miseria por un caso "resuelto" y te estrecha la mano. Esa noche entiendes que has hecho el trabajo sucio de alguien con traje. Y que lo harás otra vez, porque hay que comer.',
           pagaMult: 0.15, rep: -5, parcial:false, malo:true
         }
       }
@@ -257,6 +265,8 @@ function aceptarCaso(id){
   _casoActivo = c;
   _casoPistas = {};
   _casoVisitadas = {};
+  _casoDiligMax = c.diligencias || 6;
+  _casoDiligencias = _casoDiligMax;
   _casoEscena = c.escenaInicial || Object.keys(c.escenas)[0];
   _pintarEscenaCaso(c.intro);
 }
@@ -285,7 +295,7 @@ function _pintarEscenaCaso(introExtra){
 
   const pistasN = _casoNumPistas();
   let html = '<div class="caso-hud"><span class="caso-hud-titulo">' + c.titulo + '</span>'
-    + '<span class="caso-hud-pistas">PISTAS: ' + pistasN + '</span></div>';
+    + '<span class="caso-hud-pistas">PISTAS ' + pistasN + ' · DILIGENCIAS ' + _casoDiligencias + '/' + _casoDiligMax + '</span></div>';
 
   if(introExtra){
     html += '<div class="caso-intro">' + introExtra + '</div>';
@@ -302,6 +312,10 @@ function _pintarEscenaCaso(introExtra){
     }
     // Opción de entrevista ya agotada por hostilidad.
     if(op.marca && _casoActivo._marcas && _casoActivo._marcas[op.marca]){
+      return;
+    }
+    // Opción de investigación ya usada (no repetir pista ni gastar de nuevo).
+    if(op.cuesta && _casoActivo._usadas && _casoActivo._usadas[_casoEscena + ':' + i]){
       return;
     }
     html += '<button class="opcion-btn" onclick="elegirOpcionCaso(' + i + ')">' + op.txt + '</button>';
@@ -329,6 +343,17 @@ function elegirOpcionCaso(i){
     if(typeof ajustarCreditos === 'function') ajustarCreditos(-op.coste);
   }
 
+  // ── DILIGENCIAS (v0.96): las opciones de investigación (cuesta:true)
+  //    consumen una diligencia. Las de navegación (Volver) no. ──
+  let agotado = false;
+  if(op.cuesta){
+    // marcar esta opción como usada para no repetirla
+    c._usadas = c._usadas || {};
+    c._usadas[_casoEscena + ':' + i] = true;
+    _casoDiligencias = Math.max(0, _casoDiligencias - 1);
+    if(_casoDiligencias <= 0) agotado = true;
+  }
+
   // Tirada de azar (p.ej. el farol al mentir).
   let exito = true;
   if(op.azar && typeof op.azar.prob === 'number'){
@@ -345,7 +370,16 @@ function elegirOpcionCaso(i){
   }
 
   // Mensaje de resultado.
-  const msg = exito ? (op.msg || '') : (op.msgFallo || 'No cuela. Se cierra en banda y no sacas nada.');
+  let msg = exito ? (op.msg || '') : (op.msgFallo || 'No cuela. Se cierra en banda y no sacas nada.');
+
+  // Si se agotaron las diligencias, el caso se cierra y vas a la deducción.
+  if(agotado){
+    msg += '<br><br><span class="caso-aviso-cierre">El tiempo se ha agotado. HELIX cierra el expediente. Tendrás que concluir con lo que tienes.</span>';
+    _invFX('inv_deduccion', 0.45);
+    _casoEscena = '_deduccion';
+    _pintarDeduccion(msg);
+    return;
+  }
 
   // Navegar.
   const destino = op.va || _casoEscena;
@@ -355,7 +389,6 @@ function elegirOpcionCaso(i){
     return;
   }
   _casoEscena = destino;
-  // Si la opción se queda en la misma escena, mostramos su msg como intro.
   _pintarEscenaCaso(msg || null);
 }
 
@@ -456,10 +489,14 @@ function firmarDeduccion(){
 }
 
 function cerrarCasoResuelto(){
+  // Limpiar marcas/usadas del caso (el objeto vive en el pool y se reutiliza).
+  if(_casoActivo){ delete _casoActivo._usadas; delete _casoActivo._marcas; }
   _casoActivo = null;
   _casoEscena = null;
   _casoPistas = {};
   _casoVisitadas = {};
+  _casoDiligencias = 0;
+  _casoDiligMax = 0;
   _deduccionRespuestas = {};
   _deduccionEntrada = false;
   _pintarTablon();

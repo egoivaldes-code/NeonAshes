@@ -2,6 +2,10 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.96] - 2026-06-10
+### Changed
+- Investigador: los casos ya no se resuelven agotando todas las pistas. Ahora tienes un número limitado de diligencias antes de que el caso se cierre solo, así que debes elegir dónde mirar. Hay pistas falsas y vías engañosas mezcladas con las verdaderas. "Expediente en gris" reescrito con esa tensión.
+
 ## [0.95.1] - 2026-06-09
 ### Fixed
 - El Investigador ya se puede desplazar (scroll) en el tablón de casos, en las escenas y en la deducción; antes no se podía bajar para leer o elegir.
