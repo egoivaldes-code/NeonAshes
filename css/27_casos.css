@@ -134,3 +134,9 @@
   border-top: 1px solid rgba(58,74,85,0.4); padding-top: 0.5rem;
 }
 .caso-ascenso { color: var(--cyan); }
+
+/* Aviso de cierre forzado por agotar diligencias (v0.96) */
+.caso-aviso-cierre {
+  color: #ff6b00; font-style: italic;
+  text-shadow: 0 0 8px rgba(255,107,0,0.3);
+}
