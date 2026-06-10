@@ -42,6 +42,35 @@ function _casoDarPista(id){
 }
 function _casoNumPistas(){ return Object.keys(_casoPistas).length; }
 
+// ── Recolector de metadatos de pistas (para EL MURO) ─────────
+// Recorre las escenas del caso activo y devuelve, para cada pista
+// reunida, su id, su etiqueta de tarjeta y si es humo (señalSutil).
+// 'etiqueta' es opcional en los datos; si falta, se deriva del texto.
+function _recogerPistasParaMuro(){
+  const out = [];
+  if(!_casoActivo || !_casoActivo.escenas) return out;
+  const vistos = {};
+  Object.keys(_casoActivo.escenas).forEach(eid => {
+    const esc = _casoActivo.escenas[eid];
+    if(!esc || !esc.opciones) return;
+    esc.opciones.forEach(op => {
+      if(!op.da) return;
+      if(!_casoPistas[op.da]) return;       // solo las reunidas
+      if(vistos[op.da]) return;             // sin duplicar
+      vistos[op.da] = true;
+      let etiqueta = op.etiqueta;
+      if(!etiqueta){
+        // Derivar una etiqueta breve a partir del texto de la opción,
+        // quitando prefijos de tono tipo "[EMPATIZAR] ".
+        etiqueta = (op.txt || op.da).replace(/^\[[^\]]+\]\s*/, '');
+        if(etiqueta.length > 64) etiqueta = etiqueta.slice(0, 61) + '…';
+      }
+      out.push({ id: op.da, etiqueta: etiqueta, humo: !!op.señalSutil, msg: op.msg || '' });
+    });
+  });
+  return out;
+}
+
 // ============================================================
 //  POOL DE CASOS
 //  Cada caso: id, titulo, contratante, peligro (0-5), pagaBase,
@@ -1118,41 +1147,163 @@ function elegirOpcionCaso(i){
 }
 
 // ============================================================
-//  DEDUCCIÓN FINAL
+//  DEDUCCIÓN FINAL — "EL MURO"
+//  Fase 1: cribar pistas (SÓLIDO / DESCARTAR).
+//  Fase 2: acusar quién/por qué/cómo respaldando con una pista sólida.
+//  El muro modula la recompensa; acusar mal puede llevar al fallo.
 // ============================================================
-let _deduccionRespuestas = {};
+let _deduccionRespuestas = {};   // { pregId: optIdx }
+let _deduccionRespaldo = {};     // { pregId: idPista } pista usada de soporte
+let _muroCriba = {};             // { idPista: 'solido' | 'descartar' }
+let _muroPistas = [];            // cache de pistas del caso
+let _muroFase = 1;               // 1 = cribar, 2 = acusar
 let _deduccionEntrada = false;
+
 function _pintarDeduccion(introExtra){
   const cont = document.getElementById('casos-wrap');
   if(!cont || !_casoActivo) return;
   const ded = _casoActivo.deduccion;
   if(!ded){ _pintarTablon(); return; }
-  if(!_deduccionEntrada){ _deduccionEntrada = true; _invFX('inv_deduccion', 0.45); }
-  _deduccionRespuestas = _deduccionRespuestas || {};
+  if(!_deduccionEntrada){
+    _deduccionEntrada = true;
+    _invFX('inv_deduccion', 0.45);
+    _muroPistas = _recogerPistasParaMuro();
+    _muroCriba = {};
+    _deduccionRespuestas = {};
+    _deduccionRespaldo = {};
+    _muroFase = 1;
+  }
 
   let html = '<div class="caso-hud"><span class="caso-hud-titulo">' + _casoActivo.titulo + '</span>'
-    + '<span class="caso-hud-pistas">DEDUCCIÓN</span></div>';
+    + '<span class="caso-hud-pistas">' + (_muroFase === 1 ? 'EL MURO · CRIBAR' : 'EL MURO · ACUSAR') + '</span></div>';
   if(introExtra) html += '<div class="caso-intro">' + introExtra + '</div>';
-  html += '<div class="caso-narr">' + ded.intro + '</div>';
 
-  ded.preguntas.forEach(preg => {
-    html += '<div class="ded-bloque"><div class="ded-pregunta">' + preg.texto + '</div>';
-    preg.opciones.forEach((opt, oi) => {
-      const sel = (_deduccionRespuestas[preg.id] === oi) ? ' ded-sel' : '';
-      html += '<button class="opcion-btn ded-op' + sel + '" onclick="marcarDeduccion(\'' + preg.id + '\',' + oi + ')">' + opt.txt + '</button>';
-    });
-    html += '</div>';
-  });
-
-  const todas = ded.preguntas.every(p => typeof _deduccionRespuestas[p.id] === 'number');
-  html += '<button class="btn-terminal ded-firmar' + (todas ? '' : ' caso-op-bloq') + '"'
-    + (todas ? '' : ' disabled') + ' onclick="firmarDeduccion()">FIRMAR CONCLUSIÓN →</button>';
+  if(_muroFase === 1){
+    html += _pintarMuroCriba(ded);
+  } else {
+    html += _pintarMuroAcusar(ded);
+  }
   html += '<button class="opcion-btn ded-volver" onclick="volverDelDeduccion()">← Seguir investigando</button>';
   cont.innerHTML = html;
 }
 
+// ── FASE 1: cribar ───────────────────────────────────────────
+function _pintarMuroCriba(ded){
+  let html = '<div class="caso-narr">' + ded.intro + '</div>';
+  html += '<div class="muro-instr">Arrastra cada pista al panel que creas: lo <b>SÓLIDO</b> sostiene una acusación; lo que huele a humo, <b>DESCÁRTALO</b>. No todo lo que recogiste es de fiar.</div>';
+
+  if(!_muroPistas.length){
+    html += '<div class="muro-vacio">No reuniste ninguna pista. Vuelve a investigar antes de acusar.</div>';
+    return html;
+  }
+
+  // Pistas sin clasificar todavía.
+  const sinClasificar = _muroPistas.filter(p => !_muroCriba[p.id]);
+
+  html += '<div class="muro-tablero">';
+  // Banco de pistas pendientes.
+  html += '<div class="muro-banco" data-zona="banco" ondragover="muroDragOver(event)" ondrop="muroSoltar(event,\'banco\')">'
+    + '<div class="muro-zona-tit">PISTAS</div>';
+  if(!sinClasificar.length) html += '<div class="muro-zona-hint">— todo clasificado —</div>';
+  sinClasificar.forEach(p => { html += _muroTarjeta(p); });
+  html += '</div>';
+
+  // Dos columnas: sólido / descartar.
+  html += '<div class="muro-cols">';
+  html += '<div class="muro-zona muro-solido" data-zona="solido" ondragover="muroDragOver(event)" ondrop="muroSoltar(event,\'solido\')">'
+    + '<div class="muro-zona-tit">SÓLIDO</div>';
+  _muroPistas.filter(p => _muroCriba[p.id] === 'solido').forEach(p => { html += _muroTarjeta(p); });
+  html += '</div>';
+  html += '<div class="muro-zona muro-descartar" data-zona="descartar" ondragover="muroDragOver(event)" ondrop="muroSoltar(event,\'descartar\')">'
+    + '<div class="muro-zona-tit">DESCARTAR</div>';
+  _muroPistas.filter(p => _muroCriba[p.id] === 'descartar').forEach(p => { html += _muroTarjeta(p); });
+  html += '</div>';
+  html += '</div>'; // /muro-cols
+  html += '</div>'; // /muro-tablero
+
+  const todoClasificado = _muroPistas.every(p => _muroCriba[p.id]);
+  html += '<button class="btn-terminal' + (todoClasificado ? '' : ' caso-op-bloq') + '"'
+    + (todoClasificado ? '' : ' disabled') + ' onclick="muroPasarAcusar()">LEVANTAR ACUSACIÓN →</button>';
+  return html;
+}
+
+function _muroTarjeta(p){
+  return '<div class="muro-tarjeta' + (p.humo ? ' muro-tarjeta-humo' : '') + '" draggable="true"'
+    + ' data-pista="' + p.id + '" ondragstart="muroDragStart(event,\'' + p.id + '\')"'
+    + ' onclick="muroTapTarjeta(\'' + p.id + '\')">' + p.etiqueta + '</div>';
+}
+
+// ── FASE 2: acusar con respaldo ──────────────────────────────
+function _pintarMuroAcusar(ded){
+  const solidas = _muroPistas.filter(p => _muroCriba[p.id] === 'solido');
+  let html = '<div class="muro-instr">Sostén cada conclusión con una pista <b>sólida</b>. Pulsa una respuesta y luego la pista que la respalda. Una acusación sin respaldo firme no se sostiene.</div>';
+
+  ded.preguntas.forEach(preg => {
+    const elegida = _deduccionRespuestas[preg.id];
+    const respaldo = _deduccionRespaldo[preg.id];
+    html += '<div class="ded-bloque"><div class="ded-pregunta">' + preg.texto + '</div>';
+    preg.opciones.forEach((opt, oi) => {
+      const sel = (elegida === oi) ? ' ded-sel' : '';
+      html += '<button class="opcion-btn ded-op' + sel + '" onclick="marcarDeduccion(\'' + preg.id + '\',' + oi + ')">' + opt.txt + '</button>';
+    });
+    // Selector de respaldo: solo si ya hay respuesta elegida.
+    if(typeof elegida === 'number'){
+      html += '<div class="muro-respaldo"><div class="muro-respaldo-tit">RESPALDAR CON:</div>';
+      if(!solidas.length){
+        html += '<div class="muro-zona-hint">No marcaste ninguna pista como sólida.</div>';
+      } else {
+        solidas.forEach(p => {
+          const r = (respaldo === p.id) ? ' muro-chip-sel' : '';
+          html += '<button class="muro-chip' + r + '" onclick="marcarRespaldo(\'' + preg.id + '\',\'' + p.id + '\')">' + p.etiqueta + '</button>';
+        });
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+  });
+
+  const todasResp = ded.preguntas.every(p => typeof _deduccionRespuestas[p.id] === 'number');
+  const todasRespald = ded.preguntas.every(p => !!_deduccionRespaldo[p.id]);
+  const listo = todasResp && (todasRespald || !solidas.length);
+  html += '<button class="opcion-btn ded-volver" onclick="muroVolverCriba()">← Volver a cribar</button>';
+  html += '<button class="btn-terminal ded-firmar' + (listo ? '' : ' caso-op-bloq') + '"'
+    + (listo ? '' : ' disabled') + ' onclick="firmarDeduccion()">FIRMAR CONCLUSIÓN →</button>';
+  return html;
+}
+
+// ── Interacción del muro ─────────────────────────────────────
+let _muroArrastrando = null;
+function muroDragStart(ev, id){ _muroArrastrando = id; if(ev.dataTransfer){ ev.dataTransfer.effectAllowed='move'; ev.dataTransfer.setData('text/plain', id); } }
+function muroDragOver(ev){ ev.preventDefault(); if(ev.dataTransfer) ev.dataTransfer.dropEffect='move'; }
+function muroSoltar(ev, zona){
+  ev.preventDefault();
+  const id = _muroArrastrando || (ev.dataTransfer && ev.dataTransfer.getData('text/plain'));
+  _muroArrastrando = null;
+  if(!id) return;
+  if(zona === 'banco') delete _muroCriba[id];
+  else _muroCriba[id] = zona;
+  _invFX('inv_pista', 0.4);
+  _pintarDeduccion();
+}
+// Respaldo táctil (tap) para móvil: alterna banco → sólido → descartar → banco.
+function muroTapTarjeta(id){
+  const actual = _muroCriba[id];
+  if(!actual) _muroCriba[id] = 'solido';
+  else if(actual === 'solido') _muroCriba[id] = 'descartar';
+  else delete _muroCriba[id];
+  _invFX('inv_pista', 0.4);
+  _pintarDeduccion();
+}
+function muroPasarAcusar(){ _muroFase = 2; _invFX('inv_deduccion', 0.4); _pintarDeduccion(); }
+function muroVolverCriba(){ _muroFase = 1; _pintarDeduccion(); }
+
 function marcarDeduccion(pregId, optIdx){
   _deduccionRespuestas[pregId] = optIdx;
+  _pintarDeduccion();
+}
+function marcarRespaldo(pregId, idPista){
+  _deduccionRespaldo[pregId] = idPista;
+  _invFX('inv_pista', 0.45);
   _pintarDeduccion();
 }
 
@@ -1165,6 +1316,8 @@ function volverDelDeduccion(){
 function firmarDeduccion(){
   const c = _casoActivo;
   const ded = c.deduccion;
+
+  // 1) Aciertos de las acusaciones (como antes).
   let aciertos = 0;
   ded.preguntas.forEach(preg => {
     const idx = _deduccionRespuestas[preg.id];
@@ -1172,11 +1325,35 @@ function firmarDeduccion(){
   });
   const total = ded.preguntas.length;
 
+  // 2) Calidad del muro: cuántas pistas cribó bien (sólido si verdadera,
+  //    descartar si humo). Devuelve fracción 0..1.
+  let bienCribadas = 0;
+  _muroPistas.forEach(p => {
+    const c2 = _muroCriba[p.id];
+    if(p.humo && c2 === 'descartar') bienCribadas++;
+    else if(!p.humo && c2 === 'solido') bienCribadas++;
+  });
+  const muroCalidad = _muroPistas.length ? (bienCribadas / _muroPistas.length) : 1;
+
+  // 3) Respaldos limpios: respaldar una acusación con una pista que NO sea
+  //    humo cuenta como respaldo firme.
+  let respaldosFirmes = 0;
+  const humoPorId = {}; _muroPistas.forEach(p => { humoPorId[p.id] = p.humo; });
+  ded.preguntas.forEach(preg => {
+    const r = _deduccionRespaldo[preg.id];
+    if(r && humoPorId[r] === false) respaldosFirmes++;
+  });
+
+  // ── Resultado combinado ──
+  // La acusación manda; el muro afina. Si acusas todo bien pero tu muro
+  // es flojo (cribaste mal o respaldaste con humo), bajas a parcial.
   let clave = 'fallo';
-  if(aciertos === total) clave = 'completo';
-  else if(aciertos >= total - 1) clave = 'parcial';
+  if(aciertos === total){
+    clave = (muroCalidad >= 0.75 && respaldosFirmes >= total - 1) ? 'completo' : 'parcial';
+  } else if(aciertos >= total - 1){
+    clave = (muroCalidad >= 0.5) ? 'parcial' : 'fallo';
+  }
   const des = ded.desenlaces[clave];
-  // Sonido del desenlace.
   _invFX(clave === 'fallo' ? 'inv_fallo' : 'inv_acierto', 0.55);
 
   // Recompensa.
@@ -1191,15 +1368,15 @@ function firmarDeduccion(){
     if(r && r.ascendio) ascenso = r.rangoNuevo;
   }
   if(des.rep && typeof cambiarRepFaccion === 'function'){
-    // El trabajo sucio para la aseguradora cuenta como favor/desfavor a HELIX.
     cambiarRepFaccion('helix', des.rep);
   }
   _marcarCasoResuelto(c.id);
 
   // Pintar desenlace.
   const cont = document.getElementById('casos-wrap');
+  const pct = Math.round(muroCalidad * 100);
   let html = '<div class="caso-hud"><span class="caso-hud-titulo">' + c.titulo + '</span>'
-    + '<span class="caso-hud-pistas">' + (aciertos) + '/' + total + '</span></div>';
+    + '<span class="caso-hud-pistas">' + aciertos + '/' + total + ' · MURO ' + pct + '%</span></div>';
   html += '<div class="caso-desenlace' + (des.malo ? ' caso-desenlace-malo' : '') + '">'
     + '<div class="caso-desenlace-titulo">' + des.titulo + '</div>'
     + '<div class="caso-narr">' + des.narr + '</div>';
@@ -1223,6 +1400,10 @@ function cerrarCasoResuelto(){
   _casoDiligencias = 0;
   _casoDiligMax = 0;
   _deduccionRespuestas = {};
+  _deduccionRespaldo = {};
+  _muroCriba = {};
+  _muroPistas = [];
+  _muroFase = 1;
   _deduccionEntrada = false;
   _pintarTablon();
 }
