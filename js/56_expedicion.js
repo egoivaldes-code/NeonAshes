@@ -367,6 +367,50 @@ const EVENTOS_EXPEDICION = [
       { texto: 'Arrancar el nudo de un tirón', tono:'VENAL', alerta:10, botin:false, itemFijo:{ id:'nucleo_optico', cant:1 }, probExito:0.5, herida:'herida_brazo_d_leve' },
       { texto: 'No tocarlo: esa luz no es natural', tono:'EVASIVO', alerta:0, botin:false }
     ]
+  },
+  {
+    id: 'altar_chatarra',
+    peso: 2,
+    narracion: 'Alguien ha levantado aquí abajo un pequeño altar con desechos: una pantalla rota que aún parpadea, flores de plástico, fotos descoloridas de gente que ya nadie recuerda. Hay ofrendas, y algunas valen. Tomarlas sería robarle a los muertos su única compañía.',
+    opciones: [
+      { texto: 'Llevarte las ofrendas de valor', tono:'VENAL', alerta:3, botin:true },
+      { texto: 'Coger solo lo que no sea ofrenda', tono:'HONESTO', alerta:1, botin:true, botinReducido:true },
+      { texto: 'Dejar una de tus raciones y seguir', tono:'EMPATICO', requiere:'racion_deshidratada', gasta:{ racion_deshidratada:1 }, alerta:-4, botin:false },
+      { texto: 'Pasar de largo sin tocar nada', tono:'EVASIVO', alerta:0, botin:false }
+    ]
+  },
+  {
+    id: 'nina_perdida',
+    peso: 2,
+    narracion: 'Una cría no tendrá ni diez años, te corta el paso sin miedo. «Sé dónde hay metal del bueno. Mi hermano lo guardaba antes de que se lo llevaran.» Señala una grieta demasiado estrecha para ti, justa para ella. Te mide con unos ojos que ya han aprendido a regatear.',
+    opciones: [
+      { texto: 'Pagarle por entrar a sacarlo', tono:'EMPATICO', alerta:1, botin:true, multa:25 },
+      { texto: 'Mandarla a por ello sin pagar por adelantado', tono:'FRIO', alerta:4, botin:true, botinReducido:true, probExito:0.6 },
+      { texto: 'Darle comida en vez de créditos', tono:'EMPATICO', requiere:'racion_deshidratada', gasta:{ racion_deshidratada:1 }, alerta:-2, botin:true, botinReducido:true },
+      { texto: 'No mezclar a una cría en esto', tono:'HONESTO', alerta:0, botin:false }
+    ]
+  },
+  {
+    id: 'dron_caido',
+    peso: 2,
+    narracion: 'Un dron de vigilancia de HELIX yace boca abajo en un charco, con una luz aún latiéndole en el vientre. Está muerto, o casi. Lleva encima componentes que cuestan más que tu alquiler de un mes, pero esa luz dice que alguien podría seguir mirando por sus ojos.',
+    opciones: [
+      { texto: 'Desactivarlo limpio con el analizador', tono:'FRIO', requiere:'analizador', gasta:{ carga_analizador:1 }, alerta:3, botin:true },
+      { texto: 'Destriparlo deprisa antes de que reviva', tono:'VENAL', alerta:14, botin:true, probExito:0.7 },
+      { texto: 'Reventarle la óptica de un golpe y luego saquear', tono:'VIOLENTO', requiere:'arma_blanca', alerta:8, botin:true, botinReducido:true },
+      { texto: 'No tocar nada de HELIX que aún respire', tono:'EVASIVO', alerta:0, botin:false }
+    ]
+  },
+  {
+    id: 'companero_herido',
+    peso: 2,
+    narracion: 'Otro carroñero está caído contra una tubería, una pierna doblada como no debería. No te amenaza; ya no le quedan fuerzas. «Llévate mi saco», jadea. «Pesa, pero yo de aquí no salgo. Solo... dile a alguien que estuve.» El saco está lleno. Su cara, vacía.',
+    opciones: [
+      { texto: 'Coger el saco y dejarlo ahí', tono:'VENAL', alerta:2, botin:true },
+      { texto: 'Compartir el saco y ayudarle a salir', tono:'EMPATICO', alerta:6, botin:true, botinReducido:true },
+      { texto: 'Darle algo para el dolor antes de irte', tono:'EMPATICO', requiere:'licor', gasta:{ licor:1 }, alerta:0, botin:true, botinReducido:true },
+      { texto: 'No puedes cargar con su muerte ni su saco', tono:'HONESTO', alerta:0, botin:false }
+    ]
   }
 ];
 

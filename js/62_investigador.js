@@ -926,6 +926,484 @@ const CASOS_INVESTIGADOR = [
         }
       }
     }
+  },
+  // ============================================================
+  //  CASO 8 — ¿DE QUIÉN ES EL PERRO?
+  //  Disputa cotidiana. Dos vecinos reclaman el mismo perro.
+  //  Detrás no hay codicia: hay soledad.
+  // ============================================================
+  {
+    id: 'de_quien_es_perro',
+    titulo: '¿DE QUIÉN ES EL PERRO?',
+    contratante: 'Oma Reuel · pensionista del bloque 7',
+    peligro: 1,
+    pagaBase: 120,
+    progreso: 70,
+    rangoMin: 0,
+    diligencias: 5,
+    resumen: 'Una mujer mayor te paga para demostrar que un perro callejero es suyo. Su vecino reclama el mismo animal y la cosa ha escalado hasta amenazas entre dos ancianos solos. Parece ridículo. Hasta que entiendes que ese perro es lo único vivo que les habla a cualquiera de los dos.',
+    intro: 'Oma Reuel te recibe con el perro en el regazo, un chucho gris de orejas desiguales que la mira como si ella fuera el centro del mundo. "El vecino del 7-C dice que es suyo, que se llama Tuerca y que se le escapó. Miente. Este es mi Ceniza y lleva conmigo desde el invierno." Le tiembla la voz más de lo que un perro debería justificar. "La administración del bloque va a decidir la semana que viene. Demuéstreme que es mío. Le pago lo que tengo."\\n\\nNo es un gran caso. Es un perro y dos viejos. Pero a veces el caso más pequeño es el que más pesa. Mira bien.',
+    escenaInicial: 'briefing',
+    escenas: {
+      briefing: {
+        narr: 'Un perro. Dos reclamantes. Ninguna prueba de propiedad porque aquí abajo nadie registra un chucho callejero. Lo que decidas no irá a ningún tribunal, solo a una administración de bloque que firmará lo que parezca más sólido. Cada paso te cuesta tiempo y cobras una miseria. ¿Por dónde empiezas?',
+        opciones: [
+          { txt: 'Examinar al perro: chip, marcas, estado', va: 'escena_perro' },
+          { txt: 'Hablar con el vecino del 7-C', va: 'escena_vecino' },
+          { txt: 'Preguntar por el barrio de quién es el perro', va: 'escena_barrio' },
+          { txt: 'Revisar quién lo alimenta y desde cuándo', va: 'escena_comida' },
+          { txt: '— Creo que ya lo tengo. Pasar a la conclusión', va: '_deduccion', requierePistas: 2 }
+        ]
+      },
+      escena_perro: {
+        tiempo: 60,
+        narr: 'El perro se deja mirar con la paciencia de quien ha pasado por muchas manos. Hay cosas que puedes comprobar en el animal mismo, y no te dará el tiempo para todas.',
+        opciones: [
+          { txt: 'Buscarle un chip de identificación', va:'escena_perro', cuesta:true, da:'sin_chip', etiqueta:'El perro no tiene chip de nadie', msg:'Nada. Ni chip, ni collar antiguo, ni tatuaje. Es un perro de nadie, de los que nacen y mueren en las Pilas sin que conste en ningún registro. La propiedad de Ceniza —o Tuerca— no se va a resolver con un dato técnico. Se va a resolver con quién lo cuida de verdad.' },
+          { txt: 'Ver a quién responde el perro', va:'escena_perro', cuesta:true, da:'responde_ambos', etiqueta:'Responde a los nombres de ambos', msg:'Lo llevas ante los dos por separado. Acude a "Ceniza" con Oma. Acude a "Tuerca" con el vecino. Mueve la cola con los dos, busca el regazo de los dos. El perro no elige porque para el perro no hay disputa: hay dos personas solas que lo quieren, y a él le sobra cariño para repartir.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_vecino: {
+        tiempo: 60,
+        narr: 'El vecino del 7-C, un tal Bavi, te abre tras tres cerrojos. Vive aún más solo que Oma, en un piso donde el único cuenco limpio es el del agua del perro. Habla del animal como Oma: con una ternura que no encaja con una pelea por una posesión. Aquí decides el enfoque.',
+        entrevista: true,
+        opciones: [
+          { txt: '[EMPATIZAR] "Cuénteme qué significa el perro para usted."', tono:'empatizar', cuesta:true, va:'escena_vecino', da:'bavi_solo', etiqueta:'Bavi vive solo; el perro es su compañía', msg:'Bavi baja la guardia. "Desde que murió mi mujer, ese animal es la única razón por la que me levanto. Le hablo. Me escucha. Sé que la Reuel siente lo mismo, por eso duele tanto." No quiere ganar un objeto. Tiene miedo de volver al silencio. Igual que Oma.' },
+          { txt: '[PRESIONAR] "¿Tiene una sola prueba de que es suyo?"', tono:'presionar', cuesta:true, va:'escena_vecino', da:null, etiqueta:'(Bavi se cerró)', msg:'Se le endurece la cara. "¿Pruebas? ¿Qué prueba tiene ella? Váyase, enviado de la Reuel." Cierra los tres cerrojos. Lo pierdes.', marca:'bavi_hostil' },
+          { txt: '[MENTIR] "Oma tiene papeles del perro. Usted no tiene nada."', tono:'mentir', cuesta:true, va:'escena_vecino', da:'bavi_renuncia_falsa', etiqueta:'Bavi dice que renunciará "si hay papeles"', señalSutil:true, msg:'Bavi se hunde. "Si ella tiene papeles... entonces será suyo, qué voy a hacer yo." Te crees que has cerrado el caso a favor de Oma. Pero Oma no tiene papel alguno: te lo has inventado, y la "renuncia" de Bavi se apoya en una mentira tuya. Has ganado haciendo trampa a un anciano que solo quería compañía.', azar:{prob:0.95} },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_barrio: {
+        tiempo: 60,
+        narr: 'Preguntas por el bloque. Todo el mundo conoce al perro; nadie sabe "de quién" es, porque la pregunta no tiene sentido en un sitio donde los animales son de la calle. Cada conversación te cuesta tiempo.',
+        opciones: [
+          { txt: 'Preguntar desde cuándo se ve al perro', va:'escena_barrio', cuesta:true, da:'perro_va_y_viene', etiqueta:'El perro lleva años yendo de puerta en puerta', msg:'Los vecinos coinciden: ese chucho lleva años en el bloque, durmiendo en un portal u otro según el frío, comiendo de quien le da. No es "de" nadie ni desde el invierno ni desde antes. Ha sido de todos un poco. Ahora dos personas solas quieren que sea solo suyo.' },
+          { txt: 'Buscar a alguien que confirme la versión de Oma', va:'escena_barrio', cuesta:true, da:'testigo_pro_oma', etiqueta:'Una vecina jura que el perro es de Oma', señalSutil:true, msg:'Una vecina amiga de Oma jura que el perro "siempre ha sido de la Reuel, faltaría más". Lo dice con tanta lealtad como falta de memoria: es amiga de Oma, quiere ayudarla, y adornará lo que haga falta. Su testimonio vale lo que vale el cariño que le tiene a Oma, que es mucho, y como prueba, nada.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_comida: {
+        tiempo: 60,
+        narr: 'Quién alimenta al perro es, quizá, la única definición real de propiedad que tiene sentido aquí. Seguir ese rastro lleva su tiempo.',
+        opciones: [
+          { txt: 'Ver quién le da de comer a diario', va:'escena_comida', cuesta:true, da:'comen_los_dos', etiqueta:'Lo alimentan AMBOS, a horas distintas', msg:'La verdad incómoda: lo alimentan los dos. Oma por la mañana, Bavi por la noche, cada uno creyendo que es el único. El perro ha encontrado, sin saberlo, la manera de tener dos casas y dos comidas, y de darle a dos solitarios alguien a quien esperar. Quitárselo a cualquiera de los dos rompería algo más grande que una disputa.' },
+          { txt: 'Comprobar quién paga sus gastos de veterinario', va:'escena_comida', cuesta:true, da:'gastos_compartidos', etiqueta:'Han pagado curas los dos, sin saberlo', msg:'En la clínica veterinaria del bloque hay dos fichas abiertas para el mismo perro: una a nombre de Reuel, otra de Bavi, por curas distintas en meses distintos. Los dos lo han cuidado cuando enfermó. Los dos son, por el único criterio que importa aquí, sus dueños.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      }
+    },
+    deduccion: {
+      intro: 'Te sientas con lo que has visto y descubres que la pregunta de Oma —"demuéstreme que es mío"— no tiene respuesta, porque está mal hecha. No hay chip, no hay papeles, no hay dueño. Hay un perro de la calle y dos personas solas que lo necesitan por igual. Decide qué concluyes, sabiendo que tu informe puede dejar a un anciano sin lo único que lo levanta por las mañanas.',
+      preguntas: [
+        {
+          id: 'quien',
+          texto: '¿DE QUIÉN es el perro?',
+          opciones: [
+            { txt: 'De ambos: lo cuidan y lo alimentan los dos', correcta:true },
+            { txt: 'Solo de Oma, que lo reclamó primero', correcta:false },
+            { txt: 'Solo de Bavi, que dice que se le escapó', correcta:false },
+            { txt: 'De nadie: hay que llevarlo a una perrera', correcta:false }
+          ]
+        },
+        {
+          id: 'porque',
+          texto: '¿POR QUÉ pelean tanto por él?',
+          opciones: [
+            { txt: 'Porque los dos están solos y el perro es su única compañía', correcta:true },
+            { txt: 'Por codicia: el perro vale dinero', correcta:false },
+            { txt: 'Por una rencilla vecinal antigua', correcta:false },
+            { txt: 'Porque uno quiere fastidiar al otro', correcta:false }
+          ]
+        },
+        {
+          id: 'como',
+          texto: '¿CÓMO deberías cerrar el caso?',
+          opciones: [
+            { txt: 'Proponer que lo compartan, ya que ya lo hacían sin saberlo', correcta:true },
+            { txt: 'Dárselo a Oma, que es quien te paga', correcta:false },
+            { txt: 'Inventar una prueba para zanjarlo rápido', correcta:false },
+            { txt: 'Recomendar que se lo lleve la administración', correcta:false }
+          ]
+        }
+      ],
+      desenlaces: {
+        completo: {
+          titulo: 'CASO RESUELTO · DOS CASAS, UN PERRO',
+          narr: 'No le das a Oma lo que pidió, porque lo que pidió no existe. Le das la verdad: que Bavi lo alimenta cada noche igual que ella cada mañana, que el perro lleva años siendo de todo el bloque, que los dos lo han curado cuando enfermó sin saber del otro. Y le propones lo único sensato: que lo compartan, oficialmente, como ya lo compartían en secreto. Oma se resiste, orgullosa, hasta que entiende que la alternativa es perderlo del todo o ganárselo a un hombre tan solo como ella.\\n\\nLlevas la propuesta a la administración firmada por los dos. Ceniza-Tuerca dormirá en el 7-A unas noches y en el 7-C otras, y comerá el doble, feliz de su estafa involuntaria. Cobras los ciento veinte créditos de Oma, que es poco, y aceptas además, sin cobrarla, la primera invitación a un té que te hace alguien en mucho tiempo: la de dos viejos que ahora se hablan por encima de un perro. No has resuelto un caso de propiedad. Has impedido que dos personas volvieran al silencio. Cierra el expediente. Algunos pesan más de lo que pagan.',
+          pagaMult: 1.0, rep: 3, parcial:false
+        },
+        parcial: {
+          titulo: 'CASO CERRADO · A MEDIAS',
+          narr: 'Concluyes que el perro no es de nadie en exclusiva, pero no llegas a tender el puente entre los dos: entregas un informe tibio que la administración interpreta a su manera, y el perro acaba con uno de los dos por sorteo, dejando al otro de vuelta en su piso en silencio. Cobras tu parte. Has dicho una verdad a medias, y a medias no bastaba para algo tan pequeño y tan grande a la vez.',
+          pagaMult: 0.5, rep: 1, parcial:true
+        },
+        fallo: {
+          titulo: 'CASO CERRADO · EL OTRO SE QUEDA SOLO',
+          narr: 'Le diste a Oma lo que te pagaba: un informe que dice que el perro es suyo, apuntalado con el testimonio adornado de su amiga o con una prueba que te inventaste. La administración se lo concede. Oma se lleva a Ceniza a su piso y cierra la puerta, y al otro lado del rellano Bavi se queda mirando un cuenco de agua que ya no va a beber nadie. Cobras tus créditos. Ganaste el caso y rompiste a un hombre que solo quería que algo lo esperase despierto. En las Pilas, a veces, separar a un perro de un anciano es una forma silenciosa de matar.',
+          pagaMult: 0.45, rep: -3, parcial:false, malo:true
+        }
+      }
+    }
+  },
+  // ============================================================
+  //  CASO 9 — EL INQUILINO FANTASMA
+  //  Día a día con giro de duelo. Alguien paga el alquiler de un
+  //  piso vacío. Ni romance ni crimen: un viudo y su luto.
+  // ============================================================
+  {
+    id: 'inquilino_fantasma',
+    titulo: 'EL INQUILINO FANTASMA',
+    contratante: 'Inmobiliaria Korr · gestor de fincas',
+    peligro: 1,
+    pagaBase: 160,
+    progreso: 80,
+    rangoMin: 0,
+    diligencias: 5,
+    resumen: 'Un piso de las capas medias lleva ocho meses con el alquiler pagado puntualmente y a nadie viviendo dentro. La inmobiliaria quiere saber quién paga y por qué, antes de meterse en líos legales. No hay delito a la vista. Solo una puerta que nadie abre y un dinero que no falla.',
+    intro: 'El gestor de la Inmobiliaria Korr te enseña el expediente con la incomodidad de quien huele un problema sin nombre. "Piso 4-B. El alquiler entra cada mes, al día, desde una cuenta que no logramos rastrear del todo. Pero los sensores de consumo dicen que ahí dentro no vive nadie: ni agua, ni luz, ni una puerta que se abra. Ocho meses." Golpea el papel. "O hay algo turbio, o hay un loco tirando el dinero. Averígüelo. No queremos sorpresas legales."\\n\\nUn piso pagado y vacío. Suena a tapadera. Suele serlo. Pero mira antes de suponer.',
+    escenaInicial: 'briefing',
+    escenas: {
+      briefing: {
+        narr: 'Alguien paga por un espacio que no usa. Las posibilidades evidentes son turbias: blanqueo, un escondite, una dirección falsa para algo ilegal. Pero el dinero entra demasiado limpio y demasiado puntual para un criminal. Cada paso te cuesta tiempo. ¿Por dónde tiras?',
+        opciones: [
+          { txt: 'Entrar a inspeccionar el piso 4-B', va: 'escena_piso_vacio' },
+          { txt: 'Rastrear de dónde sale el dinero del alquiler', va: 'escena_dinero_alquiler' },
+          { txt: 'Preguntar a los vecinos del 4-B', va: 'escena_vecinos_4b' },
+          { txt: 'Revisar quién vivía antes en el piso', va: 'escena_historial_piso' },
+          { txt: '— Creo que ya lo tengo. Pasar a la conclusión', va: '_deduccion', requierePistas: 2 }
+        ]
+      },
+      escena_piso_vacio: {
+        tiempo: 60,
+        narr: 'El gestor te presta la llave maestra. El piso 4-B huele a cerrado, a polvo asentado con cuidado. No está abandonado: está detenido. Hay detalles que mirar, y no aguantarás dentro indefinidamente sin que el gestor pregunte.',
+        opciones: [
+          { txt: 'Examinar cómo está conservado el piso', va:'escena_piso_vacio', cuesta:true, da:'piso_intacto', etiqueta:'Todo intacto, como un hogar congelado', msg:'No hay desorden ni saqueo. Hay una vida entera detenida: dos tazas en el escurridor, ropa de mujer en el armario, una novela abierta boca abajo en la mesilla, marcada en una página que nadie va a terminar. Alguien limpia el polvo, pero nadie mueve nada de sitio. Esto no es un escondite. Es un altar.' },
+          { txt: 'Buscar rastro de actividad ilegal', va:'escena_piso_vacio', cuesta:true, da:'sin_actividad', etiqueta:'Ni rastro de uso delictivo', msg:'Nada. Ni mercancía, ni equipo, ni señales de que entre y salga gente. El único indicio de presencia humana es un florero con flores frescas en la mesa, cambiadas hace pocos días. Quien viene, viene solo, brevemente, y se va. No a esconder algo. A visitar.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_dinero_alquiler: {
+        tiempo: 60,
+        narr: 'El dinero es lo que más inquieta a la inmobiliaria. Rastrearlo a través de las capas de la banca de las Pilas lleva tiempo, pero todo flujo deja sedimento.',
+        opciones: [
+          { txt: 'Seguir el origen de los pagos', va:'escena_dinero_alquiler', cuesta:true, da:'paga_un_viudo', etiqueta:'Lo paga un hombre, Edran Sould, desde su pensión', msg:'El dinero sale, vuelta tras vuelta, de la cuenta de un hombre: Edran Sould, jubilado, que vive a tres bloques de distancia en un piso mucho más humilde que el que paga. No esconde el dinero: lo gasta. Vive con lo justo para sostener un alquiler que no usa. Eso no lo hace un criminal. Lo hace alguien que paga por otra cosa que no es un techo.' },
+          { txt: 'Comprobar si la cuenta blanquea fondos', va:'escena_dinero_alquiler', cuesta:true, da:'sin_blanqueo', etiqueta:'No hay blanqueo: solo una pensión menguante', msg:'La cuenta no recibe ingresos raros ni mueve cantidades sospechosas. Solo una pensión modesta que cada mes se vacía un poco más para cubrir dos alquileres: el del hombre y el del piso fantasma. No está lavando dinero. Se está arruinando despacio por mantener ese piso en pie.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_vecinos_4b: {
+        tiempo: 60,
+        narr: 'Los vecinos del rellano del 4-B son gente de las capas medias, discreta, que tarda en hablar con un desconocido. Aquí decides cómo abordarlos; cada vía gasta tu tiempo.',
+        entrevista: true,
+        opciones: [
+          { txt: '[EMPATIZAR] "¿Recuerdan a quién vivía en el 4-B?"', tono:'empatizar', cuesta:true, va:'escena_vecinos_4b', da:'vivia_pareja', etiqueta:'Ahí vivía un matrimonio mayor, muy unido', msg:'Una vecina se ablanda al recordar. "El señor Sould y su esposa, Lía. Cuarenta años casados. Ella enfermó el invierno pasado y... se fue. Él aguantó unos días en el piso y luego se mudó a uno más pequeño, no podía con los recuerdos. Pero sigue pagando este. Yo lo veo entrar a veces, los domingos. Sale con los ojos rojos." Ya sabes qué es el piso.' },
+          { txt: '[PRESIONAR] "¿Han visto entrar gente rara, movimientos de noche?"', tono:'presionar', cuesta:true, va:'escena_vecinos_4b', da:null, etiqueta:'(Los vecinos se cierran)', msg:'Tu tono de interrogatorio los espanta. "Nosotros no nos metemos en lo de los demás. Buenas tardes." Cierran filas y no sacas nada.', marca:'vecinos_hostiles' },
+          { txt: '[MENTIR] "Sabemos que en el 4-B se trapichea. Colaboren."', tono:'mentir', cuesta:true, va:'escena_vecinos_4b', da:'rumor_trapicheo', etiqueta:'Un vecino "confirma" movimientos sospechosos', señalSutil:true, msg:'Un vecino, deseoso de quedar bien con quien parece autoridad, te sigue la corriente: "Pues ahora que lo dice, sí, he visto cosas raras, gente entrando de noche..." Pero al apretar se deshace: no ha visto nada, repite lo que cree que quieres oír. Le has plantado tú la idea del trapicheo y te la devuelve como eco. Humo que tú mismo encendiste.', azar:{prob:0.9} },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_historial_piso: {
+        tiempo: 60,
+        narr: 'El historial del piso en los archivos de la inmobiliaria es público y aburrido, pero los datos fríos a veces cuentan lo que la gente calla. Revisarlo lleva tiempo.',
+        opciones: [
+          { txt: 'Buscar el contrato y sus titulares', va:'escena_historial_piso', cuesta:true, da:'contrato_dos_nombres', etiqueta:'El contrato está a nombre de Edran y Lía Sould', msg:'El contrato original lo firmaron dos personas: Edran Sould y Lía Sould, hace décadas. El de Lía nunca se ha dado de baja. Edran paga un piso que sigue, sobre el papel, también a nombre de su mujer. Mientras el contrato lleve los dos nombres, para él, en algún rincón, ella sigue viviendo ahí.' },
+          { txt: 'Cruzar la baja de Lía en los registros', va:'escena_historial_piso', cuesta:true, da:'lia_fallecida', etiqueta:'Lía Sould consta fallecida hace 8 meses', msg:'El registro civil lo confirma con la frialdad de una fecha: Lía Sould, fallecida hace ocho meses. Justo cuando empezaron los pagos del piso vacío. No es una coincidencia que investigar. Es el día en que un hombre decidió que su mujer no se iría del todo mientras él pudiera pagar la habitación donde fue feliz.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      }
+    },
+    deduccion: {
+      intro: 'Ordenas lo que tienes y te das cuenta de que la inmobiliaria te contrató para destapar un fraude y lo que has encontrado es un duelo. Un piso intacto, flores frescas, dos nombres en un contrato, una pensión que se vacía para sostener un hogar donde ya no vive nadie. Decide qué pones en tu informe, sabiendo que la verdad, mal entregada, puede echar a un viudo del único sitio donde aún le habla su mujer.',
+      preguntas: [
+        {
+          id: 'quien',
+          texto: '¿QUIÉN paga el piso vacío y qué es?',
+          opciones: [
+            { txt: 'Edran Sould, viudo, que conserva el hogar de su esposa muerta', correcta:true },
+            { txt: 'Una red que usa el piso para blanquear dinero', correcta:false },
+            { txt: 'Alguien que lo mantiene como escondite', correcta:false },
+            { txt: 'Un trapicheo vecinal de las capas medias', correcta:false }
+          ]
+        },
+        {
+          id: 'porque',
+          texto: '¿POR QUÉ lo mantiene pagado y vacío?',
+          opciones: [
+            { txt: 'Por duelo: no soporta dejar ir el lugar donde vivió con ella', correcta:true },
+            { txt: 'Para ocultar una actividad ilegal', correcta:false },
+            { txt: 'Para defraudar a la inmobiliaria', correcta:false },
+            { txt: 'Por un error administrativo que no corrige', correcta:false }
+          ]
+        },
+        {
+          id: 'como',
+          texto: '¿CÓMO cierras el informe a la inmobiliaria?',
+          opciones: [
+            { txt: 'Confirmando que no hay delito y protegiendo la intimidad del viudo', correcta:true },
+            { txt: 'Reportando un posible fraude para que lo desahucien', correcta:false },
+            { txt: 'Dejándolo como "actividad sospechosa no concluyente"', correcta:false },
+            { txt: 'Exponiendo todos los detalles personales de Sould', correcta:false }
+          ]
+        }
+      ],
+      desenlaces: {
+        completo: {
+          titulo: 'CASO RESUELTO · LA HABITACIÓN DONDE AÚN VIVE',
+          narr: 'Le entregas a la inmobiliaria justo lo que necesita y ni una palabra más: no hay delito, no hay fraude, no hay riesgo legal. El inquilino paga al día, por su propia voluntad, por motivos privados que no infringen nada. Caso cerrado, sin un nombre, sin una historia, sin una herida que exponer. El gestor refunfuña porque quería un escándalo y se lleva un papel aburrido, que es exactamente lo que protege a Edran Sould.\\n\\nNo tenías por qué, pero un domingo te acercas al 4-B. Edran está dentro, cambiando las flores. No le dices que lo han investigado; le dices que eres del edificio y que todo está en orden con su contrato. Él asiente, agradecido sin saber de qué, y mira un segundo la novela abierta en la mesilla. "A ella le faltaban tres páginas", dice, sin que le preguntes. Cobras tus ciento sesenta créditos. Has hecho tu trabajo —no había delito— y has dejado que un hombre siga pagando por lo único que le impide aceptar que se quedó solo. Hay verdades que se cierran mejor con silencio.',
+          pagaMult: 1.0, rep: 4, parcial:false
+        },
+        parcial: {
+          titulo: 'CASO CERRADO · A MEDIAS',
+          narr: 'Confirmas que no hay delito, pero en el informe dejas caer detalles personales de más sobre Sould y su duelo. La inmobiliaria no lo desahucia, pero ahora media gestoría conoce la intimidad de un viudo que solo quería su rincón en paz. Cobras tu parte. No has hecho daño grave, pero has aireado algo que pedía discreción, y eso también es una forma de fallar a la gente pequeña.',
+          pagaMult: 0.5, rep: 1, parcial:true
+        },
+        fallo: {
+          titulo: 'CASO CERRADO · EL DESAHUCIO',
+          narr: 'Tomaste el camino del expediente: reportaste "actividad sospechosa", quizá apuntalada con el falso rumor de trapicheo que tú mismo plantaste entre los vecinos. La inmobiliaria, encantada de recuperar un piso de capas medias, rescinde el contrato por "uso irregular" y vacía el 4-B en una tarde. Las dos tazas, la ropa de Lía, la novela a tres páginas del final, todo a un contenedor. Edran Sould se entera por una notificación y no vuelve a cambiar flores en ningún sitio. Cobras tu tarifa. Encontraste la verdad —no había delito— y aun así la usaste para arrancarle a un hombre el último cuarto donde su mujer seguía, un poco, viva. En las Pilas no hace falta ser cruel para destruir a alguien. Basta con rellenar bien el formulario.',
+          pagaMult: 0.4, rep: -4, parcial:false, malo:true
+        }
+      }
+    }
+  },
+  // ============================================================
+  //  CASO 10 — LA CITA QUE NO ERA
+  //  Día a día con giro triste. No es estafa romántica: él es
+  //  real, pero esconde algo más pequeño y más humano.
+  // ============================================================
+  {
+    id: 'cita_que_no_era',
+    titulo: 'LA CITA QUE NO ERA',
+    contratante: 'Petra Lund · oficinista de HELIX',
+    peligro: 1,
+    pagaBase: 200,
+    progreso: 95,
+    rangoMin: 1,
+    diligencias: 5,
+    resumen: 'Una mujer ha conocido a alguien por una app de citas. Está enamorada, pero algo no cuadra: él esquiva las videollamadas, nunca queda cerca de su trabajo, paga siempre en efectivo. La amiga le ha metido en la cabeza que es una estafa romántica. Te paga para saber si Daro es un timador. Lo que descubres es más incómodo que un timo.',
+    intro: 'Petra Lund te recibe nerviosa, con el terminal lleno de mensajes que ha leído mil veces. "Daro es... atento, listo, me hace reír. Pero llevamos tres meses y nunca lo he visto de día. Siempre tiene una excusa. Mi amiga dice que es una estafa, que un día me pedirá dinero." Se muerde el labio. "Necesito saber quién es de verdad antes de... antes de quererlo más. Si me está engañando, prefiero saberlo ya."\\n\\nLas señales que describe encajan con un timo de manual. Demasiado de manual. Mira si hay algo debajo.',
+    escenaInicial: 'briefing',
+    escenas: {
+      briefing: {
+        narr: 'Un hombre esquivo en una app de citas: el patrón clásico del estafador romántico que prepara el sablazo. Pero Daro lleva tres meses sin pedir un solo crédito, lo cual no encaja con un timador, que cobra y desaparece. Cada paso de seguimiento te cuesta tiempo. ¿Por dónde empiezas?',
+        opciones: [
+          { txt: 'Verificar la identidad del perfil de Daro', va: 'escena_perfil' },
+          { txt: 'Seguir a Daro en uno de sus encuentros', va: 'escena_seguir_daro' },
+          { txt: 'Analizar el patrón de sus excusas y horarios', va: 'escena_patron' },
+          { txt: 'Buscar denuncias previas por estafa romántica', va: 'escena_denuncias' },
+          { txt: '— Creo que ya lo tengo. Pasar a la conclusión', va: '_deduccion', requierePistas: 2 }
+        ]
+      },
+      escena_perfil: {
+        tiempo: 60,
+        narr: 'El perfil de Daro en la app es escueto: pocas fotos, ninguna de cuerpo entero reciente, datos vagos. Verificarlo a fondo lleva tiempo, pero deja claro algo.',
+        opciones: [
+          { txt: 'Comprobar si las fotos son robadas', va:'escena_perfil', cuesta:true, da:'fotos_reales', etiqueta:'Las fotos son suyas, pero antiguas', msg:'Las fotos no están robadas de internet, como harías en una estafa: son de Daro de verdad. Pero son de hace años. En todas se le ve sano, de pie, sonriente al aire libre. La persona del perfil existe; simplemente, ya no es del todo la de las fotos. Algo ha cambiado en él desde que se las hizo.' },
+          { txt: 'Rastrear su identidad real', va:'escena_perfil', cuesta:true, da:'daro_existe', etiqueta:'Daro Venn existe y es quien dice ser', msg:'Daro Venn es una persona real, registrada, con un nombre que coincide, un historial laboral verificable como técnico y ninguna identidad falsa detrás. No es un fantasma ni un alias. Quien le escribe a Petra cada noche es exactamente quien dice ser. El misterio no es su identidad. Es por qué se esconde.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_seguir_daro: {
+        tiempo: 90,
+        narr: 'Consigues una dirección a partir de sus pagos y lo sigues una tarde. Lo que ves no es a un hombre yendo a estafar a nadie. Hay detalles que confirmar y no tendrás tiempo para todos.',
+        opciones: [
+          { txt: 'Observar cómo se mueve y a dónde va', va:'escena_seguir_daro', cuesta:true, da:'daro_enfermo', etiqueta:'Daro se mueve con dificultad, va a una clínica', msg:'Daro camina despacio, apoyado en un bastón que en las fotos del perfil no existía. Su trayecto es corto y repetido: de casa a una clínica de rehabilitación de las capas medias, y vuelta. Un accidente, una enfermedad degenerativa, algo le cambió el cuerpo. No esquiva a Petra para estafarla. La esquiva para que no lo vea así.' },
+          { txt: 'Ver si se encuentra con otras mujeres', va:'escena_seguir_daro', cuesta:true, da:'sin_otras', etiqueta:'No hay otras mujeres ni cómplices', msg:'Nadie. Ni otras citas, ni cómplices, ni el trasiego de un estafador que lleva varios objetivos a la vez. Daro vive solo, sale poco, y la única persona con la que se ilumina —lo notas hasta de lejos, al teclear en su terminal— es Petra. No la está cazando. Se ha enamorado y no sabe cómo dejar que lo vea.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_patron: {
+        tiempo: 60,
+        narr: 'Las excusas de Daro, puestas en fila, forman un patrón. La amiga de Petra las lee como tácticas de manipulación. Analizarlas con cuidado lleva tiempo.',
+        opciones: [
+          { txt: 'Cruzar sus horarios con algo real', va:'escena_patron', cuesta:true, da:'horarios_clinica', etiqueta:'Sus "excusas" coinciden con horarios de clínica', msg:'Cada vez que Daro "no puede quedar de día" o "tiene que colgar pronto", la hora coincide con sesiones de rehabilitación o con los momentos en que el dolor, según los patrones de su tratamiento, sería peor. No son excusas para manipular. Son la coreografía de alguien que organiza su vida en torno a un cuerpo que le falla, y que prefiere mentir antes que dar pena.' },
+          { txt: 'Buscar si alguna vez ha pedido dinero', va:'escena_patron', cuesta:true, da:'nunca_pidio', etiqueta:'En 3 meses nunca pidió ni un crédito', msg:'Repasas tres meses de mensajes: ni una sola petición de dinero, ni una emergencia inventada, ni un "préstamo" que es la firma de toda estafa romántica. Al contrario: Daro ha rechazado dos veces que Petra pague la cena. Un timador cobra. Daro solo da. Eso descarta el timo por completo.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_denuncias: {
+        tiempo: 60,
+        narr: 'Buscar antecedentes de estafa romántica es lo que la amiga de Petra daría por hecho. Cruzar los registros lleva tiempo.',
+        opciones: [
+          { txt: 'Buscar denuncias a nombre de Daro', va:'escena_denuncias', cuesta:true, da:'sin_denuncias', etiqueta:'Daro no tiene una sola denuncia', msg:'Ni una. Daro Venn no figura en ningún registro de fraude, ni hay mujeres que lo hayan denunciado, ni patrón de víctimas. Su historial está tan limpio que resulta casi triste: es un hombre sin nada turbio detrás y sin casi nada delante, salvo una app de citas y una clínica.' },
+          { txt: 'Atender a la teoría de la amiga de Petra', va:'escena_denuncias', cuesta:true, da:'teoria_amiga', etiqueta:'La amiga insiste: "seguro que es un timo"', señalSutil:true, msg:'La amiga de Petra te aborda y te insiste, con total seguridad, en que "esos siempre son estafadores, lo he visto mil veces en las noticias". No aporta un solo hecho sobre Daro: aporta su miedo general y un patrón de telediario. Quiere proteger a Petra y por eso da por hecho lo peor. Su certeza es cariño asustado, no prueba. Encaja con lo que Petra teme, pero no con lo que Daro es.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      }
+    },
+    deduccion: {
+      intro: 'Ordenas lo que has visto y resulta que el caso se invierte: te pagaron para destapar a un estafador y has encontrado a un hombre honesto que miente por una sola razón, vergüenza. Daro existe, no ha pedido nunca dinero, no tiene otras mujeres ni denuncias. Solo un bastón que no estaba en sus fotos y un miedo enorme a que lo quieran menos por él. Decide qué le dices a Petra.',
+      preguntas: [
+        {
+          id: 'quien',
+          texto: '¿QUIÉN es Daro en realidad?',
+          opciones: [
+            { txt: 'Un hombre real y honesto, con una enfermedad o lesión que oculta', correcta:true },
+            { txt: 'Un estafador romántico preparando el sablazo', correcta:false },
+            { txt: 'Una identidad falsa con fotos robadas', correcta:false },
+            { txt: 'Un hombre con otras mujeres a la vez', correcta:false }
+          ]
+        },
+        {
+          id: 'porque',
+          texto: '¿POR QUÉ se esconde de Petra?',
+          opciones: [
+            { txt: 'Por vergüenza: teme que lo quiera menos al ver cómo está ahora', correcta:true },
+            { txt: 'Para ganarse su confianza antes de pedirle dinero', correcta:false },
+            { txt: 'Porque oculta a una familia o a otras parejas', correcta:false },
+            { txt: 'Porque su identidad es falsa', correcta:false }
+          ]
+        },
+        {
+          id: 'como',
+          texto: '¿CÓMO cierras el caso con Petra?',
+          opciones: [
+            { txt: 'Decirle la verdad: no es un timo, es un hombre asustado de ser visto', correcta:true },
+            { txt: 'Confirmarle que es un estafador para que lo deje', correcta:false },
+            { txt: 'Exponer la enfermedad de Daro con todo detalle sin su permiso', correcta:false },
+            { txt: 'Decirle que no averiguaste nada concluyente', correcta:false }
+          ]
+        }
+      ],
+      desenlaces: {
+        completo: {
+          titulo: 'CASO RESUELTO · LO QUE ESCONDÍA NO ERA UNA TRAMPA',
+          narr: 'Le dices a Petra la verdad, con cuidado, porque la verdad aquí es frágil. Daro no es un timador: es exactamente quien dice ser. No le ha pedido dinero porque no quiere su dinero, quiere su compañía. Y se esconde de día, esquiva las videollamadas y miente con las excusas por una sola razón: un bastón que no sale en sus fotos y el terror de que ella, al verlo como está ahora, lo quiera menos. No le detallas su diagnóstico, eso es de él contarlo; solo le dices que lo que oculta es miedo, no maldad.\\n\\nPetra llora, y no es de decepción. "Pensaba que el problema era que yo no le importaba", dice. "Y resulta que el problema es que le importo demasiado." Cobras tus doscientos créditos. Lo que ella haga con eso ya no es tu caso: si lo deja, si lo abraza, si le da tiempo a que se atreva a aparecer de día. Tú solo le has quitado de encima el miedo equivocado para dejarle, si quiere, el trabajo bonito y difícil de querer a alguien tal como es. No todas las cosas que se esconden son trampas. Algunas solo son heridas esperando que no las espanten.',
+          pagaMult: 1.0, rep: 4, parcial:false
+        },
+        parcial: {
+          titulo: 'CASO CERRADO · A MEDIAS',
+          narr: 'Le confirmas a Petra que Daro no es un estafador, lo cual la tranquiliza, pero no llegas a explicarle el porqué de su escondite, así que se queda con la duda royéndola: ¿entonces qué oculta? Sin esa pieza, su imaginación trabajará sola, y puede que llene el hueco con sospechas nuevas. Cobras tu parte. Has dicho una verdad incompleta, y en el amor las verdades a medias a veces hacen tanto daño como las mentiras.',
+          pagaMult: 0.5, rep: 2, parcial:true
+        },
+        fallo: {
+          titulo: 'CASO CERRADO · CONFIRMASTE EL MIEDO',
+          narr: 'Te quedaste con la versión fácil, la de la amiga: le dijiste a Petra que Daro es sospechoso, que las señales son de estafa, que mejor lo deje. Petra, asustada, lo bloquea sin una explicación. Al otro lado, un hombre que por fin se había atrevido a querer desde su cuerpo roto ve cómo la única luz de sus noches se apaga sin un porqué, y confirma lo que más temía: que no merecía que lo vieran. Cobras tu tarifa por un informe perezoso. Tenías delante a un hombre honesto y a una mujer que lo quería, y los separaste con el patrón de un telediario. A veces el peor timo lo comete quien viene a destapar timos.',
+          pagaMult: 0.4, rep: -3, parcial:false, malo:true
+        }
+      }
+    }
+  },
+  // ============================================================
+  //  CASO 11 — LA HORA DEL ALMUERZO
+  //  Infidelidad REAL. Sin giro que la absuelva: hay engaño,
+  //  y el caso es qué hace el cliente con la verdad.
+  // ============================================================
+  {
+    id: 'hora_del_almuerzo',
+    titulo: 'LA HORA DEL ALMUERZO',
+    contratante: 'Ans Berko · contable de las capas medias',
+    peligro: 1,
+    pagaBase: 220,
+    progreso: 100,
+    rangoMin: 1,
+    diligencias: 6,
+    resumen: 'Un hombre sospecha que su marido le es infiel. No hay drama ni gritos: solo una rutina que ya no cuadra, una alianza que a veces no aparece, una distancia nueva. Te paga para saber la verdad. Esta vez no hay giro tierno: hay un amante, hay mentiras, y al final habrá que decidir qué se hace con eso.',
+    intro: 'Ans Berko habla en voz baja, como si su propia casa pudiera oírlo. "Cael y yo llevamos doce años. Últimamente... almuerza fuera cada día, dice que con compañeros. Se quita la alianza para esos almuerzos, la deja en el cajón. Vuelve oliendo a un perfume que no es el suyo." Aprieta los labios. "No quiero estar loco. Si me equivoco, prefiero saber que me equivoco. Y si no... también." Te mira con la dignidad cansada de quien ya sabe la respuesta y solo busca quien la confirme.\\n\\nLas señales son claras y, esta vez, no engañan. Pero confírmalo bien antes de romperle la vida a alguien con una suposición.',
+    escenaInicial: 'briefing',
+    escenas: {
+      briefing: {
+        narr: 'Almuerzos diarios fuera, una alianza que desaparece, un perfume ajeno. El patrón apunta a lo que Ans teme. Pero "apuntar" no es "probar", y un informe de infidelidad mal hecho destroza un matrimonio por nada. Tu trabajo es confirmar o descartar con hechos, no con sospechas. Cada paso te cuesta tiempo. ¿Por dónde empiezas?',
+        opciones: [
+          { txt: 'Seguir a Cael en sus almuerzos', va: 'escena_almuerzos' },
+          { txt: 'Investigar el perfume y los detalles físicos', va: 'escena_perfume' },
+          { txt: 'Revisar sus gastos y mensajes accesibles', va: 'escena_gastos_cael' },
+          { txt: 'Sondear a un compañero de trabajo de Cael', va: 'escena_companero_cael' },
+          { txt: '— Creo que ya lo tengo. Pasar a la conclusión', va: '_deduccion', requierePistas: 2 }
+        ]
+      },
+      escena_almuerzos: {
+        tiempo: 90,
+        narr: 'Sigues a Cael dos días seguidos a la hora del almuerzo. No va con compañeros. Hay detalles que confirmar y no tendrás tiempo para todos.',
+        opciones: [
+          { txt: 'Ver con quién se encuentra', va:'escena_almuerzos', cuesta:true, da:'encuentro_amante', etiqueta:'Cael se ve con la misma persona cada día', msg:'Cael entra cada día en el mismo café discreto de una galería apartada, y allí lo espera siempre la misma persona. No es una reunión de trabajo: se saludan con la familiaridad de quien se conoce el cuerpo, no la agenda. Se sientan juntos, no enfrente. Hay caricias bajo la mesa que nadie hace con un colega. Esto no es una sospecha. Es una relación.' },
+          { txt: 'Comprobar el detalle de la alianza', va:'escena_almuerzos', cuesta:true, da:'alianza_guardada', etiqueta:'Se quita la alianza antes de cada encuentro', msg:'Lo ves hacerlo: en el portal de la galería, antes de entrar, Cael se quita la alianza y la guarda en el bolsillo interior. Al salir, se la vuelve a poner. Es un gesto practicado, automático, de quien lleva tiempo separando dos vidas. La alianza no se le cae: se la quita. Y eso lo dice todo.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_perfume: {
+        tiempo: 60,
+        narr: 'El perfume ajeno es el detalle que más obsesiona a Ans. Rastrear de dónde sale lleva tiempo, pero confirma o desmonta cosas.',
+        opciones: [
+          { txt: 'Identificar el origen del perfume', va:'escena_perfume', cuesta:true, da:'perfume_de_otra_persona', etiqueta:'El perfume es de la persona del café', msg:'Es un perfume concreto, de boutique, nada común. Y es exactamente el que lleva la persona con la que Cael almuerza: lo confirmas cuando pasa cerca de ti al salir. El olor que Ans nota en su marido cada tarde no es ambiente de oficina. Es el rastro de un cuerpo pegado al de Cael durante una hora, cada día.' },
+          { txt: 'Considerar una explicación inocente', va:'escena_perfume', cuesta:true, da:'coartada_perfume', etiqueta:'Cael alega "el ambientador del restaurante"', señalSutil:true, msg:'Cael, en una conversación con Ans que este te reporta, ha explicado el olor como "el ambientador de los restaurantes donde comemos". Suena plausible y por eso es útil: es la coartada cómoda que permitiría a Ans no mirar. Pero ningún ambientador de local deja un perfume de boutique tan específico ni tan localizado en el cuello. Es la explicación que duele menos, no la que es cierta.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_gastos_cael: {
+        tiempo: 60,
+        narr: 'Ans te da acceso a las cuentas compartidas y a lo que puede ver del terminal de Cael. El dinero y los mensajes dejan rastro. Cada cruce te cuesta tiempo.',
+        opciones: [
+          { txt: 'Rastrear gastos en los almuerzos', va:'escena_gastos_cael', cuesta:true, da:'gastos_dobles', etiqueta:'Paga dos cubiertos cada día, en efectivo aparte', msg:'En la cuenta compartida no aparece nada: Cael paga esos almuerzos con una tarjeta aparte que Ans no conoce, siempre dos cubiertos, siempre el mismo sitio. Mantiene una contabilidad secreta para una vida secreta. No es un gasto casual. Es la infraestructura de una doble vida sostenida con cuidado durante meses.' },
+          { txt: 'Buscar mensajes reveladores', va:'escena_gastos_cael', cuesta:true, da:'mensajes_amante', etiqueta:'Mensajes tiernos a un contacto sin nombre', msg:'En una app secundaria, conversaciones diarias con un contacto guardado solo con un emoji, sin nombre. El tono no deja lugar a dudas: planes, intimidad, "ojalá no tuvieras que volver a casa". No son mensajes de un desliz de una noche. Son los de una relación paralela con sentimientos, lo cual para Ans será peor que el sexo: Cael no solo se acuesta con otro. Lo quiere.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_companero_cael: {
+        tiempo: 60,
+        narr: 'Localizas a un compañero real de la oficina de Cael, uno que a veces aparece en sus coartadas. Aquí decides cómo abordarlo; cada vía gasta tu tiempo.',
+        entrevista: true,
+        opciones: [
+          { txt: '[EMPATIZAR] "No quiero meterle en líos. Solo confirmar algo."', tono:'empatizar', cuesta:true, va:'escena_companero_cael', da:'coartada_falsa', etiqueta:'El compañero no almuerza nunca con Cael', msg:'El compañero se remueve incómodo. "Mire, yo no quiero problemas. Cael me pidió que, si alguien preguntaba, dijera que comemos juntos. Pero no es verdad, hace meses que no come con nosotros. No sé con quién va y no quiero saberlo." Acabas de confirmar que la coartada de Cael es una mentira pactada. No hay duda razonable que quede.' },
+          { txt: '[PRESIONAR] "Usted lo encubre. ¿Es cómplice de algo?"', tono:'presionar', cuesta:true, va:'escena_companero_cael', da:null, etiqueta:'(El compañero se cierra)', msg:'Se asusta y se cierra en banda. "Yo no sé nada, no me meta en esto." Se va. Lo pierdes como fuente.', marca:'companero_hostil' },
+          { txt: '[MENTIR] "Cael ya ha confesado. Solo necesito su versión."', tono:'mentir', cuesta:true, va:'escena_companero_cael', da:'coartada_falsa', etiqueta:'El compañero confirma la coartada pactada', msg:'Picado por la idea de que ya todo se sabe, el compañero suelta lo que sabe: "Bueno, si ya lo ha contado... sí, me pidió cubrirle los almuerzos, yo le seguí la corriente, pero no pregunté con quién." Confirma la coartada falsa, aunque te deja claro que no conoce a la otra persona. La mentira funciona, pero te recuerda que has manipulado a un don nadie para llegar aquí.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      }
+    },
+    deduccion: {
+      intro: 'Ordenas lo reunido y, a diferencia de otros casos, aquí la verdad no tiene escapatoria amable: Cael ve a la misma persona cada día, se quita la alianza, mantiene una tarjeta y una app secretas, paga la coartada de un compañero. Hay infidelidad, y además hay sentimientos, que para Ans será lo más duro. Lo único que queda por decidir es cómo le entregas esto a un hombre que ya intuía la respuesta y aun así te pagó por oírla.',
+      preguntas: [
+        {
+          id: 'quien',
+          texto: '¿LE es infiel Cael a Ans?',
+          opciones: [
+            { txt: 'Sí: mantiene una relación paralela con otra persona', correcta:true },
+            { txt: 'No: las señales tienen una explicación inocente', correcta:false },
+            { txt: 'No está claro, hace falta seguir investigando', correcta:false },
+            { txt: 'Solo es una amistad que Ans malinterpreta', correcta:false }
+          ]
+        },
+        {
+          id: 'porque',
+          texto: '¿QUÉ tipo de infidelidad es?',
+          opciones: [
+            { txt: 'Una relación sostenida, con sentimientos, oculta con cuidado', correcta:true },
+            { txt: 'Un desliz aislado de una sola vez', correcta:false },
+            { txt: 'Una crisis pasajera sin nadie concreto detrás', correcta:false },
+            { txt: 'Un malentendido sobre reuniones de trabajo', correcta:false }
+          ]
+        },
+        {
+          id: 'como',
+          texto: '¿CÓMO le entregas la verdad a Ans?',
+          opciones: [
+            { txt: 'Con pruebas claras y sin adornos, dejándole a él decidir qué hacer', correcta:true },
+            { txt: 'Suavizándola hasta que parezca menos grave de lo que es', correcta:false },
+            { txt: 'Animándole a vengarse o a montar una escena', correcta:false },
+            { txt: 'Ocultándole los sentimientos de Cael para ahorrarle dolor', correcta:false }
+          ]
+        }
+      ],
+      desenlaces: {
+        completo: {
+          titulo: 'CASO RESUELTO · LO QUE YA SABÍA',
+          narr: 'Le entregas a Ans las pruebas sin crueldad y sin piedad falsa: el café, la alianza en el bolsillo, la tarjeta secreta, los mensajes, la coartada pactada. No le adornas la verdad para que duela menos —eso sería tratarlo como a un niño— ni se la afilas para que duela más. Le das los hechos y el espacio para encajarlos. Ans los recibe en silencio, asintiendo despacio, y cuando habla no hay sorpresa en su voz, solo el peso de una confirmación. "Gracias por no mentirme tú también", dice.\\n\\nNo le dices qué hacer. No es tu trabajo decidir si perdona, si se va, si pelea por los doce años o los entierra. Le ofreces, eso sí, una cosa práctica: copias ordenadas de las pruebas, por si algún día las necesita ante un abogado, y el nombre de alguien que ayuda en estos trances sin cobrar de más. Cobras tus doscientos veinte créditos. No has salvado un matrimonio ni roto uno: solo le has devuelto a un hombre la certeza que necesitaba para dejar de volverse loco. A veces el trabajo no es traer buenas noticias. Es traer la verdad con las manos limpias.',
+          pagaMult: 1.0, rep: 4, parcial:false
+        },
+        parcial: {
+          titulo: 'CASO CERRADO · A MEDIAS',
+          narr: 'Confirmas la infidelidad, pero entregas el caso con cabos sueltos: pruebas incompletas, o suavizadas, o sin la claridad que Ans necesitaba para estar seguro. Él te cree a medias y se queda con una duda que lo corroe: ¿y si exageraste, y si malinterpretaste? Esa grieta le impedirá tanto perdonar como marcharse en paz. Cobras tu parte. Tenías una verdad difícil y la entregaste a medio cocer, que en estas cosas es casi peor que callarla.',
+          pagaMult: 0.5, rep: 1, parcial:true
+        },
+        fallo: {
+          titulo: 'CASO CERRADO · EL FAVOR ENVENENADO',
+          narr: 'Erraste el cómo. O le restaste hierro hasta convencerlo de que "no era para tanto", y Ans volvió a casa a tragarse una mentira que ahora tú avalas; o le calentaste la cabeza para que montara una escena, y Ans encaró a Cael a gritos, sin pruebas ordenadas, quedando él como el desequilibrado y dándole a Cael la coartada perfecta para irse haciéndose la víctima. Sea como sea, no le diste lo que un investigador debe dar: la verdad, limpia, en sus manos, para que él decida. Cobras tu tarifa. Tenías los hechos y los manejaste como un torpe o como un cizañero, y un hombre que ya sufría sufre ahora encima por tu culpa. Hay maneras de tener razón que hacen tanto daño como mentir.',
+          pagaMult: 0.3, rep: -3, parcial:false, malo:true
+        }
+      }
+    }
   }
 ];
 
