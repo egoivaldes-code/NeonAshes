@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.99] - 2026-06-11
+### Added
+- Cuatro escenas nuevas de expedición de chatarra (altar de chatarra, niña perdida, dron caído, compañero herido).
+- Cuatro casos nuevos para el Investigador Privado: "¿De quién es el perro?", "El inquilino fantasma", "La cita que no era" y "La hora del almuerzo".
+### Changed
+- Nueva imagen de fondo del mapa en móvil, sin marcadores ni texto.
+
 ## [0.98] - 2026-06-10
 ### Added
 - "El Muro": nuevo minijuego de deducción para el Investigador Privado. El jugador criba las pistas reunidas (sólido/descartar) y luego respalda cada acusación con una pista sólida.

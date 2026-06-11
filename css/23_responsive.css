@@ -382,7 +382,7 @@ html, body {
    (no en :root) porque la cadena base64 es muy larga y se entiende
    mejor en un bloque dedicado. */
 .mapa-img {
-  background-image: url('../assets/images/mapa_strata.webp');
+  background-image: url('../assets/images/mapa_strata.webp?v=0990');
 }
 
 
