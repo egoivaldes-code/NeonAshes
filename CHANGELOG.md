@@ -2,6 +2,10 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.104] - 2026-06-13
+### Added
+- Profesión Hacker completa hasta el rango máximo: rangos Analista de Sistemas, Fantasma y Arquitecto de Red. Seis minijuegos nuevos (análisis de logs, reconstrucción de archivos, cortafuegos, ingeniería social, escaneo de vulnerabilidades y ensamblador de malware) y nueve contratos nuevos, incluido uno que conduce a un nodo enterrado relacionado con CERO.
+
 ## [0.103] - 2026-06-13
 ### Added
 - Nueva profesión Hacker: trabajo 100% digital desde el terminal, sin viajes. Rangos Script Kiddie e Intruso con cuatro minijuegos (fuerza bruta, descifrado, inyección de código y limpieza de rastros) y seis contratos de la red clandestina.

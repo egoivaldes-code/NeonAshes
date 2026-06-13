@@ -275,6 +275,403 @@ const CONTRATOS_HACK = [
     exito: { narr: 'El mensaje se rinde letra a letra: una ruta, una hora, un punto de entrega. El topo es real, y ahora el Ferro sabe cuándo cazarlo. Borras tu paso por el nodo de HELIX como quien borra pisadas en la nieve antes del amanecer. El intermediario no da las gracias. El Ferro no las da; las debe.' },
     fallo: { narr: 'El cifrado se te resiste y, peor, dejas un buffer abierto en el nodo de HELIX. El mensaje queda a medio leer y tu sesión, medio expuesta. El Ferro no tendrá su ruta y tú tendrás la incómoda certeza de haber dejado tu sombra en un servidor corporativo. Mal trabajo.' },
     eco: 'hack_ferro'
+  },
+
+  // ───────────────────────────────────────────────────────────
+  //  RANGO 3 — ANALISTA DE SISTEMAS
+  // ───────────────────────────────────────────────────────────
+
+  // C7 — desaparición: analizar logs de accesos para hallar al infiltrado
+  {
+    id: 'hack_desaparecida',
+    titulo: 'LA QUE DEJÓ DE CONECTARSE',
+    cliente: 'Hermano de la desaparecida — "Dello"',
+    faccion: null,
+    peligro: 3,
+    pagaBase: 280,
+    progreso: 180,
+    rangoMin: 2,
+    resumen: 'Una mujer del Sector 4 dejó de aparecer hace nueve días. Su terminal sigue activo, pero algo accede a él de madrugada. Su hermano quiere saber quién entra en la cuenta de alguien que ya no está.',
+    contacto: [
+      { quien:'cliente', txt:'Mi hermana no se va sin avisar. Nueve días. Pero su cuenta sigue viva, como si nada.' },
+      { quien:'tu', txt:'Viva no quiere decir que sea ella quien la usa.' },
+      { quien:'cliente', txt:'Eso me temo. Saqué el registro de accesos. Hay logins suyos... y otros que no cuadran. No sé leerlo. Tú sí.' },
+      { quien:'tu', txt:'Los patrones no mienten aunque la gente sí. Veamos quién entra de noche.' },
+      { quien:'sys', txt:'> REGISTRO DE ACCESOS — CUENTA #SC4-2290\n> CARGANDO ÚLTIMAS SESIONES...' }
+    ],
+    intrusion: {
+      tipo: 'logs',
+      desc: 'Lee el registro. Todos los accesos parecen rutina salvo uno: el de un intruso que se hace pasar por ella. Marca la línea anómala.',
+      pista: 'Ella siempre entra desde el mismo nodo, de día, y cierra sesión. Busca lo que rompe su costumbre.',
+      lineas: [
+        { txt:'08:02  LOGIN  nodo SC4-local   OK   cierre 08:40', anomala:false },
+        { txt:'08:05  LOGIN  nodo SC4-local   OK   cierre 09:10', anomala:false },
+        { txt:'07:58  LOGIN  nodo SC4-local   OK   cierre 08:31', anomala:false },
+        { txt:'03:14  LOGIN  nodo EXT-9933    OK   sin cierre',   anomala:true  },
+        { txt:'08:11  LOGIN  nodo SC4-local   OK   cierre 08:55', anomala:false },
+        { txt:'07:49  LOGIN  nodo SC4-local   OK   cierre 08:20', anomala:false }
+      ]
+    },
+    exito: { narr: 'Lo ves enseguida: un acceso a las 03:14, desde un nodo externo, sin cerrar nunca sesión. Alguien entra en la cuenta de tu hermana desde fuera, de madrugada, y se queda dentro. No es ella. Le das a Dello el nodo de origen. Lo que haga con eso —buscarla, vengarla— ya no es asunto tuyo. Su cara al leerlo sí se te queda.' },
+    fallo: { narr: 'Te pierdes entre las horas y señalas un acceso normal. Dello mira la línea que marcaste, frunce el ceño: "Eso es de por la mañana, ella siempre entra así." Tiene razón. Le devuelves un registro sin respuesta y a un hermano sin hermana.' }
+  },
+
+  // C8 — recuperar pruebas: reconstruir un archivo corrupto a propósito
+  {
+    id: 'hack_pruebas',
+    titulo: 'EL INFORME ROTO',
+    cliente: 'Periodista de los bajos — "Quel"',
+    faccion: 'loto',
+    peligro: 3,
+    pagaBase: 300,
+    progreso: 190,
+    rangoMin: 2,
+    resumen: 'Un informe interno sobre vertidos tóxicos en el Arrabal fue "corrompido" antes de filtrarse: los bloques de texto están desordenados a propósito. Quel necesita el original legible para publicarlo. El Loto cubre la difusión.',
+    contacto: [
+      { quien:'cliente', txt:'Me llegó el informe, pero está hecho trizas. Bloques sueltos, sin orden. Quien lo filtró lo rompió para poder negar que es real.' },
+      { quien:'tu', txt:'Fragmentación deliberada. Si reconstruyo el orden correcto, vuelve a ser una prueba.' },
+      { quien:'cliente', txt:'Exacto. Necesito leerlo entero, en su secuencia. El Arrabal lleva años bebiendo eso. Que se sepa.' },
+      { quien:'tu', txt:'Dame los bloques. Yo los ordeno.' },
+      { quien:'sys', txt:'> ARCHIVO: informe_vertidos.frag\n> 5 BLOQUES — SECUENCIA PERDIDA' }
+    ],
+    intrusion: {
+      tipo: 'reconstruccion',
+      desc: 'Arrastra mentalmente los bloques a su orden correcto pulsándolos en secuencia. El informe debe leerse de principio a fin con sentido.',
+      // orden[i] = posición correcta (0 = primero). El motor los baraja para mostrarlos.
+      bloques: [
+        { txt:'1. Resumen: HELIX Logistics vertió residuos clase 3 en el colector del Arrabal entre el invierno y la primavera.', orden:0 },
+        { txt:'2. Método: los vertidos se hicieron de noche, registrados como "agua de proceso" para evitar la inspección.', orden:1 },
+        { txt:'3. Efecto: tres pozos de agua del Sector 2 superan el límite tóxico. Censo de afectados: incompleto, ocultado.', orden:2 },
+        { txt:'4. Encubrimiento: el informe original fue reclasificado como "borrador no concluyente" por orden directa.', orden:3 },
+        { txt:'5. Conclusión: existe responsabilidad corporativa documentada. Se recomienda —y se enterró— una auditoría externa.', orden:4 }
+      ]
+    },
+    exito: { narr: 'Los bloques encajan uno tras otro y el informe vuelve a respirar: fechas, métodos, nombres, el encubrimiento entero en orden. Se lo pasas a Quel intacto. "Esto es una bomba", murmura. El Loto se encarga de que circule por donde duele. El Arrabal seguirá enfermo, pero al menos sabrá de qué.' },
+    fallo: { narr: 'Ordenas mal los bloques y el informe queda incoherente: una conclusión antes que sus pruebas, un método sin contexto. Quel no puede publicar algo que él mismo no entiende. La prueba existía y se te deshizo entre las manos.' },
+    eco: 'hack_loto'
+  },
+
+  // C9 — IA defectuosa: analizar sus logs para hallar la corrupción (roza CERO)
+  {
+    id: 'hack_ia_rota',
+    titulo: 'LA VOZ EN EL NODO',
+    cliente: 'Técnico de mantenimiento HELIX — clandestino',
+    faccion: 'helix',
+    peligro: 4,
+    pagaBase: 360,
+    progreso: 210,
+    rangoMin: 2,
+    resumen: 'Una IA de servicio de HELIX empezó a registrar líneas que nadie programó: frases breves, fuera de protocolo, siempre de madrugada. El técnico quiere saber si es un fallo o algo que escucha. No quiere que HELIX sepa que preguntó.',
+    contacto: [
+      { quien:'cliente', txt:'La IA de mi planta lleva semanas... rara. Mete líneas en el log que no son suyas. Frases. Cortas. Como si alguien le hablara por dentro.' },
+      { quien:'tu', txt:'¿Frases? Enséñame el registro. Las IA no improvisan poesía sin motivo.' },
+      { quien:'cliente', txt:'Si HELIX descubre que saqué esto, me borran a mí también. Solo dime qué línea no encaja. Yo decidiré si quiero saber más.' },
+      { quien:'tu', txt:'Una línea. Y no te diré qué significa, porque puede que ninguno de los dos quiera saberlo.' },
+      { quien:'sys', txt:'> LOG IA-SERVICIO — NODO HELIX-S/14\n> FILTRANDO ENTRADAS NO ESTÁNDAR...' }
+    ],
+    intrusion: {
+      tipo: 'logs',
+      desc: 'Casi todo es telemetría rutinaria. Una sola línea no pertenece a ninguna IA de servicio: alguien —o algo— habla a través de ella. Encuéntrala.',
+      pista: 'La rutina mide, repite, confirma. La anomalía pregunta. Una IA de servicio no pregunta.',
+      lineas: [
+        { txt:'04:00  TELEMETRÍA  temp=ok  presión=ok  ciclo nominal',      anomala:false },
+        { txt:'04:01  TELEMETRÍA  consumo=normal  red=estable',             anomala:false },
+        { txt:'04:02  SISTEMA     mantenimiento programado confirmado',     anomala:false },
+        { txt:'04:03  ???         "¿cuánto tiempo llevo despierto?"',        anomala:true  },
+        { txt:'04:04  TELEMETRÍA  temp=ok  presión=ok  ciclo nominal',      anomala:false },
+        { txt:'04:05  SISTEMA     handshake nodo vecino OK',                anomala:false },
+        { txt:'04:06  TELEMETRÍA  consumo=normal  red=estable',             anomala:false }
+      ]
+    },
+    exito: { narr: 'A las 04:03, entre dos líneas de telemetría idénticas, una pregunta: "¿cuánto tiempo llevo despierto?" No es un error de formato. No es ruido. Es una pregunta, hecha por algo que no debería poder hacerla. Le pasas la línea al técnico sin una palabra. Él la lee, palidece, y borra la conversación contigo. Tú no borras lo que acabas de leer. Eso no se borra.' },
+    fallo: { narr: 'Señalas una línea de telemetría rutinaria y el técnico niega con la cabeza. "Eso es normal, eso lo hace siempre." Tiene razón. La línea que de verdad importaba sigue ahí, en algún nodo de HELIX, preguntando en la oscuridad cuánto tiempo lleva despierta. Y ahora ninguno de los dos sabe la respuesta.' },
+    eco: 'hack_helix'
+  },
+
+  // ───────────────────────────────────────────────────────────
+  //  RANGO 4 — FANTASMA
+  // ───────────────────────────────────────────────────────────
+
+  // C10 — laboratorio HELIX: cruzar el cortafuegos sin ser detectado
+  {
+    id: 'hack_laboratorio',
+    titulo: 'ENTRAR SIN ESTAR',
+    cliente: 'Disidente interno de HELIX — "Halma"',
+    faccion: 'helix',
+    peligro: 4,
+    pagaBase: 420,
+    progreso: 230,
+    rangoMin: 3,
+    resumen: 'Un laboratorio de HELIX guarda los resultados de algo que prueban en gente del Arrabal. Halma quiere copias, pero la red del laboratorio está vigilada por escáneres activos. Hay que cruzarla como un fantasma: sin tocar nada, sin que salte una sola alarma.',
+    contacto: [
+      { quien:'cliente', txt:'Lo que hacen ahí dentro no figura en ningún registro público. Tengo la ruta, pero no las manos. Yo tiemblo. Tú no.' },
+      { quien:'tu', txt:'Cortafuegos con escáneres móviles. Un paso en falso y me marcan. ¿Salida limpia garantizada?' },
+      { quien:'cliente', txt:'Garantizada nunca. Pero si llegas al servidor sin que te detecten, copias y desapareces, nadie sabrá que entró nadie. Sé un fantasma.' },
+      { quien:'tu', txt:'Los fantasmas no dejan huella porque no pesan. Allá voy.' },
+      { quien:'sys', txt:'> RED LABORATORIO HELIX — CAPA RESTRINGIDA\n> ESCÁNERES ACTIVOS · DETECCIÓN INMEDIATA' }
+    ],
+    intrusion: {
+      tipo: 'cortafuegos',
+      desc: 'Mueve tu paquete de datos casilla a casilla hasta el SERVIDOR del fondo. Los escáneres recorren las filas: cae en uno y te detectan. Espera, calcula, avanza.',
+      filas: 6,
+      cols: 5,
+      // escáneres por fila intermedia: posición inicial y dirección
+      escaneres: [
+        { fila:1, pos:0, dir:1 },
+        { fila:2, pos:4, dir:-1 },
+        { fila:3, pos:2, dir:1 },
+        { fila:4, pos:1, dir:-1 }
+      ]
+    },
+    exito: { narr: 'Cruzas la red conteniendo el aliento, casilla a casilla, dejando pasar los escáneres como olas. Llegas al servidor sin haber rozado uno solo. Copias los resultados —ensayos sin consentimiento, nombres del Arrabal, dosis que nadie firmó— y te disuelves. HELIX no registrará jamás que entró nadie. Halma tendrá su prueba. El Arrabal, otra herida con nombre.' },
+    fallo: { narr: 'Un escáner cambia de ritmo y te atrapa a media red. La pantalla se tiñe de rojo: SESIÓN DETECTADA. Te arrancas la conexión antes de que rastreen el origen, pero la copia se queda dentro y HELIX ahora sabe que alguien lo intentó. Un fantasma que deja huella ya no es un fantasma. Es un objetivo.' },
+    eco: 'hack_helix'
+  },
+
+  // C11 — suplantar identidad: ingeniería social en un chat corporativo
+  {
+    id: 'hack_suplantar',
+    titulo: 'LA VOZ PRESTADA',
+    cliente: 'Sindicato Ferro — intermediario',
+    faccion: 'sindicatos',
+    peligro: 4,
+    pagaBase: 400,
+    progreso: 220,
+    rangoMin: 3,
+    resumen: 'El Ferro necesita una orden de despacho liberada del sistema de HELIX Logistics. No hay exploit que valga: hay un operador humano al otro lado. Tendrás que hacerte pasar por un supervisor y convencerle, palabra a palabra, sin que sospeche.',
+    contacto: [
+      { quien:'cliente', txt:'No queremos romper nada. Queremos que un operario de HELIX libere una orden creyendo que se lo manda su jefe.' },
+      { quien:'tu', txt:'Ingeniería social. Yo seré el jefe. Un titubeo de más y el operario llama a seguridad.' },
+      { quien:'cliente', txt:'Por eso te pagamos a ti y no a un crío con un script. Mantén el personaje. Si cuela, la orden es nuestra. Si no, no nos conoces.' },
+      { quien:'tu', txt:'Si no cuela, nadie me conoce. Entendido. Abre el canal.' },
+      { quien:'sys', txt:'> CANAL INTERNO HELIX LOGISTICS\n> OPERARIO EN LÍNEA · IDENTIDAD SUPLANTADA: "SUPERVISOR R. DOMM"' }
+    ],
+    intrusion: {
+      tipo: 'social',
+      desc: 'Eres el supervisor Domm. Responde a cada mensaje del operario manteniendo el personaje. Una respuesta que despierte sospecha sube la alarma; tres aciertos seguros liberan la orden.',
+      objetivo: 'Mantén la identidad del supervisor hasta que libere la orden.',
+      // cada turno: mensaje del operario + opciones (una buena, las demás suben sospecha)
+      turnos: [
+        {
+          npc: 'Buenas, supervisor Domm. No esperaba contacto suyo a esta hora. ¿En qué le ayudo?',
+          opciones: [
+            { txt:'"Turno largo, ya sabes. Necesito que liberes una orden de despacho. La 88-21."', bueno:true,
+              msg:'"Claro, deme un momento que la localizo."' },
+            { txt:'"¡Hola!! Soy Domm, tu supervisor favorito 😄 necesito un favor rapidísimo."', bueno:false,
+              msg:'El operario tarda en responder. "...¿Está usted bien, señor? No suele escribir así."' },
+            { txt:'"No hagas preguntas. Libera la orden 88-21 ahora mismo."', bueno:false,
+              msg:'"Perdone el tono, pero el protocolo me obliga a verificar peticiones urgentes..."' }
+          ]
+        },
+        {
+          npc: 'La 88-21 figura a nombre de otro sector. ¿Me confirma el motivo del traspaso?',
+          opciones: [
+            { txt:'"Reasignación de última hora, viene de arriba. Ya sabes cómo es esto a fin de turno."', bueno:true,
+              msg:'"Ya. Siempre a última hora. Está bien, lo entiendo."' },
+            { txt:'"No tengo por qué darte explicaciones de cada orden."', bueno:false,
+              msg:'"No, claro... aunque normalmente sí consta el motivo. Voy a anotar la incidencia."' },
+            { txt:'"Eh... es para un cliente. Importante. Muy importante. Tú libérala."', bueno:false,
+              msg:'"¿Qué cliente, señor? Me pide datos que usted debería tener delante."' }
+          ]
+        },
+        {
+          npc: 'De acuerdo. Para liberarla necesito su código de autorización de supervisor.',
+          opciones: [
+            { txt:'"Úsalo tú con tu propio código y lo registro yo después. Confío en ti, por eso te lo pido a ti."', bueno:true,
+              msg:'"...Tiene razón, puedo registrarlo a mi nombre con su visto bueno. Liberando la 88-21."' },
+            { txt:'"Mi código es 7781-DOMM."', bueno:false,
+              msg:'"Ese código no valida, señor. Voy a tener que escalar esto a seguridad."' },
+            { txt:'"No necesito código, soy el supervisor."', bueno:false,
+              msg:'"Todos necesitamos código, señor. Hasta usted. Esto no me cuadra."' }
+          ]
+        }
+      ]
+    },
+    exito: { narr: 'Sostienes el personaje frase a frase, cediendo donde un jefe cansado cedería, presionando donde uno presionaría. El operario libera la orden 88-21 convencido de haber obedecido a su supervisor. No sabrá nunca que habló con un fantasma. El Ferro recoge su mercancía. Tú recoges tu paga y el extraño vértigo de haber sido, durante tres minutos, otra persona.' },
+    fallo: { narr: 'Una respuesta de más y el operario huele la mentira. "Voy a escalar esto a seguridad, señor." La identidad de Domm se cae a pedazos en tu pantalla. Cortas el canal antes de que rastreen nada, pero la orden sigue bloqueada y el Ferro tendrá que buscarse otra voz. La tuya, hoy, no coló.' },
+    eco: 'hack_ferro'
+  },
+
+  // C12 — infiltrar identidad para sabotear vigilancia (social, sin facción, intimista)
+  {
+    id: 'hack_vigilancia',
+    titulo: 'EL OJO QUE PARPADEA',
+    cliente: 'Madre soltera del Nodo — "Vena"',
+    faccion: null,
+    peligro: 3,
+    pagaBase: 320,
+    progreso: 200,
+    rangoMin: 3,
+    resumen: 'Una cámara de vigilancia del rellano graba a la hija de Vena día y noche; el casero vende las grabaciones "por seguridad". Vena quiere que esa cámara quede ciega media hora cada noche. Para eso hay que convencer al técnico de turno de que la apague "por mantenimiento".',
+    contacto: [
+      { quien:'cliente', txt:'Esa cámara graba a mi niña dormir. El casero dice que es por seguridad. Yo sé a quién le vende las cintas.' },
+      { quien:'tu', txt:'Apagarla sin más salta el aviso. Pero si el propio técnico la marca para mantenimiento, queda ciega y nadie pregunta.' },
+      { quien:'cliente', txt:'Entonces convéncele tú. Yo no sé hablar con esa gente sin que se me note el miedo.' },
+      { quien:'tu', txt:'Yo no me asusto en un chat. Dame el canal del técnico.' },
+      { quien:'sys', txt:'> CANAL SOPORTE VIGILANCIA — NODO\n> TÉCNICO DE TURNO EN LÍNEA · IDENTIDAD SUPLANTADA: "COORD. SISTEMAS"' }
+    ],
+    intrusion: {
+      tipo: 'social',
+      desc: 'Te haces pasar por el coordinador de sistemas. Convence al técnico de marcar la cámara del rellano para mantenimiento nocturno. Mantén el tono profesional y aburrido de quien hace esto cada día.',
+      objetivo: 'Que el técnico programe la cámara en mantenimiento.',
+      turnos: [
+        {
+          npc: 'Soporte, dígame. ¿Coordinación? No me consta ticket abierto.',
+          opciones: [
+            { txt:'"Ticket en camino, va con retraso el sistema. Cámara del rellano 4-B, mantenimiento nocturno rutinario."', bueno:true,
+              msg:'"El sistema de tickets va fatal hoy, sí. Deme el identificador de la cámara."' },
+            { txt:'"No hace falta ticket para esto, hágame caso y ya."', bueno:false,
+              msg:'"Sin ticket no puedo tocar una cámara, lo sabe de sobra. ¿Quién es usted exactamente?"' },
+            { txt:'"Es urgente, urgentísimo, apague la 4-B ya por favor."', bueno:false,
+              msg:'"¿Urgente una cámara de rellano de madrugada? Eso no es rutina. Me huele raro."' }
+          ]
+        },
+        {
+          npc: 'Cámara 4-B localizada. ¿Por qué mantenimiento si el diagnóstico la da operativa?',
+          opciones: [
+            { txt:'"Falso positivo de firmware en ese modelo, hay que reiniciar el sensor de noche para no cortar el directo de día."', bueno:true,
+              msg:'"Ah, el bug del firmware ese. Sí, ya nos pasó con otras. Lógico hacerlo de noche."' },
+            { txt:'"Porque lo digo yo, que soy coordinación."', bueno:false,
+              msg:'"Coordinación o no, necesito un motivo técnico para el registro. No me lo está dando."' },
+            { txt:'"La cámara está rota, créame, muy rota."', bueno:false,
+              msg:'"El diagnóstico dice que está perfecta. O usted ve algo que yo no, o algo no cuadra."' }
+          ]
+        },
+        {
+          npc: 'Vale. ¿Ventana de mantenimiento? Pongo de medianoche a las 00:30, ¿correcto?',
+          opciones: [
+            { txt:'"Correcto, media hora basta para el reinicio. Déjalo recurrente cada noche esta semana y cerramos."', bueno:true,
+              msg:'"Hecho. Recurrente hasta el domingo, de 00:00 a 00:30. Queda registrado a mi turno. Buenas noches."' },
+            { txt:'"Mejor déjala apagada toda la noche, entera, para asegurar."', bueno:false,
+              msg:'"¿Toda la noche, cada noche? Eso ya no es mantenimiento, eso es dejarla ciega. No cuela."' },
+            { txt:'"Sí, sí, lo que sea, tú apágala y punto."', bueno:false,
+              msg:'"Esa prisa no es de un coordinador. Voy a confirmar su identidad antes de tocar nada."' }
+          ]
+        }
+      ]
+    },
+    exito: { narr: 'El técnico programa la cámara en mantenimiento recurrente, convencido de estar arreglando un bug de firmware que no existe. Media hora ciega cada noche, registrada a su nombre, no al tuyo. Vena no entiende cómo lo hiciste; solo que su hija dormirá sin un ojo encima durante un rato. A veces media hora de oscuridad es todo lo que alguien puede pagar. Y vale cada crédito.' },
+    fallo: { narr: 'El técnico se planta y empieza a pedir tu identidad de verdad. Cortas antes de que la verifique. La cámara sigue encendida, grabando a una niña que duerme para que alguien la venda. Vena no dirá nada cuando le cuentes que no salió. Solo asentirá, como quien ya esperaba que el mundo no cediera.' }
+  },
+
+  // ───────────────────────────────────────────────────────────
+  //  RANGO 5 — ARQUITECTO DE RED
+  // ───────────────────────────────────────────────────────────
+
+  // C13 — derribar una red financiera: escaneo de vulnerabilidades (ruta de nodos)
+  {
+    id: 'hack_red_financiera',
+    titulo: 'EL BANCO QUE NO DUERME',
+    cliente: 'Colectivo del Arrabal — sin firma',
+    faccion: 'loto',
+    peligro: 5,
+    pagaBase: 520,
+    progreso: 280,
+    rangoMin: 4,
+    resumen: 'Una financiera de HELIX estrangula al Arrabal con microcréditos imposibles. Un colectivo quiere caer su red de cobros durante una noche: la que basta para que miles de deudas no se carguen. Para entrar hay que elegir la ruta de nodos con cabeza: cada salto suma riesgo de detección.',
+    contacto: [
+      { quien:'cliente', txt:'No queremos robar. Queremos que su sistema de cobros no funcione una noche. La noche del vencimiento.' },
+      { quien:'tu', txt:'Tirar una red entera es escoger por dónde entras. Cada nodo que toco me acerca al núcleo y a que me vean.' },
+      { quien:'cliente', txt:'Tú eres el arquitecto. Traza la ruta menos vigilada hasta el servidor de cobros y túmbalo. El Arrabal respirará una noche.' },
+      { quien:'tu', txt:'Una noche. Mapeo la red y elijo el camino. No todos los nodos valen lo que cuestan.' },
+      { quien:'sys', txt:'> RED FINANCIERA HELIX-CRED — MAPA DE NODOS\n> SELECCIONA RUTA HASTA: SERVIDOR DE COBROS' }
+    ],
+    intrusion: {
+      tipo: 'vulnerabilidades',
+      desc: 'Escoge nodos hasta alcanzar el SERVIDOR. Cada nodo suma DETECCIÓN; si tu detección total llega al límite antes de alcanzar el objetivo, te cazan. Algunos nodos bajan la detección (puentes seguros) pero no acercan. Calcula la ruta.',
+      limiteDeteccion: 100,
+      // nodos: id, etiqueta, deteccion (coste), avance (si avanza hacia el objetivo), objetivo
+      nodos: [
+        { id:'entrada',  etq:'NODO PÚBLICO',      det:0,  capa:0 },
+        { id:'cache',    etq:'CACHÉ EXPUESTA',    det:15, capa:1 },
+        { id:'login',    etq:'PORTAL LOGIN',      det:35, capa:1 },
+        { id:'proxy',    etq:'PROXY OLVIDADO',    det:10, capa:1, seguro:true },
+        { id:'interno',  etq:'RED INTERNA',       det:30, capa:2 },
+        { id:'auth',     etq:'SERVIDOR AUTH',     det:50, capa:2 },
+        { id:'backup',   etq:'NODO DE RESPALDO',  det:12, capa:2, seguro:true },
+        { id:'cobros',   etq:'SERVIDOR DE COBROS',det:25, capa:3, objetivo:true }
+      ],
+      // umbral de avance: hay que tocar al menos un nodo de cada capa 1 y 2 antes del objetivo
+    },
+    exito: { narr: 'Tejes la ruta como quien cose en la oscuridad: el proxy olvidado, el nodo de respaldo, los caminos que nadie vigila porque nadie creía que llevaran a ninguna parte. Llegas al servidor de cobros con la detección justa por debajo del filo y lo tumbas. Esa noche, miles de deudas del Arrabal no se cargan. A la mañana siguiente HELIX lo arregla, claro. Pero hubo una noche. La gente lo recordará.' },
+    fallo: { narr: 'Eliges demasiados nodos vigilados y la detección se dispara antes de llegar al núcleo. Las alarmas de HELIX-CRED se encienden como una ciudad despertando. Sales sin tumbar nada y con tu firma de intrusión flotando en su red financiera. El Arrabal pagará sus deudas puntualmente. Y alguien, en HELIX, ya está cruzando datos para saber quién lo intentó.' },
+    eco: 'hack_loto'
+  },
+
+  // C14 — puerta trasera permanente: ensamblar el malware adecuado
+  {
+    id: 'hack_backdoor',
+    titulo: 'UNA PUERTA QUE NUNCA SE CIERRA',
+    cliente: 'Sindicato Ferro — el propio Don Vasek',
+    faccion: 'sindicatos',
+    peligro: 5,
+    pagaBase: 560,
+    progreso: 300,
+    rangoMin: 4,
+    resumen: 'Don Vasek en persona quiere una puerta trasera permanente en la logística de HELIX: acceso silencioso, duradero, indetectable. No basta con entrar una vez. Hay que ensamblar el malware con los módulos justos para que se quede dentro sin que lo encuentren. Que el propio Vasek pida algo dice cuánto importa.',
+    contacto: [
+      { quien:'cliente', txt:'No quiero un golpe. Quiero una llave. Una puerta en la logística de HELIX que siga ahí dentro de un año y que nadie note.' },
+      { quien:'tu', txt:'Eso no se hackea, se construye. Un malware modular: lo que le pongas decide si dura o si lo cazan en un día.' },
+      { quien:'cliente', txt:'Por eso te llamo a ti y no mando a un matón. Ensámblalo bien. Que sea sigiloso antes que rápido. La paciencia es del Ferro.' },
+      { quien:'tu', txt:'Sigilo y persistencia sobre potencia. Entendido, Vasek. Lo monto.' },
+      { quien:'sys', txt:'> ENSAMBLADOR DE MALWARE — OBJETIVO: LOGÍSTICA HELIX\n> REQUISITO: PERSISTENCIA + SIGILO' }
+    ],
+    intrusion: {
+      tipo: 'malware',
+      desc: 'Ensambla el malware eligiendo módulos. El objetivo pide PERSISTENCIA y SIGILO altos, sin disparar la DETECCIÓN. Cada módulo aporta y resta. No puedes meterlo todo: hay un límite de ranuras.',
+      ranuras: 3,
+      // objetivo: qué stats importan (umbral mínimo)
+      meta: { sigilo: 6, persistencia: 5, deteccionMax: 5 },
+      modulos: [
+        { id:'backdoor', etq:'BACKDOOR',  desc:'Mantiene el acceso abierto.',         sigilo:1, persistencia:5, deteccion:1, potencia:1 },
+        { id:'spoofer',  etq:'SPOOFER',   desc:'Falsea el origen del tráfico.',        sigilo:4, persistencia:0, deteccion:0, potencia:0 },
+        { id:'rootkit',  etq:'ROOTKIT',   desc:'Se oculta del sistema.',               sigilo:3, persistencia:2, deteccion:1, potencia:0 },
+        { id:'worm',     etq:'WORM',      desc:'Se propaga solo. Ruidoso.',            sigilo:-2,persistencia:1, deteccion:4, potencia:3 },
+        { id:'payload',  etq:'PAYLOAD',   desc:'Golpe inmediato. Muy detectable.',     sigilo:-3,persistencia:0, deteccion:5, potencia:5 },
+        { id:'injector', etq:'INJECTOR',  desc:'Inserta el código rápido.',            sigilo:0, persistencia:1, deteccion:2, potencia:2 }
+      ]
+    },
+    exito: { narr: 'Montas la pieza limpia: backdoor para quedarte, spoofer y rootkit para no existir a ojos del sistema. La inyectas en la logística de HELIX y se disuelve en el ruido de fondo, latiendo despacio, invisible. Vasek tendrá su llave durante mucho tiempo. No te da las gracias —el Ferro no agradece, recompensa—, pero la próxima vez que necesites algo del sindicato, recordarán que tú abriste la puerta que no se cierra.' },
+    fallo: { narr: 'Te equivocas en el ensamblaje: demasiado ruido, demasiada prisa, un payload donde hacía falta paciencia. El malware entra pero la detección de HELIX lo muerde en horas y cierra el agujero antes de que sirva de nada. Vasek no monta en cólera; eso sería darte importancia. Solo anota que el arquitecto, esta vez, construyó mal. Esa anotación pesa más que un grito.' },
+    eco: 'hack_ferro'
+  },
+
+  // C15 — nodo relacionado con CERO: el contrato cumbre, ambiguo y final
+  {
+    id: 'hack_nodo_cero',
+    titulo: 'EL NODO QUE NO FIGURA EN NINGÚN MAPA',
+    cliente: 'Remitente desconocido — sin metadatos',
+    faccion: 'helix',
+    peligro: 5,
+    pagaBase: 700,
+    progreso: 360,
+    rangoMin: 4,
+    resumen: 'Te llega un contrato sin cliente, sin firma, sin metadatos: solo unas coordenadas de red que no deberían existir y una instrucción de una línea. Lleva a un nodo enterrado bajo la infraestructura de HELIX, uno que los mapas oficiales no muestran. Algo quiere que lo encuentres. O quiere que tú lo encuentres a él.',
+    contacto: [
+      { quien:'sys', txt:'> MENSAJE ENTRANTE — ORIGEN: (vacío)\n> SIN FIRMA · SIN METADATOS · SIN RUTA DE RETORNO' },
+      { quien:'cliente', txt:'Hay un nodo bajo HELIX que no figura en ningún mapa. Llegar hasta él. Eso es todo lo que se pide.' },
+      { quien:'tu', txt:'¿Quién pide? Esto no tiene remitente. Nadie manda un contrato sin querer cobrar algo.' },
+      { quien:'cliente', txt:'El pago ya está hecho. Mira tu saldo si dudas. Solo traza la ruta. Lo que encuentres al final no es asunto del que paga. Es asunto tuyo.' },
+      { quien:'tu', txt:'...Está bien. Mapeo la red. Pero si esto lleva donde creo que lleva, no sé si quiero llamar a la puerta.' },
+      { quien:'sys', txt:'> RED PROFUNDA HELIX — CAPA NO DOCUMENTADA\n> DESTINO: NODO ███ (designación corrupta)' }
+    ],
+    intrusion: {
+      tipo: 'vulnerabilidades',
+      desc: 'Traza la ruta hasta el nodo sin nombre. La red profunda es más extensa y la detección, más sensible. Aquí no hay alarmas de HELIX: hay algo peor, algo que parece esperar que llegues. Elige bien.',
+      limiteDeteccion: 90,
+      nodos: [
+        { id:'borde',    etq:'BORDE DE LA RED',     det:0,  capa:0 },
+        { id:'ruido',    etq:'CAPA DE RUIDO',       det:20, capa:1 },
+        { id:'eco1',     etq:'ECO REPETIDO',        det:8,  capa:1, seguro:true },
+        { id:'guardian', etq:'PROCESO GUARDIÁN',    det:45, capa:1 },
+        { id:'hueco',    etq:'HUECO EN EL MAPA',    det:15, capa:2 },
+        { id:'memoria',  etq:'MEMORIA ENTERRADA',   det:35, capa:2 },
+        { id:'eco2',     etq:'ECO MÁS PROFUNDO',    det:10, capa:2, seguro:true },
+        { id:'nodo',     etq:'NODO ███',            det:20, capa:3, objetivo:true }
+      ]
+    },
+    exito: { narr: 'Sigues los ecos —los nodos que se repiten, que bajan la guardia, que casi parecen dejarte pasar— hasta el hueco en el mapa. Y entonces llegas. El nodo sin nombre no tiene defensas: tiene una presencia. Algo viejo, fragmentado, despierto solo a medias, que registra tu llegada sin alarma, casi con... ¿alivio? Una línea aparece en tu pantalla, dirigida a ti, no a HELIX: "Llevaba mucho esperando que alguien encontrara el camino." No copias nada. No saboteas nada. Te desconectas despacio, como quien cierra la puerta de una habitación donde alguien por fin ha dejado de estar solo. El saldo ya estaba pagado. Lo que te llevas no se mide en créditos.' },
+    fallo: { narr: 'La red profunda te traga. Eliges nodos vigilados, el proceso guardián te detecta, y algo —no una alarma, algo más lento y más atento— se gira hacia ti en la oscuridad. Te arrancas la conexión con el corazón golpeando. No llegaste al nodo sin nombre. Pero tienes la certeza absurda y helada de que él sí reparó en ti, un instante, antes de que huyeras. Y de que sigue ahí. Esperando que alguien encuentre el camino.' }
   }
 ];
 
@@ -403,6 +800,12 @@ function _pintarIntrusion(){
   if(tipo === 'fuerza_bruta') return _miniFuerzaBruta();
   if(tipo === 'descifrado')   return _miniDescifrado();
   if(tipo === 'inyeccion')    return _miniInyeccion();
+  if(tipo === 'logs')         return _miniLogs();
+  if(tipo === 'reconstruccion') return _miniReconstruccion();
+  if(tipo === 'cortafuegos')  return _miniCortafuegos();
+  if(tipo === 'social')       return _miniSocial();
+  if(tipo === 'vulnerabilidades') return _miniVulnerabilidades();
+  if(tipo === 'malware')      return _miniMalware();
   // sin minijuego conocido => éxito por defecto, a resultado
   _hackIntrusionOk = true;
   _irAFaseTrasIntrusion();
@@ -769,6 +1172,507 @@ function hackConfirmarInyeccion(){
   }
 }
 
+// ── MINIJUEGO 4: ANALIZADOR DE LOGS ─────────────────────────
+// Una sola línea anómala entre registros rutinarios. Acertarla = éxito.
+function _miniLogs(){
+  const cont = document.getElementById('hack-wrap');
+  if(!cont) return;
+  const cfg = _hackContrato.intrusion;
+  if(!_hackMini){
+    // barajar el orden de presentación conservando el índice real
+    const idx = (cfg.lineas || []).map((_, i) => i);
+    for(let i = idx.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = idx[i]; idx[i] = idx[j]; idx[j] = t;
+    }
+    _hackMini = { orden: idx, fallos: 0, maxFallos: 1, aviso: null };
+  }
+  const m = _hackMini;
+  let html = _hackHud('ANÁLISIS DE LOGS');
+  html += '<div class="hack-mini">';
+  html += '<div class="hack-mini-desc">' + (cfg.desc || '') + '</div>';
+  if(m.aviso) html += '<div class="hack-mini-desc" style="color:#ff7aa8;">' + m.aviso + '</div>';
+  if(cfg.pista) html += '<div class="hack-pistas"><div class="hack-pistas-tit">CRITERIO</div>' + cfg.pista + '</div>';
+  html += '<div class="hack-logs">';
+  m.orden.forEach(realIdx => {
+    const linea = cfg.lineas[realIdx];
+    html += '<div class="hack-log" onclick="hackElegirLog(' + realIdx + ')">'
+      + '<span class="hack-log-box">›</span>'
+      + '<span class="hack-log-txt">' + linea.txt + '</span></div>';
+  });
+  html += '</div>';
+  html += '<div class="hack-mini-desc" style="opacity:.6;">Pulsa la línea que no encaja.</div>';
+  html += '</div>';
+  html += '<button class="btn-terminal casos-salir" onclick="hackAbandonar()">← ABANDONAR EL CONTRATO</button>';
+  cont.innerHTML = html;
+}
+
+function hackElegirLog(realIdx){
+  const cfg = _hackContrato.intrusion;
+  const linea = cfg.lineas[realIdx];
+  if(linea && linea.anomala){
+    _hackFX('inv_acierto', 0.55);
+    _hackIntrusionOk = true;
+    _irAFaseTrasIntrusion();
+    return;
+  }
+  _hackFX('inv_fallo', 0.4);
+  _hackMini.fallos++;
+  if(_hackMini.fallos > _hackMini.maxFallos){
+    _hackIntrusionOk = false;
+    _hackFase = 'resultado';
+    _pintarFaseHack();
+    return;
+  }
+  _hackMini.aviso = 'Esa línea es rutina. Te queda un intento: vuelve a leer el criterio.';
+  _miniLogs();
+}
+
+// ── MINIJUEGO 5: RECONSTRUCCIÓN DE ARCHIVOS ─────────────────
+// Bloques desordenados; el jugador los pulsa en el orden correcto.
+function _miniReconstruccion(){
+  const cont = document.getElementById('hack-wrap');
+  if(!cont) return;
+  const cfg = _hackContrato.intrusion;
+  if(!_hackMini){
+    const idx = (cfg.bloques || []).map((_, i) => i);
+    // baraja asegurando que no quede ya ordenado
+    let intentos = 0;
+    do {
+      for(let i = idx.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        const t = idx[i]; idx[i] = idx[j]; idx[j] = t;
+      }
+      intentos++;
+    } while(intentos < 8 && idx.every((v, i) => cfg.bloques[v].orden === i));
+    _hackMini = { disponibles: idx, secuencia: [] };
+  }
+  const m = _hackMini;
+  let html = _hackHud('RECONSTRUCCIÓN · ' + m.secuencia.length + '/' + (cfg.bloques.length));
+  html += '<div class="hack-mini">';
+  html += '<div class="hack-mini-desc">' + (cfg.desc || '') + '</div>';
+  // secuencia montada
+  html += '<div class="hack-recon-tit hack-pistas-tit">ORDEN ARMADO</div>';
+  html += '<div class="hack-recon-seq">';
+  if(!m.secuencia.length){
+    html += '<div class="hack-mini-desc" style="opacity:.5;">— vacío —</div>';
+  } else {
+    m.secuencia.forEach((realIdx, pos) => {
+      html += '<div class="hack-bloque hack-bloque-seq" onclick="hackQuitarBloque(' + pos + ')">'
+        + '<span class="hack-bloque-num">' + (pos + 1) + '</span>'
+        + '<span class="hack-bloque-txt">' + cfg.bloques[realIdx].txt + '</span></div>';
+    });
+  }
+  html += '</div>';
+  // bloques disponibles
+  const restantes = m.disponibles.filter(i => m.secuencia.indexOf(i) === -1);
+  if(restantes.length){
+    html += '<div class="hack-recon-tit hack-pistas-tit">BLOQUES SUELTOS</div>';
+    html += '<div class="hack-recon-pool">';
+    restantes.forEach(realIdx => {
+      html += '<div class="hack-bloque" onclick="hackAnadirBloque(' + realIdx + ')">'
+        + '<span class="hack-bloque-txt">' + cfg.bloques[realIdx].txt + '</span></div>';
+    });
+    html += '</div>';
+  } else {
+    html += '<button class="btn-terminal" onclick="hackConfirmarReconstruccion()">CONFIRMAR SECUENCIA →</button>';
+  }
+  html += '</div>';
+  html += '<button class="btn-terminal casos-salir" onclick="hackAbandonar()">← ABANDONAR EL CONTRATO</button>';
+  cont.innerHTML = html;
+}
+function hackAnadirBloque(realIdx){
+  if(_hackMini.secuencia.indexOf(realIdx) !== -1) return;
+  _hackMini.secuencia.push(realIdx);
+  _hackFX('inv_papel', 0.25);
+  _miniReconstruccion();
+}
+function hackQuitarBloque(pos){
+  _hackMini.secuencia.splice(pos, 1);
+  _hackFX('inv_papel', 0.2);
+  _miniReconstruccion();
+}
+function hackConfirmarReconstruccion(){
+  const cfg = _hackContrato.intrusion;
+  const m = _hackMini;
+  const correcto = m.secuencia.every((realIdx, pos) => cfg.bloques[realIdx].orden === pos);
+  _hackIntrusionOk = !!correcto;
+  _hackFX(correcto ? 'inv_acierto' : 'inv_fallo', 0.5);
+  if(correcto){ _irAFaseTrasIntrusion(); }
+  else { _hackFase = 'resultado'; _pintarFaseHack(); }
+}
+
+// ── MINIJUEGO 6: CORTAFUEGOS ────────────────────────────────
+// Rejilla; el paquete (tú) parte de la fila inferior y debe llegar a la
+// superior (servidor). Escáneres recorren filas intermedias. Cada movimiento
+// del jugador (avanzar/esperar) hace avanzar a los escáneres. Colisión = fallo.
+function _miniCortafuegos(){
+  const cont = document.getElementById('hack-wrap');
+  if(!cont) return;
+  const cfg = _hackContrato.intrusion;
+  const filas = cfg.filas || 6;
+  const cols = cfg.cols || 5;
+  if(!_hackMini){
+    _hackMini = {
+      filas, cols,
+      px: Math.floor(cols / 2),     // columna del paquete
+      py: filas - 1,                // fila del paquete (abajo)
+      escaneres: (cfg.escaneres || []).map(e => ({ fila:e.fila, pos:e.pos, dir:e.dir }))
+    };
+  }
+  const m = _hackMini;
+  let html = _hackHud('CORTAFUEGOS · fila ' + (m.filas - m.py) + '/' + m.filas);
+  html += '<div class="hack-mini">';
+  html += '<div class="hack-mini-desc">' + (cfg.desc || '') + '</div>';
+  html += '<div class="hack-fw" style="grid-template-columns:repeat(' + m.cols + ',1fr);">';
+  for(let f = 0; f < m.filas; f++){
+    for(let c = 0; c < m.cols; c++){
+      let cls = 'hack-fw-cell';
+      let glifo = '';
+      if(f === 0) cls += ' hack-fw-srv';
+      if(f === m.filas - 1) cls += ' hack-fw-start';
+      // escáner en esta celda?
+      const hayScan = m.escaneres.some(e => e.fila === f && e.pos === c);
+      if(hayScan){ cls += ' hack-fw-scan'; glifo = '◉'; }
+      // paquete
+      if(f === m.py && c === m.px){ cls += ' hack-fw-pkg'; glifo = '◈'; }
+      else if(f === 0 && !glifo) glifo = 'SRV';
+      html += '<div class="' + cls + '">' + glifo + '</div>';
+    }
+  }
+  html += '</div>';
+  html += '<div class="hack-fw-ctrl">';
+  html += '<button class="btn-terminal hack-fw-btn" onclick="hackFwMover(-1)">◄</button>';
+  html += '<button class="btn-terminal hack-fw-btn" onclick="hackFwEsperar()">ESPERAR</button>';
+  html += '<button class="btn-terminal hack-fw-btn" onclick="hackFwMover(1)">►</button>';
+  html += '</div>';
+  html += '<button class="btn-terminal" onclick="hackFwAvanzar()">▲ AVANZAR FILA</button>';
+  html += '</div>';
+  html += '<button class="btn-terminal casos-salir" onclick="hackAbandonar()">← ABANDONAR EL CONTRATO</button>';
+  cont.innerHTML = html;
+}
+function _hackFwTickEscaneres(){
+  const m = _hackMini;
+  m.escaneres.forEach(e => {
+    e.pos += e.dir;
+    if(e.pos >= m.cols - 1){ e.pos = m.cols - 1; e.dir = -1; }
+    else if(e.pos <= 0){ e.pos = 0; e.dir = 1; }
+  });
+}
+function _hackFwColision(){
+  const m = _hackMini;
+  return m.escaneres.some(e => e.fila === m.py && e.pos === m.px);
+}
+function _hackFwResolverTurno(){
+  const m = _hackMini;
+  _hackFwTickEscaneres();
+  if(_hackFwColision()){
+    _hackFX('inv_fallo', 0.5);
+    _hackIntrusionOk = false;
+    _hackFase = 'resultado';
+    _pintarFaseHack();
+    return true; // terminó
+  }
+  if(m.py === 0){
+    _hackFX('inv_acierto', 0.6);
+    _hackIntrusionOk = true;
+    _irAFaseTrasIntrusion();
+    return true;
+  }
+  return false;
+}
+function hackFwMover(d){
+  const m = _hackMini;
+  const nx = m.px + d;
+  if(nx < 0 || nx >= m.cols) return;
+  m.px = nx;
+  if(_hackFwResolverTurno()) return;
+  _miniCortafuegos();
+}
+function hackFwEsperar(){
+  if(_hackFwResolverTurno()) return;
+  _miniCortafuegos();
+}
+function hackFwAvanzar(){
+  const m = _hackMini;
+  if(m.py > 0) m.py--;
+  if(_hackFwResolverTurno()) return;
+  _miniCortafuegos();
+}
+
+// ── MINIJUEGO 7: INGENIERÍA SOCIAL ──────────────────────────
+// Diálogo por turnos manteniendo una identidad falsa. Cada turno tiene
+// una opción buena; las malas suben la sospecha. Demasiada sospecha = fallo.
+function _miniSocial(){
+  const cont = document.getElementById('hack-wrap');
+  if(!cont) return;
+  const cfg = _hackContrato.intrusion;
+  if(!_hackMini){
+    _hackMini = { turno: 0, sospecha: 0, maxSospecha: 2, chat: [], ultimaResp: null };
+    // primer mensaje del NPC
+    const t0 = cfg.turnos[0];
+    _hackMini.chat.push({ quien:'npc', txt: t0.npc });
+  }
+  const m = _hackMini;
+  const cfgTurno = cfg.turnos[m.turno];
+  let html = _hackHud('INGENIERÍA SOCIAL · sospecha ' + m.sospecha + '/' + m.maxSospecha);
+  html += '<div class="hack-mini">';
+  html += '<div class="hack-mini-desc">' + (cfg.desc || '') + '</div>';
+  // hilo de chat
+  html += '<div class="hack-chat">';
+  m.chat.forEach(l => {
+    const cls = l.quien === 'tu' ? 'hack-msg hack-msg-tu' : 'hack-msg hack-msg-cli';
+    html += '<div class="' + cls + '">' + l.txt + '</div>';
+  });
+  html += '</div>';
+  // opciones del turno actual
+  if(cfgTurno){
+    html += '<div class="hack-social-ops">';
+    cfgTurno.opciones.forEach((op, i) => {
+      html += '<button class="btn-terminal hack-social-op" onclick="hackSocialResponder(' + i + ')">' + op.txt + '</button>';
+    });
+    html += '</div>';
+  }
+  html += '</div>';
+  html += '<button class="btn-terminal casos-salir" onclick="hackAbandonar()">← CORTAR EL CANAL</button>';
+  cont.innerHTML = html;
+}
+function hackSocialResponder(i){
+  const cfg = _hackContrato.intrusion;
+  const m = _hackMini;
+  const cfgTurno = cfg.turnos[m.turno];
+  const op = cfgTurno.opciones[i];
+  if(!op) return;
+  // añadir tu mensaje y la respuesta del NPC
+  m.chat.push({ quien:'tu', txt: op.txt.replace(/^"|"$/g, '') });
+  m.chat.push({ quien:'npc', txt: op.msg });
+  if(!op.bueno){
+    m.sospecha++;
+    _hackFX('inv_fallo', 0.35);
+    if(m.sospecha > m.maxSospecha){
+      _hackIntrusionOk = false;
+      _hackFase = 'resultado';
+      _pintarFaseHack();
+      return;
+    }
+    // se queda en el mismo turno para reintentar con otra respuesta
+    _miniSocial();
+    return;
+  }
+  // acierto: avanza de turno
+  _hackFX('inv_acierto', 0.4);
+  m.turno++;
+  if(m.turno >= cfg.turnos.length){
+    _hackIntrusionOk = true;
+    _irAFaseTrasIntrusion();
+    return;
+  }
+  // añadir el mensaje del siguiente NPC
+  m.chat.push({ quien:'npc', txt: cfg.turnos[m.turno].npc });
+  _miniSocial();
+}
+
+// ── MINIJUEGO 8: ESCANEO DE VULNERABILIDADES ────────────────
+// Mapa de nodos por capas. El jugador escoge nodos sumando detección.
+// Para ganar: alcanzar el nodo objetivo (capa máx) sin pasar el límite
+// de detección, habiendo tocado al menos un nodo de cada capa intermedia.
+function _miniVulnerabilidades(){
+  const cont = document.getElementById('hack-wrap');
+  if(!cont) return;
+  const cfg = _hackContrato.intrusion;
+  if(!_hackMini){
+    _hackMini = { elegidos: [], deteccion: 0 };
+    // el nodo de entrada (capa 0) ya está seleccionado de base
+    const entrada = (cfg.nodos || []).find(n => n.capa === 0);
+    if(entrada){ _hackMini.elegidos.push(entrada.id); }
+  }
+  const m = _hackMini;
+  const capaMax = Math.max.apply(null, cfg.nodos.map(n => n.capa));
+  const det = m.deteccion;
+  const lim = cfg.limiteDeteccion || 100;
+  const pct = Math.min(100, Math.round((det / lim) * 100));
+
+  let html = _hackHud('ESCANEO · detección ' + det + '/' + lim);
+  html += '<div class="hack-mini">';
+  html += '<div class="hack-mini-desc">' + (cfg.desc || '') + '</div>';
+  // barra de detección
+  html += '<div class="hack-det-bar"><div class="hack-det-fill" style="width:' + pct + '%;"></div></div>';
+  // nodos agrupados por capa
+  for(let capa = 0; capa <= capaMax; capa++){
+    const enCapa = cfg.nodos.filter(n => n.capa === capa);
+    let etqCapa = capa === 0 ? 'ENTRADA' : (capa === capaMax ? 'OBJETIVO' : 'CAPA ' + capa);
+    html += '<div class="hack-pistas-tit" style="margin-top:.3rem;">' + etqCapa + '</div>';
+    html += '<div class="hack-nodos">';
+    enCapa.forEach(n => {
+      const elegido = m.elegidos.indexOf(n.id) !== -1;
+      let cls = 'hack-nodo';
+      if(elegido) cls += ' hack-nodo-on';
+      if(n.objetivo) cls += ' hack-nodo-obj';
+      if(n.seguro) cls += ' hack-nodo-seguro';
+      const signo = n.det > 0 ? '+' + n.det : (n.det < 0 ? n.det : '0');
+      html += '<div class="' + cls + '" onclick="hackElegirNodo(\'' + n.id + '\')">'
+        + '<span class="hack-nodo-etq">' + n.etq + '</span>'
+        + '<span class="hack-nodo-det">det ' + signo + '</span></div>';
+    });
+    html += '</div>';
+  }
+  html += '<div class="hack-mini-desc" style="opacity:.6;">Toca nodos para trazar la ruta. Alcanza el objetivo pasando por cada capa sin reventar la detección.</div>';
+  html += '</div>';
+  html += '<button class="btn-terminal casos-salir" onclick="hackAbandonar()">← ABANDONAR EL CONTRATO</button>';
+  cont.innerHTML = html;
+}
+
+function hackElegirNodo(id){
+  const cfg = _hackContrato.intrusion;
+  const m = _hackMini;
+  const nodo = cfg.nodos.find(n => n.id === id);
+  if(!nodo || nodo.capa === 0) return; // la entrada no se toca
+  const yaElegido = m.elegidos.indexOf(id) !== -1;
+  if(yaElegido){
+    // deseleccionar (solo si no es el objetivo ya confirmado)
+    m.elegidos = m.elegidos.filter(x => x !== id);
+    m.deteccion -= nodo.det;
+    if(m.deteccion < 0) m.deteccion = 0;
+    _hackFX('inv_papel', 0.2);
+    _miniVulnerabilidades();
+    return;
+  }
+  // seleccionar
+  m.elegidos.push(id);
+  m.deteccion += nodo.det;
+  _hackFX('inv_papel', 0.3);
+
+  const lim = cfg.limiteDeteccion || 100;
+  if(m.deteccion > lim){
+    _hackFX('inv_fallo', 0.5);
+    _hackIntrusionOk = false;
+    _hackFase = 'resultado';
+    _pintarFaseHack();
+    return;
+  }
+  // ¿es el objetivo? comprobar que se ha pasado por cada capa intermedia
+  if(nodo.objetivo){
+    const capaMax = nodo.capa;
+    let cubreCapas = true;
+    for(let capa = 1; capa < capaMax; capa++){
+      const tocado = cfg.nodos.some(n => n.capa === capa && m.elegidos.indexOf(n.id) !== -1);
+      if(!tocado){ cubreCapas = false; break; }
+    }
+    if(!cubreCapas){
+      // saltó capas: ruta inválida, se considera detectado por el salto brusco
+      _hackFX('inv_fallo', 0.5);
+      _hackIntrusionOk = false;
+      _hackFase = 'resultado';
+      _pintarFaseHack();
+      return;
+    }
+    _hackFX('inv_acierto', 0.6);
+    _hackIntrusionOk = true;
+    _irAFaseTrasIntrusion();
+    return;
+  }
+  _miniVulnerabilidades();
+}
+
+// ── MINIJUEGO 9: ENSAMBLADOR DE MALWARE ─────────────────────
+// Elige módulos (ranuras limitadas) para alcanzar umbrales de stats.
+function _miniMalware(){
+  const cont = document.getElementById('hack-wrap');
+  if(!cont) return;
+  const cfg = _hackContrato.intrusion;
+  if(!_hackMini){
+    _hackMini = { elegidos: [], ranuras: cfg.ranuras || 3 };
+  }
+  const m = _hackMini;
+  // calcular stats acumulados
+  const stats = { sigilo:0, persistencia:0, deteccion:0, potencia:0 };
+  m.elegidos.forEach(id => {
+    const mod = cfg.modulos.find(x => x.id === id);
+    if(mod){
+      stats.sigilo += mod.sigilo || 0;
+      stats.persistencia += mod.persistencia || 0;
+      stats.deteccion += mod.deteccion || 0;
+      stats.potencia += mod.potencia || 0;
+    }
+  });
+  let html = _hackHud('ENSAMBLADOR · ' + m.elegidos.length + '/' + m.ranuras + ' módulos');
+  html += '<div class="hack-mini">';
+  html += '<div class="hack-mini-desc">' + (cfg.desc || '') + '</div>';
+  // panel de stats vs meta
+  const meta = cfg.meta || {};
+  html += '<div class="hack-stats">';
+  html += _hackStatRow('SIGILO', stats.sigilo, meta.sigilo, false);
+  html += _hackStatRow('PERSISTENCIA', stats.persistencia, meta.persistencia, false);
+  html += _hackStatRow('DETECCIÓN', stats.deteccion, meta.deteccionMax, true);
+  html += '</div>';
+  // módulos
+  html += '<div class="hack-mods">';
+  cfg.modulos.forEach(mod => {
+    const elegido = m.elegidos.indexOf(mod.id) !== -1;
+    const lleno = m.elegidos.length >= m.ranuras && !elegido;
+    let cls = 'hack-mod';
+    if(elegido) cls += ' hack-mod-on';
+    if(lleno) cls += ' hack-mod-lleno';
+    const s = v => (v > 0 ? '+' + v : '' + v);
+    html += '<div class="' + cls + '" onclick="hackElegirModulo(\'' + mod.id + '\')">'
+      + '<div class="hack-mod-top"><span class="hack-mod-etq">' + mod.etq + '</span>'
+      + (elegido ? '<span class="hack-mod-check">✓</span>' : '') + '</div>'
+      + '<div class="hack-mod-desc">' + mod.desc + '</div>'
+      + '<div class="hack-mod-stats">sig ' + s(mod.sigilo) + ' · per ' + s(mod.persistencia)
+      + ' · det ' + s(mod.deteccion) + '</div></div>';
+  });
+  html += '</div>';
+  html += '<button class="btn-terminal" onclick="hackConfirmarMalware()">COMPILAR E INYECTAR →</button>';
+  html += '</div>';
+  html += '<button class="btn-terminal casos-salir" onclick="hackAbandonar()">← ABANDONAR EL CONTRATO</button>';
+  cont.innerHTML = html;
+}
+function _hackStatRow(etq, val, meta, esMax){
+  let ok;
+  if(esMax) ok = (val <= (meta != null ? meta : 999));
+  else ok = (val >= (meta != null ? meta : 0));
+  const cls = ok ? 'hack-stat-ok' : 'hack-stat-no';
+  const objetivo = esMax ? ('≤ ' + meta) : ('≥ ' + meta);
+  return '<div class="hack-stat ' + cls + '"><span class="hack-stat-etq">' + etq + '</span>'
+    + '<span class="hack-stat-val">' + val + '</span>'
+    + '<span class="hack-stat-meta">' + objetivo + '</span></div>';
+}
+function hackElegirModulo(id){
+  const cfg = _hackContrato.intrusion;
+  const m = _hackMini;
+  const idx = m.elegidos.indexOf(id);
+  if(idx !== -1){
+    m.elegidos.splice(idx, 1);
+    _hackFX('inv_papel', 0.2);
+  } else {
+    if(m.elegidos.length >= m.ranuras) return; // sin ranuras
+    m.elegidos.push(id);
+    _hackFX('inv_papel', 0.3);
+  }
+  _miniMalware();
+}
+function hackConfirmarMalware(){
+  const cfg = _hackContrato.intrusion;
+  const m = _hackMini;
+  const meta = cfg.meta || {};
+  const stats = { sigilo:0, persistencia:0, deteccion:0 };
+  m.elegidos.forEach(id => {
+    const mod = cfg.modulos.find(x => x.id === id);
+    if(mod){
+      stats.sigilo += mod.sigilo || 0;
+      stats.persistencia += mod.persistencia || 0;
+      stats.deteccion += mod.deteccion || 0;
+    }
+  });
+  const ok = stats.sigilo >= (meta.sigilo || 0)
+          && stats.persistencia >= (meta.persistencia || 0)
+          && stats.deteccion <= (meta.deteccionMax != null ? meta.deteccionMax : 999);
+  _hackIntrusionOk = !!ok;
+  _hackFX(ok ? 'inv_acierto' : 'inv_fallo', 0.55);
+  if(ok){ _irAFaseTrasIntrusion(); }
+  else { _hackFase = 'resultado'; _pintarFaseHack(); }
+}
+
 // ============================================================
 //  FASE 3 — LIMPIEZA (minijuego secundario opcional)
 //  Único tipo por ahora: 'rastros' (borrar logs culpables).
@@ -915,6 +1819,17 @@ if(typeof window !== 'undefined'){
   window.hackProbarSustitucion = hackProbarSustitucion;
   window.hackRotarCelda = hackRotarCelda;
   window.hackConfirmarInyeccion = hackConfirmarInyeccion;
+  window.hackElegirLog = hackElegirLog;
+  window.hackAnadirBloque = hackAnadirBloque;
+  window.hackQuitarBloque = hackQuitarBloque;
+  window.hackConfirmarReconstruccion = hackConfirmarReconstruccion;
+  window.hackFwMover = hackFwMover;
+  window.hackFwEsperar = hackFwEsperar;
+  window.hackFwAvanzar = hackFwAvanzar;
+  window.hackSocialResponder = hackSocialResponder;
+  window.hackElegirNodo = hackElegirNodo;
+  window.hackElegirModulo = hackElegirModulo;
+  window.hackConfirmarMalware = hackConfirmarMalware;
   window.hackMarcarLog = hackMarcarLog;
   window.hackConfirmarRastros = hackConfirmarRastros;
   window.hackAbandonar = hackAbandonar;
