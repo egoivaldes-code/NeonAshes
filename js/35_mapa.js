@@ -467,6 +467,55 @@ function seleccionarZona(id){
 function cerrarDetalleZona(){
   document.getElementById('zona-detalle').classList.remove('visible');
   _zonaSeleccionada = null;
+  // Restaurar el botón a su uso normal por si venía del diálogo de
+  // confirmación de explorar (v0.101).
+  const btn = document.getElementById('btn-viajar-zona');
+  if(btn && btn.getAttribute('onclick') === 'aceptarExplorarCiudad()'){
+    btn.textContent = 'VIAJAR AQUÍ';
+    btn.setAttribute('onclick', 'iniciarViajeAZona()');
+  }
+}
+
+// Confirmación antes de salir a explorar la ciudad (v0.101). Reutiliza el
+// panel de detalle de zona como diálogo "¿Seguro?" con Sí / No, en lugar
+// de lanzar la deriva directamente (evita salidas accidentales).
+function confirmarExplorarCiudad(){
+  _zonaSeleccionada = null; // no es una zona normal
+  const faccionEl = document.getElementById('zd-faccion');
+  const nombreEl  = document.getElementById('zd-nombre');
+  const descEl    = document.getElementById('zd-desc');
+  const peligroEl = document.getElementById('zd-peligro');
+  const repEl     = document.getElementById('zd-rep');
+  if(faccionEl){ faccionEl.textContent = 'LAS PILAS'; faccionEl.style.color = '#00e5ff'; }
+  if(nombreEl){ nombreEl.textContent = 'EXPLORAR LA CIUDAD'; nombreEl.style.color = '#00e5ff'; }
+  if(descEl){ descEl.textContent = '¿Estás seguro de que quieres salir a explorar la ciudad? Saldrás a la deriva por Las Pilas, sin destino fijo, y pasará tiempo.'; }
+  if(peligroEl){ peligroEl.textContent = ''; }
+  if(repEl){ repEl.textContent = ''; repEl.className = 'zd-reputacion neutra'; }
+  const btn = document.getElementById('btn-viajar-zona');
+  if(btn){
+    btn.textContent = 'SÍ, EXPLORAR';
+    btn.style.borderColor = 'rgba(0,229,255,0.4)';
+    btn.style.color = '#00e5ff';
+    btn.setAttribute('onclick', 'aceptarExplorarCiudad()');
+  }
+  document.getElementById('zona-detalle').classList.add('visible');
+}
+
+// El jugador confirma la exploración: cerramos el diálogo, restauramos el
+// botón a su uso normal (viajar a zona) y lanzamos la deriva.
+function aceptarExplorarCiudad(){
+  const panel = document.getElementById('zona-detalle');
+  if(panel) panel.classList.remove('visible');
+  const btn = document.getElementById('btn-viajar-zona');
+  if(btn){
+    btn.textContent = 'VIAJAR AQUÍ';
+    btn.setAttribute('onclick', 'iniciarViajeAZona()');
+  }
+  if(typeof iniciarExplorarCiudad === 'function') iniciarExplorarCiudad();
+}
+if(typeof window !== 'undefined'){
+  window.confirmarExplorarCiudad = confirmarExplorarCiudad;
+  window.aceptarExplorarCiudad = aceptarExplorarCiudad;
 }
 
 // Cerrar el panel de detalle de zona al tocar fuera (en el mapa).
