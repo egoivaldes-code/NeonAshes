@@ -93,6 +93,9 @@ function cambiarTabEstado(tab){
   // Al ver Trabajos, marcamos como visto para quitar su badge.
   if(tab === 'trabajos'){
     if(Estado.memoria) Estado.memoria.trabajosVistos = true;
+    // Navegar a Trabajos por pestaña empieza en la LISTA de oficios,
+    // no atrapado en un submenú anterior. (v0.101)
+    if(typeof fijarOficioAbierto === 'function') fijarOficioAbierto(null);
     if(typeof actualizarBadgesTerminal === 'function') actualizarBadgesTerminal();
   }
   const cuerpo = document.getElementById('hub-panel-cuerpo');
@@ -131,6 +134,8 @@ function cambiarTabContactos(tab){
   // Al ver la pestaña de Trabajos, se marca como visto y se quita su badge.
   if(tab === 'trabajos'){
     if(Estado.memoria) Estado.memoria.trabajosVistos = true;
+    // Navegar a Trabajos por pestaña empieza en la LISTA de oficios. (v0.101)
+    if(typeof fijarOficioAbierto === 'function') fijarOficioAbierto(null);
     if(typeof actualizarBadgesTerminal === 'function') actualizarBadgesTerminal();
   }
   const cuerpo = document.getElementById('hub-panel-cuerpo');

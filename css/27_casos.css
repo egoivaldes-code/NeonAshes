@@ -202,3 +202,41 @@
 }
 .muro-chip:hover { border-color: rgba(0,229,255,0.5); }
 .muro-chip-sel { border-color: var(--cyan); color: var(--cyan); background: rgba(0,229,255,0.08); }
+
+/* ============================================================
+   CAZARRECOMPENSAS — ficha de objetivo y decisión (v0.101)
+   ============================================================ */
+.caza-objetivo {
+  border: 1px solid rgba(255,107,0,0.4); border-radius: 4px;
+  background: rgba(255,107,0,0.05); padding: 0.6rem 0.7rem; margin: 0.6rem 0;
+}
+.caza-objetivo-tit {
+  font-size: 0.64rem; letter-spacing: 0.16em; color: #ff6b00;
+  opacity: 0.85; margin-bottom: 0.3rem;
+}
+.caza-objetivo-nombre {
+  font-size: 0.92rem; color: var(--blanco-suave); font-weight: 600; margin-bottom: 0.3rem;
+}
+.caza-objetivo-ctx { font-size: 0.8rem; line-height: 1.5; color: var(--blanco-suave); opacity: 0.85; }
+.caza-prob { font-size: 0.72rem; color: var(--cyan); opacity: 0.8; }
+.caza-decision { line-height: 1.45; }
+.caza-tag-vivo, .caza-tag-muerto, .caza-tag-soltar, .caza-tag-pacto {
+  display: inline-block; font-size: 0.6rem; letter-spacing: 0.1em;
+  padding: 0.1rem 0.35rem; border-radius: 2px; margin-right: 0.4rem;
+  vertical-align: middle; font-weight: 700;
+}
+.caza-tag-vivo   { color: var(--cyan);   border: 1px solid rgba(0,229,255,0.5); }
+.caza-tag-muerto { color: var(--magenta); border: 1px solid rgba(255,0,110,0.5); }
+.caza-tag-soltar { color: var(--verde-terminal); border: 1px solid rgba(0,255,136,0.5); }
+.caza-tag-pacto  { color: #ff6b00; border: 1px solid rgba(255,107,0,0.5); }
+
+/* Cazarrecompensas v0.101 — opciones bloqueadas y el pulso */
+.opcion-btn.caza-bloq {
+  opacity: 0.45; cursor: not-allowed; border-style: dashed;
+}
+.caza-lock { font-size: 0.7rem; color: #ff6b00; opacity: 0.9; }
+.caza-frase {
+  font-size: 0.9rem; line-height: 1.55; color: var(--blanco-suave);
+  font-style: italic; border-left: 2px solid var(--magenta);
+  background: rgba(255,0,110,0.05); padding: 0.6rem 0.7rem; margin: 0.6rem 0;
+}

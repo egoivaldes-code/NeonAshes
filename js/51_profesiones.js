@@ -161,6 +161,36 @@ const PROFESIONES = [
         nota: 'Repasar el tablón de encargos. Aceptar un caso y empezar a tirar del hilo.'
       }
     ]
+  },
+  {
+    // ── CAZARRECOMPENSAS (v0.101) ─────────────────────────────
+    // Profesión narrativa ligera: trabaja por CONTRATOS de captura.
+    // La acción "Revisar encargos" abre un panel propio
+    // (js/63_cazarrecompensas.js) con un tablón de objetivos. Cada
+    // contrato tiene dos fases: ABORDAJE (tirada según la vía elegida)
+    // y DECISIÓN MORAL (entregar vivo / pactar / soltar).
+    id: 'cazarrecompensas',
+    nombre: 'Cazarrecompensas',
+    desc: 'Alguien pone precio a una cabeza y tú decides si la cobras. Trabajas para quien paga: el Loto, el Ferro, HELIX. Lo difícil no es atrapar al objetivo. Es mirarlo a la cara y elegir qué haces con él.',
+    rangos: [
+      { nombre: 'Chivato',               pagaMin: 0, umbral: 300 },
+      { nombre: 'Rastreador de Fianzas', pagaMin: 0, umbral: 500 },
+      { nombre: 'Cazarrecompensas',      pagaMin: 0, umbral: 760 },
+      { nombre: 'Cazador de Cabezas',    pagaMin: 0, umbral: 1080 },
+      { nombre: 'Segador',               pagaMin: 0, umbral: 1460 },
+      { nombre: 'La Mano de HELIX',      pagaMin: 0, umbral: 0 } // último: no asciende
+    ],
+    acciones: [
+      {
+        id: 'contratos',
+        nombre: 'Revisar encargos del tablón',
+        minutos: 0,
+        progreso: 0,
+        cooldownHoras: 0,
+        conContratos: true,
+        nota: 'Repasar el tablón de encargos de captura. Aceptar uno, localizar al objetivo y decidir su suerte.'
+      }
+    ]
   }
 ];
 

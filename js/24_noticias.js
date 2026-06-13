@@ -66,6 +66,25 @@ function marcarEcoCalle(tipo){
 window.reiniciarEcosCalle = reiniciarEcosCalle;
 window.marcarEcoCalle = marcarEcoCalle;
 
+// ── Ecos de PROFESIÓN (v0.101) ──────────────────────────────
+// A diferencia de los ecos de calle, NO se borran al salir a explorar:
+// lo que haces ejerciendo una profesión deja huella hasta que la lees en
+// el terminal de noticias. Se guardan como una cola (varios pendientes).
+function _asegurarEcosProf(){
+  if(!Estado.memoria) Estado.memoria = {};
+  if(!Array.isArray(Estado.memoria.ecosProfesion)) Estado.memoria.ecosProfesion = [];
+  return Estado.memoria.ecosProfesion;
+}
+function marcarEcoProfesion(tipo){
+  if(!tipo) return;
+  const cola = _asegurarEcosProf();
+  // Evitar duplicar el mismo tipo si ya está pendiente.
+  if(cola.indexOf(tipo) === -1) cola.push(tipo);
+  // Tope de 3 pendientes para no acumular un muro de titulares.
+  while(cola.length > 3) cola.shift();
+}
+window.marcarEcoProfesion = marcarEcoProfesion;
+
 // Titulares por tipo de suceso. Varias variantes por tipo: se elige una
 // al azar para que no se repita siempre el mismo. Tono HELIX/Pilas:
 // nunca se nombra al jugador; el suceso aparece como rumor o parte frío.
@@ -89,6 +108,38 @@ const NOTICIAS_ECOS_CALLE = {
     { cat:'VIDA', txt:'Crece el trasiego nocturno en los corredores de las Pilas. "Hay más gente despierta de la que debería", comenta un tendero.' },
     { cat:'INFO', txt:'Se detectan más contactos personales no registrados en zonas sin cobertura. HELIX recuerda que toda conversación "merece ser respaldada".' },
     { cat:'PILAS', txt:'Un rostro nuevo se deja ver por los pasajes del Sector 7. En las Pilas, eso siempre significa algo, aunque nadie sepa todavía el qué.' }
+  ],
+
+  // ── Ecos de PROFESIONES (v0.101). Sutiles casi siempre; los
+  //    'directo' se reservan para decisiones gordas. Nunca nombran
+  //    al jugador: el mundo reacciona, no lo señala. ──
+
+  // Investigador: caso cerrado.
+  caso_resuelto: [
+    { cat:'PILAS', txt:'Un asunto que nadie quería remover ha quedado, dicen, "aclarado". Quien pagó por la respuesta calla. Quien salió señalado, también.' },
+    { cat:'VIDA', txt:'Corre que cierto investigador de los niveles bajos cobra poco y entrega lo que promete. La clase de fama que abre puertas y cierra otras.' },
+    { cat:'INFO', txt:'HELIX archiva un expediente como "resuelto por terceros". Sin detalles. En las Pilas, "resuelto" rara vez significa "justo".' }
+  ],
+
+  // Cazarrecompensas: entrega al Loto.
+  caza_loto: [
+    { cat:'PILAS', txt:'El Loto Carmesí salda una cuenta pendiente esta semana. Un farol granate arde a media luz en señal de cobro consumado.' },
+    { cat:'VIDA', txt:'En el Arrabal se comenta que a los morosos del Loto les queda menos sitio donde esconderse. "Ahora mandan a gente eficiente", susurran.' }
+  ],
+  // Cazarrecompensas: entrega al Ferro.
+  caza_ferro: [
+    { cat:'PILAS', txt:'El Sindicato Ferro recupera "lo que se le había extraviado". El orden, dicen en el distrito, siempre vuelve a su sitio. Tarde o temprano.' },
+    { cat:'VIDA', txt:'Un nombre deja de oírse en los muelles del Ferro. Nadie pregunta a dónde fue. En el Ferro, preguntar también es una deuda.' }
+  ],
+  // Cazarrecompensas: entrega a HELIX (decisión gorda → más directo).
+  caza_helix: [
+    { cat:'HELIX', txt:'HELIX confirma la "recuperación satisfactoria de un activo no autorizado". Agradece la colaboración ciudadana en la seguridad corporativa.' },
+    { cat:'INFO', txt:'Recuperación de Activos HELIX cierra un caso abierto. El comunicado habla de "material"; en ningún momento de una persona.' }
+  ],
+  // Cazarrecompensas: dejaste escapar al objetivo (decisión gorda).
+  caza_soltado: [
+    { cat:'PILAS', txt:'Un contrato de captura se enfría sin cobrar. El que pagaba ha tomado nota de quién le falló. Esa clase de nota no se borra.' },
+    { cat:'VIDA', txt:'Alguien a quien buscaban con ahínco simplemente... ya no aparece en los carteles. Se fue, o lo dejaron irse. Las dos cosas tienen precio.' }
   ]
 };
 
@@ -261,6 +312,20 @@ function generarNoticiasReactivas(){
       }
     }
   });
+
+  // ECOS DE PROFESIÓN (v0.101): cola persistente. Se muestran y se
+  // CONSUMEN aquí (al leerlos en el terminal), no al salir a explorar.
+  const colaProf = Array.isArray(m.ecosProfesion) ? m.ecosProfesion : [];
+  if(colaProf.length){
+    colaProf.forEach(tipo => {
+      const variantes = NOTICIAS_ECOS_CALLE[tipo];
+      if(variantes && variantes.length){
+        reactivas.push(variantes[Math.floor(Math.random() * variantes.length)]);
+      }
+    });
+    // Vaciar la cola: ya se han "publicado".
+    m.ecosProfesion = [];
+  }
 
   return reactivas;
 }

@@ -14,7 +14,7 @@
    oscurece. La transición CSS hace que el cambio sea un fundido suave
    en lugar de un salto. La capa de día va justo encima de la de noche
    (z-index 1) pero debajo del degradado y del contenido. */
-#bg-apt-dia{ z-index:1; opacity:0; transition:opacity 2.5s ease; }
+#bg-apt-dia{ z-index:1; opacity:0; transition:opacity 3s ease-in-out; }
 .interior-apt{position:absolute;bottom:0;left:0;width:100%;padding:1.5rem 1.5rem 0 1.5rem;z-index:5;display:flex;flex-direction:column;}
 /* La barra inferior del hub (CONTACTOS/NOTICIAS/TRABAJOS) va dentro del flujo, justo después de las opciones. */
 /* RELOJ CENTRAL RETIRADO (v0.79) — el reloj grande del centro daba
