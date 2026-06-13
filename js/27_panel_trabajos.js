@@ -21,6 +21,10 @@ let _ultimoResultadoProfesion = null;
 // {prof, accion} o null. Al elegir lugar o trabajar, se cierra.
 let _lugarAbierto = null;
 
+// Oficio cuyo submenú de acciones está abierto. null = vista lista de
+// oficios; 'scavenger'/'investigador'/... = dentro de ese oficio (v0.101).
+let _profAbierta = null;
+
 function renderTrabajos(){
   const sub = (_subtabTrabajos === 'oficio') ? 'oficio' : 'encargos';
   const cuerpo = (sub === 'oficio') ? renderTrabajosOficio() : renderEncargos();
@@ -45,9 +49,10 @@ function renderTrabajos(){
 // la pestaña TRABAJOS, sin volver a dibujar todo el panel.
 function cambiarSubtabTrabajos(sub){
   _subtabTrabajos = (sub === 'oficio') ? 'oficio' : 'encargos';
-  // Al entrar en PROFESIONES, marcamos como vistas para apagar su badge
-  // en toda la cadena de navegación.
+  // Al entrar en PROFESIONES, empezamos siempre en la lista de oficios
+  // (no atrapados en un submenú anterior) y marcamos como vistas.
   if(_subtabTrabajos === 'oficio'){
+    _profAbierta = null;
     if(Estado.memoria) Estado.memoria.profesionesVistas = true;
     if(typeof actualizarBadgesTerminal === 'function') actualizarBadgesTerminal();
   }
@@ -134,107 +139,187 @@ function renderTrabajosOficio(){
       ${cards}`;
   }
 
-  // CASO 2: ejerce una o más → tarjeta por profesión con rango y acciones.
-  // Las ACCIONES (trabajar, elegir lugar) solo se ofrecen dentro del
-  // apartamento. Fuera, o consultando desde estado en la calle, la
-  // pestaña es de solo lectura: oficio, rango y progreso.
+  // CASO 2: ejerce al menos un oficio. Dos vistas:
+  //   A) LISTA: SIEMPRE se ven TODOS los oficios. Los que ejerces muestran
+  //      rango y un botón ENTRAR; los que no, EMPEZAR. Sin acciones aquí.
+  //   B) SUBMENÚ: al ENTRAR en un oficio, se ven solo sus acciones, con un
+  //      botón para volver a la lista. (v0.101)
   const apt = document.getElementById('apartamento');
   const enApartamento = apt && apt.classList.contains('activa');
 
-  let cards = '';
-  activas.forEach(p => {
-    const est = estadoProfesion(p.id);
-    const rango = p.rangos[est.rango || 0];
-    const umbral = rango.umbral;
-    const prog = est.progreso || 0;
-    const barra = umbral > 0
-      ? `<div style="margin-top:0.5rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.6;">PROGRESO: ${prog} / ${umbral}</div>`
-      : `<div style="margin-top:0.5rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.6;">RANGO MÁXIMO ALCANZADO</div>`;
-
-    // Bloque de acciones: solo dentro del apartamento.
-    let bloqueAcciones = '';
-    if(enApartamento){
-      let botonesAccion = '';
-      (p.acciones || []).forEach(a => {
-        // Cooldown POR ACCIÓN: cada acción (buscar 8h / refinar 4h) se
-        // evalúa por separado. Si esta acción está descansando, se muestra
-        // su botón en gris con el tiempo que le queda, sin bloquear las demás.
-        const cdA = (typeof cooldownProfesion === 'function')
-          ? cooldownProfesion(p.id, a.id) : { puede:true };
-        if(!cdA.puede){
-          const h = Math.floor(cdA.minutosRestantes / 60);
-          const m = cdA.minutosRestantes % 60;
-          const tiempo = h > 0 ? `${h} h ${m} min` : `${m} min`;
-          botonesAccion += `
-            <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;opacity:0.4;" disabled>
-              ${a.nombre} <span style="font-size:0.85em;">· descansando ${tiempo}</span></button>`;
-          return;
-        }
-        if(a.conLugares){
-          // v0.95.1: "Salir a buscar chatarra" ABRE LA EXPEDICIÓN
-          // (antes mostraba una tirada rápida en 4 lugares, ya retirada;
-          // buscar chatarra y expedición eran lo mismo). El botón de
-          // expedición independiente se eliminó por redundante.
-          botonesAccion += `
-            <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
-              onclick="if(typeof abrirExpedicionDesdeTrabajo==='function'){abrirExpedicionDesdeTrabajo();}">${a.nombre}</button>`;
-        } else if(a.costeChatarra && a.costeChatarra > 0){
-          // Acción que consume chatarra: ahora lanza el MINIJUEGO de
-          // refinado. El coste es REF_COSTE_CHATARRA (chatarra normal y en
-          // bruto cuentan juntas). Si no llega, botón deshabilitado.
-          const coste = (typeof REF_COSTE_CHATARRA !== 'undefined') ? REF_COSTE_CHATARRA : 3;
-          const tieneCh = (typeof contarChatarraTotal === 'function') ? contarChatarraTotal() : 0;
-          const llega = tieneCh >= coste;
-          if(llega){
-            botonesAccion += `
-            <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
-              onclick="if(typeof abrirRefinado==='function'){abrirRefinado('apartamento');}">${a.nombre}
-              <span style="opacity:0.6;font-size:0.85em;">· cuesta ${coste} chatarra</span></button>`;
-          } else {
-            botonesAccion += `
-            <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;opacity:0.4;" disabled>
-              ${a.nombre} <span style="font-size:0.85em;">· requiere ${coste} chatarra (tienes ${tieneCh})</span></button>`;
-          }
-        } else if(a.conCasos){
-          // Investigador: abre el panel de casos (sistema propio).
-          botonesAccion += `
-            <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
-              onclick="if(typeof abrirCasos==='function'){abrirCasos('apartamento');}">${a.nombre}</button>`;
-        } else {
-          botonesAccion += `
-            <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
-              onclick="ejercerProfesionDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
-        }
-      });
-      bloqueAcciones = `
-        <div style="margin-top:0.8rem;">
-          <div style="font-size:0.5rem;letter-spacing:0.2em;opacity:0.5;margin-bottom:0.2rem;">TRABAJAR:</div>
-          ${botonesAccion}
+  // ── VISTA B: dentro de un oficio (submenú de acciones) ──
+  if(_profAbierta){
+    const p = PROFESIONES.find(x => x.id === _profAbierta);
+    if(p && (typeof tieneProfesion !== 'function' || tieneProfesion(p.id))){
+      const est = estadoProfesion(p.id);
+      const rango = p.rangos[est.rango || 0];
+      const umbral = rango.umbral;
+      const prog = est.progreso || 0;
+      const barra = umbral > 0
+        ? `<div style="margin-top:0.5rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.6;">PROGRESO: ${prog} / ${umbral}</div>`
+        : `<div style="margin-top:0.5rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.6;">RANGO MÁXIMO ALCANZADO</div>`;
+      let bloqueAcciones;
+      if(enApartamento){
+        bloqueAcciones = `
+          <div style="margin-top:0.8rem;">
+            <div style="font-size:0.5rem;letter-spacing:0.2em;opacity:0.5;margin-bottom:0.2rem;">TRABAJAR:</div>
+            ${_renderAccionesOficio(p)}
           </div>`;
-    } else {
-      // Fuera del apartamento: solo lectura.
-      bloqueAcciones = `
-        <div style="margin-top:0.8rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.45;text-align:center;">
-          Solo puedes trabajar desde tu apartamento.
+      } else {
+        bloqueAcciones = `
+          <div style="margin-top:0.8rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.45;text-align:center;">
+            Solo puedes trabajar desde tu apartamento.
+          </div>`;
+      }
+      return `
+        ${aviso}
+        <button class="btn-terminal" style="display:block;width:100%;margin-bottom:0.8rem;opacity:0.85;"
+          onclick="cerrarOficioSubmenu()">← VOLVER A OFICIOS</button>
+        <div class="trabajo-tarjeta">
+          <div class="trabajo-header">
+            <span class="trabajo-titulo">${p.nombre.toUpperCase()}</span>
+            <span class="trabajo-estado aceptado">${rango.nombre}</span>
+          </div>
+          <div class="trabajo-descripcion" style="margin-top:0.4rem;">${p.desc}</div>
+          ${barra}
+          ${bloqueAcciones}
         </div>`;
     }
+    // El oficio abierto ya no es válido: volver a la lista.
+    _profAbierta = null;
+  }
 
-    cards += `
-      <div class="trabajo-tarjeta">
-        <div class="trabajo-header">
-          <span class="trabajo-titulo">${p.nombre.toUpperCase()}</span>
-          <span class="trabajo-estado aceptado">${rango.nombre}</span>
-        </div>
-        ${barra}
-        ${bloqueAcciones}
-      </div>`;
+  // ── VISTA A: lista de TODOS los oficios ──
+  const enApt = enApartamento;
+  let cards = '';
+  PROFESIONES.forEach(p => {
+    const ejerce = (typeof tieneProfesion === 'function') && tieneProfesion(p.id);
+    if(ejerce){
+      const est = estadoProfesion(p.id);
+      const rango = p.rangos[est.rango || 0];
+      const umbral = rango.umbral;
+      const prog = est.progreso || 0;
+      const barra = umbral > 0
+        ? `<div style="margin-top:0.5rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.6;">PROGRESO: ${prog} / ${umbral}</div>`
+        : `<div style="margin-top:0.5rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.6;">RANGO MÁXIMO ALCANZADO</div>`;
+      const botonEntrar = enApt
+        ? `<div style="margin-top:0.8rem;text-align:center;">
+             <button class="btn-terminal" onclick="abrirOficioSubmenu('${p.id}')">ENTRAR →</button>
+           </div>`
+        : `<div style="margin-top:0.8rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.45;text-align:center;">
+             Solo puedes trabajar desde tu apartamento.
+           </div>`;
+      cards += `
+        <div class="trabajo-tarjeta">
+          <div class="trabajo-header">
+            <span class="trabajo-titulo">${p.nombre.toUpperCase()}</span>
+            <span class="trabajo-estado aceptado">${rango.nombre}</span>
+          </div>
+          ${barra}
+          ${botonEntrar}
+        </div>`;
+    } else {
+      // Oficio que no ejerce: se ve igual, con opción de empezar (solo en casa).
+      const botonEmpezar = enApt
+        ? `<div style="margin-top:0.8rem;text-align:center;">
+             <button class="btn-terminal" onclick="elegirProfesionDesdePanel('${p.id}')">EMPEZAR EN ESTE OFICIO →</button>
+           </div>`
+        : `<div style="margin-top:0.8rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.4;text-align:center;">
+             Podrás empezar este oficio desde tu apartamento.
+           </div>`;
+      cards += `
+        <div class="trabajo-tarjeta" style="opacity:0.82;">
+          <div class="trabajo-header">
+            <span class="trabajo-titulo">${p.nombre.toUpperCase()}</span>
+            <span class="trabajo-estado" style="opacity:0.5;">SIN EJERCER</span>
+          </div>
+          <div class="trabajo-descripcion">${p.desc}</div>
+          ${botonEmpezar}
+        </div>`;
+    }
   });
   return `${aviso}${cards}`;
+}
+
+// Render de los botones de acción de un oficio (dentro de su submenú).
+// Extraído para reutilizar; respeta cooldowns, lugares, casos, contratos
+// y acciones que consumen chatarra.
+function _renderAccionesOficio(p){
+  let botonesAccion = '';
+  (p.acciones || []).forEach(a => {
+    const cdA = (typeof cooldownProfesion === 'function')
+      ? cooldownProfesion(p.id, a.id) : { puede:true };
+    if(!cdA.puede){
+      const h = Math.floor(cdA.minutosRestantes / 60);
+      const m = cdA.minutosRestantes % 60;
+      const tiempo = h > 0 ? `${h} h ${m} min` : `${m} min`;
+      botonesAccion += `
+        <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;opacity:0.4;" disabled>
+          ${a.nombre} <span style="font-size:0.85em;">· descansando ${tiempo}</span></button>`;
+      return;
+    }
+    if(a.conLugares){
+      botonesAccion += `
+        <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+          onclick="if(typeof abrirExpedicionDesdeTrabajo==='function'){abrirExpedicionDesdeTrabajo();}">${a.nombre}</button>`;
+    } else if(a.costeChatarra && a.costeChatarra > 0){
+      const coste = (typeof REF_COSTE_CHATARRA !== 'undefined') ? REF_COSTE_CHATARRA : 3;
+      const tieneCh = (typeof contarChatarraTotal === 'function') ? contarChatarraTotal() : 0;
+      const llega = tieneCh >= coste;
+      if(llega){
+        botonesAccion += `
+        <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+          onclick="if(typeof abrirRefinado==='function'){abrirRefinado('apartamento');}">${a.nombre}
+          <span style="opacity:0.6;font-size:0.85em;">· cuesta ${coste} chatarra</span></button>`;
+      } else {
+        botonesAccion += `
+        <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;opacity:0.4;" disabled>
+          ${a.nombre} <span style="font-size:0.85em;">· requiere ${coste} chatarra (tienes ${tieneCh})</span></button>`;
+      }
+    } else if(a.conCasos){
+      botonesAccion += `
+        <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+          onclick="if(typeof abrirCasos==='function'){abrirCasos('apartamento');}">${a.nombre}</button>`;
+    } else if(a.conContratos){
+      botonesAccion += `
+        <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+          onclick="if(typeof abrirContratos==='function'){abrirContratos('apartamento');}">${a.nombre}</button>`;
+    } else {
+      botonesAccion += `
+        <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+          onclick="ejercerProfesionDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
+    }
+  });
+  return botonesAccion;
+}
+
+// Entrar/salir del submenú de un oficio.
+function abrirOficioSubmenu(id){
+  _profAbierta = id;
+  if(typeof reproducirFX === 'function') reproducirFX('panel_abrir', 0.4);
+  _refrescarSubcuerpoTrabajos();
+}
+function cerrarOficioSubmenu(){
+  _profAbierta = null;
+  if(typeof reproducirFX === 'function') reproducirFX('terminal_cerrar', 0.35);
+  _refrescarSubcuerpoTrabajos();
+}
+// Setter para fijar el oficio abierto desde otros módulos (p.ej. el botón
+// "Ir a trabajar" del apartamento). null = vista lista.
+function fijarOficioAbierto(id){
+  _profAbierta = id || null;
+}
+if(typeof window !== 'undefined'){
+  window.abrirOficioSubmenu = abrirOficioSubmenu;
+  window.cerrarOficioSubmenu = cerrarOficioSubmenu;
+  window.fijarOficioAbierto = fijarOficioAbierto;
 }
 
 // El jugador escoge un oficio desde la lista. Lo activa y re-renderiza.
 function elegirProfesionDesdePanel(id){
   if(typeof elegirProfesion === 'function') elegirProfesion(id);
+  // Tras empezar el oficio, entramos directos a su submenú de acciones.
+  _profAbierta = id;
   // Si el jugador está en el apartamento, refrescamos sus opciones para
   // que aparezca "Ir a trabajar" de inmediato (sin tener que salir y
   // volver a entrar).

@@ -2,6 +2,16 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.101] - 2026-06-13
+### Added
+- Nueva profesión Cazarrecompensas: contratos de captura del Loto, el Ferro y HELIX, con opciones de abordaje según el equipo que llevas, persecución si el objetivo huye, "el pulso" para leer al objetivo y una decisión moral final (entregar, pactar o soltar).
+- Los actos de las tres profesiones dejan eco en las noticias (sutil casi siempre; más directo en las decisiones gordas), con titulares que persisten hasta leerlos en el terminal.
+### Changed
+- El panel de Profesiones ahora muestra siempre todos los oficios; se entra al submenú de uno para ver sus acciones, sin perder de vista los demás.
+- La transición día/noche del apartamento (móvil) pasa a un fundido corto y limpio a las 08:00 y 20:00, evitando el desajuste de imágenes.
+### Fixed
+- Reubicados los marcadores de Arrabal y Explorar en el mapa móvil.
+
 ## [0.100] - 2026-06-13
 ### Added
 - Cinco eventos nuevos en el Hospital HELIX (huelga, brote, médico corrupto, ala de extracción de órganos, confusión de identidad), hasta un total de ocho.

@@ -23,16 +23,13 @@ function opacidadDiaApartamento(fecha){
     try { f = obtenerFechaJuego(); } catch(e){ return 0; }
   }
   if(!f) return 0;
-  // Hora con minutos como fracción (p.ej. 8:30 -> 8.5).
+  // v0.101: cambio BINARIO día/noche para evitar el deslizamiento visual
+  // que producía el solape prolongado de dos imágenes no alineadas al 100%.
+  // Día de 08:00 a 20:00 (opacidad 1), noche el resto (0). El fundido
+  // suave (3 s) lo aplica el CSS vía transition sobre #bg-apt-dia, así
+  // las dos capas solo coexisten unos segundos reales, no una hora de juego.
   const hora = f.getHours() + f.getMinutes()/60;
-  // Noche cerrada.
-  if(hora < 8 || hora >= 19) return 0;
-  // Amanecer: 08:00 -> 09:00, sube 0..1.
-  if(hora < 9) return hora - 8;
-  // Día pleno.
-  if(hora < 18) return 1;
-  // Anochecer: 18:00 -> 19:00, baja 1..0.
-  return 19 - hora;
+  return (hora >= 8 && hora < 20) ? 1 : 0;
 }
 
 function actualizarLuzApartamento(){
@@ -349,6 +346,14 @@ function botonIrTrabajar(){
 // del oficio (y el aviso de cooldown si toca descansar).
 function irATrabajarDesdeApartamento(){
   if(typeof _subtabTrabajos !== 'undefined') _subtabTrabajos = 'oficio';
+  // Si el jugador solo ejerce UN oficio, entramos directos a su submenú
+  // de acciones (no tiene sentido una lista de uno). Si ejerce varios,
+  // lo dejamos en la lista para que elija. (v0.101)
+  if(typeof PROFESIONES !== 'undefined' && typeof tieneProfesion === 'function'
+     && typeof fijarOficioAbierto === 'function'){
+    const activas = PROFESIONES.filter(p => tieneProfesion(p.id));
+    fijarOficioAbierto(activas.length === 1 ? activas[0].id : null);
+  }
   if(typeof abrirPanelHub === 'function'){
     abrirPanelHub('trabajos');
   }

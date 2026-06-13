@@ -1849,6 +1849,11 @@ function firmarDeduccion(){
     cambiarRepFaccion('helix', des.rep);
   }
   _marcarCasoResuelto(c.id);
+  // Eco sutil en las noticias: un caso cerrado deja rastro en la calle,
+  // salvo que el desenlace fuera un fallo (ahí no "resolviste" nada).
+  if(clave !== 'fallo' && typeof marcarEcoProfesion === 'function'){
+    marcarEcoProfesion('caso_resuelto');
+  }
 
   // Pintar desenlace.
   const cont = document.getElementById('casos-wrap');
