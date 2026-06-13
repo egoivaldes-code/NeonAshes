@@ -140,6 +140,22 @@ const NOTICIAS_ECOS_CALLE = {
   caza_soltado: [
     { cat:'PILAS', txt:'Un contrato de captura se enfría sin cobrar. El que pagaba ha tomado nota de quién le falló. Esa clase de nota no se borra.' },
     { cat:'VIDA', txt:'Alguien a quien buscaban con ahínco simplemente... ya no aparece en los carteles. Se fue, o lo dejaron irse. Las dos cosas tienen precio.' }
+  ],
+
+  // Hacker: intrusión a favor del Loto.
+  hack_loto: [
+    { cat:'INFO', txt:'Un registro del distrito amanece con un hueco que ayer no estaba. Nadie reclama el error. En el Arrabal, ciertos huecos se celebran en voz baja.' },
+    { cat:'PILAS', txt:'Corre que en los bajos hay quien abre puertas digitales por encargo. El Loto sonríe. HELIX, cuando se entera, no.' }
+  ],
+  // Hacker: intrusión a favor del Ferro.
+  hack_ferro: [
+    { cat:'PILAS', txt:'El Ferro parece saber cosas que no debería: horarios, rutas, nombres. Alguien les pasa lo que estaba cerrado bajo llave. Llave digital, claro.' },
+    { cat:'INFO', txt:'Un terminal de los muelles registra un acceso que nadie reconoce haber hecho. El capataz revisa su contraseña. Tarde.' }
+  ],
+  // Hacker: intrusión que toca a HELIX (más directo).
+  hack_helix: [
+    { cat:'HELIX', txt:'HELIX informa de "una anomalía de acceso ya contenida" en una de sus redes internas. Insiste en que ningún dato sensible se vio comprometido. Insiste mucho.' },
+    { cat:'INFO', txt:'Seguridad de Sistemas HELIX rastrea una sesión anónima en su capa clínica. El comunicado habla de "rutina"; el despliegue de auditores, de otra cosa.' }
   ]
 };
 

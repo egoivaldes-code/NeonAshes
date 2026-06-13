@@ -2,6 +2,11 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.103] - 2026-06-13
+### Added
+- Nueva profesión Hacker: trabajo 100% digital desde el terminal, sin viajes. Rangos Script Kiddie e Intruso con cuatro minijuegos (fuerza bruta, descifrado, inyección de código y limpieza de rastros) y seis contratos de la red clandestina.
+- Ecos de la profesión Hacker en las noticias del terminal.
+
 ## [0.102] - 2026-06-13
 ### Added
 - Ocho contratos nuevos de Cazarrecompensas (hasta once en total), repartidos entre el Loto, el Ferro, HELIX y encargos sin facción, cubriendo desde rango 0 hasta rango 5. Incluye casos íntimos y desgarradores y uno que roza el misterio de CERO.
