@@ -111,6 +111,13 @@ function _egAplicarEfectos(ef){
     if(ef.faccion && typeof ef.rep === 'number' && typeof cambiarRepFaccion === 'function'){
       cambiarRepFaccion(ef.faccion, ef.rep);
     }
+    // marcaVisto: registra una bandera narrativa (p.ej. 'mano_roja_muerta')
+    // para que otras escenas puedan condicionar con visto/noVisto.
+    if(ef.marcaVisto){
+      const v = _egAsegurarVistos();
+      if(v.indexOf(ef.marcaVisto) === -1) v.push(ef.marcaVisto);
+      if(typeof guardarEstado === 'function') guardarEstado();
+    }
     if(typeof actualizarHUD === 'function') actualizarHUD();
   }catch(e){}
 }

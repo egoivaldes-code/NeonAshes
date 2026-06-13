@@ -188,22 +188,46 @@
           +'"piensa si quieres ser el cuchillo de un viejo que te usará y te fundirá igual que a una caja. '
           +'El Ferro no te quiere. Te gasta." El sobre de Vasek pesa en tu bolsillo como una losa.',
       opciones:[
-        { texto:'Cumplir con el Ferro. (cerrar la guerra a su favor)', lleva:'ferro_p5_c' },
-        { texto:'Bajar las manos. (negarte a esto)', efectos:{ aislamiento:-3 }, lleva:'ferro_p5_c' }
+        { texto:'Cumplir con el Ferro. (cerrar la guerra a su favor)', lleva:'ferro_p5_kill' },
+        { texto:'Bajar las manos. (negarte a esto)', efectos:{ aislamiento:-3 }, lleva:'ferro_p5_perdon' }
       ]
     },
-    'ferro_p5_c': {
+    'ferro_p5_kill': {
       img:'EXP_PUERTO_CARGA',
-      texto:'Hagas lo que hagas, al amanecer la guerra se ha decidido y tú estás en el centro de ella. '
-          +'Vasek te recibe en La Lonja con una caja de hierro en las manos. "Pase lo que pase ahí fuera, '
-          +'tú volviste cuando llamé. En el Ferro eso es lo único sagrado que queda." Abre la caja: '
-          +'un sello de fundición con su marca. "Ahora eres de los míos. Para lo bueno. Y para lo otro."',
+      texto:'Lo haces rápido, que es lo único piadoso que cabe aquí. Mano Roja no grita: te sostiene la mirada '
+          +'hasta el final, como si llevara toda la vida esperando exactamente esta habitación. Cuando acaba, '
+          +'el silencio es tan grande que oyes la lluvia en el tejado y la respiración del crío, que no se ha '
+          +'despertado. Le bajas los párpados a ella con dos dedos, no sabes por qué, y dejas al niño dormido '
+          +'junto al cuerpo que mañana entenderá. Al amanecer, el Arrabal amanece sin reina y el Ferro toma '
+          +'los muelles sin disparar un tiro más. En La Lonja, Vasek te recibe con una caja de hierro y los '
+          +'ojos de quien ya sabía la respuesta. "Lo que has hecho esta noche no se agradece. Se honra." '
+          +'Abre la caja: un sello de fundición con su marca, y un peso de créditos que huele a sangre limpia.',
       opciones:[
-        { texto:'Aceptar el sello del Ferro.', efectos:{ item:'sello_ferro', creditos:+450, faccion:'sindicatos', rep:+30, aislamiento:+5, disociacion:+5 },
-          resultado:'Coges el sello, tibio del horno. El Distrito Ferro entero te reconoce ahora: las fundiciones, '
-                   +'los muelles, los hombres de traje. Tienes la protección de Vasek y el odio del Loto a partes iguales. '
-                   +'Has cambiado tu anonimato por un sitio en el mundo. En las Pilas, eso es casi todo lo que se puede ganar. '
-                   +'Casi.'
+        { texto:'Aceptar el sello del Ferro.', efectos:{ item:'sello_ferro', creditos:+600, faccion:'sindicatos', rep:+35, aislamiento:+8, disociacion:+12, marcaVisto:'mano_roja_muerta' },
+          resultado:'Coges el sello, tibio del horno. El Distrito Ferro entero te reconoce: las fundiciones, los muelles, '
+                   +'los hombres de traje. Eres de Vasek, para lo bueno y para lo otro, y el precio está pagado con algo '
+                   +'que no vuelve. En el Arrabal, los faroles granates arden a media luz una semana entera. Dicen que el '
+                   +'crío no ha vuelto a hablar. Tú tampoco hablas de esa noche. Pero algunas noches, entre el sueño y la '
+                   +'vigilia, una mujer te sostiene la mirada y no la baja.'
+                   +'<br><br><span class="eg-pista">— Has completado la cadena del Sindicato Ferro: "El peso del hierro" —</span>' }
+      ]
+    },
+    'ferro_p5_perdon': {
+      img:'EXP_PUERTO_CARGA',
+      texto:'Bajas las manos. Mano Roja no sonríe ni da las gracias; solo asiente, despacio, como quien anota '
+          +'una cifra en un libro que nadie más ve. "El Ferro perderá los muelles del este esta noche y lo sabes. '
+          +'Pero tú acabas de comprar algo que Vasek no vende: que el Loto no te busque nunca. Vete." '
+          +'Al amanecer, la guerra muere sola en una tregua fea: Vasek conserva el puerto grande, el Loto '
+          +'se queda el este, y los dos lados cuentan sus muertos. En La Lonja, el viejo te estudia largo rato. '
+          +'"No lo hiciste." No es una pregunta. "Volviste igualmente. Eso vale algo. Menos de lo que valía '
+          +'lo otro, pero algo."',
+      opciones:[
+        { texto:'Sostenerle la mirada a Vasek.', efectos:{ creditos:+200, faccion:'sindicatos', rep:+12, aislamiento:-4, disociacion:+3, marcaVisto:'mano_roja_perdonada' },
+          resultado:'Vasek te paga menos de lo prometido y no te da ningún sello: en el Ferro lo sagrado se gana con '
+                   +'hierro, y tú elegiste no mancharlo. Pero te deja ir con la cabeza alta, que en su mundo es casi un '
+                   +'abrazo. En el Arrabal, una mujer de anillos sabe que le debes y le debes. Has terminado la guerra '
+                   +'sin ser el cuchillo de nadie. Caminas por el medio de la calle, que es el sitio más peligroso, '
+                   +'y por ahora sigues caminando.'
                    +'<br><br><span class="eg-pista">— Has completado la cadena del Sindicato Ferro: "El peso del hierro" —</span>' }
       ]
     },
@@ -213,7 +237,7 @@
     // El Arrabal Carmesí: placer, secretos, deuda elegante.
     // ========================================================
     'loto_p1': {
-      entrada:true, cadena:'loto', cond:{ noVisto:'loto_p1' },
+      entrada:true, cadena:'loto', cond:{ noVisto:'mano_roja_muerta' },
       img:'EXP_CIBERCAFE',
       texto:'En el Teatro Sin Nombre, una mujer de seda oscura te observa desde un palco. Te hace subir. '
           +'"El Loto siempre anda corto de caras nuevas y discretas", dice. "Tienes pinta de saber escuchar '
@@ -249,7 +273,7 @@
     },
 
     'loto_p2': {
-      entrada:true, cadena:'loto', cond:{ visto:'loto_p1', noVisto:'loto_p2' },
+      entrada:true, cadena:'loto', cond:{ visto:'loto_p1', noVisto:'mano_roja_muerta' },
       img:'EXP_CIBERCAFE',
       texto:'La mujer de seda te asciende. "Mano Roja quiere conocerte." En el reservado granate, el brazo '
           +'mecánico cargado de anillos, Mano Roja te estudia largo rato. "Me dicen que recuerdas bien. Bien. '
@@ -286,7 +310,7 @@
     },
 
     'loto_p3': {
-      entrada:true, cadena:'loto', cond:{ visto:'loto_p2', noVisto:'loto_p3' },
+      entrada:true, cadena:'loto', cond:{ visto:'loto_p2', noVisto:'mano_roja_muerta' },
       img:'EXP_ALMACEN_OKUPA',
       texto:'Mano Roja te confía algo grande. "Un juez de HELIX viene al Carmesí cada jueves con nombre falso. '
           +'Quiero su secreto en mi mano: lo que más teme que se sepa. Con eso, el Loto tendrá un juez en el bolsillo '
@@ -324,7 +348,7 @@
     },
 
     'loto_p4': {
-      entrada:true, cadena:'loto', cond:{ visto:'loto_p3', noVisto:'loto_p4' },
+      entrada:true, cadena:'loto', cond:{ visto:'loto_p3', noVisto:'mano_roja_muerta' },
       img:'EXP_CIBERCAFE',
       texto:'Mano Roja te llama, tensa por primera vez. "El Ferro me está ahogando los muelles. Vasek quiere mi '
           +'ruta del puerto y manda mensajes con lacre, el muy teatrero." Te mira fijo. "Necesito ojos dentro del Ferro. '
@@ -359,7 +383,7 @@
     },
 
     'loto_p5': {
-      entrada:true, cadena:'loto', cond:{ visto:'loto_p4', noVisto:'loto_p5' },
+      entrada:true, cadena:'loto', cond:{ visto:'loto_p4', noVisto:'mano_roja_muerta' },
       img:'EXP_CIBERCAFE',
       texto:'La guerra estalla. El Ferro golpea, el Loto responde. Mano Roja te llama al palco más alto del Teatro '
           +'Sin Nombre. "Hoy se acaba el caminar por el medio. Tengo a Vasek expuesto: una reunión, sin sus hombres, '
