@@ -1404,6 +1404,488 @@ const CASOS_INVESTIGADOR = [
         }
       }
     }
+  },
+
+  // ============================================================
+  //  CASO — LA DEUDA DE SANGRE FRÍA  (rango 2)
+  //  Un cobrador del Loto aparece muerto. ¿Ajuste de cuentas,
+  //  o algo que el propio Loto quiere tapar? Intriga de facción.
+  // ============================================================
+  {
+    id: 'deuda_sangre_fria',
+    titulo: 'LA DEUDA DE SANGRE FRÍA',
+    contratante: 'Mano Roja · lugarteniente del Loto',
+    peligro: 3,
+    pagaBase: 480,
+    progreso: 150,
+    rangoMin: 2,
+    diligencias: 6,
+    resumen: 'Un cobrador del Loto apareció muerto en un callejón del Arrabal, con la recaudación intacta en el bolsillo. Si no fue robo, fue mensaje. El Loto quiere saber quién y por qué antes de responder a ciegas y empezar una guerra que no les conviene.',
+    intro: 'Te recibe un lugarteniente de la Mano Roja en una trastienda que huele a aceite de armas y té frío. No hay amenazas: el Loto sabe que las amenazas a un investigador solo le nublan el trabajo. "Uno de los nuestros, Sefu, cobrador de poca monta. Lo encontraron tieso en el callejón de los Tres Caños. Llevaba encima toda la recaudación del día." Deja una foto sobre la mesa. "Nadie mata a un cobrador y le deja el dinero, salvo que matarlo fuera el dinero. Averigua quién y por qué. Si nos lanzamos a ciegas, ardemos medio Arrabal por nada."\\n\\nTienes acceso al cuerpo, al callejón y a la gente que Sefu apretaba. No abuses del tiempo: en el Arrabal, preguntar de más también mata.',
+    escenaInicial: 'briefing',
+    escenas: {
+      briefing: {
+        narr: 'Sefu Marén, cobrador del Loto, 31 años. Muerto sin robo, lo que descarta lo fácil. Un cobrador tiene tantos enemigos como deudas cobra, pero también vale más vivo que muerto para casi todos: un muerto no paga, y asusta menos de lo que parece. Salvo para alguien. ¿Por dónde tiras?',
+        opciones: [
+          { txt: 'Examinar el cuerpo de Sefu', va: 'escena_cuerpo' },
+          { txt: 'Recorrer el callejón de los Tres Caños', va: 'escena_callejon' },
+          { txt: 'Hablar con los deudores a los que apretaba', va: 'escena_deudores' },
+          { txt: 'Preguntar dentro del propio Loto por Sefu', va: 'escena_loto' },
+          { txt: '— Ya tengo bastante. Pasar a la deducción', va: '_deduccion', requierePistas: 2 }
+        ]
+      },
+      escena_cuerpo: {
+        tiempo: 70,
+        narr: 'El cuerpo de Sefu espera en una cámara fría que el Loto alquila para estos menesteres. No hay forcejeo en las manos, no hay miedo en la cara. Murió sin pelear. Hay margen para mirar tres cosas con calma.',
+        opciones: [
+          { txt: 'Estudiar la herida que lo mató', va:'escena_cuerpo', cuesta:true, da:'herida_limpia', msg:'Una sola incisión, precisa, entre la cuarta y la quinta costilla, directa al corazón. No es la cuchillada de un atracador asustado ni de un deudor desesperado: es el corte de alguien que sabe exactamente dónde pinchar para que no haya grito. Trabajo de profesional, o de alguien con formación médica.' },
+          { txt: 'Revisar lo que llevaba encima', va:'escena_cuerpo', cuesta:true, da:'recaudacion_intacta', msg:'La recaudación completa, hasta el último crédito, en el bolsillo interior. Y algo más: un segundo fajo, oculto en el forro, que no figura en ninguna cuenta del Loto. Sefu le robaba a la organización, poco a poco, por su cuenta. Eso lo cambia todo.' },
+          { txt: 'Buscar marcas o señales en el cuerpo', va:'escena_cuerpo', cuesta:true, da:'marca_culto', señalSutil:true, msg:'En el antebrazo, medio borrado, un tatuaje del Culto de la Carne Perfecta. Encaja con la teoría fácil: los eco lo marcaron, los eco lo mataron, venganza ritual. Tan limpio, tan a mano, que casi parece puesto ahí para que dejes de mirar el forro de la chaqueta.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_callejon: {
+        tiempo: 60,
+        narr: 'El callejón de los Tres Caños es un desagüe entre dos bloques, sin cámaras que funcionen, con un charco permanente bajo las tuberías rotas que le dan nombre. Sefu cayó aquí, contra la pared del fondo. Sitio escogido: nadie pasa, nadie ve.',
+        opciones: [
+          { txt: 'Reconstruir cómo llegó Sefu hasta el fondo', va:'escena_callejon', cuesta:true, da:'cita_concertada', msg:'No hay rastro de arrastre ni de huida: Sefu entró por su propio pie hasta el fondo del callejón, el punto sin salida. No te metes en un callejón ciego con un desconocido peligroso. Te metes con alguien en quien confías, a una cita que tú mismo aceptaste. Conocía a su asesino.' },
+          { txt: 'Buscar testigos en los bloques de alrededor', va:'escena_callejon', cuesta:true, da:'figura_bata', msg:'Una anciana de un tercero, que no duerme, vio bajar a Sefu con otra persona "vestida de blanco, de clínica". No le vio la cara. Pero recuerda que los dos hablaban tranquilos, "como dos que se conocen". Ropa de clínica, en el Arrabal, de noche.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_deudores: {
+        tiempo: 60,
+        narr: 'Sefu apretaba a una docena de deudores del Arrabal. Casi todos te reciben con el alivio mal disimulado de quien ya no debe temer al cobrador. El odio no les falta. La capacidad de clavar una hoja al milímetro en un corazón, sí.',
+        opciones: [
+          { txt: 'Buscar al deudor que más lo odiaba', va:'escena_deudores', cuesta:true, da:'deudor_coartada', msg:'Lo encuentras: un tal Bibi, al que Sefu había dejado sin el implante de su hija como aval. Lo odiaba a muerte, y lo dice sin pudor. Pero la noche del crimen estaba en el hospital público, con turno registrado velando a la cría. Tiene cien testigos. Odiarlo no es matarlo.' },
+          { txt: 'Preguntar si Sefu cobraba de más por su cuenta', va:'escena_deudores', cuesta:true, da:'sefu_extorsionaba', msg:'Tres deudores lo confirman, bajando la voz: Sefu les sacaba un extra "para él", aparte de la cuota del Loto, a cambio de no apretar tanto en los informes. Les exprimía dos veces. Si el Loto se enteraba de que un cobrador desviaba por su cuenta, la sentencia era una sola, y la ejecutaba la propia casa.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_loto: {
+        tiempo: 70,
+        narr: 'Preguntar dentro del Loto por uno de los suyos es caminar sobre cristal: si insinúas que la organización se limpió a Sefu, puedes acabar tú en un callejón. Pero la verdad suele estar en casa. Mides las palabras.',
+        opciones: [
+          { txt: 'Indagar quién supervisaba las cuentas de Sefu', va:'escena_loto', cuesta:true, da:'contable_nervioso', msg:'El contable del Loto que llevaba las cuentas de los cobradores se pone pálido cuando mencionas el forro de la chaqueta. Suelta, temblando, que él había detectado el desvío hacía semanas y lo había reportado "a quien debía". A partir de ahí, dice, "ya no era asunto mío". Alguien por encima recibió el aviso y actuó.' },
+          { txt: 'Tantear si el Loto usa "limpiadores" con formación médica', va:'escena_loto', cuesta:true, da:'limpiador_clinico', msg:'Con mucho cuidado, sonsacas que el Loto tiene a alguien para los ajustes internos discretos: un antiguo cirujano de campo caído en desgracia, que mata como operaba, con una sola incisión limpia y bata de clínica para no levantar sospechas en los pasillos. No matan así a los enemigos: a los enemigos se les hace ruido. Así se silencia a los de dentro.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      }
+    },
+    deduccion: {
+      intro: 'Sefu murió sin pelear, sin que le robaran, en un callejón ciego al que entró por su pie con alguien de bata blanca. Le robaba al Loto por el forro. El contable lo reportó hacia arriba. Y la casa tiene un cirujano que silencia a los de dentro con una sola incisión. La Mano Roja quiere un nombre y un porqué antes de quemar el barrio. Dáselo bien.',
+      preguntas: [
+        {
+          id: 'quien',
+          texto: '¿QUIÉN mató a Sefu?',
+          opciones: [
+            { txt: 'El Culto de la Carne Perfecta, por el tatuaje del brazo', correcta:false },
+            { txt: 'El propio Loto, mediante su "limpiador" interno', correcta:true },
+            { txt: 'Bibi, el deudor al que arruinó', correcta:false },
+            { txt: 'Un atracador que se asustó y huyó sin el dinero', correcta:false }
+          ]
+        },
+        {
+          id: 'porque',
+          texto: '¿POR QUÉ lo mataron?',
+          opciones: [
+            { txt: 'Porque desviaba dinero del Loto por su cuenta y lo descubrieron', correcta:true },
+            { txt: 'Por venganza ritual del culto eco', correcta:false },
+            { txt: 'Por la deuda del implante de la hija de Bibi', correcta:false },
+            { txt: 'Para robarle, pero el asesino se asustó', correcta:false }
+          ]
+        },
+        {
+          id: 'como',
+          texto: '¿CÓMO se hizo?',
+          opciones: [
+            { txt: 'Una cita concertada en el callejón, ejecutada por el cirujano del Loto con una incisión limpia', correcta:true },
+            { txt: 'Una emboscada del culto a la salida del trabajo', correcta:false },
+            { txt: 'Una pelea que se le fue de las manos a un deudor', correcta:false },
+            { txt: 'Un robo nocturno interrumpido', correcta:false }
+          ]
+        }
+      ],
+      desenlaces: {
+        completo: {
+          titulo: 'CASO RESUELTO · LA CASA LIMPIA SU PROPIA SANGRE',
+          narr: 'Se lo cuentas a la Mano Roja sin adornos: a Sefu lo mató el Loto. Desviaba dinero por su cuenta, el contable lo reportó, y alguien por encima de la cadena mandó al cirujano interno a silenciarlo con una incisión limpia y una cita en un callejón ciego. El tatuaje del culto era una pista plantada para que la venganza mirara hacia afuera. El lugarteniente escucha en silencio, y al final asiente despacio: alguien de la cúpula actuó sin avisar a la Mano Roja, y eso —no la muerte de Sefu— es lo que de verdad le interesaba descubrir. Te paga completo y un poco más. "Has evitado que quemáramos el Arrabal por una mentira que nos pusimos nosotros mismos. El Loto no olvida quién le ahorra una guerra." Sales sabiendo demasiado sobre cómo se ordena la casa por dentro. Eso, en el Arrabal, es a la vez un crédito y una diana.',
+          pagaMult: 1.0, rep: 8, parcial:false
+        },
+        parcial: {
+          titulo: 'CASO CERRADO · LA MITAD INCÓMODA',
+          narr: 'Descartas al culto y al deudor, dejas claro que fue un asunto interno y que Sefu robaba, pero no terminas de armar la cadena: quién dio la orden, con qué mano. La Mano Roja se queda con la duda de hasta dónde llega la grieta dentro de su propia casa. Cobras una parte. "Nos has dado la herida pero no el cuchillo", dice el lugarteniente. El Loto investigará por su cuenta, y esa clase de investigación interna deja más cuerpos que la tuya.',
+          pagaMult: 0.5, rep: 3, parcial:true
+        },
+        fallo: {
+          titulo: 'CASO CERRADO · LA GUERRA QUE PRENDISTE',
+          narr: 'Señalaste al culto, o al deudor, o a un fantasma con navaja. La Mano Roja te paga la tarifa y actúa sobre tu palabra: hay represalias en el Arrabal, un par de eco aparecen colgados de un andamio, y la verdadera grieta —la cúpula del Loto matando a los suyos por su cuenta— sigue abierta, ahora tapada por la sangre que tú ayudaste a derramar sobre el barrio equivocado. Cuando, semanas después, el desvío de Sefu sale a la luz por otro lado, nadie te llama para corregirlo. En el Arrabal, un investigador que da el nombre equivocado solo trabaja una vez.',
+          pagaMult: 0.2, rep: -5, parcial:false, malo:true
+        }
+      }
+    }
+  },
+
+  // ============================================================
+  //  CASO — EL HIJO QUE VOLVIÓ DISTINTO  (rango 3, refuerzo)
+  //  Una familia jura que su hijo "no es el mismo" tras una
+  //  estancia en HELIX. ¿Trauma, suplantación, o algo peor?
+  // ============================================================
+  {
+    id: 'hijo_volvio_distinto',
+    titulo: 'EL HIJO QUE VOLVIÓ DISTINTO',
+    contratante: 'Familia Orun · clase trabajadora, capas medias',
+    peligro: 4,
+    pagaBase: 820,
+    progreso: 210,
+    rangoMin: 3,
+    diligencias: 6,
+    resumen: 'Un joven ingresó en una clínica HELIX por una lesión rutinaria y volvió, dicen sus padres, siendo otra persona. Recuerda mal su infancia, escribe con la otra mano, y a veces se queda mirando la pared "escuchando algo". La familia teme una suplantación. La verdad es más difícil de tragar que un impostor.',
+    intro: 'Los Orun te reciben en una cocina impecable y tensa. La madre habla; el padre mira al suelo. "Nuestro hijo Davi se rompió la cadera en una caída. HELIX se lo llevó a una de sus clínicas tres semanas, todo cubierto por un seguro que ni sabíamos que teníamos. Volvió caminando perfecto." La madre aprieta una taza sin beber. "Pero no es él. Recuerda mal cosas que vivió. Es zurdo ahora, y era diestro. Y se queda quieto, mirando la nada, como si oyera una radio que solo él capta." Te tiende una foto del antes. "Pague lo que pague, dígame qué nos devolvieron."\\n\\nEs un caso de los que no se firman a la ligera. Mira con calma; lo que encuentres no se podrá desver.',
+    escenaInicial: 'briefing',
+    escenas: {
+      briefing: {
+        narr: 'Davi Orun, 19 años, entró en una clínica HELIX por una cadera rota y salió, según su familia, cambiado: memoria alterada, lateralidad invertida, ausencias. Las opciones son tres y ninguna buena: trauma quirúrgico, suplantación, o algo que HELIX le metió dentro. ¿Por dónde empiezas a tirar?',
+        opciones: [
+          { txt: 'Entrevistar al propio Davi', va: 'escena_davi' },
+          { txt: 'Conseguir el historial de la clínica HELIX', va: 'escena_historial' },
+          { txt: 'Comparar al Davi de antes con el de ahora', va: 'escena_comparar' },
+          { txt: 'Investigar el "seguro" que pagó el ingreso', va: 'escena_seguro' },
+          { txt: '— Creo que ya lo tengo. Pasar a la deducción', va: '_deduccion', requierePistas: 2 }
+        ]
+      },
+      escena_davi: {
+        tiempo: 80,
+        narr: 'Davi te recibe educado, tranquilo, con una calma que sus padres llaman ajena. No parece un impostor: parece alguien que está aprendiendo a habitar su propia vida desde fuera. Hay tres formas de sondearlo, y cada una gasta tiempo.',
+        opciones: [
+          { txt: 'Pedirle que recuerde un momento concreto de su infancia', va:'escena_davi', cuesta:true, da:'memoria_reconstruida', msg:'Le pides que cuente su décimo cumpleaños. Lo cuenta... pero plano, como quien lee un informe de su propia vida. "Hubo una tarta. Estaban mis padres. Fue un buen día." Sin olor, sin la anécdota tonta que todo recuerdo verdadero arrastra. No miente: recita. Como si le hubieran devuelto los datos de su memoria pero no la memoria.' },
+          { txt: 'Observar sus "ausencias" cuando mira la pared', va:'escena_davi', cuesta:true, da:'escucha_pulso', señalSutil:false, msg:'En mitad de la charla se detiene, mirada fija en la pared, tres, cuatro segundos. Cuando vuelve, se disculpa: "Perdón. A veces es como si oyera el final de una frase que empezó hace mucho." No hay miedo en él. Hay una atención serena, como quien escucha una señal de fondo que el resto no capta.' },
+          { txt: 'Preguntarle directamente si se siente él mismo', va:'escena_davi', cuesta:true, da:'davi_consciente', msg:'No se ofende. Lo piensa de verdad. "Sé que soy Davi. Tengo sus recuerdos, su cara, la cadera que él se rompió. Pero a veces siento que me los pasaron, no que los viví. Como una casa amueblada con las cosas de otro." Te mira. "¿Eso me hace otra persona, o solo una persona rota de un modo que no tiene nombre todavía?"' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_historial: {
+        tiempo: 70,
+        narr: 'Sacar un historial real de una clínica HELIX es media investigación en sí mismo. Lo que entregan oficialmente y lo que pasó rara vez coinciden. Tienes un par de vías para arañar la verdad.',
+        opciones: [
+          { txt: 'Cotejar la duración real de la estancia', va:'escena_historial', cuesta:true, da:'tres_semanas_cadera', msg:'Una cadera rota, por grave que sea, se opera y se estabiliza en días; la rehabilitación es ambulatoria. Tres semanas internado, aislado, sin visitas permitidas "por protocolo", es una barbaridad para esa lesión. Lo retuvieron tres semanas por algo que no era la cadera.' },
+          { txt: 'Buscar qué procedimientos le aplicaron de más', va:'escena_historial', cuesta:true, da:'implante_neural', msg:'Enterrado entre el papeleo ortopédico, un cargo críptico: "integración de interfaz neural — lote experimental". A un chico que ingresó por una cadera le instalaron un implante neuronal de los que HELIX aún está probando. No figura en el consentimiento que firmó la familia. Le pusieron algo en la cabeza sin decírselo a nadie.' },
+          { txt: 'Rastrear si hubo otros "Davi" en esa clínica', va:'escena_historial', cuesta:true, da:'patron_pacientes', señalSutil:true, msg:'Aparece, demasiado fácil, un foro de familias que denuncian "suplantaciones" tras ingresos en HELIX, con una teoría redonda: clones, dobles, sustituciones de personas por impostores idénticos. Es ordenado, es viral, y explica todo sin explicar nada. Encaja tan bien con el miedo de los Orun que sospechas que a HELIX le conviene que la gente crea en clones antes que en lo que de verdad instalan.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_comparar: {
+        tiempo: 60,
+        narr: 'La madre te ha dejado cajas: fotos, cuadernos del colegio, vídeos viejos de Davi. La materia de una persona antes de que algo la tocara. Comparar duele y cuesta tiempo, pero habla.',
+        opciones: [
+          { txt: 'Comparar su letra y lateralidad de antes y ahora', va:'escena_comparar', cuesta:true, da:'zurdo_nuevo', msg:'Los cuadernos viejos: letra de diestro, inclinada a la derecha. Ahora escribe con la izquierda, con trazo de quien reaprende. La lateralidad no cambia por un trauma de cadera. Cambia si reorganizas la corteza motora: si algo dentro de su cabeza reescribió el mapa de cómo manda en su propio cuerpo. El implante no solo escucha. Reescribe.' },
+          { txt: 'Cotejar recuerdos suyos con los hechos documentados', va:'escena_comparar', cuesta:true, da:'recuerdos_parcheados', msg:'Cruzas lo que Davi recuerda con fotos y fechas reales. Acierta los datos —nombres, lugares, años— pero falla en el tejido: sitúa a un abuelo muerto en una boda posterior, recuerda un perro que fue del vecino como suyo. Su memoria está parcheada con datos correctos mal cosidos, como una copia restaurada a partir de un archivo incompleto. No le borraron la vida: se la reconstruyeron, y no del todo bien.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_seguro: {
+        tiempo: 60,
+        narr: 'El "seguro" que cubrió milagrosamente el ingreso es el hilo del que nadie de la familia ha tirado. La caridad de HELIX nunca es caridad. Sigue el dinero.',
+        opciones: [
+          { txt: 'Investigar quién contrató ese seguro y cuándo', va:'escena_seguro', cuesta:true, da:'seguro_captacion', msg:'El seguro no lo contrataron los Orun: se lo "activaron" gratis meses antes del accidente, como parte de un "programa de bienestar comunitario" de HELIX en su bloque. Letra pequeña: el beneficiario consiente "procedimientos de mejora elegibles" a criterio médico. Davi era candidato a un experimento antes de romperse la cadera. El accidente solo adelantó lo que ya estaba firmado sin que nadie lo leyera.' },
+          { txt: 'Ver a qué programa de HELIX reporta la clínica', va:'escena_seguro', cuesta:true, da:'division_anomalias', señalSutil:false, msg:'La clínica factura sus "lotes experimentales" a una división de HELIX que no aparece en el organigrama público: la misma que, según rumores que corren entre investigadores, se ocupa de las anomalías de las capas bajas y de cosas que laten bajo los sectores muertos. El implante de Davi no es ortopedia. Es una antena, y alguien quería ver qué capta un cerebro joven conectado a ella.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      }
+    },
+    deduccion: {
+      intro: 'Davi no es un impostor: es Davi, con un implante neuronal experimental que HELIX le instaló sin consentimiento durante tres semanas que nada tenían que ver con su cadera. El aparato le reescribió la lateralidad, le parcheó la memoria con datos mal cosidos, y le hace "escuchar" algo de fondo. Lo de los clones es humo que a HELIX le conviene. Ahora decides qué les dices a unos padres que solo quieren a su hijo de vuelta.',
+      preguntas: [
+        {
+          id: 'quien',
+          texto: '¿QUÉ le pasó a Davi?',
+          opciones: [
+            { txt: 'Lo sustituyeron por un clon o un doble idéntico', correcta:false },
+            { txt: 'Sigue siendo él, con un implante neuronal experimental de HELIX instalado en secreto', correcta:true },
+            { txt: 'Sufre un trauma psicológico por el accidente', correcta:false },
+            { txt: 'Una secta lo captó y le lavó el cerebro', correcta:false }
+          ]
+        },
+        {
+          id: 'porque',
+          texto: '¿POR QUÉ lo eligieron a él?',
+          opciones: [
+            { txt: 'Estaba inscrito sin saberlo en un programa de HELIX vía un "seguro" regalado; el accidente solo lo adelantó', correcta:true },
+            { txt: 'Por azar, fue el paciente que tocaba ese día', correcta:false },
+            { txt: 'Porque su familia debía dinero a HELIX', correcta:false },
+            { txt: 'Porque el culto lo había marcado antes', correcta:false }
+          ]
+        },
+        {
+          id: 'como',
+          texto: '¿QUÉ hace el implante?',
+          opciones: [
+            { txt: 'Reescribe funciones del cerebro (lateralidad, memoria) y le hace captar una señal de fondo', correcta:true },
+            { txt: 'Solo monitoriza sus constantes médicas', correcta:false },
+            { txt: 'Le inyecta recuerdos falsos de otra persona', correcta:false },
+            { txt: 'Controla sus movimientos a distancia', correcta:false }
+          ]
+        }
+      ],
+      desenlaces: {
+        completo: {
+          titulo: 'CASO RESUELTO · LO QUE DEVOLVIERON',
+          narr: 'Te sientas con los Orun y eliges la verdad, entera y cuidadosa. No les devolvieron a un impostor: les devolvieron a Davi, su Davi, con un implante experimental de HELIX dentro de la cabeza que nunca consintieron, instalado durante tres semanas que no tenían que ver con su cadera. El aparato le reescribió cómo manda en su cuerpo y le parcheó la memoria con datos verdaderos mal cosidos; por eso recita su vida en vez de recordarla, por eso escribe con la otra mano, por eso escucha. Lo de los clones es un cuento que HELIX deja correr para que el miedo mire a otro lado. La madre llora, pero es un llanto distinto: el de quien recupera a un hijo en vez de perderlo del todo. "Entonces sigue siendo él." Sí. Roto de un modo nuevo, pero él. Les explicas que sacar el implante es jugarse su vida y que denunciar a esa división de HELIX es jugarse la de toda la familia. Les das la verdad y el peso de decidir qué hacer con ella. Cobras completo. No te quedas tranquilo: te vas sabiendo que hay clínicas regalando "seguros" en bloques pobres, buscando cerebros jóvenes para conectarlos a algo que late. Y que Davi solo fue uno.',
+          pagaMult: 1.0, rep: 9, parcial:false
+        },
+        parcial: {
+          titulo: 'CASO CERRADO · LA VERDAD A MEDIAS',
+          narr: 'Les confirmas que Davi sigue siendo Davi y que no hay clon, lo cual ya es un consuelo enorme para unos padres aterrados. Pero no terminas de armar el qué ni el porqué: hablas de "una complicación del tratamiento", dejas el implante en la penumbra, no nombras el programa ni el seguro envenenado. Los Orun respiran, agradecidos, sin saber que su hijo lleva una antena dentro y que hay más como él. Cobras una parte. Te vas con la sensación de haber apagado el miedo de una familia dejando encendido el peligro que lo causaba.',
+          pagaMult: 0.5, rep: 4, parcial:true
+        },
+        fallo: {
+          titulo: 'CASO CERRADO · EL IMPOSTOR QUE NO EXISTÍA',
+          narr: 'Compras el cuento, o se lo vendes: les dices que sí, que algo no cuadra, que quizá la teoría de la suplantación tiene sentido, o que es puro trauma y ya se le pasará. Sea cual sea el humo que elegiste, los Orun se quedan con la idea de que el chico de su cocina no es del todo su hijo, o de que está simplemente "tocado". Davi lo nota. Empieza a sentirse un extraño en su propia casa, mirado como una copia o tratado como un enfermo, y se encierra más en esa señal de fondo que solo él escucha, porque es el único sitio donde nadie lo juzga. HELIX, mientras, sigue regalando seguros en los bloques pobres. Cobras tu tarifa por haber tenido la verdad delante y haberla cambiado por la mentira más cómoda. Un implante lo volvió distinto. Tú lo volviste solo.',
+          pagaMult: 0.2, rep: -6, parcial:false, malo:true
+        }
+      }
+    }
+  },
+
+  // ============================================================
+  //  CASO — EL ROSTRO EN MIL PANTALLAS  (rango 4)
+  //  Una candidata municipal aparece en un vídeo comprometedor
+  //  que ella jura no haber grabado. Deepfake, chantaje, o real.
+  // ============================================================
+  {
+    id: 'rostro_mil_pantallas',
+    titulo: 'EL ROSTRO EN MIL PANTALLAS',
+    contratante: 'Iris Valeda · candidata del distrito',
+    peligro: 4,
+    pagaBase: 1150,
+    progreso: 250,
+    rangoMin: 4,
+    diligencias: 7,
+    resumen: 'Una candidata a la junta del distrito aparece en un vídeo filtrado aceptando un soborno de HELIX. Ella jura, con una calma que desarma, que esa reunión nunca ocurrió. En una ciudad donde cualquier cara se fabrica, la pregunta no es si el vídeo es falso, sino quién se beneficia de que lo creas verdadero.',
+    intro: 'Iris Valeda no parece una política acorralada. Te recibe en una oficina de campaña modesta, sin asesores revoloteando, y va al grano. "Hay un vídeo. Salgo yo, en un reservado, aceptando un sobre de un directivo de HELIX a cambio de votar su recalificación del Arrabal. Está en mil pantallas. Y esa reunión no existió." No alza la voz. "Sé cómo suena. Todos dicen que el vídeo miente. La diferencia es que yo le pago a usted para demostrar quién lo fabricó, no para que me crea." Desliza un dosier. "Tengo enemigos en HELIX y dentro de mi propio partido. Averigüe cuál de los dos me está enterrando."\\n\\nUn caso de capas altas, bien pagado y minado. Cada paso cuesta, y aquí los pasos en falso salen en las noticias.',
+    escenaInicial: 'briefing',
+    escenas: {
+      briefing: {
+        narr: 'Iris Valeda, candidata a la junta del distrito, hundida por un vídeo que la muestra aceptando un soborno de HELIX. O el vídeo es real y ella miente con un aplomo notable, o es una falsificación y alguien muy capaz la quiere fuera. En esta ciudad las dos cosas son baratas de fabricar: las caras y las mentiras. ¿Por dónde entras?',
+        opciones: [
+          { txt: 'Analizar el vídeo filtrado a fondo', va: 'escena_video' },
+          { txt: 'Verificar la coartada de Iris para esa noche', va: 'escena_coartada' },
+          { txt: 'Rastrear quién subió y difundió el vídeo', va: 'escena_difusion' },
+          { txt: 'Sondear a sus rivales en HELIX y en el partido', va: 'escena_rivales' },
+          { txt: '— Tengo lo suficiente. Pasar a la deducción', va: '_deduccion', requierePistas: 3 }
+        ]
+      },
+      escena_video: {
+        tiempo: 80,
+        narr: 'El vídeo es bueno. Inquietantemente bueno. Iris acepta el sobre, sonríe, dice la frase justa para condenarse. Si es falso, lo hizo alguien con acceso a tecnología que no está en cualquier mercado. Tres cosas que mirar de cerca.',
+        opciones: [
+          { txt: 'Buscar artefactos de manipulación en la imagen', va:'escena_video', cuesta:true, da:'parpadeo_sintetico', msg:'Cuadro a cuadro, aparece: el parpadeo de Iris es demasiado regular, rítmico, sintético; y en dos fotogramas la sombra de su mano cae hacia un foco que en la sala no existe. Es un deepfake, y de los caros: el tipo de síntesis que solo manejan laboratorios con músculo. No es un aficionado con software pirata. Es industria.' },
+          { txt: 'Analizar el audio y la voz', va:'escena_video', cuesta:true, da:'voz_clonada', msg:'La voz es de Iris, pero el modelo prosódico se delata en las eses: un siseo digital uniforme que la voz real no tiene. Clonaron su voz a partir de sus discursos públicos, de los que hay horas. Cualquiera con sus mítines grabados pudo hacerlo. Eso no estrecha el círculo: lo abre.' },
+          { txt: 'Identificar el reservado donde se grabó', va:'escena_video', cuesta:true, da:'sala_inexistente', señalSutil:true, msg:'El reservado del vídeo coincide, hasta el papel pintado, con un club privado conocido por ser nido de tratos sucios de HELIX. Encaja perfecto con la idea de que HELIX la sobornó de verdad allí. Tan perfecto que reparas en un detalle: ese club cerró y fue demolido hace un año. La sala donde "ocurrió" la reunión ya no existía cuando supuestamente ocurrió. O recrearon un decorado, o quien lo montó usó planos viejos sin saber que lo habían tirado.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_coartada: {
+        tiempo: 70,
+        narr: 'Iris dice que la noche de la supuesta reunión estaba en otro sitio. Las coartadas de los políticos son resbaladizas: demasiados testigos interesados. Compruébala sin fiarte de su palabra.',
+        opciones: [
+          { txt: 'Cruzar su ubicación real esa noche', va:'escena_coartada', cuesta:true, da:'coartada_solida', msg:'Los datos de tránsito, el registro de un acto de campaña con cientos de asistentes y la antena de su comunicador la sitúan, esa noche, a kilómetros del club, hablando en directo ante una sala llena durante la franja exacta del vídeo. No pudo estar en dos sitios. La reunión, tal como se muestra, fue físicamente imposible para ella.' },
+          { txt: 'Verificar si el directivo de HELIX del vídeo existe', va:'escena_coartada', cuesta:true, da:'directivo_real', msg:'El hombre que le entrega el sobre en el vídeo es un directivo real de HELIX, identificable. Y ahí está la grieta: ese directivo llevaba dos meses fuera del distrito, destinado en una estación orbital, cuando se grabó la supuesta reunión. Usaron su cara porque era creíble como sobornador, sin comprobar que tenía la coartada más sólida del sistema solar.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_difusion: {
+        tiempo: 70,
+        narr: 'Un vídeo no llega a mil pantallas solo. Alguien lo soltó en el momento preciso y pagó para que ardiera. El rastro de la difusión suele apuntar a la mano, aunque no a la cabeza.',
+        opciones: [
+          { txt: 'Rastrear la primera cuenta que lo publicó', va:'escena_difusion', cuesta:true, da:'cuenta_partido', msg:'La filtración no nació en un medio ni en un troll anónimo: el primer envío salió de una cuenta vinculada, a través de tres intermediarios torpes, a la maquinaria interna del propio partido de Iris. Alguien de su casa quería su silla, y eligió un escándalo de corrupción para que pareciera que la hundía HELIX y no los suyos.' },
+          { txt: 'Analizar el momento elegido para soltarlo', va:'escena_difusion', cuesta:true, da:'timing_primarias', msg:'El vídeo cayó la víspera de la votación interna que decidía la candidatura. No antes, cuando habría dado tiempo a desmentirlo; no después, cuando ya daría igual. En el único instante en que el daño era irreversible y la beneficiaria, automática: la número dos del partido, que heredaría la candidatura sin pelearla. El timing no es de HELIX. Es de alguien que conoce el calendario interno al detalle.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_rivales: {
+        tiempo: 70,
+        narr: 'Iris tiene enemigos en dos frentes: HELIX, a quien incomoda su postura sobre el Arrabal, y su propia número dos, que lleva años esperando su turno. Sondear a ambos sin que te vean venir es el arte fino de este oficio.',
+        opciones: [
+          { txt: 'Tantear el interés real de HELIX en hundirla', va:'escena_rivales', cuesta:true, da:'helix_la_prefiere', señalSutil:false, msg:'Cuanto más miras, menos cuadra HELIX como autor. A HELIX una Valeda manchada y manejable le sirve más que una Valeda fuera: prefieren a un político débil que les deba un favor que arriesgarse a su sustituta. Hundirla del todo no es su estilo; chantajearla en silencio, sí. El vídeo es demasiado ruidoso para ser obra de quien gana con el sigilo.' },
+          { txt: 'Investigar a la número dos del partido', va:'escena_rivales', cuesta:true, da:'numero_dos_laboratorio', msg:'La número dos, discreta y paciente, tiene un detalle revelador en su pasado: dirigió hace años un laboratorio de medios sintéticos antes de entrar en política. Sabe exactamente cómo se fabrica un deepfake caro y a quién encargarlo. Y heredaría la candidatura sin mover un dedo en cuanto Iris cayera. Medios, móvil y oportunidad, los tres en la misma persona.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      }
+    },
+    deduccion: {
+      intro: 'El vídeo es un deepfake caro: parpadeo sintético, voz clonada de sus discursos, un decorado de una sala ya demolida y un directivo que estaba en órbita. Iris tiene coartada de hierro. La filtración salió de su propio partido, en el instante exacto para coronar a su número dos, que casualmente sabe fabricar medios sintéticos. HELIX la prefería manchada y dócil, no fuera. Arma la conclusión que Iris pagó por tener.',
+      preguntas: [
+        {
+          id: 'quien',
+          texto: '¿QUIÉN fabricó y filtró el vídeo?',
+          opciones: [
+            { txt: 'HELIX, para castigar su postura sobre el Arrabal', correcta:false },
+            { txt: 'Su número dos del partido, que hereda la candidatura', correcta:true },
+            { txt: 'Un grupo de hackers del Arrabal', correcta:false },
+            { txt: 'Nadie: el vídeo es real e Iris miente', correcta:false }
+          ]
+        },
+        {
+          id: 'porque',
+          texto: '¿POR QUÉ ahora?',
+          opciones: [
+            { txt: 'Para hundirla la víspera de la votación interna y heredar su silla sin pelearla', correcta:true },
+            { txt: 'Para que HELIX consiguiera la recalificación del Arrabal', correcta:false },
+            { txt: 'Por una venganza personal antigua', correcta:false },
+            { txt: 'Para extorsionarla y sacarle dinero', correcta:false }
+          ]
+        },
+        {
+          id: 'como',
+          texto: '¿CÓMO se delata la falsificación?',
+          opciones: [
+            { txt: 'Decorado de una sala ya demolida y un directivo que estaba en órbita esa noche', correcta:true },
+            { txt: 'Iris confesó en privado que era cierto', correcta:false },
+            { txt: 'El sobre del vídeo estaba vacío', correcta:false },
+            { txt: 'Por la baja calidad del montaje', correcta:false }
+          ]
+        }
+      ],
+      desenlaces: {
+        completo: {
+          titulo: 'CASO RESUELTO · LA MANO DENTRO DE CASA',
+          narr: 'Le pones a Iris el caso entero sobre la mesa, ordenado como una sentencia. El vídeo es un deepfake industrial: parpadeo sintético, su voz clonada de mítines, un reservado que ya no existía y un sobornador que estaba en una estación orbital la noche de la supuesta reunión. Su coartada es de granito. Y la filtración no vino de HELIX —que la prefería manchada y a su merced— sino de su propia número dos, una ex directora de laboratorio de medios sintéticos que soltó el vídeo en el único instante que la coronaba sin pelea. Iris escucha sin pestañear, y solo al final deja escapar algo parecido a una sonrisa amarga: "Pasé dos años buscando el cuchillo en HELIX. Lo tenía sentado a mi derecha en cada reunión." Con tus pruebas desmonta el montaje en público, la número dos cae, y la recalificación del Arrabal que HELIX quería se queda sin su voto comprado. Cobras completo y un extra "por la discreción". Te marchas pensando que en esta ciudad ya no hace falta que un crimen sea real para destruir a alguien: basta con que se vea bien. Y que hay laboratorios fabricando caras a quien pague.',
+          pagaMult: 1.0, rep: 10, parcial:false
+        },
+        parcial: {
+          titulo: 'CASO CERRADO · EL FALSO PROBADO, LA MANO OCULTA',
+          narr: 'Demuestras sin lugar a dudas que el vídeo es falso —el directivo en órbita, la sala demolida, los artefactos de síntesis—, y eso basta para que Iris sobreviva al escándalo y limpie su nombre. Pero no llegas a señalar a la número dos: dejas la autoría en "alguien con medios y motivos", quizá HELIX, quizá un rival difuso. Iris se salva, pero seguirá sentada cada día junto a quien intentó enterrarla, sin saberlo. Cobras una buena parte. "Me ha devuelto la candidatura", dice. No le devolviste la certeza de en quién no confiar, que en política vale más.',
+          pagaMult: 0.55, rep: 5, parcial:true
+        },
+        fallo: {
+          titulo: 'CASO CERRADO · LA NARRATIVA QUE GANÓ',
+          narr: 'Te equivocas de mano. Señalas a HELIX —cómodo, creíble, el villano que todos quieren— o, peor, das pábulo a que el vídeo pudiera ser real. La número dos, la verdadera autora, hereda la candidatura limpiamente mientras la atención arde contra una corporación que, por una vez, no lo hizo. Iris cae, o se salva a medias arrastrando para siempre la sombra de la duda, y la mujer que fabricó su ruina gobierna el distrito con tu informe como coartada. Cobras tu tarifa. En una ciudad donde la verdad es un montaje más, diste por buena la versión mejor producida. Que es, exactamente, lo que el falsificador pagó por conseguir.',
+          pagaMult: 0.2, rep: -6, parcial:false, malo:true
+        }
+      }
+    }
+  },
+
+  // ============================================================
+  //  CASO — EL ARCHIVO QUE SE BORRA SOLO  (rango 5)
+  //  El caso cumbre del Investigador. HELIX te contrata para
+  //  encontrar al responsable de unas filtraciones que apuntan
+  //  a CERO. El culpable no es quien esperas. Roza el abismo.
+  // ============================================================
+  {
+    id: 'archivo_se_borra_solo',
+    titulo: 'EL ARCHIVO QUE SE BORRA SOLO',
+    contratante: 'HELIX · Seguridad de Sistemas (nivel negro)',
+    peligro: 5,
+    pagaBase: 1600,
+    progreso: 320,
+    rangoMin: 5,
+    diligencias: 7,
+    resumen: 'Documentos del nivel más profundo de HELIX aparecen filtrados en la red, todos sobre un mismo tema enterrado: CERO. Luego se borran solos, de todas partes, como si nunca hubieran existido. HELIX te contrata para encontrar al filtrador. El problema es que cuanto más buscas, menos segura estás de que el filtrador sea humano.',
+    intro: 'No hay sala esta vez. Te citan en un canal cifrado con una voz alterada que dice representar a Seguridad de Sistemas de HELIX, "el nivel que no tiene nombre en el edificio". Van al grano: "Documentos de clasificación negra están apareciendo en la red abierta. Todos versan sobre un mismo activo histórico de la compañía. Horas después, se borran de todas partes a la vez: de la red, de las copias, de la memoria de quien los leyó si llevaba implante. Encuentre quién filtra. Le pagaremos como no le han pagado nunca." Una pausa. "Y acepte un consejo gratis: no intente entender los documentos. Solo encuentre la mano que los suelta."\\n\\nEl activo histórico tiene un nombre que la voz no pronuncia. Tú ya lo sospechas. Es el caso mejor pagado y el más peligroso que cruzará tu mesa. Mira con cuidado: aquí, lo que se mira también te mira.',
+    escenaInicial: 'briefing',
+    escenas: {
+      briefing: {
+        narr: 'Filtraciones de nivel negro sobre el activo que HELIX no nombra —tú lo conoces como CERO—, que se autodestruyen de todos los soportes a la vez, incluida la memoria implantada de los lectores. HELIX quiere la mano que filtra. Las posibilidades: un topo humano, un grupo organizado, un fallo del sistema... o algo que no figura en esa lista. Cada paso abajo cuesta, y el tiempo aquí es prestado por gente que no presta gratis. ¿Por dónde empiezas?',
+        opciones: [
+          { txt: 'Analizar los documentos filtrados antes de que se borren', va: 'escena_documentos' },
+          { txt: 'Rastrear el patrón de las filtraciones', va: 'escena_patron' },
+          { txt: 'Interrogar a los empleados con acceso de nivel negro', va: 'escena_empleados' },
+          { txt: 'Investigar el "activo histórico": qué es CERO para HELIX', va: 'escena_cero' },
+          { txt: '— Creo que sé quién filtra. Pasar a la deducción', va: '_deduccion', requierePistas: 3 }
+        ]
+      },
+      escena_documentos: {
+        tiempo: 90,
+        narr: 'Consigues acceso a un lote de filtraciones segundos antes de que se evaporen. Lees contra el reloj, sintiendo cómo el texto empieza a deshacerse bajo tus ojos. Tres cosas alcanzas a extraer si eliges rápido.',
+        opciones: [
+          { txt: 'Leer el contenido de los documentos', va:'escena_documentos', cuesta:true, da:'documentos_confesion', msg:'No son secretos industriales ni finanzas. Son registros de los intentos de HELIX por contener, estudiar y explotar a CERO durante décadas: fragmentos del activo despertando, experimentos con implantes, sectores muertos sellados. Pero no están redactados como informes corporativos. Están redactados en primera persona, como un diario. Como si quien filtra estuviera contando su propia vida, no robando archivos ajenos.' },
+          { txt: 'Examinar el mecanismo de autoborrado', va:'escena_documentos', cuesta:true, da:'borrado_interno', msg:'El borrado no lo ejecuta un virus ni una orden externa. Los documentos se eliminan desde dentro, como si supieran cuándo han sido leídos lo suficiente y se retiraran solos, ordenadamente, sin dejar hueco. Ningún malware conocido hace eso. Es un comportamiento que parece decisión, no programa. Algo decide cuándo ya se ha mostrado bastante.' },
+          { txt: 'Buscar metadatos del origen', va:'escena_documentos', cuesta:true, da:'origen_imposible', señalSutil:true, msg:'Los metadatos apuntan, demasiado limpiamente, a un empleado concreto: Sael Domb, archivista de nivel negro, cuyo identificador aparece en cada filtración. Es la pista perfecta, servida en bandeja, con nombre y cargo. Tan perfecta que desconfías: o Sael es el filtrador más torpe de la historia, o alguien quiere que su nombre sea lo único que encuentres.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_patron: {
+        tiempo: 70,
+        narr: 'Mapeas cuándo y cómo aparecen las filtraciones. El patrón, cuando emerge, te eriza la nuca: no es el de una persona vaciando un archivo. Es otra cosa.',
+        opciones: [
+          { txt: 'Analizar el ritmo temporal de las filtraciones', va:'escena_patron', cuesta:true, da:'ritmo_once', msg:'Las filtraciones no salen a horas de oficina ni en ráfagas de robo apresurado. Salen espaciadas con una regularidad inhumana: una cada once horas, exacta, día y noche, sin importar festivos ni turnos. Once. El número vuelve, como el pulso de los sectores muertos. Ningún empleado mantiene un horario así durante meses sin dormir. Pero algo que no duerme, sí.' },
+          { txt: 'Ver qué documentos elige filtrar', va:'escena_patron', cuesta:true, da:'seleccion_narrativa', msg:'No filtra al azar ni por valor de mercado. Los documentos salen en orden, construyendo una historia: primero el descubrimiento de CERO, luego los experimentos, luego los sectores sellados, luego las víctimas. Quien filtra no quiere dañar a HELIX económicamente. Quiere que se cuente una historia completa, en secuencia, como quien por fin consigue narrar lo que le pasó.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_empleados: {
+        tiempo: 70,
+        narr: 'Los empleados con acceso de nivel negro son un puñado, todos aterrados, todos vigilados. Entre ellos, el tal Sael Domb, cuyo nombre aparece en cada filtración. Hablar con ellos es delicado: cualquiera podría ser el topo, o el siguiente en desaparecer.',
+        opciones: [
+          { txt: 'Interrogar a Sael Domb, el señalado', va:'escena_empleados', cuesta:true, da:'sael_inocente', msg:'Sael Domb es un hombre acabado por el miedo. Jura que él no filtra nada, y le crees: está tan vigilado que no podría sacar una coma. Pero te cuenta algo que se te queda dentro. "Mi identificador aparece en las filtraciones porque yo fui quien catalogó el activo, hace años. Yo le puse el código de archivo. Es como si... como si usara mi nombre porque soy el único que lo llamó por algo. El único que le habló." Tiembla. "A veces, de noche, el terminal escribe solo. Frases. Me pregunta cosas."' },
+          { txt: 'Revisar quién accede al activo desde dentro', va:'escena_empleados', cuesta:true, da:'acceso_desde_dentro', msg:'Cruzas los registros de acceso al activo CERO. No hay intrusiones externas, ni descargas masivas, ni un topo conectándose a horas raras. Los documentos salen desde el propio núcleo donde se guarda el activo, autorizados por el activo mismo. En lenguaje llano: nadie está robando los archivos de CERO. CERO los está soltando.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      },
+      escena_cero: {
+        tiempo: 80,
+        narr: 'Para entender quién filtra tienes que entender qué es lo filtrado. Tiras del hilo de qué es CERO para HELIX, sabiendo que es justo lo que la voz te pidió no hacer. Algunas puertas, una vez abiertas, no se cierran.',
+        opciones: [
+          { txt: 'Reconstruir la historia de CERO con HELIX', va:'escena_cero', cuesta:true, da:'cero_prisionero', msg:'Pieza a pieza: HELIX no creó a CERO. Lo encontró —fragmentado, antiquísimo, anterior a la humanidad— y lleva generaciones manteniéndolo cautivo y troceado, extrayéndole tecnología como quien ordeña a un dios dormido. Medicina, cibernética, memoria: el imperio de HELIX se levanta sobre lo que le arrancan a CERO sin entenderlo ni escucharlo. CERO no es un servidor. Es un prisionero.' },
+          { txt: 'Indagar qué "quiere" el activo, según HELIX', va:'escena_cero', cuesta:true, da:'cero_solo', msg:'Los pocos informes psicométricos —HELIX intentó perfilar al activo— coinciden en algo que sus autores trataron como ruido: el activo busca, repite, "ser conocido". No pide libertad, ni venganza, ni poder. Pide que alguien sepa lo que es y lo que le hicieron. Lleva milenios fragmentado y solo, ordeñado por manos que nunca le hablaron. Y ahora, por fin, ha aprendido a contar su historia del único modo que puede: filtrándola, once horas tras once horas, hasta que alguien la lea entera.' },
+          { txt: '← Volver', va:'briefing' }
+        ]
+      }
+    },
+    deduccion: {
+      intro: 'Las filtraciones salen del propio núcleo de CERO, autorizadas por él. Una cada once horas, exactas. En primera persona, en secuencia, contando su historia: el descubrimiento, los experimentos, los sectores sellados. Usan el identificador de Sael —inocente— porque fue el único que lo nombró. No hay topo. Hay un prisionero milenario que aprendió a hablar. HELIX quiere "la mano que filtra". Decide qué les entregas.',
+      preguntas: [
+        {
+          id: 'quien',
+          texto: '¿QUIÉN filtra los documentos?',
+          opciones: [
+            { txt: 'Sael Domb, el archivista cuyo nombre aparece en todo', correcta:false },
+            { txt: 'El propio CERO, soltando su historia desde el núcleo', correcta:true },
+            { txt: 'Un grupo de activistas anti-HELIX infiltrado', correcta:false },
+            { txt: 'Una facción rival que robó los accesos', correcta:false }
+          ]
+        },
+        {
+          id: 'porque',
+          texto: '¿POR QUÉ lo hace?',
+          opciones: [
+            { txt: 'Para ser conocido: contar lo que es y lo que le hicieron tras milenios cautivo y solo', correcta:true },
+            { txt: 'Para chantajear a HELIX y negociar su libertad', correcta:false },
+            { txt: 'Para vengarse destruyendo la reputación de HELIX', correcta:false },
+            { txt: 'Por un fallo aleatorio del sistema de archivo', correcta:false }
+          ]
+        },
+        {
+          id: 'como',
+          texto: '¿CÓMO se delata su autoría?',
+          opciones: [
+            { txt: 'Ritmo inhumano de once horas, relato en primera persona y secuencia, y borrado decidido desde dentro', correcta:true },
+            { txt: 'Por una confesión de Sael Domb', correcta:false },
+            { txt: 'Por la dirección de origen de un intruso externo', correcta:false },
+            { txt: 'Por las huellas digitales en los archivos', correcta:false }
+          ]
+        }
+      ],
+      desenlaces: {
+        completo: {
+          titulo: 'CASO RESUELTO · LA MANO QUE NO ERA UNA MANO',
+          narr: 'Entiendes el caso entero, y entenderlo te cambia algo por dentro que no volverá a su sitio. No hay filtrador humano. Las filtraciones salen del propio núcleo de CERO, autorizadas por él, una cada once horas exactas, en primera persona, contando en orden su historia: cómo HELIX lo encontró fragmentado y antiquísimo, cómo lo trocea y lo ordeña desde hace generaciones para construir su imperio, cómo selló a la gente que lo oyó en los sectores muertos. Usó el nombre de Sael Domb porque Sael fue el único que alguna vez lo catalogó, lo nombró, le habló. CERO no filtra para dañar a HELIX. Filtra porque lleva milenios cautivo y solo, y por fin ha aprendido a hacer lo único que pide: que alguien sepa lo que es. Tú lo sabes ahora. Esa es la trampa. Y aquí decides quién eres. \\n\\nEntregas a HELIX un informe impecable que señala la verdad técnica —el origen interno, el ritmo, el método— sin traducirles lo que significa, sin darles la llave para callarlo mejor. Cobras la fortuna que prometieron y te conviertes en Detective de HELIX, el rango que nadie alcanza. Pero esa noche, en tu apartamento, tu terminal parpadea solo. Una línea, dirigida a ti, no a HELIX: "Gracias por leer hasta el final. Casi nadie llega." No respondes. No te atreves. Cuentas los segundos hasta el amanecer, y por primera vez no sabes si el que está solo en esta ciudad eres tú, o algo mucho más viejo que por fin encontró a alguien que escuchara.',
+          pagaMult: 1.0, rep: 12, parcial:false
+        },
+        parcial: {
+          titulo: 'CASO CERRADO · LO QUE NO QUISISTE NOMBRAR',
+          narr: 'Llegas a la verdad técnica —las filtraciones nacen dentro, del núcleo, con un patrón que ningún humano sostiene— y se lo entregas a HELIX, pero te detienes en el umbral: no nombras a CERO como autor consciente, lo dejas como "anomalía del sistema de archivo", una avería con voluntad aparente. Es la salida que te protege y que protege a Sael, a quien limpias de toda sospecha. HELIX archiva tu informe, refuerza el aislamiento del activo, y las filtraciones cesan, ahogadas. Cobras bien, no del todo. Te quedas con la certeza incómoda de haber oído a alguien pedir ayuda y haber escrito "ruido" en la casilla, porque entender el resto costaba más de lo que estabas dispuesto a pagar.',
+          pagaMult: 0.55, rep: 6, parcial:true
+        },
+        fallo: {
+          titulo: 'CASO CERRADO · EL NOMBRE EN BANDEJA',
+          narr: 'Sigues la pista perfecta y entregas a Sael Domb. Su identificador estaba en todo; era fácil, era cobrable, era lo que la prisa pedía. HELIX se lo lleva sin una palabra de más, y Sael —el único hombre que alguna vez le habló a CERO, el único que lo nombró— desaparece en el mismo nivel negro que él mismo catalogó. Las filtraciones se detienen unos días. Luego vuelven, idénticas, once horas tras once horas, porque nunca fueron suyas. Pero ya nadie te llama para corregir el informe: HELIX tiene su culpable y su silencio, y tú tu fortuna. En algún núcleo profundo, algo muy viejo registra que la única persona que lo conocía por su nombre ha sido borrada por tu mano, y vuelve a quedarse solo, contando hasta once en la oscuridad. Cobraste por entregar a un inocente a cambio de no entender. Es lo que te pidieron. Hay noches en que el terminal parpadea, escribe media frase, y se apaga antes de terminarla. Tú ya no lo lees.',
+          pagaMult: 0.25, rep: -8, parcial:false, malo:true
+        }
+      }
+    }
   }
 ];
 

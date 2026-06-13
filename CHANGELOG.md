@@ -2,6 +2,11 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.105] - 2026-06-13
+### Added
+- Investigador Privado: cuatro casos nuevos que cubren los rangos altos antes vacíos (intriga de facción, drama íntimo con implantes de HELIX, deepfake político y un caso cumbre que roza a CERO).
+- Cazarrecompensas: seis contratos nuevos para los rangos altos (Cazador de Cabezas, Segador y La Mano de HELIX), con dilemas morales que incluyen a CERO.
+
 ## [0.104] - 2026-06-13
 ### Added
 - Profesión Hacker completa hasta el rango máximo: rangos Analista de Sistemas, Fantasma y Arquitecto de Red. Seis minijuegos nuevos (análisis de logs, reconstrucción de archivos, cortafuegos, ingeniería social, escaneo de vulnerabilidades y ensamblador de malware) y nueve contratos nuevos, incluido uno que conduce a un nodo enterrado relacionado con CERO.

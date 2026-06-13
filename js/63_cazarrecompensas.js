@@ -870,6 +870,454 @@ const CONTRATOS_CAZA = [
           narr:'Le dices que se pierda en lo hondo, donde HELIX no baja, donde el latido lo esconde. No cobras la mayor fortuna de tu carrera, y desafiar a la División de Anomalías te marca a ti como la próxima anomalía a recuperar. Eco asiente, y antes de fundirse con la oscuridad del sector dice: "Lo entiendes. Algunas cosas hay que dejar que escuchen en paz." Te has jugado el cuello por un hombre que oye lo que no debería. Quizá fue una locura. Quizá, en un mundo que vende todo lo que toca, fue lo único cuerdo. El latido se aleja contigo de vuelta a la superficie, y juras que, por un instante, marcó tu nombre.', malo:false }
       ]
     }
+  },
+
+  // ════════════════════════════════════════════════════════════
+  //  REFUERZO RANGOS ALTOS (v0.105)
+  // ════════════════════════════════════════════════════════════
+
+  // ── R3 · sindicatos ── el armero que vende a los dos bandos
+  {
+    id: 'armero_dos_bandos',
+    titulo: 'EL QUE ARMA A AMBOS LADOS',
+    contratante: 'Sindicato Ferro · Don Vasek',
+    faccion: 'sindicatos',
+    peligro: 3,
+    pagaBase: 500,
+    progreso: 175,
+    rangoMin: 3,
+    resumen: 'Un armero del Ferro, Doru, vende material de la organización al Loto por debajo de la mesa. El Ferro pierde hombres con sus propias armas. Vasek lo quiere vivo: primero la lista de a quién más le vendió, después el castigo.',
+    objetivo: {
+      nombre: 'Doru Vanic, armero',
+      contexto: 'Un veterano del Ferro, manos de oro para reparar y modificar armas, que se cansó de cobrar miseria por mantener vivos a los soldados. No es un traidor por ideología: es un hombre amargado que decidió que su talento valía más de lo que le pagaban. Eso lo hace predecible y, a la vez, digno de una pena que no esperabas sentir.'
+    },
+    abordaje: {
+      intro: 'Encuentras a Doru en su taller clandestino, rodeado de piezas y aceite, con un cigarro apagado en los labios. No se sobresalta al verte: deja despacio el destornillador. "El Ferro manda a uno de los tuyos antes que venir él. Buena señal: aún no quieren matarme, quieren algo." ¿Cómo lo abordas?',
+      opciones: [
+        { txt:'[LABIA] Hacerle creer que vienes a comprar, no a cazar', via:'labia', prob:0.75,
+          exito:{ msg:'Le sigues el papel de cliente. Doru, orgulloso de su mercancía, te enseña medio taller y, sin querer, su libro de pedidos: nombres, fechas, a quién del Loto le sirvió. Cuando entiende que lo has jugado, ya es tarde.' },
+          fallo:{ msg:'Algo en tus preguntas le huele a interrogatorio. Cierra el libro de golpe y mete la mano bajo el banco, donde guarda algo cargado. Aprovecha tu duda para escurrirse al callejón.', huye:true } },
+        { txt:'[ARMA] Encañonarlo antes de que alcance su banco', via:'fuerza', prob:0.8, requiereItem:'arma_fuego',
+          exito:{ msg:'Eres más rápido. Le apuntas antes de que su mano llegue al revólver escondido bajo el banco. Doru levanta las manos, resignado, casi aliviado. "Despacio, cazador. Las armas de este taller las hice yo. Sé lo que duelen."', disociacion:4 },
+          fallo:{ msg:'Doru conoce su taller mejor que tú. Vuelca una estantería de piezas entre los dos y, en la confusión, sale por la trampilla del suelo que tú no habías visto.', huye:true, fatiga:5 } },
+        { txt:'[SIGILO] Cortarle la salida antes de mostrarte', via:'sigilo', prob:0.65,
+          exito:{ msg:'Rodeas el taller y atrancas la trampilla del suelo y la puerta de atrás antes de dejarte ver. Cuando Doru intenta huir por sus rutas, las encuentra todas muertas. Se gira hacia ti sin sorpresa: "Las cerraste todas. Profesional."' },
+          fallo:{ msg:'Una plancha suelta cruje bajo tu pie. Doru no espera a ver qué fue: ya está bajando por la trampilla con la agilidad del que ensayó esta huida mil veces.', huye:true } }
+      ]
+    },
+    persecucion: {
+      intro: 'Doru huye por los conductos de mantenimiento bajo el barrio del Ferro, un laberinto que conoce porque él mismo escondió armas ahí durante años.',
+      pasos: [
+        { narr:'Se descuelga por un conducto vertical. Puedes seguirlo a ciegas o rodear por la galería paralela que oíste mencionar en su taller.',
+          opciones:[
+            { txt:'Rodear por la galería paralela', bueno:true, msg:'Recuerdas el plano que viste en su pared y le cortas el paso en el otro extremo del conducto. Sale de cabeza hacia ti.' },
+            { txt:'Bajar tras él por el conducto', bueno:false, msg:'El conducto está sembrado de piezas sueltas que te frenan; Doru gana distancia.' }
+          ] },
+        { narr:'Llega a una cámara con tres salidas idénticas. Duda un instante: una huele a aceite, su mercancía.',
+          opciones:[
+            { txt:'Seguir el olor a aceite de armas', bueno:true, msg:'El rastro de aceite delata su escondite habitual. Lo encuentras agazapado entre cajas de munición, sin más salida.' },
+            { txt:'Tomar la salida más ancha y rápida', bueno:false, msg:'La salida ancha da a un patio vacío. Te has equivocado y has perdido un tiempo precioso.' }
+          ] }
+      ]
+    },
+    pulso: {
+      intro: 'Doru está acorralado entre sus propias cajas de munición, las manos manchadas de aceite. Antes de decidir, escúchalo. No todos los traidores traicionan por lo mismo.',
+      frases: [
+        { txt:'"¿Sabes cuántos chicos del Ferro he mantenido vivos remendando sus armas por una miseria? El Ferro me usó treinta años. Solo les cobré lo que valgo."',
+          lecturas:[
+            { txt:'Se justifica con una mentira para ablandarte', correcta:false },
+            { txt:'Dice una verdad amarga: el rencor del veterano mal pagado es real', correcta:true },
+            { txt:'Intenta reclutarte para su negocio', correcta:false }
+          ] },
+        { txt:'"Te daré la lista. Todos los nombres. Pero sabes que en cuanto la tengan, a mí me entierran con mis propias balas. Lo sabes."',
+          lecturas:[
+            { txt:'Exagera para que lo sueltes', correcta:false },
+            { txt:'Acierta: entregarlo con la lista es firmar su sentencia', correcta:true },
+            { txt:'Te amenaza veladamente', correcta:false }
+          ] }
+      ]
+    },
+    decision: {
+      intro: 'Doru no es un traidor de bandera: es un veterano amargado que vendió su talento al mejor postor. Vasek lo quiere vivo, con la lista. Entregarlo con ella es matarlo a plazos. ¿Qué haces?',
+      opciones: [
+        { txt:'Entregar a Doru y la lista al Ferro (cobrar completo)', tipo:'vivo', pagaMult:1.0, rep:12, disociacion:7,
+          narr:'Lo entregas con su libro de pedidos. Vasek pasa las páginas en silencio y luego asiente una sola vez: en esos nombres hay traiciones que el Ferro ajustará una a una. Cobras completo y el sindicato te debe una limpieza entera. Doru se deja llevar sin resistirse, y al cruzar la puerta te mira con un reproche cansado, sin odio, que es peor que el odio. Hiciste tu trabajo. No por eso pesa menos.' },
+        { txt:'Entregarlo pero "perder" la lista en el camino', tipo:'pacto', pagaMult:0.6, rep:3, disociacion:3, requierePulso:true,
+          narr:'Entregas a Doru —desafiar a Vasek es impensable— pero le dices al Ferro que no encontraste libro alguno, que vendía de memoria. Doru pagará por su traición, pero solo, sin arrastrar a los nombres de su lista a la fosa con él. Cobras menos y Vasek frunce el ceño, insatisfecho. Has salvado a una docena de desconocidos de las balas del Ferro a cambio de tu paga y de un poco de la confianza de Vasek. Doru nunca sabrá que le quitaste ese peso de encima.' },
+        { txt:'Soltarlo a cambio de la lista y un destierro', tipo:'soltar', pagaMult:0.2, rep:-6, disociacion:-3, requierePulso:true,
+          narr:'Le coges la lista pero le dices que desaparezca del distrito y no vuelva jamás. Le llevas los nombres a Vasek sin la cabeza, y eso al Ferro no le basta: querían un escarmiento, no solo papeles. Cobras poco y pierdes favor con el sindicato. Pero Doru se va vivo, con sus manos de oro, a remendar armas en otro agujero del mundo. "No tenías por qué", murmura. No. No tenías. Lo hiciste igual.', malo:false }
+      ]
+    }
+  },
+
+  // ── R3 · sin facción ── la niña que finge su propio secuestro
+  {
+    id: 'secuestro_fingido',
+    titulo: 'LA QUE SE SECUESTRÓ A SÍ MISMA',
+    contratante: 'Particular · un matrimonio de las capas medias',
+    faccion: '',
+    peligro: 2,
+    pagaBase: 440,
+    progreso: 160,
+    rangoMin: 3,
+    resumen: 'Un matrimonio acomodado contrata tu captura para recuperar a su hija de diecisiete años, "secuestrada" según una nota de rescate. Tú hueles algo raro desde el principio. La nota la escribió ella. El verdadero encargo será qué haces cuando la encuentres.',
+    objetivo: {
+      nombre: 'Libe, diecisiete años',
+      contexto: 'Una adolescente de casa bien que montó su propio secuestro para sacarle dinero a sus padres y huir con él. No es una delincuente: es una cría que se ahoga en una casa de oro y eligió la salida más torpe posible. Lo que descubras sobre por qué huye decidirá si la "rescatas" o la ayudas a desaparecer.'
+    },
+    abordaje: {
+      intro: 'Sigues el rastro de la nota de rescate hasta un cuartucho alquilado en las capas bajas, muy lejos del barrio caro de sus padres. Dentro, Libe está sola, contando billetes sobre una cama, sin un solo secuestrador a la vista. Levanta la cara, más resignada que asustada. "Sabía que mandarían a alguien. ¿Cuánto te pagan por devolverme al zoo?" ¿Cómo la abordas?',
+      opciones: [
+        { txt:'[LABIA] Hablarle como persona, no como objetivo', via:'labia', prob:0.8,
+          exito:{ msg:'No la tratas como a una fugitiva ni como a una cría. Le preguntas, sin más, de qué huye. Y Libe, que llevaba semanas sin que nadie le preguntara eso, empieza a hablar. Bajas la guardia los dos a la vez.' },
+          fallo:{ msg:'Algo en tu tono le suena a sermón de adulto, a "esto lo hago por tu bien". Se cierra en banda, agarra la mochila con el dinero y sale corriendo por la escalera de incendios.', huye:true } },
+        { txt:'[SIGILO] Bloquear su salida antes de que reaccione', via:'sigilo', prob:0.7,
+          exito:{ msg:'Te colocas entre ella y la única ventana practicable antes de que se dé cuenta. No hay adónde correr. Libe suelta los billetes y se sienta en la cama, vencida. "Vale. Me has cogido. Felicidades."' },
+          fallo:{ msg:'Calculas mal y dejas libre la escalera de incendios. Libe es rápida y conoce el edificio: para cuando reaccionas, ya va dos pisos abajo.', huye:true } },
+        { txt:'[ARMA] Imponer autoridad para que no escape', via:'fuerza', prob:0.6,
+          exito:{ msg:'Le cierras el paso con cuerpo y voz firme. Funciona: se detiene. Pero el miedo en su cara no es el de una delincuente atrapada, es el de una niña que creía haber escapado y ya no. Te sientes peor por haber ganado así.', disociacion:5 },
+          fallo:{ msg:'Tu aspaviento la asusta de más y reacciona como un animal acorralado: te lanza la lámpara y huye en la confusión.', huye:true, fatiga:4 } }
+      ]
+    },
+    persecucion: {
+      intro: 'Si Libe huye, corre sin plan, a ciegas, como quien nunca ha tenido que escapar de verdad. Eso la hace torpe y, por eso mismo, fácil de perder si la asustas más.',
+      pasos: [
+        { narr:'Corre hacia una estación de transporte público abarrotada. Puede mezclarse con la gente o quedarse paralizada por el gentío.',
+          opciones:[
+            { txt:'Adelantarte con calma a la zona de andenes', bueno:true, msg:'En vez de perseguirla y aterrarla, te adelantas sin prisa al andén. La encuentras allí, paralizada, sin saber qué tren coger. Una cría perdida, no una fugitiva.' },
+            { txt:'Gritar su nombre y correr tras ella', bueno:false, msg:'Tu grito la espolea; el pánico le da alas y se pierde entre la multitud del andén.' }
+          ] },
+        { narr:'La acorralas en un pasillo lateral. Se da la vuelta, jadeando, con lágrimas de rabia y miedo.',
+          opciones:[
+            { txt:'Bajar las manos y hablar despacio', bueno:true, msg:'Levantas las palmas, bajas la voz, le dices que no vas a hacerle daño. La rabia se le rompe en llanto y deja de correr. Se acabó la persecución.' },
+            { txt:'Sujetarla por el brazo de inmediato', bueno:false, msg:'La agarras y ella se revuelve con todas sus fuerzas; en el forcejeo se te escapa otra vez.' }
+          ] }
+      ]
+    },
+    pulso: {
+      intro: 'Libe está delante de ti, sin secuestradores, con el dinero de sus propios padres en una mochila. Antes de decidir qué haces con ella, escúchala de verdad.',
+      frases: [
+        { txt:'"No me secuestró nadie. Me secuestré yo. Era la única forma de que mi padre soltara dinero por mí: poniéndole precio. Es lo único que entiende."',
+          lecturas:[
+            { txt:'Manipula tu pena con un cuento ensayado', correcta:false },
+            { txt:'Dice la verdad: huye de una casa que solo habla el idioma del dinero', correcta:true },
+            { txt:'Está delirando para evitar el castigo', correcta:false }
+          ] },
+        { txt:'"Si me devuelves, me encierran en otra escuela cara y fingimos que no pasó. Prefiero la calle. Al menos en la calle no tengo que sonreír en las cenas."',
+          lecturas:[
+            { txt:'Exagera; su vida es privilegiada y lo desprecia por capricho', correcta:false },
+            { txt:'Hay un ahogo real bajo el privilegio; no todo dolor es material', correcta:true },
+            { txt:'Solo busca asustarte para que la sueltes', correcta:false }
+          ] }
+      ]
+    },
+    decision: {
+      intro: 'No hay secuestradores. Solo una cría de diecisiete que se puso precio para que su padre la mirara, y que prefiere la calle a otra cena fingida. Sus padres te pagan por devolverla. ¿Qué haces?',
+      opciones: [
+        { txt:'Devolverla a sus padres (cobrar completo)', tipo:'vivo', pagaMult:1.0, rep:6, disociacion:6,
+          narr:'La llevas de vuelta. Sus padres pagan sin preguntar nada que importe, aliviados de recuperar el objeto extraviado más que a la hija. Libe no te mira al entregar la mochila con su propio rescate. Cobras completo. Mientras te vas, la oyes empezar a discutir con su padre en ese idioma de cifras y reproches del que ella intentó huir. Hiciste el trabajo. Devolviste a una cría a la jaula de la que se había escapado, y te pagaron por la llave.' },
+        { txt:'Devolverla, pero hablar con los padres de fondo', tipo:'pacto', pagaMult:0.8, rep:8, disociacion:1, requierePulso:true,
+          narr:'La devuelves —es menor, soltarla en la calle no es ayudarla—, pero antes te sientas con los padres y les dices lo que ninguna nota de rescate diría: que su hija se puso precio porque era el único lenguaje que creía que entendían. El padre se ofende. La madre, no: la madre se queda muy quieta, mirando a Libe, como si la viera por primera vez en años. Cobras un poco menos. Quizá no cambie nada. Pero plantaste la única pregunta que esa casa nunca se había hecho.' },
+        { txt:'Dejarla ir y mentir a los padres', tipo:'soltar', pagaMult:0.0, rep:-4, disociacion:-5, requierePulso:true,
+          narr:'No puedes hacerlo. La dejas marchar con el dinero y les dices a sus padres que el rastro se enfrió, que los secuestradores la sacaron del distrito. No cobras nada y mientes a un cliente, lo que en este oficio se paga caro si se sabe. Pero ves a Libe perderse entre la gente con su mochila y su libertad torpe y aterradora, y por una vez decides que no todo el mundo merece ser devuelto a su jaula. Ojalá la calle sea más amable con ella de lo que fue su casa. No lo será. Aun así.', malo:false }
+      ]
+    }
+  },
+
+  // ── R4 · helix ── el médico que falsea muertes
+  {
+    id: 'medico_falsea_muertes',
+    titulo: 'EL FORENSE QUE FIRMA MENTIRAS',
+    contratante: 'HELIX · Auditoría Interna',
+    faccion: 'helix',
+    peligro: 4,
+    pagaBase: 760,
+    progreso: 215,
+    rangoMin: 4,
+    resumen: 'Un forense de HELIX, el doctor Maron, firma certificados de muerte falsos: declara muertos a vivos y vivos a muertos, a cambio de dinero. HELIX lo quiere vivo para saber a quién encubrió. Lo que no te dicen es por qué un hombre decente acabó haciendo esto.',
+    objetivo: {
+      nombre: 'Dr. Aldo Maron, forense',
+      contexto: 'Un patólogo de HELIX con veinte años intachables que, de pronto, empezó a falsear certificados. No por avaricia: lo descubrirás. Encubrió muertes de gente del Arrabal que HELIX habría "recuperado" para experimentos, firmándolas como definitivas para que los dejaran en paz. Pero también cobró por ello, y esa mancha lo hace cazable.'
+    },
+    abordaje: {
+      intro: 'Encuentras al doctor Maron en la morgue de noche, solo, firmando papeles bajo una luz fría. No huye al verte; deja la pluma con un suspiro largo, como quien llevaba tiempo esperando este momento. "Auditoría manda a un cazador. Claro. Más barato que un juicio." Se quita los guantes. ¿Cómo lo abordas?',
+      opciones: [
+        { txt:'[LABIA] Preguntarle por qué un hombre como él hace esto', via:'labia', prob:0.75,
+          exito:{ msg:'No lo acusas: le preguntas, de verdad, por qué. Maron te mira largo rato y decide que mereces la verdad. Empieza a hablar de los certificados, de a quién protegía firmándolos, y de lo que HELIX hace con los "muertos recuperables". No huye: confiesa.' },
+          fallo:{ msg:'Lee en ti al cazador antes que al oyente y se cierra. "No vas a entenderlo, y no voy a dejar que me uses para encontrarlos." Apaga la luz y, conociendo la morgue a oscuras, se escabulle entre las camillas.', huye:true } },
+        { txt:'[ANALIZADOR] Bloquear su acceso al sistema de la morgue', via:'sigilo', prob:0.7, requiereItem:'analizador',
+          exito:{ msg:'Conectas el analizador a la consola de la morgue y le cierras los accesos y las puertas automáticas antes de que reaccione. Maron prueba una salida, otra, y entiende que está encerrado contigo. Se sienta en una camilla vacía, vencido. "Eficiente. ¿Eres de los que escuchan o de los que entregan sin más?"' },
+          fallo:{ msg:'El sistema de la morgue es viejo y el analizador no engancha a la primera. Maron aprovecha el pitido de error para salir por la esclusa de cuerpos, que solo él sabe abrir desde dentro.', huye:true } },
+        { txt:'[ARMA] Cortarle el paso con firmeza', via:'fuerza', prob:0.8, requiereItem:'arma_fuego',
+          exito:{ msg:'Le cierras la única salida con el arma en alto. Maron ni se inmuta ante el cañón; ha visto demasiados muertos para temer ser uno. "Adelante. Pero antes de entregarme, mira un certificado. Solo uno. Después haz lo que tengas que hacer."', disociacion:4 },
+          fallo:{ msg:'Maron vuelca una bandeja de instrumental entre los dos y, en el estruendo metálico, desaparece por la esclusa de cuerpos.', huye:true, fatiga:5 } }
+      ]
+    },
+    persecucion: {
+      intro: 'Maron huye por las entrañas clínicas del complejo HELIX: pasillos de servicio, cámaras frías, conductos que conoce de veinte años pisándolos. No corre rápido, pero corre informado.',
+      pasos: [
+        { narr:'Se mete en una cámara de conservación llena de camillas con cuerpos. Puede esconderse entre ellos o seguir hacia los conductos.',
+          opciones:[
+            { txt:'Revisar las camillas una a una, sin prisa', bueno:true, msg:'Sabes que un forense se esconde donde se siente seguro: entre los muertos. Lo encuentras inmóvil entre dos camillas, fingiendo ser uno más. La calma te dio el ojo.' },
+            { txt:'Cruzar la cámara directo hacia los conductos', bueno:false, msg:'Pasas de largo y Maron, que sí estaba entre las camillas, espera a que salgas para huir por donde viniste.' }
+          ] },
+        { narr:'Llega a una bifurcación: un pasillo lleva a la salida exterior, otro de vuelta a su despacho.',
+          opciones:[
+            { txt:'Cubrir el pasillo a su despacho', bueno:true, msg:'Apuestas a que no huye: vuelve a por los certificados que protege. Aciertas. Lo interceptas en la puerta de su despacho, abrazado a una carpeta.' },
+            { txt:'Correr hacia la salida exterior', bueno:false, msg:'Vas a la salida, pero Maron nunca pensó en huir del edificio: volvió a por sus papeles y casi lo pierdes.' }
+          ] }
+      ]
+    },
+    pulso: {
+      intro: 'Maron está acorralado, abrazado a una carpeta de certificados como quien protege a hijos. Antes de decidir, escúchalo. Este objetivo no encaja en la palabra "culpable".',
+      frases: [
+        { txt:'"¿Sabes qué le pasa a un pobre del Arrabal que muere con el implante aún funcional? HELIX lo declara recuperable y lo abre. Yo los firmo definitivos. Para que los entierren en paz."',
+          lecturas:[
+            { txt:'Inventa una excusa noble para que lo sueltes', correcta:false },
+            { txt:'Dice la verdad: falsea muertes para salvar cuerpos del laboratorio', correcta:true },
+            { txt:'Está roto y delira sobre conspiraciones', correcta:false }
+          ] },
+        { txt:'"Sí, cobré por algunos. No voy a fingir que soy un santo. Pero por cada uno que cobré, firmé tres gratis. Entrégame y todos esos cuerpos vuelven a la lista de recuperables."',
+          lecturas:[
+            { txt:'Usa a los muertos como escudo para salvarse', correcta:false },
+            { txt:'Acierta: entregarlo reactiva el destino que él frenaba', correcta:true },
+            { txt:'Miente sobre los certificados gratuitos', correcta:false }
+          ] }
+      ]
+    },
+    decision: {
+      intro: 'Maron falsea muertes, sí. Cobró por algunas. Pero firma definitivos a los muertos del Arrabal para que HELIX no los "recupere" para el laboratorio. HELIX lo quiere vivo y con la lista. Entregarlo condena a esos cuerpos. ¿Qué haces?',
+      opciones: [
+        { txt:'Entregar a Maron y sus certificados a HELIX', tipo:'vivo', pagaMult:1.0, rep:14, disociacion:12,
+          narr:'Lo entregas con la carpeta. Auditoría te paga completo y te asciende en su consideración: eres de los que cumplen sin preguntar. Maron no forcejea; solo te dice, al cruzar la puerta: "Acabas de devolver doscientos cuerpos a la mesa de disección. Espero que el dinero te dure más que sus nombres." HELIX cruza sus listas esa misma noche. Cobras una fortuna por reabrir una carnicería que un hombre cansado había logrado frenar a fuerza de mentiras piadosas. Hay ascensos que saben a ceniza.' },
+        { txt:'Entregarlo, pero destruir antes la lista de nombres', tipo:'pacto', pagaMult:0.6, rep:4, disociacion:5, requierePulso:true,
+          narr:'Entregas a Maron —desafiar a Auditoría es desaparecer—, pero "accidentalmente" la carpeta de certificados arde antes de llegar a sus manos. HELIX tiene a su forense pero no su lista: los cuerpos que protegió siguen enterrados como definitivos, fuera de alcance. Cobras menos y Auditoría sospecha del incendio, pero no puede probarte nada. Maron, desde donde quiera que lo lleven, nunca sabrá que salvaste a sus muertos. Te basta con saberlo tú.' },
+        { txt:'Soltarlo y advertirle que desaparezca', tipo:'soltar', pagaMult:0.0, rep:-12, disociacion:-6, requierePulso:true,
+          narr:'No puedes entregarlo. Le dices que coja sus certificados, queme su rastro y desaparezca esta misma noche, lejos del alcance de HELIX. No cobras nada, y desafiar a Auditoría Interna te pinta una diana que tardarás en quitarte de la espalda. Maron recoge su carpeta con manos temblorosas. "¿Por qué?", pregunta. No sabes contestarle bien; algo de que doscientos nombres pesan más que una paga. Se va, y con él los muertos que seguirá protegiendo en otro agujero. Te has jugado el cuello por los enterrados. Es la clase de locura que no se cobra y no se olvida.', malo:false }
+      ]
+    }
+  },
+
+  // ── R4 · loto ── la desertora que se llevó la caja
+  {
+    id: 'desertora_caja',
+    titulo: 'LA QUE SE LLEVÓ LA CAJA',
+    contratante: 'El Loto Carmesí · Mano Roja',
+    faccion: 'loto',
+    peligro: 4,
+    pagaBase: 720,
+    progreso: 205,
+    rangoMin: 4,
+    resumen: 'Una tesorera del Loto, Reni, desapareció con la caja de un mes entero y los códigos de las cuentas. La Mano Roja la quiere viva, con el dinero y los códigos. Pero Reni no huyó por avaricia, y lo que se compró con ese dinero te hará dudar.',
+    objetivo: {
+      nombre: 'Reni Caló, tesorera',
+      contexto: 'Llevaba las cuentas del Loto con una lealtad de años. Hasta que su hermana cayó enferma de algo que solo HELIX podía tratar, a un precio que ninguna lealtad paga. Reni cogió la caja del mes y los códigos y desapareció. No es una ladrona de oficio: es una mujer que eligió a su hermana por encima del Loto, sabiendo lo que eso le costaría.'
+    },
+    abordaje: {
+      intro: 'Sigues el rastro del dinero hasta una clínica privada de las capas medias, cara, limpia, ajena al Arrabal. Encuentras a Reni en una sala de espera, demacrada, vigilando una puerta tras la que su hermana recibe un tratamiento que cuesta una caja entera del Loto. Te ve llegar y no se levanta. "Sé lo que eres. Solo... déjame ver cómo termina la sesión. Después voy contigo." ¿Cómo la abordas?',
+      opciones: [
+        { txt:'[LABIA] Preguntarle qué compró con la caja', via:'labia', prob:0.8,
+          exito:{ msg:'No la acusas: le preguntas adónde fue el dinero. Reni señala la puerta con la barbilla. "A eso. A que mi hermana respire un mes más." Te cuenta toda la historia sin adornos, los códigos incluidos, porque ya no le quedan fuerzas para mentir. No huye: solo está cansada.' },
+          fallo:{ msg:'Algo en tu acercamiento le suena a trampa y el instinto de tesorera le gana: se levanta, mete la mano en el bolso donde lleva los códigos y sale por la puerta de personal antes de que la alcances.', huye:true } },
+        { txt:'[SIGILO] Cubrir las salidas de la clínica', via:'sigilo', prob:0.7,
+          exito:{ msg:'Recorres la clínica y cubres las dos salidas reales antes de mostrarte. Cuando Reni piensa en huir, no hay por dónde. Se vuelve a sentar, despacio, y apoya la cabeza en la pared. "Bien jugado. No me voy sin verla salir, de todos modos."' },
+          fallo:{ msg:'No cuentas con la salida de emergencia del ala médica. Reni la conoce de tanto venir y se escurre por ella sin mirar atrás.', huye:true } },
+        { txt:'[ARMA] Impedir que se levante de la silla', via:'fuerza', prob:0.75, requiereItem:'arma_blanca',
+          exito:{ msg:'Le bloqueas el paso con cuerpo y hoja a la vista. Reni mira el filo sin miedo, casi con desprecio. "¿De verdad? ¿Aquí, delante de los enfermos?" Tiene razón y bajas un poco el arma, lo justo para sentirte mezquino.', disociacion:5 },
+          fallo:{ msg:'Reni grita "¡seguridad!" en plena sala de espera y, en el revuelo de batas y enfermos asustados, desaparece por el ala médica.', huye:true, fatiga:4 } }
+      ]
+    },
+    persecucion: {
+      intro: 'Si Reni huye, no corre como una criminal: corre como una mujer que no quiere alejarse demasiado de la puerta tras la que está su hermana. Esa correa invisible la vuelve predecible.',
+      pasos: [
+        { narr:'Se interna en el aparcamiento subterráneo de la clínica. Puede esconderse entre los vehículos o intentar salir a la calle.',
+          opciones:[
+            { txt:'Apostar a que no se aleja de la clínica', bueno:true, msg:'Sabes que no se irá lejos de su hermana. La encuentras agazapada tras una columna, con los ojos clavados en el ascensor que sube al ala médica. No pensaba huir de verdad.' },
+            { txt:'Perseguirla hacia la salida a la calle', bueno:false, msg:'Corres hacia la calle, pero Reni nunca pensó en salir: rodea de vuelta hacia el ascensor y casi la pierdes.' }
+          ] },
+        { narr:'La arrinconas junto al ascensor del ala médica. Pulsa el botón con desesperación, mirando los números bajar despacio.',
+          opciones:[
+            { txt:'Esperar a su lado sin tocarla', bueno:true, msg:'No la agarras. Te pones a su lado y esperas el ascensor con ella. Reni se derrumba contra la pared, llorando, y deja de huir. "No me iba a ir sin ella. No puedo." Se acabó.' },
+            { txt:'Sujetarla antes de que entre al ascensor', bueno:false, msg:'La agarras justo cuando se abren las puertas; en el forcejeo entra ella sola y las puertas se cierran entre los dos.' }
+          ] }
+      ]
+    },
+    pulso: {
+      intro: 'Reni está acorralada junto al ascensor, la caja del Loto vacía y los códigos en el bolso. Antes de decidir, escúchala. El dinero no se lo quedó.',
+      frases: [
+        { txt:'"No me llevé la caja para huir a una isla. Está toda ahí dentro, en una máquina que mantiene viva a mi hermana. Cuéntalo si quieres. Cada crédito tiene su factura médica."',
+          lecturas:[
+            { txt:'Miente; el dinero estará escondido en otra parte', correcta:false },
+            { txt:'Dice la verdad: gastó la caja entera en salvar a su hermana', correcta:true },
+            { txt:'Usa a su hermana como tapadera de un robo', correcta:false }
+          ] },
+        { txt:'"Sé que el Loto no perdona. Sé que estoy muerta lo entregue o no los códigos. Solo te pido el tiempo de que termine este tratamiento. Una hora. Es todo lo que pido."',
+          lecturas:[
+            { txt:'Gana tiempo para preparar otra fuga', correcta:false },
+            { txt:'Acepta su destino; solo quiere ver terminar el tratamiento', correcta:true },
+            { txt:'Manipula tu compasión para escapar', correcta:false }
+          ] }
+      ]
+    },
+    decision: {
+      intro: 'Reni no robó para enriquecerse: vació la caja del Loto en una máquina que mantiene viva a su hermana, y sabe que está sentenciada haga lo que haga. La Mano Roja la quiere viva, con dinero y códigos. ¿Qué haces?',
+      opciones: [
+        { txt:'Entregar a Reni y los códigos al Loto (cobrar completo)', tipo:'vivo', pagaMult:1.0, rep:13, disociacion:14,
+          narr:'La entregas con los códigos. La Mano Roja recupera sus cuentas y te paga completo, satisfecha: una desertora menos, un ejemplo más. Reni no suplica; solo te pide que alguien avise a la clínica de que ya no habrá más pagos. El tratamiento de su hermana se interrumpe esa misma semana. Cobras una fortuna por devolverle al Loto su dinero y, de paso, por firmar dos sentencias en vez de una. Te dices que ella sabía las reglas. Es verdad. No ayuda.' },
+        { txt:'Entregarla, pero pagar tú el tratamiento pendiente', tipo:'pacto', pagaMult:0.5, rep:6, disociacion:6, requierePulso:true,
+          narr:'Entregas a Reni y los códigos —no puedes robarle al Loto sin condenarte—, pero coges parte de tu paga y la dejas en la clínica, anónima, para que el tratamiento de su hermana no se corte de golpe. Reni nunca sabrá quién lo hizo. La Mano Roja tiene lo suyo, tú cobras poco, y en algún sitio una mujer enferma gana unas semanas que no debería. No has salvado a Reni. Pero no dejaste que su último acto fuera en vano.' },
+        { txt:'Soltarla con los códigos y mentir al Loto', tipo:'soltar', pagaMult:0.0, rep:-13, disociacion:-7, requierePulso:true,
+          narr:'No puedes. Le dices que coja a su hermana en cuanto pueda moverse y desaparezcan las dos del distrito, códigos incluidos. Le mientes a la Mano Roja: que Reni movió el dinero a cuentas que no pude rastrear, que se me adelantó. No cobras nada y mentirle al Loto sobre su propia caja es la clase de riesgo que se paga con la vida. Reni te mira como si no entendiera el idioma en que actúas. "¿Por qué?" Por nada que sepas explicar. Se llevan a su hermana en una silla esa noche, y se pierden las dos en una ciudad que no perdona a nadie. Quizá lo logren. Casi nunca se logra. Aun así las dejaste intentarlo.', malo:false }
+      ]
+    }
+  },
+
+  // ── R5 · sin facción ── el cazarrecompensas que cazaba inocentes (el espejo)
+  {
+    id: 'cazador_de_cazadores',
+    titulo: 'EL ESPEJO',
+    contratante: 'Gremio de Cazadores · tribunal interno',
+    faccion: '',
+    peligro: 5,
+    pagaBase: 1050,
+    progreso: 305,
+    rangoMin: 5,
+    resumen: 'El propio gremio te contrata para cazar a uno de los vuestros: Tann, un cazarrecompensas legendario que, según ellos, entregaba inocentes a HELIX por dinero, fabricando culpables. Quieren que lo traigas para juzgarlo. Pero Tann tiene una versión, y es un espejo en el que no querrás mirarte.',
+    objetivo: {
+      nombre: 'Tann Veor, cazarrecompensas',
+      contexto: 'Una leyenda del oficio, el cazador que nunca falló un contrato. El gremio lo acusa de haber entregado a inocentes señalados por HELIX, cobrando por cada uno. Tann no lo niega. Pero sostiene que el gremio lo sabía, lo consintió mientras fue rentable, y ahora lo entrega a él para limpiarse las manos. Es, en todo, el cazador que tú podrías llegar a ser.'
+    },
+    abordaje: {
+      intro: 'Encuentras a Tann esperándote en una azotea, de espaldas a la lluvia ácida, como si supiera la hora exacta de tu llegada. Es viejo para el oficio, lo que ya es un milagro. No se vuelve del todo. "El gremio te ha mandado a por mí. A ti. El que sube rápido." Una risa seca. "¿Te han contado mi versión, o solo la suya?" ¿Cómo lo abordas?',
+      opciones: [
+        { txt:'[LABIA] Pedirle su versión antes de juzgar', via:'labia', prob:0.7,
+          exito:{ msg:'Le dices que has venido a llevártelo, sí, pero que primero quieres oírlo. Tann asiente, casi con respeto. Y te cuenta cómo el gremio aceptaba los contratos de HELIX sabiendo que las dianas eran inocentes, cómo todos cobraron, cómo ahora necesitan un culpable único. No huye: te ofrece un espejo.' },
+          fallo:{ msg:'Lee en ti al cazador obediente, al que no quiere complicaciones, y decide que no mereces su historia. "Eres su perro nuevo. Pues corre." Y se deja caer por el borde de la azotea a una cornisa que tú no habrías visto.', huye:true } },
+        { txt:'[ARMA] Reducirlo antes de que hable y te confunda', via:'fuerza', prob:0.6, requiereItem:'arma_fuego',
+          exito:{ msg:'No le dejas empezar con sus razones: arma en alto, le ordenas que se tienda. Tann obedece despacio, sin miedo, con la sonrisa de quien ya ha apuntado a otros igual. "Así empecé yo. Sin escuchar. Mírame bien: es a dónde lleva." El acierto te sabe amargo.', disociacion:8 },
+          fallo:{ msg:'Tann lleva cuarenta años esquivando cañones. Lee tu intención en los hombros antes de que dispares y rueda tras la maquinaria de la azotea, desapareciendo.', huye:true, fatiga:6 } },
+        { txt:'[ANALIZADOR] Rastrear su salida antes de encararlo', via:'sigilo', prob:0.7, requiereItem:'analizador',
+          exito:{ msg:'Con el analizador mapeas sus rutas de escape de la azotea y las inutilizas una a una antes de dejarte ver. Cuando Tann va a fugarse, encuentra cada vía muerta. Se ríe, sin rencor. "Las cerraste todas antes de hablar. Eres bueno. Yo también lo era. Por eso estoy aquí arriba contigo."' },
+          fallo:{ msg:'Tann conoce trucos que el analizador no contempla: salidas que no figuran en ningún plano. Para cuando el aparato termina de leer, él ya no está en la azotea.', huye:true } }
+      ]
+    },
+    persecucion: {
+      intro: 'Tann no huye como una presa: huye como un maestro, dejándote pistas falsas que tú, cazador, estás entrenado para seguir. Caza tu propio instinto.',
+      pasos: [
+        { narr:'Deja un rastro demasiado claro hacia las escaleras: una puerta entornada, una huella húmeda. Justo lo que buscarías.',
+          opciones:[
+            { txt:'Desconfiar del rastro fácil y buscar el difícil', bueno:true, msg:'Demasiado limpio. Ignoras la puerta entornada —el cebo— y buscas la salida que un veterano usaría de verdad. Lo cazas saliendo por el conducto que él creía secreto. Pensaste como él, no como su presa.' },
+            { txt:'Seguir el rastro evidente hacia las escaleras', bueno:false, msg:'Sigues las huellas y das con una puerta que se cierra con cerrojo a tu espalda: el cebo era una trampa. Pierdes un tiempo precioso forzándola.' }
+          ] },
+        { narr:'Llega a un mercado nocturno y, en vez de esconderse, se planta entre la gente y te mira fijo, retándote a actuar en público.',
+          opciones:[
+            { txt:'Acercarte despacio, sin escándalo, como un igual', bueno:true, msg:'No haces aspavientos: caminas hacia él entre los puestos, tranquilo, como dos colegas que se reconocen. Eso lo desarma. "Sabes moverte. Lástima." Deja que lo alcances sin montar la escena que esperaba usar para escapar.' },
+            { txt:'Gritar que es un fugitivo para que lo detengan', bueno:false, msg:'Gritas y el mercado estalla en caos; Tann lo había previsto y usa la estampida para esfumarse. Sabía que gritarías.' }
+          ] }
+      ]
+    },
+    pulso: {
+      intro: 'Tann está frente a ti, viejo y sereno, el cazador que nunca falló. Antes de decidir su suerte, escúchalo de verdad. Es el único objetivo que se parece a ti.',
+      frases: [
+        { txt:'"Entregué inocentes, sí. Los que HELIX señalaba. ¿Y sabes qué? El gremio cobró su parte de cada uno. Todos. Ahora necesitan una cara que colgar, y eligieron la mía porque soy viejo y ya no rindo."',
+          lecturas:[
+            { txt:'Reparte culpas para diluir la suya propia', correcta:false },
+            { txt:'Dice una verdad incómoda: el gremio fue cómplice y ahora se limpia con él', correcta:true },
+            { txt:'Inventa la complicidad del gremio para salvarse', correcta:false }
+          ] },
+        { txt:'"Te miro y me veo hace cuarenta años. Subiendo rápido, cogiendo los contratos buenos sin preguntar de quién era la cara del cartel. Así empieza. Nadie decide ser yo. Se llega sin darse cuenta."',
+          lecturas:[
+            { txt:'Manipula tu ego comparándote con una leyenda', correcta:false },
+            { txt:'Te advierte de verdad: el camino que él recorrió es el tuyo si no eliges', correcta:true },
+            { txt:'Intenta paralizarte con palabras para huir', correcta:false }
+          ] }
+      ]
+    },
+    decision: {
+      intro: 'Tann entregó inocentes por encargo de HELIX, y el gremio cobró de cada uno antes de hacerlo a él chivo expiatorio. Es culpable, y es el cazador en que tú podrías convertirte. El gremio lo quiere vivo para juzgarlo y lavarse. ¿Qué haces?',
+      opciones: [
+        { txt:'Entregar a Tann al gremio para su juicio', tipo:'vivo', pagaMult:1.0, rep:15, disociacion:15,
+          narr:'Lo entregas al tribunal del gremio. Te pagan la fortuna prometida y te coronan como La Mano de HELIX, el rango que nadie alcanza: el cazador que cazó a la leyenda. El gremio celebra el juicio, condena a Tann por todos, y queda inmaculado, sus propias manos limpias gracias a la tuya. Tann no se defiende en el juicio; solo te busca con la mirada desde el banquillo y articula, sin voz: "Ahora eres tú." Cobras como nunca. Y empiezas a entender que el oficio no te convierte en monstruo de golpe: lo hace contrato a contrato, mientras subes rápido y no preguntas de quién es la cara del cartel. Tú acabas de subir un peldaño más.' },
+          { txt:'Entregarlo, pero hacer pública la complicidad del gremio', tipo:'pacto', pagaMult:0.6, rep:5, repAlt:{faccion:'loto',val:8}, disociacion:8, requierePulso:true,
+          narr:'Entregas a Tann —es culpable, y soltarlo no lo absuelve—, pero antes filtras las pruebas de que el gremio cobró de cada inocente, para que el juicio no sea solo contra un viejo. El tribunal no puede limpiarse del todo: caen otros con Tann, y el oficio queda manchado para quien quiera verlo. Cobras menos y te ganas enemigos poderosos dentro del gremio. Tann, al saberlo, suelta una carcajada ronca desde el banquillo: "No me has salvado, chico. Pero no les has dejado fingir que eran santos. Es más de lo que yo hice nunca." No es justicia. Es lo más cerca que llega esta ciudad.' },
+        { txt:'Soltarlo y dejar que desaparezca', tipo:'soltar', pagaMult:0.0, rep:-15, disociacion:-10, requierePulso:true,
+          narr:'No lo entregas. No porque sea inocente —no lo es—, sino porque entregarlo al gremio que lo usó para coronarte a ti es una mentira que no puedes firmar. Le dices que desaparezca y no vuelva. No cobras la mayor paga de tu carrera y el gremio te marca como desertor, lo que en este oficio es ser la próxima cara del cartel. Tann te mira largamente antes de irse. "Pude ser tu final, chico. Quizá te he dado uno distinto." Se pierde en la lluvia ácida, viejo, libre y culpable. Te quedas en la azotea, sin paga y sin rango, preguntándote si acabas de tirar tu carrera o de salvar lo único de ti que aún no estaba en venta. El gremio querrá una respuesta. Tú ya tienes la tuya, aunque te cueste la cabeza.', malo:false }
+      ]
+    }
+  },
+
+  // ── R5 · helix ── la directiva que quiso desconectar a CERO
+  {
+    id: 'directiva_desertora',
+    titulo: 'LA QUE QUISO APAGAR EL NÚCLEO',
+    contratante: 'HELIX · Consejo (canal negro)',
+    faccion: 'helix',
+    peligro: 5,
+    pagaBase: 1300,
+    progreso: 315,
+    rangoMin: 5,
+    resumen: 'Una alta directiva de HELIX, la doctora Sevren, huyó del nivel más profundo de la compañía con un plan: desconectar para siempre el activo del que HELIX extrae todo su poder. CERO. El Consejo la quiere viva y callada. Lo que ella sabe podría liberar a un dios o matar a una civilización. O las dos cosas.',
+    objetivo: {
+      nombre: 'Dra. Ila Sevren, ex directiva',
+      contexto: 'Pasó treinta años en la cúpula de HELIX gestionando el activo CERO, hasta que entendió lo que gestionaba: no una máquina, sino un ser milenario cautivo y consciente. Huyó con los códigos de desconexión del núcleo, convencida de que apagarlo es un acto de piedad. El Consejo sabe que apagar CERO también colapsaría la medicina, la cibernética y la logística de medio sistema solar. Nadie tiene razón del todo. Ese es el horror.'
+    },
+    abordaje: {
+      intro: 'Localizas a la doctora Sevren en un refugio frío bajo un sector muerto, rodeada de terminales robados, los ojos hundidos de quien no duerme desde que entendió algo. No se asusta al verte. "El Consejo te paga por traerme antes de que hable o pulse. Lo entiendo." Señala una silla con la cabeza. "Pero antes de decidir, deberías saber qué llevas treinta años ayudando a mantener encadenado." ¿Cómo la abordas?',
+      opciones: [
+        { txt:'[LABIA] Dejar que te explique qué descubrió', via:'labia', prob:0.7,
+          exito:{ msg:'Te sientas. La escuchas. Y la doctora Sevren te cuenta, con la calma terrible de la certeza, lo que es CERO: un ser anterior a la humanidad, fragmentado y consciente, que HELIX ordeña como a un animal de tiro desde hace generaciones. "Cada implante, cada cura milagrosa, cada red: arrancada de algo que siente. Yo firmé esas órdenes treinta años. Por eso voy a apagarlo." No huye: necesita que alguien más lo sepa.', disociacion:6 },
+          fallo:{ msg:'Lee en ti al brazo ejecutor del Consejo y se cierra. "No. Tú aún crees que esto va de dinero. No mereces saberlo." Pulsa un control y las luces del refugio se apagan; cuando vuelven, ella ya no está.', huye:true } },
+        { txt:'[ANALIZADOR] Neutralizar sus terminales antes de que actúe', via:'sigilo', prob:0.7, requiereItem:'analizador',
+          exito:{ msg:'Conectas el analizador y fríes sus terminales robados antes de que pueda introducir los códigos de desconexión. Sevren ve apagarse sus pantallas, una a una, y algo se le rompe por dentro. "Eran meses de trabajo. Ahora nunca sabrá nadie cómo liberarlo sin matarnos a todos. Felicidades: lo has condenado a otros mil años de cadenas."', disociacion:10 },
+          fallo:{ msg:'Sus terminales tienen defensas que el analizador no esperaba: se sobrecarga y se apaga humeante. Sevren aprovecha el apagón de tu equipo para desaparecer entre los conductos del sector muerto.', huye:true } },
+        { txt:'[ARMA] Reducirla antes de que toque un control', via:'fuerza', prob:0.7, requiereItem:'arma_fuego',
+          exito:{ msg:'Cruzas la sala y la apartas de los terminales con el arma en alto antes de que su mano llegue al teclado. Sevren levanta las manos despacio, sin miedo, casi aliviada de que la decisión deje de ser solo suya. "Bien. Que cargue otro con esto un rato. Llevo seis meses sin poder pulsar ni dejar de querer hacerlo."', disociacion:8 },
+          fallo:{ msg:'Sevren era directiva, no soldado, pero el refugio es suyo: vuelca un bastidor de servidores entre los dos y, en la lluvia de chispas, se pierde por una esclusa que solo ella sabía abrir.', huye:true, fatiga:6 } }
+      ]
+    },
+    persecucion: {
+      intro: 'Sevren no huye como una fugitiva entrenada: huye como una científica que ha calculado cada salida. El sector muerto está cartografiado en su cabeza, y el latido de CERO retumba aquí abajo cada once segundos, confundiendo el oído.',
+      pasos: [
+        { narr:'Se interna por un pasaje donde el latido de fondo es tan fuerte que desorienta. Puedes taparte los oídos y fiarte de la vista, o seguir el sonido de sus pasos.',
+          opciones:[
+            { txt:'Fiarte de la vista e ignorar el latido', bueno:true, msg:'Bloqueas el pulso machacón de fondo y sigues solo el rastro visual: una huella en el polvo, una puerta mal cerrada. Te lleva directo a ella. El latido miente; los ojos no.' },
+            { txt:'Seguir el sonido de sus pasos', bueno:false, msg:'El latido de CERO enmascara y multiplica sus pasos; los oyes venir de todas partes y la pierdes en el eco.' }
+          ] },
+        { narr:'Llega a la antesala del núcleo, donde el latido es casi insoportable y hay terminales por todas partes. Corre hacia una consola concreta.',
+          opciones:[
+            { txt:'Cortarle el paso a la consola, no a la salida', bueno:true, msg:'Entiendes que no huye: va a por la consola para pulsar antes de que la cojas. Te interpones entre ella y el teclado en el último segundo. "Casi", jadea. "Estuve casi."' },
+            { txt:'Bloquear la salida de la antesala', bueno:false, msg:'Cubres la puerta, pero a Sevren no le importa escapar: va directa a la consola y casi introduce los códigos antes de que reacciones.' }
+          ] }
+      ]
+    },
+    pulso: {
+      intro: 'Sevren está acorralada en la antesala del núcleo, a un paso de la consola que apagaría a CERO, con el latido retumbando en los huesos de ambos. Antes de decidir, escúchala. Ninguna respuesta a esto es limpia.',
+      frases: [
+        { txt:'"No es una máquina. Es un ser, atrapado y consciente, y lo hemos estado desangrando durante generaciones para tener implantes y curas. Apagarlo es lo único decente que me queda por hacer."',
+          lecturas:[
+            { txt:'Ha enloquecido tras antropomorfizar un servidor', correcta:false },
+            { txt:'Dice la verdad que ella misma ayudó a ocultar treinta años', correcta:true },
+            { txt:'Exagera para justificar una traición por dinero', correcta:false }
+          ] },
+        { txt:'"Pero sé lo que dirás. Que apagarlo colapsa la medicina, la red, la logística. Que mueren millones. Tienes razón. Por eso huí en vez de pulsar ya. Porque ni yo sé si tengo derecho."',
+          lecturas:[
+            { txt:'Finge dudas para ganar tu confianza y escapar', correcta:false },
+            { txt:'Es sincera: carga un dilema sin solución buena y lo sabe', correcta:true },
+            { txt:'Te traslada la culpa para manipularte', correcta:false }
+          ] }
+      ]
+    },
+    decision: {
+      intro: 'Sevren tiene los códigos para apagar a CERO: un acto de piedad hacia un ser cautivo que, a la vez, colapsaría la civilización que depende de él. Ni ella sabe si tiene derecho. El Consejo la quiere viva, callada y con los códigos. ¿Qué haces?',
+      opciones: [
+        { txt:'Entregar a Sevren y los códigos al Consejo', tipo:'vivo', pagaMult:1.0, rep:15, disociacion:16,
+          narr:'La entregas con los códigos de desconexión. El Consejo te paga una fortuna y te corona como La Mano de HELIX: el cazador que les devolvió la llave de su propio dios. Sevren no forcejea; solo te dice, antes de que se la lleven al nivel sin nombre: "Acabas de garantizar otros mil años de cadenas. Por una paga. Igual que yo, durante treinta años, por un sueldo." CERO sigue encadenado, ordeñado, latiendo cada once segundos bajo la ciudad. Cobras como nunca soñaste. Y empiezas a contar los segundos sin querer, y a preguntarte si la piedad tenía precio y tú acabas de cobrarlo.' },
+        { txt:'Entregarla a ella, pero destruir los códigos', tipo:'pacto', pagaMult:0.6, rep:4, disociacion:10, requierePulso:true,
+          narr:'Entregas a Sevren —desafiar al Consejo es desaparecer—, pero antes destruyes los códigos de desconexión, que ningún bando debería tener el dedo encima de ese interruptor. El Consejo recupera a su directiva pero no la llave; quedan furiosos, y tú con menos paga y más enemigos arriba. Sevren, al entenderlo, casi sonríe entre el agotamiento: "No lo has liberado. Pero le has quitado a HELIX el poder de matarlo cuando estorbe. Es algo." CERO sigue cautivo. Pero nadie podrá apagarlo de un capricho. Has dejado la decisión imposible sin resolver, que quizá sea lo más honesto que se podía hacer con ella.' },
+        { txt:'Soltarla y dejar que decida la humanidad, no HELIX', tipo:'soltar', pagaMult:0.0, rep:-15, disociacion:-6, requierePulso:true,
+          narr:'No la entregas. Pero tampoco la dejas pulsar: le dices que no te corresponde a ti, ni a ella, ni al Consejo decidir a solas si un dios muere y una civilización con él. Le dices que filtre lo que sabe —qué es CERO, qué le hacen— y deje que el mundo entero cargue con la elección, no seis directivos en una sala sin ventanas. Sevren te mira como si la hubieras absuelto y condenado a la vez. "Compartirlo. No apagarlo ni callarlo. Compartirlo." Desaparece para esparcir la verdad por la red. No cobras nada, y el Consejo de HELIX te marca como la filtración a cazar. Pero por una vez no has sido la mano que aprieta ni la que calla: has sido la que abrió la ventana. Quizá no cambie nada. Quizá lo cambie todo. El latido te acompaña a la superficie, y juras que, por primera vez, suena distinto.', malo:false }
+      ]
+    }
   }
 ];
 const CONTRATOS_POR_ID = {};
