@@ -286,9 +286,592 @@ const CONTRATOS_CAZA = [
           narr:'La ayudas a desaparecer antes de que HELIX cierre el cerco. No cobras, y desafiar a HELIX en una recuperación de activos es lo que te pone a ti en el siguiente cartel. Ileen se va con su bomba de relojería en la cabeza y la única prueba que puede pararla. "Gracias", dice, la primera persona en mucho tiempo que te lo dice de verdad. Quizá la última. Duermes en paz, mirando la puerta.' }
       ]
     }
+  },
+  // ── CONTRATO 4 — SIN FACCIÓN (un particular) ──────────────
+  {
+    id: 'crio_que_vio',
+    titulo: 'EL CRÍO QUE VIO DEMASIADO',
+    contratante: 'Particular · una madre sin nombre',
+    faccion: '',
+    peligro: 1,
+    pagaBase: 150,
+    progreso: 80,
+    rangoMin: 0,
+    resumen: 'Una mujer te paga lo poco que tiene para encontrar a su hijo de doce años, que huyó tras presenciar algo en un callejón. No quiere castigarlo. Quiere que vuelva antes de que lo encuentre quien no debe.',
+    objetivo: {
+      nombre: 'Tobi, 12 años',
+      contexto: 'Vio a unos hombres del Loto deshacerse de un cuerpo y echó a correr. Lleva tres días escondido, muerto de miedo, convencido de que si vuelve a casa los traerá con él. No huye de su madre: huye para protegerla.'
+    },
+    abordaje: {
+      intro: 'Encuentras a Tobi acurrucado en el hueco de un montacargas averiado, abrazado a las rodillas. Es pequeño para su edad, los ojos enormes de no dormir. En cuanto nota una sombra, se tensa como un animal. ¿Cómo lo abordas?',
+      opciones: [
+        { txt:'[LABIA] Hablarle bajo, sin acercarte', via:'labia', prob:0.85,
+          exito:{ msg:'Te agachas a su altura y le hablas como a una persona, no como a una presa. "Tu madre me manda. Está bien. Solo quiere que vuelvas." Tarda, pero los hombros se le aflojan un poco.' },
+          fallo:{ msg:'Tu sombra lo asusta antes de que hables. Sale disparado por el hueco del montacargas.', huye:true } },
+        { txt:'[COMIDA] Ofrecerle una ración antes de hablar', via:'trampa', prob:0.95, requiereItem:'racion_deshidratada',
+          exito:{ msg:'Le tiendes una ración sin decir nada. El hambre puede más que el miedo: la coge, come con las dos manos, y mientras mastica deja que te acerques. A veces lo que desarma a un crío no son las palabras.', disociacion:-2 },
+          fallo:{ msg:'Le tiendes la comida pero el gesto brusco lo espanta; sale corriendo dejándola en el suelo.', huye:true } },
+        { txt:'[FUERZA] Agarrarlo antes de que reaccione', via:'fuerza', prob:0.9,
+          exito:{ msg:'Lo sujetas por el brazo. Es tan ligero que casi te da vergüenza la facilidad. Patalea un segundo y luego se queda quieto, rendido, como quien ya esperaba que lo cazaran.', disociacion:5 },
+          fallo:{ msg:'Se te escurre como una anguila entre las cajas y echa a correr.', huye:true } }
+      ]
+    },
+    persecucion: {
+      intro: 'Tobi corre como solo corre un niño que conoce cada rincón donde esconderse. Es rápido, pero está agotado y hambriento.',
+      pasos: [
+        { narr:'Se cuela por una rejilla de ventilación demasiado estrecha para un adulto. Puedes seguir el conducto por fuera o esperar a la otra salida.',
+          opciones:[
+            { txt:'Calcular dónde sale y esperarlo', bueno:true, msg:'Conoces estos conductos. Le sales al otro extremo justo cuando asoma la cabeza.' },
+            { txt:'Seguir el conducto golpeando para asustarlo', bueno:false, msg:'Lo asustas más y acelera; se te adelanta dos salidas.' }
+          ] },
+        { narr:'Sale a una pasarela sobre un patio de luces. Duda, mirando el vacío. Está agotado.',
+          opciones:[
+            { txt:'Acercarte despacio, con las manos a la vista', bueno:true, msg:'Levantas las manos y le hablas. Se queda quieto en la pasarela, temblando, sin fuerzas para más.' },
+            { txt:'Correr a agarrarlo antes de que salte', bueno:false, msg:'Tu carrera lo asusta y casi resbala de la pasarela. Recuperarlo os cuesta un susto enorme a los dos.' }
+          ] }
+      ]
+    },
+    pulso: {
+      intro: 'Tobi está delante de ti, agotado, sin más sitio a donde correr. Antes de decidir qué haces con él, míralo de verdad. Lee al crío.',
+      frases: [
+        { txt:'"No puedo volver a casa. Si vuelvo, me siguen, y le hacen daño a mi madre. Por eso me fui. ¿No lo entiende?"',
+          lecturas:[
+            { txt:'Inventa una excusa para que no lo lleves', correcta:false },
+            { txt:'Huyó para PROTEGER a su madre, no por miedo a ella', correcta:true },
+            { txt:'Está confuso y no sabe lo que dice', correcta:false }
+          ] },
+        { txt:'"Vi lo que hicieron con aquel hombre. Si saben que lo vi, soy el siguiente. Y mi madre también."',
+          lecturas:[
+            { txt:'Exagera lo que vio para dar pena', correcta:false },
+            { txt:'Es un testigo real y el peligro que teme es cierto', correcta:true },
+            { txt:'Confunde una película con la realidad', correcta:false }
+          ] }
+      ]
+    },
+    decision: {
+      intro: 'Tobi te mira con los ojos de quien ya ha decidido que el mundo no es de fiar. Su madre te paga por devolvérselo. Pero el crío vio algo del Loto, y devolverlo a casa sin más podría traer a esos hombres tras él. ¿Qué haces?',
+      opciones: [
+        { txt:'Devolverlo a su madre sin más (cobrar)', tipo:'vivo', pagaMult:1.0, rep:3, disociacion:4,
+          narr:'Lo llevas a casa. Su madre lo abraza llorando y te paga lo prometido, que es casi nada y es todo lo que tiene. Cumpliste el encargo. Pero al irte ves a Tobi mirar la puerta por encima del hombro de su madre, y entiendes que le has devuelto el cuerpo a su casa sin quitarle de encima lo que lo perseguía. Esperas, sin creértelo del todo, que los hombres del Loto tengan mala memoria.' },
+        { txt:'Devolverlo y avisar a la madre del peligro', tipo:'pacto', pagaMult:0.8, rep:4, disociacion:-2, requierePulso:true,
+          narr:'Lo llevas a casa, pero antes hablas a solas con la madre: le cuentas lo que el crío vio, que quizá tengan que irse del sector una temporada, que no es paranoia del niño. Ella escucha con la cara descompuesta y asiente. Cobras un poco menos por el tiempo que pierdes en avisarla, pero te vas sabiendo que al menos saben de qué esconderse. Tobi te mira distinto al salir: como a alguien que, por una vez, le creyó.' },
+        { txt:'No entregarlo: ayudarle a esconderse mejor', tipo:'soltar', pagaMult:0.0, rep:-3, disociacion:-4, requierePulso:true,
+          narr:'No lo devuelves. Le buscas un sitio más seguro que el hueco de un montacargas y le haces llegar a la madre un mensaje de que su hijo vive y volverá cuando se pueda. No cobras, y una madre llorará esta noche sin entender por qué no le traes a su niño. Pero Tobi no acabará en un callejón con la misma suerte que el hombre que vio. Algunas deudas se pagan en culpa, no en créditos. Esta la pagas tú.' }
+      ]
+    }
+  },
+  // ── CONTRATO 5 — LOTO (cobradora arrepentida) ─────────────
+  {
+    id: 'cobradora_arrepentida',
+    titulo: 'LA QUE SE QUEDÓ CON LA CAJA',
+    contratante: 'El Loto Carmesí · Mano Roja',
+    faccion: 'loto',
+    peligro: 2,
+    pagaBase: 300,
+    progreso: 130,
+    rangoMin: 1,
+    resumen: 'Una cobradora del propio Loto, Reni, desapareció con la recaudación de una semana. La Mano Roja la quiere de vuelta, con el dinero y con un ejemplo que dar. Tú decides qué clase de ejemplo.',
+    objetivo: {
+      nombre: 'Reni Calderón, excobradora del Loto',
+      contexto: 'Llevaba años cobrando deudas ajenas hasta que le tocó arruinar a una familia que le recordó a la suya. Se quedó la caja y huyó, no para enriquecerse, sino para devolver el dinero a quienes se lo había sacado. Lleva media caja ya repartida.'
+    },
+    abordaje: {
+      intro: 'Localizas a Reni en un cuartucho del Arrabal, contando fajos y anotando nombres en una libreta. No huye con el dinero: lo está devolviendo, casa por casa. Lleva una pistola al cinto, pero no la toca. ¿Cómo la abordas?',
+      opciones: [
+        { txt:'[LABIA] Preguntarle qué hace con el dinero', via:'labia', prob:0.8,
+          exito:{ msg:'Levanta la vista de la libreta, cansada. "¿Me manda la Roja? Claro. Siéntate. Antes de llevarme, mira esto." Te enseña la libreta: nombres, cantidades, deudas que está deshaciendo una a una.' },
+          fallo:{ msg:'Se sobresalta, agarra la caja y sale por la ventana al andamiaje exterior.', huye:true } },
+        { txt:'[ARMA] Desarmarla antes de que llegue a su pistola', via:'fuerza', prob:0.9, requiereItem:'arma_blanca',
+          exito:{ msg:'Le pones el filo cerca antes de que su mano roce el cinto. No forcejea. "Rápido. Profesional." Aparta la mano del arma. "Al menos escucha por qué lo hice, ya que vas a llevarme."', disociacion:4 },
+          fallo:{ msg:'Calcula tu intención y se descuelga por la ventana antes de que la alcances.', huye:true } },
+        { txt:'[SIGILO] Entrar mientras está absorta contando', via:'sigilo', prob:0.65,
+          exito:{ msg:'Está tan concentrada en sus cuentas que te plantas a su lado sin que lo note. Cuando levanta la cabeza, ya es tarde para correr. Suspira, casi aliviada de que se acabe la huida.' },
+          fallo:{ msg:'Una tabla cruje. Reni reacciona rápido, vuelca la mesa y salta a los andamios.', huye:true } }
+      ]
+    },
+    persecucion: {
+      intro: 'Reni conoce los andamios del Arrabal de sus años cobrando puerta a puerta. Corre con la caja a cuestas, lo que la frena.',
+      pasos: [
+        { narr:'Salta entre andamios sobre un callejón. Puedes seguirla saltando o bajar a cortarle la única escalera.',
+          opciones:[
+            { txt:'Bajar a bloquear su escalera de salida', bueno:true, msg:'Le cortas la única bajada. Se queda atrapada en el andamio, sin ruta.' },
+            { txt:'Saltar tras ella de andamio en andamio', bueno:false, msg:'El peso de la caja la hace más ágil de lo que esperas en lo alto; te saca ventaja.' }
+          ] },
+        { narr:'Se mete en un mercadillo cubierto, lleno de telas colgadas. Puede perderse entre ellas.',
+          opciones:[
+            { txt:'Quedarte quieto y mirar el movimiento de las telas', bueno:true, msg:'Las telas delatan su rastro. La interceptas entre dos puestos.' },
+            { txt:'Apartar telas a manotazos buscándola', bueno:false, msg:'Te enredas entre la tela mientras ella se escabulle al fondo.' }
+          ] }
+      ]
+    },
+    pulso: {
+      intro: 'Reni está acorralada, la caja contra el pecho. Antes de decidir, escúchala. Lee a la cobradora.',
+      frases: [
+        { txt:'"No me quedé el dinero. Lo estoy devolviendo. A la gente a la que se lo saqué con estas manos durante diez años."',
+          lecturas:[
+            { txt:'Miente: nadie devuelve dinero robado', correcta:false },
+            { txt:'Dice la verdad; la libreta lo confirma', correcta:true },
+            { txt:'Se justifica para que la dejes ir', correcta:false }
+          ] },
+        { txt:'"Llévame con la Roja si quieres. Pero deja que termine de repartir lo que queda. Esas familias no tienen la culpa de mi conciencia."',
+          lecturas:[
+            { txt:'Es una treta para escapar con el resto', correcta:false },
+            { txt:'Ha asumido su final; solo le importa terminar', correcta:true },
+            { txt:'Intenta comprarte con palabras bonitas', correcta:false }
+          ] }
+      ]
+    },
+    decision: {
+      intro: 'Reni tiene media caja repartida y media por repartir, y una libreta con cada nombre. La Mano Roja quiere el dinero y un escarmiento. ¿Qué haces?',
+      opciones: [
+        { txt:'Entregar a Reni y la caja al Loto (cobrar completo)', tipo:'vivo', pagaMult:1.0, rep:9, disociacion:9,
+          narr:'La entregas con lo que queda de la caja. La Mano Roja sonríe: "Buen trabajo. De esto se aprende." Lo que le hagan a Reni servirá de ejemplo para los próximos diez años de cobradores. Las familias que ella estaba devolviendo no recuperarán lo demás. Cobras completo y el Loto te respeta. Esa libreta llena de nombres acaba en la basura.' },
+        { txt:'Entregar a Reni pero "perder" la libreta', tipo:'pacto', pagaMult:0.7, rep:5, disociacion:4, requierePulso:true,
+          narr:'Entregas a Reni y la caja, pero la libreta con los nombres se te "cae" por una alcantarilla de camino. El Loto recupera su dinero y su escarmiento, pero no la lista de a quién había devuelto qué, así que esas familias no figuran como deudoras de nuevo. Cobras algo menos. Reni te mira al entregarla, ve lo que hiciste con la libreta, y asiente una vez. No es perdón. Es entendimiento.' },
+        { txt:'Dejarla terminar de repartir y desaparecer', tipo:'soltar', pagaMult:0.0, rep:-7, disociacion:-5, requierePulso:true,
+          narr:'Le das una hora para terminar su reparto y le dices que se esfume del sector. No cobras, y la Mano Roja sabrá que dejaste escapar a una ladrona con su dinero: mal asunto con el Loto. Pero Reni termina de deshacer diez años de deudas ajenas y desaparece, y por una noche el Arrabal pesa un poco menos sobre unas cuantas familias. Has tirado una buena paga por la conciencia de otra persona. Y dormirás bien.' }
+      ]
+    }
+  },
+  // ── CONTRATO 6 — FERRO (desertor) ─────────────────────────
+  {
+    id: 'desertor_turno_noche',
+    titulo: 'EL DESERTOR DEL TURNO DE NOCHE',
+    contratante: 'Sindicato Ferro · capataz de muelle',
+    faccion: 'sindicatos',
+    peligro: 2,
+    pagaBase: 260,
+    progreso: 120,
+    rangoMin: 1,
+    resumen: 'Un estibador del Ferro, Holt, dejó de presentarse al turno tras saldar de golpe una deuda de juego imposible. El Sindicato huele que el dinero salió de su propia mercancía y lo quiere de vuelta para "hablar".',
+    objetivo: {
+      nombre: 'Holt Drennan, estibador',
+      contexto: 'Debía a una casa de apuestas más de lo que ganaría en cinco años. Para salvar a su hija de que la deuda recayera en ella, desvió un cargamento del Ferro y lo vendió. Sabe que está muerto si lo cogen. Solo intenta dejar a su hija lejos antes de que pase.'
+    },
+    abordaje: {
+      intro: 'Encuentras a Holt en una pensión de mala muerte, metiendo las cosas de una niña en una bolsa. Hay una cama pequeña, dibujos pegados a la pared. No es la guarida de un ladrón: es la mudanza apurada de un padre. ¿Cómo lo abordas?',
+      opciones: [
+        { txt:'[LABIA] Hablarle de la hija primero', via:'labia', prob:0.8,
+          exito:{ msg:'Menciona a su hija y se le quiebra algo. "¿Te manda el Ferro? Llévame, pero deja que ella suba al transporte de las seis. Por favor." Se sienta en la cama pequeña, vencido.' },
+          fallo:{ msg:'En cuanto oye "Ferro" coge a medias la bolsa y sale al pasillo de la pensión.', huye:true } },
+        { txt:'[GANZÚA] Bloquearle la única salida antes de entrar', via:'sigilo', prob:0.9, requiereItem:'ganzua',
+          exito:{ msg:'Con las ganzúas trabas el cierre de la puerta trasera de la pensión antes de entrar por la principal. Cuando Holt corre a la salida de atrás, no abre. Se vuelve hacia ti, derrotado. "Limpio. Eres bueno."', disociacion:3 },
+          fallo:{ msg:'Tardas demasiado con el cierre y Holt te oye trastear; sale por la ventana al callejón.', huye:true } },
+        { txt:'[FUERZA] Entrar y reducirlo de inmediato', via:'fuerza', prob:0.7,
+          exito:{ msg:'Entras rápido y lo tienes contra la pared antes de que reaccione. No pelea; protege la bolsa de la niña con el cuerpo, no a sí mismo. "Vale. Me tienes. Ella no tiene nada que ver."', disociacion:3 },
+          fallo:{ msg:'Es más fuerte de lo que parece un estibador cansado. Te empuja contra la cama y sale corriendo con la bolsa.', huye:true, fatiga:5 } }
+      ]
+    },
+    persecucion: {
+      intro: 'Holt corre cargando la bolsa de su hija, lo que le pesa, pero la desesperación de un padre tira fuerte. Conoce los muelles como la palma de su mano.',
+      pasos: [
+        { narr:'Se mete entre contenedores apilados del muelle. Puedes seguirlo por el laberinto o trepar a verlo desde arriba.',
+          opciones:[
+            { txt:'Trepar a un contenedor alto para localizarlo', bueno:true, msg:'Desde arriba ves su ruta entre los contenedores y le cortas el paso.' },
+            { txt:'Seguirlo por el laberinto a ras de suelo', bueno:false, msg:'El laberinto de contenedores es suyo; te despista en dos giros.' }
+          ] },
+        { narr:'Llega al borde del muelle, donde un transporte está a punto de zarpar. Su hija ya está a bordo.',
+          opciones:[
+            { txt:'Pararte y dejar que la niña suba antes de actuar', bueno:true, msg:'Esperas a que el transporte con la niña se aleje. Holt, ya sin nada que proteger, deja de correr.' },
+            { txt:'Placarlo antes de que llegue al transporte', bueno:false, msg:'Forcejeáis al borde del muelle a la vista de la niña, que grita desde la cubierta. Feo. Logras reducirlo, con mal cuerpo.' }
+          ] }
+      ]
+    },
+    pulso: {
+      intro: 'Holt está reducido, mirando hacia donde se aleja el transporte. Antes de decidir, escúchalo. Lee al padre.',
+      frases: [
+        { txt:'"Robé al Ferro, sí. Para pagar una deuda que iba a caer sobre mi hija si yo faltaba. No me arrepiento de eso. De nada más."',
+          lecturas:[
+            { txt:'Se escuda en la hija para dar lástima', correcta:false },
+            { txt:'Dice la verdad: lo hizo por ella, asumiendo el precio', correcta:true },
+            { txt:'Miente sobre el motivo del robo', correcta:false }
+          ] },
+        { txt:'"Ya está a salvo, lejos. Lo que me hagáis ahora me da igual. Hice lo único que un padre podía hacer."',
+          lecturas:[
+            { txt:'Finge resignación para que bajes la guardia', correcta:false },
+            { txt:'Ha terminado su única misión y ya no teme nada', correcta:true },
+            { txt:'Prepara un último intento de fuga', correcta:false }
+          ] }
+      ]
+    },
+    decision: {
+      intro: 'Holt ya ha puesto a su hija a salvo en el transporte. El Ferro lo quiere de vuelta para "hablar", y todos sabéis lo que eso significa. ¿Qué haces?',
+      opciones: [
+        { txt:'Entregar a Holt al Ferro (cobrar completo)', tipo:'vivo', pagaMult:1.0, rep:9, disociacion:10,
+          narr:'Lo entregas en el muelle. El capataz asiente y paga sin contar. A Holt se lo llevan a "hablar" y no vuelve a verse. Cobras completo y el Ferro te apunta como fiable. En algún sitio lejano, una niña esperará un padre que no va a bajar de ningún transporte, y nunca sabrá que tú lo pusiste en esa silla. El orden del Ferro siempre cobra sus deudas. Tú acabas de ser el cobrador.' },
+        { txt:'Entregarlo, pero pasarle la paga a la niña', tipo:'pacto', pagaMult:0.4, rep:6, disociacion:5, requierePulso:true,
+          narr:'Entregas a Holt, porque no hacerlo es jugarte el cuello con el Ferro. Pero rastreas el transporte de la niña y le haces llegar, anónima, casi toda tu paga. Cobras una miseria neta. Holt nunca lo sabrá, su hija tampoco entenderá de dónde salió ese sobre. Has cumplido el encargo y, con lo que te quedaba de humano, has intentado que el huérfano que creaste no pase hambre. No es redención. Es lo que se puede.' },
+        { txt:'Dejarlo ir con su hija', tipo:'soltar', pagaMult:0.0, rep:-8, disociacion:-5, requierePulso:true,
+          narr:'Le dices que corra al transporte antes de que zarpe. Llega de milagro, y por la borda ves a una niña abrazarse a su padre. No cobras, y el Ferro sabrá que dejaste escapar a un ladrón de su mercancía: un enemigo peligroso. Pero no has separado a un padre de su hija para que unos hombres de traje "hablen" con él. Vuelves con las manos vacías y algo intacto por dentro que vale más que la paga.' }
+      ]
+    }
+  },
+  // ── CONTRATO 7 — HELIX (donante reticente) ────────────────
+  {
+    id: 'donante_reticente',
+    titulo: 'EL CONTRATO DE LA CARNE',
+    contratante: 'HELIX · Cumplimiento de Contratos',
+    faccion: 'helix',
+    peligro: 3,
+    pagaBase: 400,
+    progreso: 150,
+    rangoMin: 2,
+    resumen: 'Un hombre firmó con HELIX la venta de un riñón a cambio de saldar sus deudas médicas. Cobró. Ahora que toca la extracción, ha desaparecido. HELIX te paga por llevarlo a quirófano. El contrato es legal. Eso no lo hace limpio.',
+    objetivo: {
+      nombre: 'Marek Dovern, deudor',
+      contexto: 'Firmó la venta de un riñón cuando su mujer agonizaba y la única cura la pagaba HELIX. Ella murió igual, dos días después de firmar. Ahora HELIX viene a cobrarse la carne por una vida que ni siquiera se salvó. Marek no huye del bisturí: huye de morir por nada.'
+    },
+    abordaje: {
+      intro: 'Encuentras a Marek en un taller abandonado, sentado en el suelo con la espalda contra la pared, mirando una foto. No parece un fugitivo: parece un hombre esperando. ¿Cómo lo abordas?',
+      opciones: [
+        { txt:'[LABIA] Sentarte a su lado y escuchar', via:'labia', prob:0.8,
+          exito:{ msg:'Te sientas en el suelo, a su altura. No huye. "Firmé por ella. Y se murió igual." Te enseña la foto: una mujer riendo. "Ahora me quieren abrir por una deuda de una vida que ya no existe. ¿Eso es legal? Pues será legal."' },
+          fallo:{ msg:'Se levanta de golpe al verte de uniforme y sale por el fondo del taller.', huye:true } },
+        { txt:'[CREDENCIAL] Identificarte como agente de HELIX', via:'trampa', prob:0.85, requiereItem:'papel_helix',
+          exito:{ msg:'Le muestras la credencial. Se ríe sin ganas. "Claro. El sello que lo arregla todo." No corre; está demasiado cansado de huir de un papel. "Vamos, pues. A cumplir el contrato."', disociacion:4 },
+          fallo:{ msg:'Ver el logo de HELIX en la credencial le da el empujón que necesitaba para salir corriendo.', huye:true } },
+        { txt:'[FUERZA] Reducirlo antes de que escape', via:'fuerza', prob:0.75,
+          exito:{ msg:'Lo inmovilizas contra la pared. Apenas se resiste; tiene el cuerpo de quien lleva semanas sin comer bien. "Para ti es un trabajo. Lo entiendo. Para mí es un riñón por una muerta."', disociacion:5 },
+          fallo:{ msg:'La desesperación le da una fuerza que no esperabas y se zafa, volcando estanterías a tu paso.', huye:true, fatiga:5 } }
+      ]
+    },
+    persecucion: {
+      intro: 'Marek corre con la energía rabiosa del que no tiene nada que perder. El taller da a un dédalo de naves abandonadas.',
+      pasos: [
+        { narr:'Cruza una nave inundada de agua hasta las rodillas. Puedes vadear tras él o bordear por una pasarela elevada.',
+          opciones:[
+            { txt:'Bordear por la pasarela elevada', bueno:true, msg:'Avanzas seco y rápido por arriba mientras él chapotea abajo. Le ganas la salida.' },
+            { txt:'Vadear el agua detrás de él', bueno:false, msg:'El agua te frena tanto como a él; mantiene la distancia y gana terreno al salir.' }
+          ] },
+        { narr:'Se encierra en una cámara frigorífica abandonada y atranca la puerta desde dentro. Hace un frío mortal ahí.',
+          opciones:[
+            { txt:'Hablarle a través de la puerta, sin forzarla', bueno:true, msg:'Le hablas tranquilo a través del metal. Al rato, el frío y el cansancio pueden más: abre la puerta él mismo.' },
+            { txt:'Forzar la puerta a la fuerza', bueno:false, msg:'Tardas en reventar el cierre y, cuando entras, Marek casi se ha desmayado de frío. Tienes que cargarlo, perdiendo tiempo.' }
+          ] }
+      ]
+    },
+    pulso: {
+      intro: 'Marek está delante de ti, tiritando, la foto aún en la mano. Antes de decidir, escúchalo. Lee al hombre.',
+      frases: [
+        { txt:'"El contrato es legal, sí. Vendí el riñón para salvarla. Murió antes de la operación. Ahora pago una deuda contraída por una vida que ya no existe."',
+          lecturas:[
+            { txt:'Busca un tecnicismo para anular el contrato', correcta:false },
+            { txt:'Dice una verdad cruel: cumplir el contrato es absurdo y brutal', correcta:true },
+            { txt:'Exagera su tragedia para conmoverte', correcta:false }
+          ] },
+        { txt:'"No huyo de la operación. Huyo de que me corten por nada. Si ella viviera, te juro que iría yo solo al quirófano."',
+          lecturas:[
+            { txt:'Mentiría con tal de salvar su riñón', correcta:false },
+            { txt:'Es sincero: su problema es el sinsentido, no el miedo', correcta:true },
+            { txt:'Intenta ganar tiempo para escapar', correcta:false }
+          ] }
+      ]
+    },
+    decision: {
+      intro: 'El contrato de Marek es legal y HELIX paga bien por hacerlo cumplir. Pero es un hombre al que van a abrir para cobrarse una deuda contraída por salvar a alguien que ya murió. ¿Qué haces?',
+      opciones: [
+        { txt:'Entregar a Marek a HELIX (cobrar completo)', tipo:'vivo', pagaMult:1.0, rep:11, disociacion:13,
+          narr:'Lo entregas en el punto de recogida médica. Dos celadores lo conducen a un quirófano blanco e impecable donde le quitarán, con todo el papeleo en regla, un trozo del cuerpo por una deuda absurda. Cobras una fortuna. HELIX te marca como agente fiable de cumplimiento. Todo legal, todo firmado, todo monstruoso. La foto de su mujer se queda en el suelo del taller, donde nadie la recogerá.' },
+        { txt:'Entregarlo, pero filtrar el caso a los Archivistas', tipo:'pacto', pagaMult:0.7, rep:3, repAlt:{faccion:'archivistas',val:10}, disociacion:7, requierePulso:true,
+          narr:'Entregas a Marek, porque incumplir un contrato de HELIX es ponerte tú en su lugar. Pero antes pasas el caso a los Archivistas: un contrato que cobra carne por una vida no salvada es la clase de obscenidad legal que merece circular. Cobras casi todo. A Marek lo abren igual. Pero quizá, dentro de un tiempo, su caso ayude a que estos contratos se miren con otros ojos. Magro consuelo para un hombre con un riñón menos.' },
+        { txt:'Dejarlo ir y dar el contrato por imposible', tipo:'soltar', pagaMult:0.0, rep:-11, disociacion:-6, requierePulso:true,
+          narr:'Le dices que desaparezca, que cambie de sector, de nombre, de cara si puede. No cobras, y dejar sin cumplir un contrato de HELIX es la forma más rápida de acabar tú mismo en un quirófano con tu nombre en un formulario. Marek recoge la foto del suelo, te mira como quien no recuerda la última vez que alguien le hizo un favor, y se va. Te has buscado un problema enorme. Pero no has llevado a un hombre a que lo despiecen por una muerta. Esta noche el riesgo merece la pena.' }
+      ]
+    }
+  },
+  // ── CONTRATO 8 — LOTO (estafa interna, rango 3) ───────────
+  {
+    id: 'cobra_dos_veces',
+    titulo: 'LA QUE COBRA DOS VECES',
+    contratante: 'El Loto Carmesí · Mano Roja',
+    faccion: 'loto',
+    peligro: 3,
+    pagaBase: 480,
+    progreso: 170,
+    rangoMin: 3,
+    resumen: 'Una intermediaria del Loto, Vesh, lleva años cobrando deudas dos veces: una para el Loto y otra para su propio bolsillo, falseando los libros. La Mano Roja por fin lo ha olido. La quiere viva y quiere los libros reales.',
+    objetivo: {
+      nombre: 'Vesh Aldous, intermediaria',
+      contexto: 'Es lista, fría y lleva una década sangrando al Loto sin que lo notaran. No tiene una historia triste: tiene avaricia y nervios de acero. Pero también tiene una red de sobornos que llega muy arriba en el propio Loto, y eso la hace peligrosa de tocar.'
+    },
+    abordaje: {
+      intro: 'Localizas a Vesh en un salón privado, impecable, rodeada de guardaespaldas a sueldo. Te recibe sin inmutarse, como si te esperara. "Tú debes ser el perro que ha mandado la Roja. Siéntate. Hablemos como adultos." ¿Cómo la abordas?',
+      opciones: [
+        { txt:'[LABIA] Seguirle el juego y hacerla hablar', via:'labia', prob:0.75,
+          exito:{ msg:'Le sigues la conversación con calma y la dejas presumir. Entre frase y frase, deja caer dónde guarda los libros reales y cuánto lleva sisado. La vanidad es su única grieta, y la has encontrado.' },
+          fallo:{ msg:'Calcula que sabes demasiado y hace una seña. Sus guardaespaldas se mueven y Vesh aprovecha para escabullirse por una puerta lateral.', huye:true } },
+        { txt:'[ARMA] Imponerte sobre sus guardaespaldas', via:'fuerza', prob:0.85, requiereItem:'arma_fuego',
+          exito:{ msg:'Sacas el arma y los guardaespaldas calculan que no les pagan lo suficiente. Se apartan. Vesh ni pestañea. "Vaya. Directo. La Roja eligió bien." Se sienta, sin miedo, ya pensando en cómo comprarte.', disociacion:5 },
+          fallo:{ msg:'Los guardaespaldas reaccionan antes que tú; en el forcejeo Vesh desaparece por la puerta lateral.', huye:true, fatiga:6 } },
+        { txt:'[SIGILO] Esperar a que despida a su gente', via:'sigilo', prob:0.6,
+          exito:{ msg:'Aguardas a que termine la reunión y se quede sola contando. Te plantas entre ella y la salida sin un ruido. Por primera vez, una grieta de miedo le cruza la cara.' },
+          fallo:{ msg:'Un guardaespaldas rezagado te detecta y da la voz. Vesh no espera: ya va camino de la puerta lateral.', huye:true } }
+      ]
+    },
+    persecucion: {
+      intro: 'Vesh huye por los pasadizos de servicio del Arrabal, los mismos que usa para mover dinero sin que la vean. Va en tacones pero conoce cada atajo.',
+      pasos: [
+        { narr:'Se mete en un montacargas de carga y pulsa para bajar. Puedes saltar dentro a tiempo o cortar la energía del montacargas.',
+          opciones:[
+            { txt:'Cortar la energía del montacargas', bueno:true, msg:'El montacargas se detiene entre plantas. Vesh queda atrapada en la caja, sin salida.' },
+            { txt:'Saltar dentro antes de que cierre', bueno:false, msg:'Las puertas se cierran en tus narices; baja sin ti y ganas que recuperar.' }
+          ] },
+        { narr:'Sale a una galería comercial llena de gente. Puede mezclarse y desaparecer entre la multitud.',
+          opciones:[
+            { txt:'Vigilar las salidas en vez de perseguir', bueno:true, msg:'Cubres la única salida lógica y la interceptas cuando intenta colarse fuera.' },
+            { txt:'Abrirte paso entre la gente tras ella', bueno:false, msg:'La multitud la engulle y te frena; casi la pierdes del todo.' }
+          ] }
+      ]
+    },
+    pulso: {
+      intro: 'Vesh está acorralada, recomponiéndose el peinado con un aplomo admirable. Antes de decidir, léela. No todos los objetivos dan pena.',
+      frases: [
+        { txt:'"Puedo pagarte el triple de lo que te da la Roja. Ahora mismo. Y nadie tiene por qué saber que me encontraste."',
+          lecturas:[
+            { txt:'Está desesperada y se rendirá', correcta:false },
+            { txt:'Intenta comprarte; es su modo de operar, no un gesto sincero', correcta:true },
+            { txt:'Te ofrece una alianza honesta', correcta:false }
+          ] },
+        { txt:'"Llevo diez años haciendo esto. ¿Sabes por qué no me han pillado? Porque medio Loto cobra de mí. Tócame y verás a cuántos enfadas."',
+          lecturas:[
+            { txt:'Es un farol vacío para asustarte', correcta:false },
+            { txt:'Dice una verdad incómoda: su red de sobornos es real y peligrosa', correcta:true },
+            { txt:'Delira sobre su propia importancia', correcta:false }
+          ] }
+      ]
+    },
+    decision: {
+      intro: 'Vesh no tiene historia triste: tiene avaricia, una red de sobornos dentro del propio Loto y una oferta para comprarte. La Mano Roja la quiere viva y quiere los libros. ¿Qué haces?',
+      opciones: [
+        { txt:'Entregar a Vesh y los libros al Loto (cobrar completo)', tipo:'vivo', pagaMult:1.0, rep:12, disociacion:6,
+          narr:'La entregas con los libros reales. La Mano Roja los hojea y su sonrisa se va apagando: en esas páginas hay nombres de su propia gente. "Bien. Esto... lo arreglo yo." Cobras completo y el Loto te respeta como nunca. Lo que pase ahora dentro del Loto, con esa lista de traidores, no es tu problema. Por una vez, entregar al objetivo no te pesa: Vesh sabía lo que hacía.' },
+        { txt:'Aceptar su soborno y entregar libros falsos', tipo:'pacto', pagaMult:0.0, rep:-10, coste:0, disociacion:8, requierePulso:true,
+          narr:'Coges su dinero, el triple de la paga, y le entregas al Loto unos libros maquillados que ella te da. Vesh desaparece, agradecida y ya planeando su próximo timo. Te has forrado en una tarde. Pero le has mentido a la Mano Roja, y el Loto no perdona dos veces: si algún día atan cabos, el siguiente cartel con una cara llevará la tuya. El dinero pesa distinto cuando es el precio de tu propia cabeza.' },
+        { txt:'Soltarla y avisar al Loto de su red de sobornos', tipo:'soltar', pagaMult:0.3, rep:7, disociacion:2, requierePulso:true,
+          narr:'Dejas ir a Vesh (lista, escurridiza, ya volverás a verla) pero le llevas a la Mano Roja algo más valioso que una cabeza: la lista de los suyos que cobraban de ella. Cobras poco por no traer al objetivo, pero el Loto limpia su casa por dentro gracias a ti, y eso vale una reputación que el dinero no compra. Vesh anda suelta, debiéndote una y odiándote a partes iguales. En el Arrabal, eso es tener una carta guardada.' }
+      ]
+    }
+  },
+  // ── CONTRATO 9 — SIN FACCIÓN (el más nimio y desgarrador) ─
+  {
+    id: 'padre_robo_leche',
+    titulo: 'POR UN CAJÓN DE LECHE',
+    contratante: 'Particular · un comerciante del mercado',
+    faccion: '',
+    peligro: 2,
+    pagaBase: 200,
+    progreso: 110,
+    rangoMin: 2,
+    resumen: 'Un comerciante te paga para dar con quien lleva semanas robándole leche en polvo y fórmula infantil del almacén. Quiere un escarmiento público. El ladrón resulta ser lo que ya temías.',
+    objetivo: {
+      nombre: 'el ladrón del almacén',
+      contexto: 'Roba siempre lo mismo: fórmula infantil, nunca nada de valor que pueda revender. Es un padre joven, viudo, con un bebé que no para de llorar de hambre y un sueldo que no llega a la fórmula que HELIX vende a precio de oro. No es un criminal. Es un cálculo desesperado.'
+    },
+    abordaje: {
+      intro: 'Montas guardia en el almacén dos noches. A la tercera, una sombra fuerza la reja trasera y va directo, sin dudar, al estante de la fórmula infantil. Ni mira la caja registradora. Cuando enciendes la linterna, ves a un chico joven con ojeras y un portabebés vacío al pecho. ¿Cómo lo abordas?',
+      opciones: [
+        { txt:'[LABIA] Preguntarle para quién es la leche', via:'labia', prob:0.85,
+          exito:{ msg:'Se queda paralizado, la lata apretada contra el pecho. "Para mi hija. Tiene cuatro meses. Su madre... ya no está. Lléveme a donde tenga que llevarme, pero deje que le dé esta toma." Y se le quiebra la voz.' },
+          fallo:{ msg:'El susto de la linterna lo hace soltar la lata y escapar por la reja forzada.', huye:true } },
+        { txt:'[SEÑUELO] Dejar una lata como cebo y esperar', via:'trampa', prob:0.9, requiereItem:'senuelo',
+          exito:{ msg:'Dejas una lata bien a la vista, separada. Cuando va a por ella, está tan centrado en cogerla que te dejas ver sin que huya. "Por favor", dice sin más. "Es para mi hija." No hay treta que valga ante eso.', disociacion:2 },
+          fallo:{ msg:'Sospecha de la lata demasiado fácil y, en vez de cogerla, sale corriendo por la reja.', huye:true } },
+        { txt:'[FUERZA] Cortarle el paso a la reja', via:'fuerza', prob:0.8,
+          exito:{ msg:'Te interpones entre él y la salida. No pelea. Se queda quieto, abraza la lata como si fuera lo único que importa, que para él lo es. "Vale. Pero la leche va para mi hija. Eso no me lo quita."', disociacion:4 },
+          fallo:{ msg:'Es escurridizo de tanto huir y se cuela bajo tu brazo hacia la reja.', huye:true } }
+      ]
+    },
+    persecucion: {
+      intro: 'El chico corre por los pasillos del mercado nocturno que conoce de venir a robar. Corre torpe, agotado, pero la desesperación tira.',
+      pasos: [
+        { narr:'Se mete entre los puestos cerrados con sus lonas bajadas. Puedes seguirlo o adelantarte por el pasillo central.',
+          opciones:[
+            { txt:'Adelantarte por el pasillo central', bueno:true, msg:'Corres recto y le sales al final del pasillo de puestos. Frena en seco.' },
+            { txt:'Seguirlo entre las lonas', bueno:false, msg:'Las lonas te enredan mientras él se cuela por un hueco; ganas que recuperar.' }
+          ] },
+        { narr:'Llega a la salida del mercado, pero tropieza y la lata rueda lejos. Se detiene a recogerla en vez de huir.',
+          opciones:[
+            { txt:'Esperar a que recoja la lata, sin abalanzarte', bueno:true, msg:'Espera. Recoge la lata con manos temblorosas y, al levantarse, ya no corre. Sabe que lo tienes.' },
+            { txt:'Aprovechar el tropiezo para placarlo', bueno:false, msg:'Te lanzas y caéis los dos; la lata se abolla, él se hace daño, y la escena queda más fea de lo necesario.' }
+          ] }
+      ]
+    },
+    pulso: {
+      intro: 'El chico está delante de ti, la lata de fórmula contra el pecho como un escudo. Antes de decidir, míralo bien. Lee al padre.',
+      frases: [
+        { txt:'"Robo leche. Solo leche. Nunca he tocado la caja ni nada que vender. Es para mi hija, que llora de hambre porque no me da el sueldo."',
+          lecturas:[
+            { txt:'Usa al bebé de excusa para robar', correcta:false },
+            { txt:'Dice la verdad: roba solo fórmula, por necesidad pura', correcta:true },
+            { txt:'Es un ladrón habitual con buena labia', correcta:false }
+          ] },
+        { txt:'"Lléveme con quien sea. Pero esta lata se la llevo a ella primero. Después haga lo que quiera conmigo."',
+          lecturas:[
+            { txt:'Intenta escapar usando al bebé de coartada', correcta:false },
+            { txt:'Antepone a su hija a su propia suerte, sinceramente', correcta:true },
+            { txt:'Manipula tu compasión para ganar tiempo', correcta:false }
+          ] }
+      ]
+    },
+    decision: {
+      intro: 'El comerciante te paga por un escarmiento público. El ladrón es un padre viudo que roba fórmula para un bebé de cuatro meses. La ley del mercado es clara; lo que tú hagas, no tanto. ¿Qué haces?',
+      opciones: [
+        { txt:'Entregarlo al comerciante para el escarmiento (cobrar)', tipo:'vivo', pagaMult:1.0, rep:3, disociacion:9,
+          narr:'Lo entregas. El comerciante lo exhibe atado en su puesto toda la mañana, "para que aprendan los demás", y luego lo manda a los de seguridad de HELIX, que cobran las deudas con trabajo forzado. Cobras lo pactado. En algún cuarto de las capas bajas, un bebé de cuatro meses llora de hambre y nadie va a venir con la lata. Cumpliste el encargo. Esta es de las que no se olvidan, y no por orgullo.' },
+        { txt:'Entregarlo, pero pagar tú la leche robada', tipo:'pacto', pagaMult:0.6, rep:2, coste:50, disociacion:3, requierePulso:true,
+          narr:'Le pagas al comerciante de tu bolsillo lo robado para que retire la denuncia y no haya escarmiento, y dejas que el chico se lleve la lata a su hija. El comerciante refunfuña pero acepta el dinero. Cobras tu encargo menos lo que pusiste, casi nada neto. El chico no entiende por qué un cazador le paga la leche, y tú tampoco te lo explicas del todo. Pero el bebé come esta noche.' },
+        { txt:'Dejarlo ir y mentirle al comerciante', tipo:'soltar', pagaMult:0.0, rep:-2, disociacion:-5, requierePulso:true,
+          narr:'Le dices al chico que desaparezca y que busque las fórmulas que reparten en los comedores del Culto, que no pregunten tanto. Al comerciante le cuentas que el ladrón era un yonqui que se largó del sector y no volverá. No cobras, y mentirle a quien te paga es mal negocio si se sabe. Pero no has colgado a un padre en un puesto por una lata de leche. El bebé come, el padre respira, y tú te quedas sin paga y sin remordimiento. Buen cambio.' }
+      ]
+    }
+  },
+  // ── CONTRATO 10 — FERRO (pez gordo caído, rango 4) ────────
+  {
+    id: 'capataz_marcado',
+    titulo: 'EL CAPATAZ MARCADO',
+    contratante: 'Sindicato Ferro · Don Vasek',
+    faccion: 'sindicatos',
+    peligro: 4,
+    pagaBase: 650,
+    progreso: 220,
+    rangoMin: 4,
+    resumen: 'Uno de los capataces de más confianza de Vasek, Krell, ha caído en desgracia: se sospecha que negociaba con el Loto a espaldas del viejo. Vasek lo quiere vivo, para mirarlo a los ojos antes de decidir. Krell tiene hombres, armas y nada que perder.',
+    objetivo: {
+      nombre: 'Krell Vantano, capataz del Ferro',
+      contexto: 'Veinte años de lealtad a Vasek, hasta que entendió que el viejo lo iba a desechar como a todos. Empezó a hablar con el Loto para asegurarse un futuro. No es inocente, pero tampoco el traidor simple que Vasek cree: intentaba sobrevivir a un jefe que no deja sobrevivir a nadie.'
+    },
+    abordaje: {
+      intro: 'Krell se ha atrincherado en una nave de fundición clausurada, con tres hombres armados y la calma de un veterano. Te ve llegar por las cámaras y te habla por un altavoz oxidado. "Sé quién te manda. Entra solo y hablamos. O entra con todo y morimos varios. Tú eliges, cazador." ¿Cómo lo abordas?',
+      opciones: [
+        { txt:'[LABIA] Entrar solo, desarmado, a hablar', via:'labia', prob:0.7,
+          exito:{ msg:'Entras con las manos vacías. Krell despide a sus hombres con un gesto. "Valiente. O estúpido." Se sienta frente a ti. "Veinte años con el viejo. ¿Sabes cómo paga la lealtad? Con una bala cuando ya no sirves. Por eso hablé con el Loto." Y te lo cuenta todo.' },
+          fallo:{ msg:'Uno de sus hombres se pone nervioso, hay gritos, y en el caos Krell se repliega al fondo de la fundición. Ahora va a ser a las malas.', huye:true } },
+        { txt:'[ARMA] Entrar por la fuerza, arma en mano', via:'fuerza', prob:0.7, requiereItem:'arma_fuego',
+          exito:{ msg:'Entras rápido y duro. Hay un intercambio breve y brutal; sus hombres calculan que no cobran lo bastante para morir y se retiran. Krell tira el arma. "Está bien. Eres serio. Hablemos antes de que me lleves." Respira agitado, pero entero.', disociacion:7 },
+          fallo:{ msg:'Tres hombres armados en terreno conocido son demasiado. El tiroteo te obliga a replegarte, y Krell aprovecha para huir al fondo de la nave.', huye:true, herida:'costillas' } },
+        { txt:'[ANALIZADOR] Sabotear las cámaras y entrar a ciegas', via:'sigilo', prob:0.75, requiereItem:'analizador',
+          exito:{ msg:'Con el analizador friés sus cámaras de seguridad. Ciego, Krell pierde su ventaja; te cuelas entre sus hombres y le caes encima antes de que reaccionen. "La tecnología", masculla. "Siempre la maldita tecnología."', disociacion:5 },
+          fallo:{ msg:'El sabotaje dispara una alarma de respaldo. Krell sabe que entras y se repliega al fondo con los suyos.', huye:true } }
+      ]
+    },
+    persecucion: {
+      intro: 'Krell se repliega por la fundición que conoce de veinte años, apagando luces y volcando obstáculos. Es un veterano, no un fugitivo asustado.',
+      pasos: [
+        { narr:'Se mete en la sala de hornos, un laberinto de calor y tuberías. Puedes seguir su rastro de calor o cortarle la salida del fondo.',
+          opciones:[
+            { txt:'Rodear para cortar la salida del fondo', bueno:true, msg:'Conoces las fundiciones del Ferro. Le bloqueas la única salida y lo atrapas entre los hornos.' },
+            { txt:'Seguirlo directo entre las tuberías', bueno:false, msg:'Conoce cada válvula; suelta vapor a tu paso y te frena, ganando distancia.' }
+          ] },
+        { narr:'Llega a una pasarela sobre el foso de colada, ahora frío. Se vuelve, agotado, calculando si saltar.',
+          opciones:[
+            { txt:'Hablarle con calma, sin avanzar', bueno:true, msg:'Le hablas quieto. Mira el foso, mira sus veinte años, y baja los hombros. "Se acabó correr." Se entrega.' },
+            { txt:'Cargar contra él en la pasarela', bueno:false, msg:'Forcejeáis sobre el foso; casi caéis los dos al fondo de colada. Lo reduces, pero por los pelos y con un susto que recordarás.' }
+          ] }
+      ]
+    },
+    pulso: {
+      intro: 'Krell está reducido, el sudor y la ceniza marcándole las arrugas de veinte años. Antes de decidir, escúchalo. Lee al capataz.',
+      frases: [
+        { txt:'"Sí, hablé con el Loto. ¿Sabes por qué? Porque he visto al viejo desechar a hombres mejores que yo cuando dejaron de servirle. Yo soy el siguiente y lo sé."',
+          lecturas:[
+            { txt:'Justifica una traición por pura codicia', correcta:false },
+            { txt:'Dice una verdad amarga: traicionó para sobrevivir a Vasek', correcta:true },
+            { txt:'Miente sobre sus tratos con el Loto', correcta:false }
+          ] },
+        { txt:'"Llévame ante él si quieres. Pero los dos sabemos que Vasek no quiere hablar. Quiere mirarme a los ojos mientras decide cómo termina esto."',
+          lecturas:[
+            { txt:'Dramatiza para que sientas pena', correcta:false },
+            { txt:'Conoce a Vasek y sabe exactamente lo que le espera', correcta:true },
+            { txt:'Intenta ponerte en contra del viejo para escapar', correcta:false }
+          ] }
+      ]
+    },
+    decision: {
+      intro: 'Krell no es inocente: negoció con el Loto. Pero lo hizo sabiendo que Vasek lo iba a desechar igual que a otros. El viejo lo quiere vivo para "mirarlo a los ojos". ¿Qué haces?',
+      opciones: [
+        { txt:'Entregar a Krell a Vasek (cobrar completo)', tipo:'vivo', pagaMult:1.0, rep:15, disociacion:12,
+          narr:'Lo entregas en La Lonja. Vasek lo mira largo rato, en silencio, con esos ojos de abuelo que cortan fruta y encargan muertes. "Veinte años, Krell." No dice más. A Krell se lo llevan. Cobras una fortuna y te conviertes en uno de los cazadores de confianza del Ferro, lo cual abre puertas y cava tumbas a partes iguales. Has entregado a un hombre que solo quería sobrevivir al viejo. Ahora trabajas para el viejo.' },
+        { txt:'Entregarlo, pero pasar su info del Loto a Vasek aparte', tipo:'pacto', pagaMult:0.8, rep:10, disociacion:8, requierePulso:true,
+          narr:'Entregas a Krell y, además, le das a Vasek todo lo que Krell te contó de sus tratos con el Loto: nombres, fechas, contactos. Cobras casi completo y Vasek te valora aún más por minucioso. Krell, al verte cantar lo que te confió, te dedica una última mirada de desprecio sereno antes de que se lo lleven. Has sido eficiente. También has sido el cuchillo más afilado del viejo. Eso tiene un eco que dura.' },
+        { txt:'Dejarlo escapar al Loto', tipo:'soltar', pagaMult:0.0, rep:-15, disociacion:-4, requierePulso:true,
+          narr:'Le dices que corra al Loto, que es donde ya tenía medio pie, antes de que Vasek mande a alguien menos comprensivo. No cobras, y traicionar a Vasek en un encargo de esta categoría te convierte, oficialmente, en enemigo del Ferro: el peor sitio donde estar en Las Pilas. Krell desaparece hacia el Arrabal, debiéndote la vida. Te has ganado al Sindicato más poderoso de enemigo por dejar vivir a un hombre cansado. Habrá que mirar mucho por encima del hombro a partir de ahora.', malo:true }
+      ]
+    }
+  },
+  // ── CONTRATO 11 — HELIX (roza CERO, rango 5) ──────────────
+  {
+    id: 'eco_con_nombre',
+    titulo: 'EL ECO CON NOMBRE',
+    contratante: 'HELIX · División de Anomalías',
+    faccion: 'helix',
+    peligro: 5,
+    pagaBase: 1000,
+    progreso: 300,
+    rangoMin: 5,
+    resumen: 'La División de Anomalías te contrata para "recuperar" a un hombre que escapó de un programa que no aparece en ningún registro. No quieren saber qué le pasó. Quieren que deje de hablar. Y él habla de algo que no debería conocer.',
+    objetivo: {
+      nombre: 'el sujeto que se hace llamar "Eco"',
+      contexto: 'Fue parte de un experimento de HELIX para conectar mentes humanas a un fragmento de CERO. Volvió cambiado: habla de cosas anteriores a su nacimiento, predice pequeños sucesos, llama a la gente por nombres que no usan. HELIX no sabe si está roto o si funcionó demasiado bien. Por eso lo quieren callado, no muerto: muerto no pueden estudiarlo.'
+    },
+    abordaje: {
+      intro: 'Encuentras a Eco en lo más hondo de un sector muerto, sentado en el centro de una sala circular llena de símbolos grabados, los mismos del sector 0-G. No huye. Te mira llegar y sonríe. "Llegas con catorce minutos de adelanto sobre lo que vi. Interesante. Aún hay margen." ¿Cómo lo abordas?',
+      opciones: [
+        { txt:'[LABIA] Preguntarle qué es lo que "ve"', via:'labia', prob:0.75,
+          exito:{ msg:'"Veo lo que ya pasó y vuelve a pasar", dice sin dramatismo. "CERO no piensa en línea recta. Yo aprendí a oírlo un poco. HELIX quiere apagarme porque escucho lo que ellos solo saben usar." No huye. Te invita a sentarte en el círculo de símbolos. Tu piel se eriza.' },
+          fallo:{ msg:'"Ah. Vienes de los que no escuchan." Se levanta y, antes de que reacciones, se desvanece entre los pasajes del sector muerto como si lo conociera de antes de existir.', huye:true } },
+        { txt:'[ANALIZADOR] Medir y neutralizar su implante', via:'sigilo', prob:0.7, requiereItem:'analizador',
+          exito:{ msg:'Apuntas el analizador a su nuca. El aparato enloquece: lecturas imposibles, frecuencias que no deberían existir. Logras un pulso que lo aturde, pero el propio analizador se funde, chamuscado. Eco parpadea, vuelve en sí a medias. "Eso... no era de HELIX. ¿De dónde sacaste algo que casi me alcanza?"', disociacion:8 },
+          fallo:{ msg:'El analizador se sobrecarga al instante y se apaga humeante. Eco ladea la cabeza. "No. Eso no funciona conmigo." Y se pierde entre los pasajes.', huye:true } },
+        { txt:'[FUERZA] Reducirlo antes de que hable más', via:'fuerza', prob:0.65,
+          exito:{ msg:'Te lanzas sobre él. Es solo un hombre, físicamente; lo reduces sin gran pelea. Pero mientras lo sujetas te susurra al oído un nombre, uno que no le has dicho a nadie, uno de un sueño que tuviste de niño, y se te hiela la sangre.', disociacion:10 },
+          fallo:{ msg:'Justo cuando vas a agarrarlo, dice algo que te paraliza un segundo: el nombre de tu calle de la infancia. Ese segundo le basta para esfumarse.', huye:true, disociacion:5 } }
+      ]
+    },
+    persecucion: {
+      intro: 'Eco no corre como un hombre: parece saber dónde vas a pisar antes que tú. El sector muerto es su tablero. Cada paso tuyo lo tiene previsto, casi.',
+      pasos: [
+        { narr:'Se interna por un pasaje a oscuras. Una voz, la suya o un eco de ella, te llega desde varias direcciones a la vez. Puedes fiarte de tu instinto o detenerte a escuchar el pulso de las paredes.',
+          opciones:[
+            { txt:'Detenerte y escuchar el pulso de fondo', bueno:true, msg:'Ignoras las voces y sigues el latido grave, el de cada once segundos. Te lleva directo a él: la señal no miente como sí miente su voz.' },
+            { txt:'Seguir la voz a ciegas', bueno:false, msg:'Las voces te llevan en círculos; cuando quieres darte cuenta, has vuelto al principio.' }
+          ] },
+        { narr:'Llega a la sala del núcleo, donde el latido es casi insoportable. Se detiene en el centro, esperándote, o eso parece.',
+          opciones:[
+            { txt:'Acercarte despacio, sin miedo aparente', bueno:true, msg:'Caminas hacia él sin correr, sin temblar. Eso, curiosamente, lo desarma. "No tienes miedo. O no lo suficiente. Bien." Deja que lo alcances.' },
+            { txt:'Abalanzarte para acabar rápido', bueno:false, msg:'Tu carrera resuena en la sala y algo en el latido se acelera; te mareas, pierdes pie, y recuperarte cuesta.' }
+          ] }
+      ]
+    },
+    pulso: {
+      intro: 'Eco está delante de ti, sereno, en el centro del latido. Antes de decidir, escúchalo de verdad. Esto no se parece a ningún objetivo anterior.',
+      frases: [
+        { txt:'"HELIX no me quiere muerto. Me quiere callado y guardado, para abrirme y copiar lo que oigo. Soy un cable que aprendió a escuchar la otra punta."',
+          lecturas:[
+            { txt:'Delira: el experimento le quemó la cordura', correcta:false },
+            { txt:'Dice la verdad: es un sujeto funcional que HELIX quiere explotar', correcta:true },
+            { txt:'Inventa una conspiración para que lo sueltes', correcta:false }
+          ] },
+        { txt:'"Si me entregas, copiarán lo que oigo y aprenderán a usar a CERO sin escucharlo. Y eso, cazador, es lo único peor que ignorarlo."',
+          lecturas:[
+            { txt:'Exagera su propia importancia cósmica', correcta:false },
+            { txt:'Comprende algo real y aterrador sobre lo que HELIX busca', correcta:true },
+            { txt:'Manipula tu miedo a lo desconocido', correcta:false }
+          ] }
+      ]
+    },
+    decision: {
+      intro: 'Eco no es un fugitivo: es un hombre que oyó algo anterior a todo y volvió cambiado. HELIX lo quiere vivo y callado, para abrirlo y copiar lo que escucha. Es el contrato mejor pagado que has visto. Y el que más miedo te da. ¿Qué haces?',
+      opciones: [
+        { txt:'Entregar a Eco a HELIX (cobrar la fortuna)', tipo:'vivo', pagaMult:1.0, rep:15, disociacion:18,
+          narr:'Lo entregas a la mujer sin nombre de la División de Anomalías, que lo recibe sin sorpresa, como quien recupera una herramienta extraviada. Cobras mil créditos, una fortuna que te cambia la vida. Te conviertes en La Mano de HELIX, el rango que nadie alcanza. Pero Eco, antes de que se lo lleven, te mira y dice tu nombre verdadero, el de antes de que tuvieras este, y añade: "Te veré cuando aprendan a usarlo. Todos nos veremos." No duermes esa noche. Ni muchas otras. HELIX ya tiene su cable, y tú el dinero de venderlo.' },
+        { txt:'Entregarlo, pero grabar lo que dice para los Archivistas', tipo:'pacto', pagaMult:0.7, rep:5, repAlt:{faccion:'archivistas',val:15}, disociacion:12, requierePulso:true,
+          narr:'Entregas a Eco, porque desafiar a la División de Anomalías es desaparecer del mapa. Pero grabas todo lo que dijo y lo pasas a los Archivistas: si HELIX va a copiar a CERO sin escucharlo, que al menos haya una copia de la advertencia rondando por la red. Cobras bastante. Eco se deja llevar, y al pasar a tu lado murmura: "Buena elección. La verdad es más difícil de matar que un hombre." Lo que has puesto a circular tardará en germinar. Si germina.' },
+        { txt:'Dejarlo desaparecer en el sector muerto', tipo:'soltar', pagaMult:0.0, rep:-15, disociacion:-8, requierePulso:true,
+          narr:'Le dices que se pierda en lo hondo, donde HELIX no baja, donde el latido lo esconde. No cobras la mayor fortuna de tu carrera, y desafiar a la División de Anomalías te marca a ti como la próxima anomalía a recuperar. Eco asiente, y antes de fundirse con la oscuridad del sector dice: "Lo entiendes. Algunas cosas hay que dejar que escuchen en paz." Te has jugado el cuello por un hombre que oye lo que no debería. Quizá fue una locura. Quizá, en un mundo que vende todo lo que toca, fue lo único cuerdo. El latido se aleja contigo de vuelta a la superficie, y juras que, por un instante, marcó tu nombre.', malo:false }
+      ]
+    }
   }
 ];
-
 const CONTRATOS_POR_ID = {};
 CONTRATOS_CAZA.forEach(c => { CONTRATOS_POR_ID[c.id] = c; });
 

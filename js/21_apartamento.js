@@ -41,6 +41,13 @@ function actualizarLuzApartamento(){
 
 function iniciarApartamento(){
 
+  // RED DE SEGURIDAD (v0.101): si se llega aquí desde un estado de
+  // exploración/expedición interrumpido (p.ej. el debug panel salta
+  // directo al apartamento sin pasar por la salida normal), la clase
+  // 'explorar-activo' podría haber quedado puesta, ocultando el reloj
+  // diegético. La quitamos siempre al entrar al apartamento.
+  document.body.classList.remove('explorar-activo');
+
   // Dormir sigue siendo una sola vez por visita (su flujo cierra el día).
   Estado.durmioEstaVisita = false;
 

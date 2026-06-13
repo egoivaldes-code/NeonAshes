@@ -2,6 +2,14 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.102] - 2026-06-13
+### Added
+- Ocho contratos nuevos de Cazarrecompensas (hasta once en total), repartidos entre el Loto, el Ferro, HELIX y encargos sin facción, cubriendo desde rango 0 hasta rango 5. Incluye casos íntimos y desgarradores y uno que roza el misterio de CERO.
+- Al pulsar "Explorar la ciudad" ahora aparece una confirmación (¿Estás seguro? Sí / No) para evitar salidas accidentales.
+### Fixed
+- El reloj diegético ya no desaparece al volver al apartamento desde un estado de exploración interrumpido.
+- Subido el marcador del Hospital HELIX en el mapa móvil.
+
 ## [0.101] - 2026-06-13
 ### Added
 - Nueva profesión Cazarrecompensas: contratos de captura del Loto, el Ferro y HELIX, con opciones de abordaje según el equipo que llevas, persecución si el objetivo huye, "el pulso" para leer al objetivo y una decisión moral final (entregar, pactar o soltar).
