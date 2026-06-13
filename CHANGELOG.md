@@ -2,6 +2,16 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.100] - 2026-06-13
+### Added
+- Cinco eventos nuevos en el Hospital HELIX (huelga, brote, médico corrupto, ala de extracción de órganos, confusión de identidad), hasta un total de ocho.
+- Dieciséis eventos nuevos de zona (cuatro por cada barrio: Arrabal, Santuario, Nodo y Ferro).
+- Doce rumores nuevos con ganchos al resto del mundo del juego.
+- El clímax de la cadena del Sindicato Ferro ahora se ramifica: matar o perdonar a Mano Roja lleva a desenlaces distintos, y matarla cierra la cadena del Loto.
+### Changed
+- Marcadores de zona del mapa móvil recolocados sobre la nueva imagen.
+- Afinada la crudeza de varios textos (callejón del Arrabal, carroñero herido) acorde al tono del juego.
+
 ## [0.99] - 2026-06-11
 ### Added
 - Cuatro escenas nuevas de expedición de chatarra (altar de chatarra, niña perdida, dron caído, compañero herido).

@@ -404,7 +404,7 @@ const EVENTOS_EXPEDICION = [
   {
     id: 'companero_herido',
     peso: 2,
-    narracion: 'Otro carroñero está caído contra una tubería, una pierna doblada como no debería. No te amenaza; ya no le quedan fuerzas. «Llévate mi saco», jadea. «Pesa, pero yo de aquí no salgo. Solo... dile a alguien que estuve.» El saco está lleno. Su cara, vacía.',
+    narracion: 'Otro carroñero está caído contra una tubería, con la pierna partida en un ángulo imposible y un hueso asomando, blanco, por la tela empapada del pantalón. Ha dejado de gritar hace rato; ahora solo respira a tragos. No te amenaza, ya no le quedan fuerzas. «Llévate mi saco», jadea entre dientes apretados. «Pesa, pero yo de aquí no salgo. Solo... dile a alguien que estuve.» El saco está lleno. Su cara, ya casi vacía.',
     opciones: [
       { texto: 'Coger el saco y dejarlo ahí', tono:'VENAL', alerta:2, botin:true },
       { texto: 'Compartir el saco y ayudarle a salir', tono:'EMPATICO', alerta:6, botin:true, botinReducido:true },

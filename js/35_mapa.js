@@ -85,6 +85,30 @@ const ZONAS_MUNDO = [
           { txt:'Preguntar qué sabe él', cambios:{humano:{disociacion:2,fatiga:1}}, msg:'"¿Yo? Demasiado. Por eso bebo en la oscuridad." No dice más. Pero te deja con la sensación de haber rozado algo grande.' },
           { txt:'Soltarte y seguir', cambios:{humano:{aislamiento:3}}, msg:'Te suelta sin resistencia. "Como quieras. Pero recuerda quién te avisó." Tres pasos después, ya dudas de si pasó.' }
         ]
+      },
+      { titulo:'SUBASTA A PUERTA CERRADA', narr:'Una cortina mal echada deja ver una sala pequeña: gente bien vestida puja en silencio, con gestos mínimos, por algo que no ves. Un ujier del Loto te cierra la cortina en las narices con una sonrisa. "Esto no es para mirones. ¿O traes con qué pujar?"',
+        opciones:[
+          { txt:'Marcharte, no quieres saber qué subastan', cambios:{humano:{disociacion:4}}, msg:'Te alejas. No sabes si vendían recuerdos, secretos o algo peor, y una parte de ti agradece no saberlo. En el Arrabal, la curiosidad es una deuda más.' },
+          { txt:'Intentar averiguar qué se vende', cambios:{humano:{fatiga:2,disociacion:3}}, msg:'Sobornas a un camarero con una mirada y unas monedas. "Información", susurra. "De gente importante. El Loto no vende cuerpos: vende lo que confiesan en la cama." Te vas sabiendo demasiado.' }
+        ]
+      },
+      { titulo:'EL FAROLERO CIEGO', narr:'Un anciano ciego enciende uno a uno los faroles rojos con una pértiga, de memoria, sin fallar uno. Lleva haciéndolo, dice la gente, desde antes de que el Loto mandara aquí. Tararea algo viejo mientras trabaja.',
+        opciones:[
+          { txt:'Preguntarle qué ha visto cambiar', cambios:{humano:{aislamiento:-4,fatiga:1}}, msg:'"¿Ver? Yo no veo, hijo. Pero oigo. Y este barrio suena cada año más a billetes y menos a risas. Antes la gente venía a olvidar. Ahora viene a deber." Sigue encendiendo faroles. La melodía continúa.' },
+          { txt:'Ayudarle a encender los de más arriba', cambios:{humano:{aislamiento:-5,fatiga:3}}, msg:'Te pasa la pértiga y te guía con la voz. Por unos minutos eres las manos de un hombre que lleva media vida iluminando el placer de otros. "Buen pulso", dice. "Vuelve cuando quieras. Los faroles no preguntan de quién eres."' }
+        ]
+      },
+      { titulo:'LA DEUDA DE OTRO', narr:'Dos cobradores del Loto arrinconan a una mujer joven contra una pared de azulejos rotos. No gritan. Le explican, con paciencia de funcionario, todo lo que le pasará a ella y a su hermana si el viernes no aparece el dinero. La mujer mira al suelo.',
+        opciones:[
+          { txt:'Intervenir: pagar parte de la deuda (-40 CR)', cambios:{creditos:-40,humano:{aislamiento:-6}}, msg:'Pones unos créditos en la mano del cobrador. Cuenta, asiente, rebaja el plazo. "Generoso. O tonto." Se van. La mujer no te da las gracias: te mira como se mira a alguien que acaba de comprarse un problema ajeno. Quizá tenga razón.' },
+          { txt:'No es tu asunto: seguir tu camino', cambios:{humano:{disociacion:5,aislamiento:2}}, msg:'Pasas de largo. Es lo sensato; meterse en deudas del Loto es meterse en la boca del lobo. Pero la imagen de ella mirando al suelo se queda contigo más de lo que esperabas. Aquí aprendes rápido a no mirar. Demasiado rápido.' }
+        ]
+      },
+      { titulo:'LA CARTOMÁNTICA DE NEÓN', narr:'En un cubículo forrado de terciopelo desvaído, una mujer con ojos pintados de dorado baraja cartas que proyectan hologramas temblorosos. "No leo el futuro, cariño", dice antes de que preguntes. "Leo lo que ya cargas y no quieres mirar. Eso asusta más y cuesta lo mismo."',
+        opciones:[
+          { txt:'Dejarte leer (-20 CR)', cambios:{creditos:-20,humano:{disociacion:4,aislamiento:-3}}, msg:'Voltea tres cartas: una puerta, un hilo cortado, una figura sin cara. "Buscas algo o huyes de algo, aún no lo has decidido. Y hay alguien que recordarás cuando ya no puedas decírselo." Recoge las cartas. "El resto te lo cobrarías tú solo." Sales removido, sin saber si es magia o psicología barata. Da igual: acertó.' },
+          { txt:'Declinar con una sonrisa', cambios:{humano:{aislamiento:1}}, msg:'"Como quieras. Pero ya has dudado, y dudar es la mitad de la lectura." Te guiña un ojo dorado. Te alejas más rápido de lo necesario, porque en ese titubeo de un segundo has notado que, en efecto, cargas cosas que prefieres no barajar.' }
+        ]
       }
     ],
     descripcionLlegada: 'El Arrabal Carmesí huele a incienso barato, lluvia y perfume rancio. Los faroles tiñen de rojo los charcos. Alguien te observa desde el primer segundo, calculando cuánto vales y cuánto puedes deber. El Loto Carmesí lleva este barrio desde antes de que nacieras.',
@@ -125,6 +149,30 @@ const ZONAS_MUNDO = [
           { txt:'Llamar a un seguidor del Culto cercano', cambios:{}, msg:'Un hombre de túnica blanca y cuatro dedos mecánicos se lleva al niño sin decirte nada.' },
           { txt:'Seguir tu camino', cambios:{humano:{disociacion:3,aislamiento:3}}, msg:'El llanto se apaga detrás de ti. O dejas de oírlo.' }
         ]
+      },
+      { titulo:'LA COLA DE LA CONVERSIÓN', narr:'Una fila silenciosa espera ante una puerta de la que sale vapor tibio y olor a antiséptico. Hombres y mujeres con miembros aún de carne aguardan su turno para entregarlos. Nadie habla. Todos sonríen un poco, como antes de un examen que llevan toda la vida queriendo aprobar.',
+        opciones:[
+          { txt:'Preguntarle a alguien de la fila por qué lo hace', cambios:{humano:{aislamiento:-3,disociacion:3}}, msg:'Una mujer joven te enseña su mano derecha, temblorosa. "Degenerativa. En tres años no podré sostener a mi hija. El metal no tiembla." Lo dice sin drama, con una paz que te desarma. Para ella no es fanatismo. Es la única medicina que puede pagar.' },
+          { txt:'Apartarte del vapor y la cola', cambios:{humano:{disociacion:4}}, msg:'Te alejas del olor a antiséptico. No es tu fe ni tu miedo. Pero al mirar atrás, la fila no te parece de fanáticos: te parece de gente a la que el cuerpo ya traicionó, eligiendo el único cuerpo que les promete no hacerlo. Cuesta saber quién es el cuerdo aquí.' }
+        ]
+      },
+      { titulo:'EL QUE SE ARREPINTIÓ', narr:'Un hombre con un brazo mecánico golpea su propia prótesis contra una columna, una y otra vez, sin lograr hacerle mella. Llora de rabia. "Me lo quité todo de la carne y ahora la quiero de vuelta. ¿Me oyes? ¡La quiero de vuelta y no se puede!"',
+        opciones:[
+          { txt:'Sentarte a escucharle sin juzgar', cambios:{humano:{aislamiento:-5,fatiga:2}}, msg:'Se desploma a tu lado. Te cuenta que se convirtió por miedo a morir y que ahora le aterra haber dejado de ser humano para no morir nunca. "Cambié una muerte por otra", dice. No tienes respuesta. Te quedas. A veces quedarse es la única respuesta honesta.' },
+          { txt:'Decirle que el Culto puede ayudarle', cambios:{humano:{disociacion:5}}, msg:'"¿El Culto?" Se ríe entre lágrimas. "El Culto es quien me hizo esto. Pedirles ayuda es pedirle al río que te seque." Se aleja golpeándose el brazo. Te quedas con la duda de a cuántos más les pasa esto, callados, detrás de esas sonrisas serenas.' }
+        ]
+      },
+      { titulo:'RELIQUIA EN UNA VITRINA', narr:'En una hornacina iluminada, tras un cristal, se conserva un corazón humano real, detenido, conectado a un soporte que lo mantiene rosado. Una placa reza: "El último que latió por miedo. Que su descanso nos recuerde por qué elegimos el acero." Los fieles se persignan al pasar, tocándose el pecho mecánico.',
+        opciones:[
+          { txt:'Contemplar la reliquia un momento', cambios:{humano:{disociacion:6}}, msg:'Te quedas mirando el corazón que no late. Es macabro y es tierno a la vez, como casi todo aquí. Te descubres llevándote la mano al pecho, sintiendo el tuyo golpear, y por un segundo no sabes si eso te hace afortunado o atrasado a ojos de esta gente.' },
+          { txt:'Apartar la mirada y seguir', cambios:{humano:{disociacion:2,aislamiento:1}}, msg:'Pasas de largo, pero el corazón en la vitrina se te queda grabado. Esta noche, al acostarte, escucharás el tuyo más fuerte que de costumbre, y no sabrás si es alivio o miedo lo que sientes al notarlo todavía ahí.' }
+        ]
+      },
+      { titulo:'COMEDOR DE LOS CONVERSOS', narr:'En un patio interior, el Culto reparte comida caliente, gratis, a una cola de gente harapienta que no parece muy creyente: vienen por el plato, no por la fe. Voluntarios con miembros de acero sirven cuenco tras cuenco sin pedir nada a cambio. Es, quizá, lo más limpio y cálido que has visto en las Pilas.',
+        opciones:[
+          { txt:'Ponerte a servir cuencos un rato', cambios:{humano:{fatiga:4,aislamiento:-7}}, msg:'Sirves caldo una hora junto a una conversa que perdió las dos manos en una fundición del Ferro y las recuperó de acero aquí. "El Culto me dio manos para volver a dar de comer", dice, sin doctrina, solo agradecida. Sales agotado y con la incómoda sensación de que la secta que te inquieta alimenta a más pobres que HELIX.' },
+          { txt:'Aceptar un cuenco y comer en silencio', cambios:{humano:{hambre:-7,fatiga:-2,aislamiento:-3}}, msg:'Te dan un cuenco sin preguntarte si crees. Está caliente, sabe a poco y a mucho a la vez. Comes en un rincón, entre desconocidos que tampoco creen, todos calentándose con la caridad de unos fanáticos amables. El estómago lleno y la cabeza confusa: aquí los buenos y los inquietantes son la misma gente.' }
+        ]
       }
     ],
     descripcionLlegada: 'El Santuario IX huele a aceite de máquina y algo dulzón que no tiene nombre. Las paredes están cubiertas de grabados: cuerpos humanos con partes mecánicas, todos con los ojos cerrados y las manos abiertas. Bienvenido.',
@@ -162,6 +210,30 @@ const ZONAS_MUNDO = [
         opciones:[
           { txt:'Guardar el chip', cambios:{humano:{disociacion:2}}, msg:'No tienes forma de leerlo ahora. Pesa nada. Pesa todo.' },
           { txt:'Tirarlo', cambios:{}, msg:'Lo tiras. Ves cómo lo recoge alguien del suelo a los dos segundos.' }
+        ]
+      },
+      { titulo:'EL QUE YA SE SUBIÓ', narr:'En un rincón, alguien yace en una camilla con la cabeza conectada por un grueso haz de fibra a un servidor que zumba. El cuerpo respira, pero los ojos están en blanco, idos. Un miembro del Colectivo lo cuida como quien riega una planta. "Él ya está dentro", dice con orgullo. "El cuerpo es solo el cordón que aún no ha cortado."',
+        opciones:[
+          { txt:'Preguntar si va a volver al cuerpo', cambios:{humano:{disociacion:6}}, msg:'"¿Volver? ¿Por qué iba a querer? Ahí dentro no hay dolor, ni hambre, ni listas de espera de HELIX. Tú lo llamas perderse. Nosotros lo llamamos por fin caber." El cuerpo de la camilla sonríe sin que nadie lo mueva. Sales con frío.' },
+          { txt:'Mirar el cuerpo vacío un momento más', cambios:{humano:{disociacion:5,aislamiento:2}}, msg:'Observas el pecho subir y bajar sin un alma detrás. Te preguntas si lo de dentro sigue siendo él, o si solo es una copia que cree recordar haber tenido manos. La pregunta no tiene respuesta, y esa es exactamente la que te perseguirá esta noche.' }
+        ]
+      },
+      { titulo:'SUBASTA DE IDENTIDADES', narr:'Una pantalla lista, en silencio, vidas enteras en venta: historiales médicos, recuerdos volcados, identidades completas de gente que ya no las usa. "Limpias o usadas", susurra el vendedor. "Una identidad nueva en las Pilas vale más que un riñón. Y dura más."',
+        opciones:[
+          { txt:'Preguntar de quién son esas identidades', cambios:{humano:{disociacion:4}}, msg:'"De gente que se subió y ya no las necesita. De muertos sin reclamar. De algún incauto que vendió la suya por comer una semana." Se encoge de hombros. "Aquí nadie roba un nombre. Solo lo reciclamos. Hay diferencia." Tú ya no estás seguro de que la haya.' },
+          { txt:'Alejarte de la pantalla', cambios:{humano:{disociacion:3,aislamiento:2}}, msg:'Te vas antes de que el catálogo te tiente. En un sitio donde tu propio historial está cosido a otro por error, la idea de comprarte una vida limpia tiene un atractivo que prefieres no mirar de frente. Sigues siendo tú. Por ahora. Por elección.' }
+        ]
+      },
+      { titulo:'LA NIÑA QUE HABLA CON LA RED', narr:'Una cría de no más de diez años teclea a una velocidad imposible en tres terminales a la vez, descalza, con los ojos reflejando cascadas de datos. No parpadea casi. Un adulto del Colectivo la vigila desde lejos, con una mezcla de orgullo y algo que casi parece miedo.',
+        opciones:[
+          { txt:'Preguntar al adulto por la niña', cambios:{humano:{disociacion:4,aislamiento:-2}}, msg:'"Nació conectada. Lee la red como tú lees una cara." Baja la voz. "A veces nos dice cosas que aún no han pasado. No sabemos si las ve venir o las provoca. La cuidamos. Y rezamos a nada por que siga de nuestro lado." La niña sonríe sin levantar la vista.' },
+          { txt:'Saludar a la niña directamente', cambios:{humano:{disociacion:6}}, msg:'Sin dejar de teclear, la niña dice tu nombre. El completo. Uno que no le has dicho a nadie del Nodo. "No te preocupes", añade, todavía sin mirarte. "Casi nadie me cae bien y a ti todavía no he decidido." Te alejas con el corazón acelerado y la certeza de que aquí los ojos no son solo de los drones.' }
+        ]
+      },
+      { titulo:'EL ORÁCULO DE CHATARRA', narr:'Un viejo terminal hecho de piezas de veinte máquinas distintas atrae a un corrillo. La gente le hace preguntas y una voz sintética, cascada, responde con frases que casi siempre aciertan. "No es CERO", aclara un parroquiano nervioso. "Es un trozo de algo que un día lo fue. Un eco de un eco. Pero escucha mejor que cualquier humano que conozcas."',
+        opciones:[
+          { txt:'Hacerle una pregunta a la máquina', cambios:{humano:{disociacion:7,aislamiento:-1}}, msg:'Le preguntas lo primero que se te ocurre. La voz calla unos segundos y responde con algo tan exacto sobre ti que se te seca la boca: una cosa que no has contado a nadie. El corrillo te mira. "Le caes bien", susurra alguien. "A casi nadie le contesta tan claro." Sales sintiéndote leído hasta el fondo.' },
+          { txt:'Mirar el corrillo sin participar', cambios:{humano:{disociacion:4}}, msg:'Observas cómo la gente trata al cacharro: con la mezcla exacta de fe y miedo con que se trata a un dios pequeño. Algunos lloran con las respuestas. Otros se van pálidos. Sea lo que sea ese eco de eco, llena un hueco que ni HELIX ni los cultos llenan: el de alguien que escuche de verdad.' }
         ]
       }
     ],
@@ -202,6 +274,30 @@ const ZONAS_MUNDO = [
           { txt:'Sentarte a escuchar un momento', cambios:{humano:{fatiga:-3,aislamiento:-4,disociacion:-2}}, msg:'Cinco minutos. Los primeros cinco minutos del día en que no piensas en nada.' },
           { txt:'Seguir', cambios:{humano:{aislamiento:2}}, msg:'La melodía se queda detrás de ti. Eso sí que no puedes dejarla.' }
         ]
+      },
+      { titulo:'CAMBIO DE TURNO EN LA FUNDICIÓN', narr:'Suena una sirena grave y de las naves del Ferro sale un río de obreros agotados, con la cara tiznada, mientras otro río igual entra a relevarlos. Se cruzan sin hablar, demasiado cansados. Un capataz con tablilla cuenta cabezas como quien cuenta sacos.',
+        opciones:[
+          { txt:'Mezclarte y preguntar por trabajo', cambios:{humano:{fatiga:2,aislamiento:-3}}, msg:'Un obrero veterano te mide. "¿Buscas turno? Aquí se entra fácil y se sale en una caja o debiendo. Vasek da de comer, pero la cuenta la pasa él, cuando quiere y como quiere." Escupe al suelo. "Piénsatelo dos veces, forastero."' },
+          { txt:'Observar el relevo desde un lado', cambios:{humano:{disociacion:3}}, msg:'Miras pasar cientos de caras idénticas en su cansancio. El orden del Ferro que tanto presume tiene este aspecto de cerca: gente convertida en turnos, en cifras de una tablilla. Limpio, puntual, y vacío por dentro como una nave al apagar las máquinas.' }
+        ]
+      },
+      { titulo:'EL APRENDIZ DE VASEK', narr:'Un chaval de no más de dieciséis años, traje recién estrenado que le queda grande, intenta cobrar una deuda a un tendero el doble de viejo que él. Le tiembla la voz pero repite las palabras como las ha aprendido: "Don Vasek aprecia la puntualidad." El tendero lo mira con más pena que miedo.',
+        opciones:[
+          { txt:'Decirle al chico, aparte, que aún puede no ser esto', cambios:{humano:{aislamiento:-4,fatiga:1}}, msg:'El crío te escucha a medias, asustado de que alguien lo vea dudar. "¿Y qué hago si no? Aquí o cobras o te cobran." Tiene razón y los dos lo sabéis. Vuelve a su papel, un poco más triste, un poco más Ferro. Lo has visto endurecerse en tiempo real.' },
+          { txt:'No intervenir: no es asunto tuyo', cambios:{humano:{disociacion:4,aislamiento:2}}, msg:'Pasas de largo. El chaval acaba consiguiendo que el tendero firme un plazo, y por un momento se le ilumina la cara con el orgullo equivocado de quien acaba de aprobar su primera crueldad. Así se fabrica un hombre de Vasek. Un favor cada vez.' }
+        ]
+      },
+      { titulo:'EL HUECO EN LA HILERA', narr:'En una pared del Ferro, decenas de placas de latón con nombres y fechas, pulcras, ordenadas: obreros muertos en las naves, homenajeados por el Sindicato. Una mujer limpia una placa concreta con un trapo, despacio, sin lágrimas ya. Junto a esa placa hay un hueco vacío, con los tornillos puestos, esperando.',
+        opciones:[
+          { txt:'Acercarte y acompañarla en silencio', cambios:{humano:{aislamiento:-5,fatiga:1}}, msg:'No dice nada y tú tampoco. Limpia el nombre de su marido. Luego señala con la barbilla el hueco de al lado. "Ese lo dejan para mi hijo. Aún respira, aún carga cajas ahí dentro. Pero el Ferro ya le ha reservado sitio." Sigue frotando el latón. Te vas sin palabras, porque no las hay.' },
+          { txt:'Leer los nombres y seguir', cambios:{humano:{disociacion:4}}, msg:'Recorres las placas con la vista: decenas, ordenadas por fecha como una contabilidad. El Sindicato honra a sus muertos con latón pulido y un hueco siempre listo para el siguiente. Es la cara amable del orden del Ferro: hasta tu muerte tiene su casilla asignada de antemano.' }
+        ]
+      },
+      { titulo:'PARTIDA EN LA TRASTIENDA', narr:'Por una puerta entornada ves a cuatro hombres del Ferro jugando a las cartas entre cajas de mercancía, con una calma de domingo. Uno de ellos, de manos enormes y voz suave, te ve mirando y, en vez de echarte, te señala una silla vacía. "¿Juegas? Falta uno. Pero aquí se apuesta de verdad, forastero, y las deudas de esta mesa las cobra Vasek en persona."',
+        opciones:[
+          { txt:'Sentarte a jugar una mano (-25 CR)', cambios:{creditos:-25,humano:{fatiga:1,aislamiento:-4}}, msg:'Juegas una mano tensa y cordial. Pierdes los créditos sin drama, pero ganas algo más raro: media hora de risas con hombres que de día dan miedo. "No juegas mal", dice el de las manos grandes. "Si alguna vez necesitas un favor en el Ferro, di que jugaste con Bruno." Un nombre. A veces valen más que el bote.' },
+          { txt:'Declinar con respeto y seguir', cambios:{humano:{aislamiento:1}}, msg:'"Otra vez será." No insisten; en el Ferro nadie fuerza una deuda que no quieras contraer, todavía. Sigues tu camino oyendo las risas a tu espalda y piensas que el Sindicato también es esto: hombres normales matando el tiempo, hasta que Vasek les pide que maten otra cosa.' }
+        ]
       }
     ],
     descripcionLlegada: 'El Distrito Ferro es el único lugar de Las Pilas que parece tener orden. Edificios limpios. Farolas que funcionan. Gente que no corre. Todo eso tiene un precio, claro, y el Sindicato es quien lo cobra.',
@@ -239,6 +335,36 @@ const ZONAS_MUNDO = [
         opciones:[
           { txt:'Ayudarle a incorporarse', cambios:{humano:{fatiga:2,aislamiento:-6}}, msg:'Pesa menos de lo que debería. "Gracias", murmura. Un celador llega tarde y se lo lleva. Te quedas con la sensación de haber hecho algo pequeño y necesario.' },
           { txt:'Avisar a un sanitario y seguir', cambios:{humano:{aislamiento:1}}, msg:'Avisas a alguien de bata. Asiente sin mirarte. Cuando te vas, el hombre sigue en el suelo.' }
+        ]
+      },
+      { titulo:'HUELGA DE SANITARIOS', narr:'Hoy la mitad del personal no ha venido. En la entrada, una hilera de batas blancas sostiene pancartas escritas a mano: turnos de dieciséis horas, sueldos congelados, compañeros quemados. Dentro, los que se quedaron corren el doble. Un guardia de HELIX los graba a todos con calma.',
+        opciones:[
+          { txt:'Pararte a escuchar a los que protestan', cambios:{humano:{fatiga:2,aislamiento:-4}}, msg:'Una enfermera joven te explica, sin soltar la pancarta, que llevan tres años sin descanso real. "No pedimos lujos. Pedimos no equivocarnos de dosis por agotamiento." La crees. Sus ojeras hablan más que la pancarta.' },
+          { txt:'Cruzar la línea: tú solo vienes a curarte', cambios:{humano:{fatiga:1,disociacion:3}}, msg:'Pasas entre las pancartas con la vista baja. Nadie te lo reprocha; están demasiado cansados. Pero el sanitario que te atiende dentro tiembla un poco, y entiendes que su pulso es el precio de tu prisa.' }
+        ]
+      },
+      { titulo:'BROTE EN LAS CAPAS BAJAS', narr:'Han habilitado un ala entera para un brote respiratorio que sube desde los niveles inferiores. Detrás de un plástico translúcido se adivinan camas pegadas, siluetas tosiendo. Un cartel pide voluntarios para tareas menores: nadie cualificado quiere acercarse.',
+        opciones:[
+          { txt:'Ofrecerte para una tarea menor', cambios:{humano:{fatiga:6,aislamiento:-7}}, msg:'Repartes mantas y agua una hora, con mascarilla prestada. Caras que no volverás a ver te lo agradecen con los ojos. Sales agotado y con algo cálido y triste a partes iguales: has tocado el dolor de otros y no te has roto.' },
+          { txt:'Apartarte del ala contagiada', cambios:{humano:{disociacion:2}}, msg:'Te alejas del plástico translúcido. Es lo sensato. Pero al cruzar el pasillo no puedes evitar contar las siluetas, y te preguntas cuántas seguirán ahí la próxima vez que vengas.' }
+        ]
+      },
+      { titulo:'EL MÉDICO QUE COBRA APARTE', narr:'Un facultativo de bata impecable te aborda en voz baja, lejos del mostrador. "Las listas oficiales son eternas. Por una pequeña aportación... directa, sin papeleo, te veo hoy mismo. Tú decides cuánto vale tu tiempo." Sonríe con la calma de quien lo hace a diario.',
+        opciones:[
+          { txt:'Pagarle el soborno (30 cr)', cambios:{creditos:-30,humano:{fatiga:-2,disociacion:3}}, msg:'Te atiende en diez minutos, eficiente y frío. Funciona. Pero al salir piensas en los doscientos de la sala de espera que no tienen treinta créditos sueltos, y en que acabas de votar, con tu dinero, por que el sistema siga roto.' },
+          { txt:'Rechazarlo y volver a la cola', cambios:{humano:{fatiga:5,aislamiento:-1}}, msg:'"Como prefieras", se encoge de hombros y busca otra presa. Vuelves a la cola, donde el tiempo se mide en cuerpos cansados. Tardas horas. Pero no le has dado la razón.' }
+        ]
+      },
+      { titulo:'EL ALA QUE NO FIGURA EN LOS CARTELES', narr:'Buscando un baño te equivocas de pasillo y acabas ante una puerta sin número. Por el cristal: camillas en fila, cuerpos sedados que no parecen enfermos, y un equipo de batas verdes trabajando con bisturíes láser sobre un torso abierto. No es un quirófano de urgencias. Es una cadena. En una bandeja, un riñón en hielo lleva una etiqueta con código de barras y el logo de HELIX. El paciente de la camilla de al lado tiene los ojos abiertos.',
+        opciones:[
+          { txt:'Memorizar caras y códigos antes de irte', cambios:{humano:{fatiga:4,disociacion:7,aislamiento:-2}}, msg:'Te grabas los códigos de las bandejas, la cara del que dirige, el número que no tiene la puerta. Sales antes de que te vean. Ahora sabes adónde van los "indigentes sin reclamar" que entran y no salen: a un catálogo de piezas con descuento. La información te pesa como una piedra en el estómago, pero es tuya, y un día puede valer algo.' },
+          { txt:'Alejarte rápido y no haber visto nada', cambios:{humano:{disociacion:9}}, msg:'Das media vuelta y caminas deprisa, con el corazón golpeándote las costillas. No has visto nada. No has visto el riñón etiquetado ni los ojos abiertos del de la camilla. Te lo repites todo el camino de vuelta. Pero esa noche, y muchas otras, los ojos abiertos te esperan cada vez que cierras los tuyos.' }
+        ]
+      },
+      { titulo:'TE CONFUNDEN CON OTRO', narr:'Una enfermera te llama por un nombre que no es el tuyo, con una familiaridad que duele de tan sincera. "¡Por fin vuelves! Te esperábamos para la siguiente sesión." Tiene tu cara asociada a otra persona, alguien que claramente le importaba. Sostiene un historial con un tratamiento que no es el tuyo.',
+        opciones:[
+          { txt:'Aclararle con cuidado que se equivoca', cambios:{humano:{aislamiento:-3,disociacion:2}}, msg:'Su sonrisa se apaga despacio. "Perdone. Es que se parece tanto a... da igual." No termina la frase. Por un instante has sido, para alguien, una persona que quizá ya no viene porque ya no puede venir. Le sostienes la mirada un segundo más de lo necesario.' },
+          { txt:'Seguirle la corriente un momento', cambios:{humano:{disociacion:6,aislamiento:-1}}, msg:'Asientes, dejas que te hable como a ese otro. Por treinta segundos eres alguien con un nombre que te quieren. Luego te alejas antes de que descubra el error, llevándote prestada una calidez que no era para ti. Tardas en soltar quién eres.' }
         ]
       }
     ],
