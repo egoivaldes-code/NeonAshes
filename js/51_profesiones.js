@@ -191,6 +191,30 @@ const PROFESIONES = [
         nota: 'Repasar el tablón de encargos de captura. Aceptar uno, localizar al objetivo y decidir su suerte.'
       }
     ]
+  },
+  {
+    id: 'hacker',
+    nombre: 'Hacker',
+    desc: 'No sales de casa. Trabajas conectado a la red clandestina de las Pilas: contratos sin rostro, puertas que alguien necesita abiertas y no pregunta cómo. Forzar credenciales, descifrar mensajes, inyectar exploits y borrar tu propio rastro antes de que HELIX lo encuentre.',
+    rangos: [
+      { nombre: 'Script Kiddie',       pagaMin: 0, umbral: 300 },
+      { nombre: 'Intruso',             pagaMin: 0, umbral: 520 },
+      { nombre: 'Analista de Sistemas',pagaMin: 0, umbral: 800 },
+      { nombre: 'Fantasma',            pagaMin: 0, umbral: 1120 },
+      { nombre: 'Arquitecto de Red',   pagaMin: 0, umbral: 1500 },
+      { nombre: 'Eco en la Red',       pagaMin: 0, umbral: 0 } // último: no asciende
+    ],
+    acciones: [
+      {
+        id: 'red',
+        nombre: 'Conectar a la red clandestina',
+        minutos: 0,
+        progreso: 0,
+        cooldownHoras: 0,
+        conRedHacker: true,
+        nota: 'Abrir el terminal y repasar los contratos digitales disponibles. Aceptar uno, ejecutar la intrusión y cobrar.'
+      }
+    ]
   }
 ];
 

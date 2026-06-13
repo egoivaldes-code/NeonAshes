@@ -284,6 +284,10 @@ function _renderAccionesOficio(p){
       botonesAccion += `
         <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
           onclick="if(typeof abrirContratos==='function'){abrirContratos('apartamento');}">${a.nombre}</button>`;
+    } else if(a.conRedHacker){
+      botonesAccion += `
+        <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+          onclick="if(typeof abrirRedHacker==='function'){abrirRedHacker('apartamento');}">${a.nombre}</button>`;
     } else {
       botonesAccion += `
         <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
