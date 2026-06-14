@@ -125,14 +125,18 @@ function renderTrabajosOficio(){
     }
     let cards = '';
     PROFESIONES.forEach(p => {
+      const faltaItem = p.requiereItem && typeof tieneItem === 'function' && !tieneItem(p.requiereItem);
+      const botonEmpezar = faltaItem
+        ? `<div class="caso-nota">${p.requiereItemNota || 'Necesitas algo especial para ejercer este oficio.'}</div>`
+        : `<button class="btn-terminal" onclick="elegirProfesionDesdePanel('${p.id}')">EMPEZAR EN ESTE OFICIO →</button>`;
       cards += `
-        <div class="trabajo-tarjeta">
+        <div class="trabajo-tarjeta${faltaItem ? ' caso-bloq' : ''}">
           <div class="trabajo-header">
             <span class="trabajo-titulo">${p.nombre.toUpperCase()}</span>
           </div>
           <div class="trabajo-descripcion">${p.desc}</div>
           <div style="margin-top:0.8rem;text-align:center;">
-            <button class="btn-terminal" onclick="elegirProfesionDesdePanel('${p.id}')">EMPEZAR EN ESTE OFICIO →</button>
+            ${botonEmpezar}
           </div>
         </div>`;
     });
@@ -238,13 +242,16 @@ function renderTrabajosOficio(){
         </div>`;
     } else {
       // Oficio que no ejerce: se ve igual, con opción de empezar (solo en casa).
-      const botonEmpezar = enApt
+      const faltaItem = p.requiereItem && typeof tieneItem === 'function' && !tieneItem(p.requiereItem);
+      const botonEmpezar = faltaItem
+        ? `<div style="margin-top:0.8rem;"><div class="caso-nota">${p.requiereItemNota || 'Necesitas algo especial para ejercer este oficio.'}</div></div>`
+        : (enApt
         ? `<div style="margin-top:0.8rem;text-align:center;">
              <button class="btn-terminal" onclick="elegirProfesionDesdePanel('${p.id}')">EMPEZAR EN ESTE OFICIO →</button>
            </div>`
         : `<div style="margin-top:0.8rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.4;text-align:center;">
              Podrás empezar este oficio desde tu apartamento.
-           </div>`;
+           </div>`);
       cards += `
         <div class="trabajo-tarjeta" style="opacity:0.82;">
           <div class="trabajo-header">
@@ -306,6 +313,10 @@ function _renderAccionesOficio(p){
       botonesAccion += `
         <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
           onclick="if(typeof abrirRedHacker==='function'){abrirRedHacker('apartamento');}">${a.nombre}</button>`;
+    } else if(a.conCorrida){
+      botonesAccion += `
+        <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+          onclick="if(typeof abrirCorrida==='function'){abrirCorrida('apartamento','${a.bando||'contrabando'}');}">${a.nombre}</button>`;
     } else {
       botonesAccion += `
         <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"

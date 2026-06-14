@@ -1,0 +1,123 @@
+/* ============================================================
+   NEON ASHES — CORRIDAS (v0.108)
+   UI del loop de contrabandista / seguridad HELIX.
+   Reutiliza .casos-wrap, .caso-card, .btn-terminal del CSS de
+   casos; aquí solo lo propio de la corrida (HUD, opciones de
+   confrontación, barra de alerta). Mobile-first.
+   ============================================================ */
+
+/* ── HUD superior: integridad, balas, alerta ───────────────── */
+.corrida-hud{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:0.5rem 1rem;
+  padding:0.6rem 0.7rem;
+  margin-bottom:0.9rem;
+  border:1px solid var(--gris);
+  border-radius:4px;
+  background:rgba(4,8,14,0.65);
+  font-size:0.58rem;
+  letter-spacing:0.14em;
+}
+.corrida-hud-vida{ color:var(--cyan); white-space:nowrap; }
+.corrida-hud-balas{
+  color:rgba(255,180,90,0.9);   /* ámbar industrial */
+  white-space:nowrap;
+}
+.corrida-hud-alerta{
+  margin-left:auto;
+  white-space:nowrap;
+  padding:0.15rem 0.5rem;
+  border-radius:3px;
+  border:1px solid currentColor;
+}
+.corrida-hud-alerta.alerta-baja{ color:var(--verde-terminal); }
+.corrida-hud-alerta.alerta-media{ color:rgba(255,180,90,0.95); }
+.corrida-hud-alerta.alerta-alta{
+  color:var(--magenta);
+  animation:corrida-pulso 1.4s ease-in-out infinite;
+}
+@keyframes corrida-pulso{
+  0%,100%{ opacity:1; }
+  50%{ opacity:0.55; }
+}
+
+/* ── Texto narrativo del nodo ──────────────────────────────── */
+.corrida-narr{
+  color:var(--blanco-suave);
+  font-size:0.82rem;
+  line-height:1.6;
+  margin-bottom:1.1rem;
+  white-space:pre-line;   /* respeta saltos de los diálogos */
+}
+
+/* ── Aviso de daño ─────────────────────────────────────────── */
+.corrida-aviso{
+  color:var(--magenta);
+  font-size:0.62rem;
+  letter-spacing:0.14em;
+  margin:-0.4rem 0 1rem;
+  text-transform:uppercase;
+}
+
+/* ── Lista de opciones (confrontación / nodo) ──────────────── */
+.corrida-ops{
+  display:flex;
+  flex-direction:column;
+  gap:0.6rem;
+  margin-bottom:0.8rem;
+}
+
+/* Cada opción es un botón alto, con título y subtítulo apilados,
+   para que en móvil el dedo tenga superficie de sobra. */
+.corrida-op{
+  display:flex !important;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:0.2rem;
+  width:100%;
+  text-align:left !important;
+  padding:0.7rem 0.8rem !important;
+  border-left:3px solid var(--gris);
+  line-height:1.35;
+}
+.corrida-op-txt{
+  font-size:0.7rem;
+  letter-spacing:0.1em;
+}
+.corrida-op-sub{
+  font-size:0.54rem;
+  letter-spacing:0.06em;
+  opacity:0.62;
+  text-transform:none;
+}
+
+/* Acento de color por tipo de vía (sin gritar). */
+.corrida-op-fuego{   border-left-color:var(--magenta); }
+.corrida-op-blanca{  border-left-color:rgba(255,180,90,0.85); }
+.corrida-op-punos{   border-left-color:var(--gris); }
+.corrida-op-social{  border-left-color:var(--cyan); }
+.corrida-op-util{    border-left-color:var(--cyan-dim); }
+.corrida-op-farol{   border-left-color:var(--magenta-dim); }
+
+/* ── Recompensa de cierre (reusa estética de casos) ────────── */
+.corrida-escena .caso-recompensa{
+  margin-top:0.6rem;
+  padding:0.7rem 0.8rem;
+  border:1px solid var(--cyan-dim);
+  border-radius:4px;
+  font-size:0.66rem;
+  letter-spacing:0.12em;
+  color:var(--cyan);
+}
+.corrida-escena .caso-ascenso{
+  margin-top:0.4rem;
+  color:var(--verde-terminal);
+}
+
+/* En pantallas algo más anchas, dar un respiro lateral. */
+@media (min-width:520px){
+  .corrida-op-txt{ font-size:0.74rem; }
+  .corrida-narr{ font-size:0.86rem; }
+}

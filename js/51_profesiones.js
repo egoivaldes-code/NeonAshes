@@ -215,6 +215,64 @@ const PROFESIONES = [
         nota: 'Abrir el terminal y repasar los contratos digitales disponibles. Aceptar uno, ejecutar la intrusión y cobrar.'
       }
     ]
+  },
+  {
+    // CONTRABANDISTA — mover mercancía por un CAMINO de nodos, gestionando
+    // recursos escasos. El "combate" es elegir con qué herramienta del
+    // inventario respondes a cada amenaza (motor en js/67_corridas.js).
+    id: 'contrabandista',
+    nombre: 'Contrabandista',
+    desc: 'Hay cosas que tienen que ir de un sitio a otro sin que nadie las vea: medicinas, datos, a veces personas. Tú las llevas. Tus enemigos son las patrullas de HELIX y las mafias que quieren su parte. Lo que llevas encima —un arma, una navaja, unos créditos, los puños— decide cómo sales de cada mal paso.',
+    rangos: [
+      { nombre: 'Mula',               pagaMin: 0, umbral: 300 },
+      { nombre: 'Correo',             pagaMin: 0, umbral: 520 },
+      { nombre: 'Pasador',            pagaMin: 0, umbral: 800 },
+      { nombre: 'Coyote',             pagaMin: 0, umbral: 1120 },
+      { nombre: 'Lugarteniente',      pagaMin: 0, umbral: 1500 },
+      { nombre: 'Fantasma de Marte',  pagaMin: 0, umbral: 0 } // último: no asciende
+    ],
+    acciones: [
+      {
+        id: 'rutas',
+        nombre: 'Revisar las rutas disponibles',
+        minutos: 0,
+        progreso: 0,
+        cooldownHoras: 0,
+        conCorrida: true,
+        bando: 'contrabando',
+        nota: 'Repasar el tablón de rutas. Aceptar una, recorrerla nodo a nodo y entregar la mercancía.'
+      }
+    ]
+  },
+  {
+    // SEGURIDAD HELIX — el espejo "oficial" del contrabandista. Mismo motor,
+    // enemigos invertidos (mafias y contrabandistas). Requiere la credencial
+    // de HELIX para ejercer: cualquiera que la consiga puede llevar la placa.
+    id: 'seguridad',
+    nombre: 'Seguridad HELIX',
+    desc: 'Llevas la placa de HELIX y con ella la autoridad para decomisar, detener y "restablecer el orden". Sobre el papel eres el bueno. En los callejones, eso depende de a quién preguntes. Tus enemigos son las mafias y los contrabandistas. Necesitas una credencial de HELIX para ejercer.',
+    requiereItem: 'credencial_helix',
+    requiereItemNota: 'Necesitas una credencial de HELIX para llevar la placa.',
+    rangos: [
+      { nombre: 'Auxiliar de Patrulla',  pagaMin: 0, umbral: 300 },
+      { nombre: 'Agente',                pagaMin: 0, umbral: 520 },
+      { nombre: 'Operativo',             pagaMin: 0, umbral: 800 },
+      { nombre: 'Sargento de Distrito',  pagaMin: 0, umbral: 1120 },
+      { nombre: 'Inspector',             pagaMin: 0, umbral: 1500 },
+      { nombre: 'Mano de HELIX',         pagaMin: 0, umbral: 0 } // último: no asciende
+    ],
+    acciones: [
+      {
+        id: 'operaciones',
+        nombre: 'Revisar las operaciones abiertas',
+        minutos: 0,
+        progreso: 0,
+        cooldownHoras: 0,
+        conCorrida: true,
+        bando: 'seguridad',
+        nota: 'Repasar el tablón de operaciones de HELIX. Aceptar una, ejecutarla nodo a nodo y cerrar el acta.'
+      }
+    ]
   }
 ];
 
@@ -252,6 +310,10 @@ function estadoProfesion(id){
 function elegirProfesion(id){
   const prof = profesionPorId(id);
   if(!prof) return false;
+  // Profesión con requisito de item (p.ej. Seguridad necesita credencial_helix).
+  if(prof.requiereItem && typeof tieneItem === 'function' && !tieneItem(prof.requiereItem)){
+    return false;
+  }
   const todas = _asegurarProfesiones();
   if(todas[id] && todas[id].activa) return true; // ya la ejerce
   todas[id] = {
