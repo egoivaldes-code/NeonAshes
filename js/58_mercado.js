@@ -35,6 +35,12 @@ const MERCADO_PRECIOS = {
   ganzua:            { compra: 55,  venta: 22 },
   mascara_filtro:    { compra: 130, venta: 55 },
 
+  // EQUIPO DE OFICIO ── la credencial desbloquea la profesión Seguridad
+  // HELIX; cara a propósito (el oficio "oficial" cuesta entrar). La
+  // documentación sellada es la vía social barata del contrabandista.
+  credencial_helix:  { compra: 900, venta: 200 },
+  papel_helix:       { compra: 75,  venta: 20 },
+
   // MATERIALES Y BOTÍN (solo se venden; compra 0).
   chatarra:          { compra: 0, venta: 12 },
   chatarra_cruda:    { compra: 0, venta: 9 },
@@ -49,7 +55,8 @@ const _MERCADO_COMPRABLE = [
   'medkit','kit_trauma','cargador','ganzua','carga_analizador',
   'senuelo','racion_deshidratada','licor',
   'bateria_2v','bateria_4v','bateria_8v',
-  'palanca_termica','mascara_filtro','arma_blanca','arma_fuego','analizador'
+  'palanca_termica','mascara_filtro','arma_blanca','arma_fuego','analizador',
+  'papel_helix','credencial_helix'
 ];
 
 function _mercItem(id){
@@ -131,7 +138,13 @@ function _renderComprar(){
     html += '<div class="merc-fila merc-fila-col">'
       + '<div class="merc-fila-info"><span class="merc-fila-nombre">'+_mercNombre(id)+'</span>'
       + '<span class="merc-fila-meta">'+p.compra+' CR c/u</span></div>';
-    if(max >= 1){
+    // Equipo único (no apilable) que ya posees: no tiene sentido recomprarlo.
+    const itCat = _mercItem(id);
+    const yaLoTienes = itCat && itCat.apilable === false
+      && typeof tieneItem === 'function' && tieneItem(id);
+    if(yaLoTienes){
+      html += '<div class="merc-ctrl-fila"><button class="merc-btn merc-btn-no" disabled>Ya lo tienes</button></div>';
+    } else if(max >= 1){
       html += _mercControles('comprar', id, max);
     } else {
       html += '<div class="merc-ctrl-fila"><button class="merc-btn merc-btn-no" disabled>Sin saldo</button></div>';

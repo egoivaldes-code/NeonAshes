@@ -2,6 +2,15 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.108] - 2026-06-14
+### Added
+- Dos profesiones nuevas con un loop de "corrida" por nodos: Contrabandista (mover mercancía) y Seguridad HELIX (operaciones oficiales). Enemigos invertidos entre ambas: para el contrabandista, las patrullas de HELIX y las mafias rivales; para Seguridad, las mafias y los contrabandistas.
+- Confrontaciones cuyas opciones dependen del equipo que llevas encima: disparar (gasta munición, mucho ruido), acuchillar (silencioso) o a puños (siempre disponible), más justificarte/imponer autoridad, sobornar o lanzar un señuelo según lo que tengas.
+- Credencial de HELIX a la venta en el mercado (900 CR): desbloquea la profesión de Seguridad. Documentación sellada (75 CR) como vía social del contrabandista.
+- Ocho corridas escritas a mano (cuatro por bando) con facciones del mundo y guiños a CERO.
+### Changed
+- El mercado ya no deja recomprar equipo único que ya posees (muestra "Ya lo tienes").
+
 ## [0.107] - 2026-06-14
 ### Added
 - Scavenger: seis zonas nuevas de expedición que desbloquean los rangos altos (Desguazador, Recuperador, Arqueotécnico), con eventos propios y botín escalado; las de rango máximo rozan a CERO.

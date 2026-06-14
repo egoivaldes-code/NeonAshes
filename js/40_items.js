@@ -212,6 +212,16 @@ const ITEMS_EXPEDICION = [
   { id:'mascara_filtro', nombre:'Máscara de filtro', tipo:'equipo', apilable:false,
     desc:'Goma vieja y dos cartuchos que silban al respirar. En los pozos y canales tóxicos es la diferencia entre rebuscar tranquilo y escupir sangre.' },
 
+  // ── CREDENCIAL HELIX (desbloquea la profesión Seguridad) ──────
+  // No tiene por qué ser legítima: una placa robada, clonada o heredada
+  // sirve igual. Quien la lleve puede ejercer de Seguridad de HELIX.
+  { id:'credencial_helix', nombre:'Credencial de HELIX', tipo:'equipo', apilable:false,
+    desc:'Una placa con la hélice grabada y un chip que aún responde a los lectores. Da igual si es tuya de verdad: aquí abajo, quien la enseña manda. Con ella puedes patrullar como Seguridad de HELIX. Sin ella, solo eres alguien con prisa.' },
+
+  // ── DOCUMENTACIÓN FALSA (vía social del contrabandista) ───────
+  { id:'papel_helix', nombre:'Documentación sellada', tipo:'equipo', apilable:false,
+    desc:'Un permiso de tránsito con un sello de HELIX que casi nadie se molesta en verificar. No aguanta un escáner serio, pero a un guardia cansado le basta para mirar a otro lado.' },
+
   // ── MATERIALES DE BOTÍN (refinado, del documento) ─────────────
   // chatarra_cruda = lo que sale en bruto de la expedición (sin valor
   // directo, hay que refinarla). chatarra_refinada = el producto vendible.
