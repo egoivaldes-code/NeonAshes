@@ -2002,7 +2002,8 @@ function _pintarEscenaCaso(introExtra){
     _casoVisitadas[_casoEscena] = true;
     (esc.pistasAlEntrar || []).forEach(p => _casoDarPista(p));
     if(esc.tiempo && typeof avanzarTiempoJuego === 'function'){
-      avanzarTiempoJuego(esc.tiempo);
+      const _multT = (typeof implanteMultTiempoAccion === 'function') ? implanteMultTiempoAccion() : 1;
+      avanzarTiempoJuego(Math.round(esc.tiempo * _multT));
       if(typeof comprobarCobrosDiarios === 'function') comprobarCobrosDiarios();
     }
   }
@@ -2145,6 +2146,8 @@ function _pintarDeduccion(introExtra){
   }
   html += '<button class="opcion-btn ded-volver" onclick="volverDelDeduccion()">← Seguir investigando</button>';
   cont.innerHTML = html;
+  // Habilitar arrastre táctil de las tarjetas del muro (fase 1) en móvil.
+  if(_muroFase === 1 && typeof _muroActivarTactil === 'function') _muroActivarTactil();
 }
 
 // ── FASE 1: cribar ───────────────────────────────────────────
@@ -2256,6 +2259,122 @@ function muroTapTarjeta(id){
 }
 function muroPasarAcusar(){ _muroFase = 2; _invFX('inv_deduccion', 0.4); _pintarDeduccion(); }
 function muroVolverCriba(){ _muroFase = 1; _pintarDeduccion(); }
+
+// ── ARRASTRE TÁCTIL (móvil) ──────────────────────────────────
+// El drag&drop HTML5 no funciona con el dedo en navegadores móviles.
+// Aquí implementamos arrastre con eventos touch: al tocar una tarjeta
+// se crea un clon flotante que sigue el dedo; al soltar, se mira qué
+// zona (banco/sólido/descartar) queda bajo el punto y se clasifica.
+// Si el dedo casi no se mueve, se trata como tap (mismo efecto que antes).
+let _muroTactil = { id:null, clon:null, movido:false, x0:0, y0:0 };
+
+function _muroActivarTactil(){
+  const cont = document.getElementById('casos-wrap');
+  if(!cont) return;
+  const tarjetas = cont.querySelectorAll('.muro-tarjeta');
+  tarjetas.forEach(tj => {
+    const id = tj.getAttribute('data-pista');
+    if(!id) return;
+    tj.addEventListener('touchstart', (e) => _muroTouchStart(e, id, tj), { passive:false });
+  });
+}
+
+function _muroTouchStart(e, id, tj){
+  if(!e.touches || !e.touches.length) return;
+  const t = e.touches[0];
+  _muroTactil.id = id;
+  _muroTactil.movido = false;
+  _muroTactil.x0 = t.clientX;
+  _muroTactil.y0 = t.clientY;
+  // Clon flotante que sigue el dedo.
+  const clon = tj.cloneNode(true);
+  clon.style.position = 'fixed';
+  clon.style.left = t.clientX + 'px';
+  clon.style.top = t.clientY + 'px';
+  clon.style.width = tj.offsetWidth + 'px';
+  clon.style.transform = 'translate(-50%,-50%) scale(1.04)';
+  clon.style.pointerEvents = 'none';
+  clon.style.opacity = '0.92';
+  clon.style.zIndex = '9999';
+  clon.classList.add('muro-tarjeta-arrastre');
+  document.body.appendChild(clon);
+  _muroTactil.clon = clon;
+  tj.classList.add('muro-tarjeta-origen');
+
+  const onMove = (ev) => _muroTouchMove(ev);
+  const onEnd  = (ev) => {
+    _muroTouchEnd(ev, id);
+    document.removeEventListener('touchmove', onMove, { passive:false });
+    document.removeEventListener('touchend', onEnd);
+    document.removeEventListener('touchcancel', onEnd);
+  };
+  document.addEventListener('touchmove', onMove, { passive:false });
+  document.addEventListener('touchend', onEnd);
+  document.addEventListener('touchcancel', onEnd);
+}
+
+function _muroTouchMove(e){
+  if(!_muroTactil.clon || !e.touches || !e.touches.length) return;
+  e.preventDefault(); // evita el scroll de la página mientras arrastras
+  const t = e.touches[0];
+  const dx = t.clientX - _muroTactil.x0;
+  const dy = t.clientY - _muroTactil.y0;
+  if(Math.abs(dx) > 8 || Math.abs(dy) > 8) _muroTactil.movido = true;
+  _muroTactil.clon.style.left = t.clientX + 'px';
+  _muroTactil.clon.style.top  = t.clientY + 'px';
+  // Resaltar la zona bajo el dedo.
+  const zona = _muroZonaBajoPunto(t.clientX, t.clientY);
+  const cont = document.getElementById('casos-wrap');
+  if(cont){
+    cont.querySelectorAll('.muro-zona, .muro-banco').forEach(z => z.classList.remove('muro-zona-hover'));
+    if(zona && zona.el) zona.el.classList.add('muro-zona-hover');
+  }
+}
+
+function _muroTouchEnd(e, id){
+  const clon = _muroTactil.clon;
+  if(clon && clon.parentNode) clon.parentNode.removeChild(clon);
+  const cont = document.getElementById('casos-wrap');
+  if(cont) cont.querySelectorAll('.muro-zona, .muro-banco').forEach(z => z.classList.remove('muro-zona-hover'));
+
+  if(!_muroTactil.movido){
+    // Toque sin arrastre: comportamiento de tap de siempre.
+    _muroTactil = { id:null, clon:null, movido:false, x0:0, y0:0 };
+    muroTapTarjeta(id);
+    return;
+  }
+  // Punto de fin (último touch conocido).
+  let x = _muroTactil.x0, y = _muroTactil.y0;
+  if(e.changedTouches && e.changedTouches.length){
+    x = e.changedTouches[0].clientX;
+    y = e.changedTouches[0].clientY;
+  }
+  const zona = _muroZonaBajoPunto(x, y);
+  _muroTactil = { id:null, clon:null, movido:false, x0:0, y0:0 };
+  if(zona && zona.nombre){
+    if(zona.nombre === 'banco') delete _muroCriba[id];
+    else _muroCriba[id] = zona.nombre;
+    _invFX('inv_pista', 0.4);
+    _pintarDeduccion();
+  }
+}
+
+// Devuelve { nombre, el } de la zona del muro bajo un punto de pantalla.
+function _muroZonaBajoPunto(x, y){
+  const cont = document.getElementById('casos-wrap');
+  if(!cont) return null;
+  const zonas = [
+    { nombre:'solido',    el: cont.querySelector('.muro-solido') },
+    { nombre:'descartar', el: cont.querySelector('.muro-descartar') },
+    { nombre:'banco',     el: cont.querySelector('.muro-banco') }
+  ];
+  for(const z of zonas){
+    if(!z.el) continue;
+    const r = z.el.getBoundingClientRect();
+    if(x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return z;
+  }
+  return null;
+}
 
 function marcarDeduccion(pregId, optIdx){
   _deduccionRespuestas[pregId] = optIdx;

@@ -103,10 +103,34 @@ function renderEstado(){
     </div>
 
     <div class="estado-bloque">
+      <div class="estado-seccion-titulo">AUMENTOS</div>
+      ${_renderImplantesEstado()}
+    </div>
+
+    <div class="estado-bloque">
       <div class="estado-seccion-titulo">LESIONES</div>
       ${(typeof renderCondiciones === 'function') ? renderCondiciones() : ''}
     </div>
   `;
+}
+
+// Lista de implantes instalados para el panel ESTADO.
+function _renderImplantesEstado(){
+  if(typeof implantesInstalados !== 'function') return '<div class="estado-impl-vacio">Sin aumentos.</div>';
+  const lista = implantesInstalados();
+  if(!lista.length){
+    return '<div class="estado-impl-vacio">Ningún implante instalado. La carne, todavía, es solo tuya.</div>';
+  }
+  let html = '';
+  lista.forEach(im => {
+    const efectoTxt = (typeof _implanteTextoEfecto === 'function') ? _implanteTextoEfecto(im.efecto, im.grado) : '';
+    const esEsp = (im.slot === 'especial');
+    html += '<div class="estado-impl' + (esEsp ? ' estado-impl-esp' : '') + '">'
+      + '<div class="estado-impl-top"><span class="estado-impl-nom">' + im.nombre + '</span>'
+      + '<span class="estado-impl-grado">G' + im.grado + (esEsp ? ' ·\u00A0ESPECIAL' : '') + '</span></div>'
+      + '<div class="estado-impl-ef">' + efectoTxt + '</div></div>';
+  });
+  return html;
 }
 
 // ----- RENDER: CONTACTOS -----
