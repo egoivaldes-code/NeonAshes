@@ -2,6 +2,14 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.109] - 2026-06-14
+### Added
+- Las armas se desgastan con el uso en las corridas y acaban rompiéndose: el cuchillo aguanta menos que la pistola. Su condición (gastada, comprometida) se ve tanto en la confrontación como en el inventario del panel ESTADO.
+- Botón para retirarse de una corrida a medias: pierdes el botín de esa corrida pero conservas la integridad y no bajas de rango.
+- Botón de depuración "+10000 créditos" en el panel de debug.
+### Changed
+- La munición cargada ahora se conserva entre corridas en lugar de gastar un cargador entero cada vez que empiezas una.
+
 ## [0.108] - 2026-06-14
 ### Added
 - Dos profesiones nuevas con un loop de "corrida" por nodos: Contrabandista (mover mercancía) y Seguridad HELIX (operaciones oficiales). Enemigos invertidos entre ambas: para el contrabandista, las patrullas de HELIX y las mafias rivales; para Seguridad, las mafias y los contrabandistas.

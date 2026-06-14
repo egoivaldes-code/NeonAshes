@@ -88,9 +88,16 @@ function renderInventario(){
   }
   return Estado.inventario.map(i => {
     const cant = (i.cantidad && i.cantidad > 1) ? `<span class="estado-inv-cant">x${i.cantidad}</span>` : '';
+    // Condición de desgaste para armas (la calcula el motor de corridas).
+    let cond = '';
+    if(typeof estadoDesgasteArma === 'function'){
+      const e = estadoDesgasteArma(i.id);
+      if(e === 'gastada') cond = ` <span class="estado-inv-cond">· gastada</span>`;
+      else if(e === 'comprometida') cond = ` <span class="estado-inv-cond estado-inv-cond-mal">· comprometida</span>`;
+    }
     return `
       <div class="estado-inv-fila">
-        <div class="estado-inv-nombre">${i.nombre}${cant}</div>
+        <div class="estado-inv-nombre">${i.nombre}${cant}${cond}</div>
         ${i.desc ? `<div class="estado-inv-desc">${i.desc}</div>` : ''}
       </div>`;
   }).join('');

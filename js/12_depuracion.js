@@ -70,6 +70,7 @@ function actualizarDebug(){
   html += `<button class="debug-btn" style="margin-top:0.4rem;width:100%;" onclick="if(typeof toggleDebugIA==='function'){toggleDebugIA();}">ABRIR PANEL IA</button>`;
   html += `<button class="debug-btn" style="margin-top:0.4rem;width:100%;" onclick="if(typeof toggleDebug==='function'){toggleDebug();} if(typeof abrirElegirZonaExpedicion==='function'){abrirElegirZonaExpedicion('apartamento');}">PROBAR EXPEDICIÓN (elegir zona)</button>`;
   html += `<button class="debug-btn" style="margin-top:0.4rem;width:100%;" onclick="if(typeof toggleDebug==='function'){toggleDebug();} if(typeof abrirRefinado==='function'){abrirRefinado('apartamento',{cobrar:false});}">PROBAR REFINADO (match-3)</button>`;
+  html += `<button class="debug-btn" style="margin-top:0.4rem;width:100%;" onclick="debugAccion('darCreditos')">+10000 CRÉDITOS</button>`;
   html += `</div>`;
 
   // === ESTADO HUMANO ===
@@ -123,6 +124,12 @@ function debugAccion(accion){
     case 'disociaMax':
       Estado.humano.disociacion = 95;
       Estado.memoria.vioFragmentoCero = true;
+      break;
+    case 'darCreditos':
+      Estado.creditos = (Estado.creditos || 0) + 10000;
+      if(typeof actualizarHUD === 'function') actualizarHUD();
+      if(typeof notificarCambio === 'function') notificarCambio('+10000 CR (debug)', 'creditos');
+      if(typeof guardarPartida === 'function') guardarPartida();
       break;
     case 'reset':
       Estado.humano = { fatiga: 8, aislamiento: 12, hambre: 5, disociacion: 0 };

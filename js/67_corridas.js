@@ -58,6 +58,67 @@
   // Munición del cargador (canon: cada cargador = 6 disparos).
   const BALAS_POR_CARGADOR = 6;
 
+  // ── DESGASTE DE ARMAS ───────────────────────────────────
+  // Las armas físicas se gastan con el uso y acaban rompiéndose. El
+  // desgaste se guarda como nº de usos en Estado.memoria.armaDesgaste,
+  // así no tocamos la estructura del inventario. Al alcanzar 'rompe',
+  // el arma se quita del inventario (desaparece).
+  //   tramos: usos hasta cada estado. < gastada = operativa.
+  const ARMA_DESGASTE = {
+    arma_blanca: { gastada: 3, comprometida: 6, rompe: 8,
+      nombreCorto: 'el cuchillo' },
+    arma_fuego:  { gastada: 5, comprometida: 9, rompe: 12,
+      nombreCorto: 'la pistola' }
+  };
+
+  function _desgasteMapa(){
+    Estado.memoria = Estado.memoria || {};
+    Estado.memoria.armaDesgaste = Estado.memoria.armaDesgaste || {};
+    return Estado.memoria.armaDesgaste;
+  }
+  function _usosArma(id){ return _desgasteMapa()[id] || 0; }
+  function _sincronizarBalas(){
+    Estado.memoria = Estado.memoria || {};
+    Estado.memoria.balasCargadas = _balas;
+  }
+  function _estadoArma(id){
+    const cfg = ARMA_DESGASTE[id];
+    if(!cfg) return null;
+    const u = _usosArma(id);
+    if(u >= cfg.comprometida) return 'comprometida';
+    if(u >= cfg.gastada) return 'gastada';
+    return 'operativa';
+  }
+  function _etiquetaEstadoArma(id){
+    const e = _estadoArma(id);
+    if(e === 'comprometida') return ' · comprometida';
+    if(e === 'gastada') return ' · gastada';
+    return '';
+  }
+  // Suma un uso al arma. Devuelve un texto si el arma se ha roto o ha
+  // cambiado de estado, para avisar al jugador; si no, ''.
+  function _gastarArma(id){
+    const cfg = ARMA_DESGASTE[id];
+    if(!cfg) return '';
+    const mapa = _desgasteMapa();
+    const antes = _estadoArma(id);
+    mapa[id] = (mapa[id] || 0) + 1;
+    // ¿Se rompe?
+    if(mapa[id] >= cfg.rompe){
+      if(typeof quitarItem === 'function') quitarItem(id, 1);
+      delete mapa[id]; // si vuelve a conseguir una, empieza de cero
+      _fx('impacto', 0.5);
+      return (cfg.nombreCorto.charAt(0).toUpperCase() + cfg.nombreCorto.slice(1))
+        + ' se rompe en las manos. Inservible. La sueltas.';
+    }
+    const despues = _estadoArma(id);
+    if(despues !== antes){
+      if(despues === 'comprometida') return cfg.nombreCorto.charAt(0).toUpperCase() + cfg.nombreCorto.slice(1) + ' está comprometida: aguantará poco más.';
+      if(despues === 'gastada') return 'Notas ' + cfg.nombreCorto + ' más gastada que antes.';
+    }
+    return '';
+  }
+
   // ── estado de la corrida en curso ───────────────────────
   let _corrida = null;     // objeto de la corrida activa (de 68)
   let _bando = null;       // 'contrabando' | 'seguridad'
@@ -192,13 +253,19 @@
     _alerta = c.alertaInicial || 0;
     _botin = 0;
     _enConfrontacion = null;
-    // Recarga inicial: si llevas arma de fuego y al menos un cargador,
-    // arrancas con un cargador metido (lo consume del inventario).
-    _balas = 0;
-    if(_lleva('arma_fuego') && _lleva('cargador')){
+    // Munición: las balas ya cargadas en el arma PERSISTEN entre corridas
+    // (se guardan en memoria). Solo metemos un cargador nuevo si arrancas
+    // con el arma vacía y llevas cargadores, para no dejarte sin opción de
+    // disparo nada más empezar. Recargar a voluntad sigue estando en el
+    // botón RECARGAR durante la corrida.
+    Estado.memoria = Estado.memoria || {};
+    _balas = (typeof Estado.memoria.balasCargadas === 'number') ? Estado.memoria.balasCargadas : 0;
+    if(_lleva('arma_fuego') && _balas <= 0 && _lleva('cargador')){
       if(typeof quitarItem === 'function') quitarItem('cargador', 1);
       _balas = BALAS_POR_CARGADOR;
     }
+    if(!_lleva('arma_fuego')) _balas = 0;
+    Estado.memoria.balasCargadas = _balas;
     _guardar();
     _pintarNodo();
   }
@@ -257,6 +324,16 @@
       // nodo narrativo simple
       html += '<button class="btn-terminal" onclick="avanzarCorrida()">AVANZAR →</button>';
     }
+
+    // Opción de RETIRARSE: disponible en nodos que no sean confrontación
+    // (no es un escape de un mal turno) y a partir del segundo nodo (hay
+    // que haber empezado de verdad). Pierdes el botín y algo de progreso,
+    // pero conservas la integridad y no bajas de rango.
+    if(nodo.tipo !== 'confrontacion' && _nodoIdx > 0){
+      html += '<button class="btn-terminal corrida-retirarse" '
+        + 'onclick="retirarseCorrida()">ABORTAR Y RETIRARTE</button>';
+    }
+
     cont.innerHTML = html;
   }
 
@@ -295,7 +372,7 @@
     if(_lleva('arma_fuego')){
       if(_balas > 0){
         html += _op('disparar', 'DISPARAR',
-          'Fuerza alta · gasta 1 bala · mucho ruido',
+          'Fuerza alta · gasta 1 bala · mucho ruido' + _etiquetaEstadoArma('arma_fuego'),
           'corrida-op-fuego');
       } else {
         // Sin balas: queda el farol.
@@ -314,7 +391,7 @@
     // ── VÍA ARMA BLANCA ──
     if(_lleva('arma_blanca')){
       html += _op('acuchillar', 'ACUCHILLAR',
-        'Fuerza media · silencioso · de cerca (arriesgas piel)',
+        'Fuerza media · silencioso · de cerca (arriesgas piel)' + _etiquetaEstadoArma('arma_blanca'),
         'corrida-op-blanca');
     }
 
@@ -373,15 +450,17 @@
     let ruido = 0;
     let permiteEscape = false;
     let evita = false;     // resuelve sin medir fuerza (social/distracción)
+    let avisoArma = '';    // texto si un arma se desgasta o se rompe
 
     if(via === 'disparar'){
       if(_balas <= 0){ return; }
-      _balas--;
+      _balas--; _sincronizarBalas();
       fuerzaJugador = 6;
       ruido = 35 + cf.ruidoExtra;
       mensaje = 'El perno sale con un chasquido que rebota en todo el pasillo. '
         + 'Resuelve, sí. Pero ahora medio distrito sabe dónde estás.';
       _fx('impacto', 0.6);
+      avisoArma = _gastarArma('arma_fuego');
     } else if(via === 'amenazar'){
       // Farol: 55% de que recule, sin gastar nada. Si falla, te embiste.
       ruido = 8;
@@ -397,7 +476,7 @@
     } else if(via === 'recargar'){
       if(_lleva('cargador') && typeof quitarItem === 'function'){
         quitarItem('cargador', 1);
-        _balas += BALAS_POR_CARGADOR;
+        _balas += BALAS_POR_CARGADOR; _sincronizarBalas();
       }
       // Recargar consume el turno: la amenaza te golpea suave mientras tanto.
       _integridad = Math.max(0, _integridad - 1);
@@ -409,6 +488,7 @@
       mensaje = 'Te acercas y resuelves de cerca, en silencio. '
         + 'Pero de cerca también te alcanzan a ti.';
       _fx('click_metal', 0.5);
+      avisoArma = _gastarArma('arma_blanca');
     } else if(via === 'punos'){
       fuerzaJugador = 2;
       ruido = 3;
@@ -477,6 +557,9 @@
     html += '<div class="corrida-narr">' + mensaje + '</div>';
     if(herida > 0){
       html += '<div class="corrida-aviso">Te alcanzan. −' + herida + ' integridad.</div>';
+    }
+    if(avisoArma){
+      html += '<div class="corrida-aviso corrida-aviso-arma">' + avisoArma + '</div>';
     }
     if(_integridad <= 0){
       html += '<button class="btn-terminal" onclick="avanzarCorrida()">…</button>';
@@ -657,6 +740,55 @@
     _pintarTablon();
   }
 
+  // ── RETIRARSE de una corrida a medias ───────────────────
+  // Pide confirmación (un paso). Al confirmar: sin paga, progreso mínimo
+  // por la experiencia, conservas la integridad y NO baja el rango.
+  function retirarseCorrida(){
+    if(!_corrida) return;
+    const cont = document.getElementById('corrida-wrap');
+    if(!cont) return;
+    let html = _hud();
+    html += '<div class="corrida-narr">Te paras en seco. Lo que llevabas encima, '
+      + 'el camino que faltaba, lo que fuera a pagarte esto… se queda atrás. '
+      + 'Retirarte ahora significa volver con las manos vacías, pero volver. '
+      + 'A veces eso es ganar.</div>';
+    html += '<div class="corrida-ops">';
+    html += '<button class="btn-terminal corrida-op corrida-op-fuego" '
+      + 'onclick="confirmarRetirada()"><span class="corrida-op-txt">SÍ, RETIRARME</span>'
+      + '<span class="corrida-op-sub">Pierdes el botín de esta corrida · conservas la piel</span></button>';
+    html += '<button class="btn-terminal corrida-op corrida-op-util" '
+      + 'onclick="_volverAlNodo()"><span class="corrida-op-txt">NO, SEGUIR</span>'
+      + '<span class="corrida-op-sub">Aún puedes llegar</span></button>';
+    html += '</div>';
+    cont.innerHTML = html;
+  }
+
+  function confirmarRetirada(){
+    if(!_corrida) return;
+    const c = _corrida;
+    // Progreso mínimo por la experiencia; nada de paga; sin marcar hecha.
+    const progreso = Math.round((c.progreso || 80) * 0.1);
+    if(progreso > 0 && typeof otorgarRecompensaProfesion === 'function'){
+      otorgarRecompensaProfesion(_profId, 0, progreso);
+    }
+    _fx('inv_papel', 0.5);
+    const cont = document.getElementById('corrida-wrap');
+    let html = '<div class="corrida-hud"><span class="corrida-hud-vida">TE RETIRAS</span></div>';
+    html += '<div class="corrida-narr">Das media vuelta y desandas el camino. '
+      + 'Nadie cobra hoy. Pero sigues entero, y mañana hay otra ruta.</div>';
+    html += '<button class="btn-terminal" onclick="cerrarCorridaResuelta()">VOLVER AL TABLÓN →</button>';
+    cont.innerHTML = html;
+    _corrida = null;
+    _nodoIdx = 0;
+    _enConfrontacion = null;
+    _guardar();
+  }
+
+  // Volver a pintar el nodo actual (cancelar la retirada).
+  function _volverAlNodo(){
+    _pintarNodo();
+  }
+
   // ── salir del tablón, volver a la escena previa ─────────
   function cerrarCorrida(){
     const idActual = 'corrida-escena';
@@ -685,6 +817,12 @@
   window.corridaAccionNodo = corridaAccionNodo;
   window.cerrarCorridaResuelta = cerrarCorridaResuelta;
   window.abandonarCorrida = abandonarCorrida;
+  window.retirarseCorrida = retirarseCorrida;
+  window.confirmarRetirada = confirmarRetirada;
+  window._volverAlNodo = _volverAlNodo;
   window.cerrarCorrida = cerrarCorrida;
+  // Para que el inventario del panel ESTADO pueda mostrar la condición
+  // del arma. Devuelve 'operativa' | 'gastada' | 'comprometida' | null.
+  window.estadoDesgasteArma = function(id){ return _estadoArma(id); };
 
 })();
