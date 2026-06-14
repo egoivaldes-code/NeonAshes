@@ -121,3 +121,31 @@
   .corrida-op-txt{ font-size:0.74rem; }
   .corrida-narr{ font-size:0.86rem; }
 }
+
+/* ── Aviso de desgaste de arma (en la confrontación) ───────── */
+.corrida-aviso-arma{
+  color:rgba(255,180,90,0.95);   /* ámbar, distinto del daño en magenta */
+}
+
+/* ── Condición del arma en el inventario del panel ESTADO ──── */
+.estado-inv-cond{
+  font-size:0.85em;
+  letter-spacing:0.08em;
+  color:rgba(255,180,90,0.9);
+  opacity:0.9;
+}
+.estado-inv-cond-mal{
+  color:var(--magenta);
+}
+
+/* ── Botón de retirarse (discreto, separado de las opciones) ─ */
+.corrida-retirarse{
+  display:block;
+  width:100%;
+  margin-top:1.2rem;
+  font-size:0.56rem !important;
+  letter-spacing:0.18em;
+  opacity:0.55;
+  border-color:var(--gris) !important;
+}
+.corrida-retirarse:hover{ opacity:0.85; }
