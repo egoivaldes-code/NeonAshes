@@ -143,6 +143,110 @@ const ZONAS_EXPEDICION = {
       { peso: 3, creditos: [90, 180], items: [{ id:'nucleo_optico', cant:[1,2] }] },
       { peso: 2, creditos: [120, 240], items: [{ id:'servidor_hundido', cant:[1,1] }] }
     ]
+  },
+
+  // ── DESGUAZADOR (rango 3) ──
+  cementerio_drones: {
+    id: 'cementerio_drones',
+    nombre: 'Cementerio de drones',
+    desc: 'Un vertedero donde HELIX deja morir a sus drones de vigilancia averiados. Carcasas a montones, ópticas intactas... y alguno que aún no sabe que está muerto.',
+    riesgo: 'alto',
+    alertaInicial: 15,
+    alertaPorEvento: 10,
+    eventosMin: 5,
+    eventosMax: 7,
+    bloqueada: true,
+    requisito: { tipo: 'rango', rango: 'Desguazador' },
+    tablaBotin: [
+      { peso: 4, creditos: [70, 140], items: [{ id:'nucleo_optico', cant:[1,2] }] },
+      { peso: 2, creditos: [50, 110], items: [{ id:'chatarra_cruda', cant:[3,6] }] },
+      { peso: 1, creditos: [110, 200], items: [{ id:'servidor_hundido', cant:[1,1] }] }
+    ]
+  },
+  tren_descarrilado: {
+    id: 'tren_descarrilado',
+    nombre: 'Tren de carga descarrilado',
+    desc: 'Un convoy de mercancías de HELIX volcado en un túnel hace meses. Nadie lo ha vaciado del todo porque el túnel se cae a pedazos. Por eso queda tanto.',
+    riesgo: 'alto',
+    alertaInicial: 12,
+    alertaPorEvento: 9,
+    eventosMin: 5,
+    eventosMax: 7,
+    bloqueada: true,
+    requisito: { tipo: 'rango', rango: 'Desguazador' },
+    tablaBotin: [
+      { peso: 4, creditos: [60, 130], items: [{ id:'chatarra_cruda', cant:[4,7] }] },
+      { peso: 2, creditos: [90, 170], items: [{ id:'nucleo_optico', cant:[1,1] }] },
+      { peso: 1, creditos: [120, 220], items: [{ id:'servidor_hundido', cant:[1,1] }] }
+    ]
+  },
+
+  // ── RECUPERADOR (rango 4) ──
+  cripta_servidores: {
+    id: 'cripta_servidores',
+    nombre: 'Cripta de servidores',
+    desc: 'Un centro de datos de HELIX clausurado y tapiado, kilómetros bajo tierra. Las máquinas siguen encendidas, zumbando solas en la oscuridad, guardando datos que ya no le importan a nadie. O eso dicen.',
+    riesgo: 'extremo',
+    alertaInicial: 22,
+    alertaPorEvento: 12,
+    eventosMin: 6,
+    eventosMax: 8,
+    bloqueada: true,
+    requisito: { tipo: 'rango', rango: 'Recuperador' },
+    tablaBotin: [
+      { peso: 3, creditos: [130, 240], items: [{ id:'servidor_hundido', cant:[1,2] }] },
+      { peso: 2, creditos: [100, 190], items: [{ id:'nucleo_optico', cant:[1,2] }] }
+    ]
+  },
+  morgue_automatizada: {
+    id: 'morgue_automatizada',
+    nombre: 'Morgue automatizada',
+    desc: 'Una morgue HELIX abandonada donde los brazos robóticos aún clasifican cuerpos que ya no llegan. Los implantes de los muertos siguen en sus cajones, esperando ser reciclados. Trabajo macabro, pero el implante de un muerto paga como el de un vivo.',
+    riesgo: 'extremo',
+    alertaInicial: 18,
+    alertaPorEvento: 11,
+    eventosMin: 6,
+    eventosMax: 8,
+    bloqueada: true,
+    requisito: { tipo: 'rango', rango: 'Recuperador' },
+    tablaBotin: [
+      { peso: 3, creditos: [120, 220], items: [{ id:'nucleo_optico', cant:[1,2] }] },
+      { peso: 2, creditos: [150, 260], items: [{ id:'servidor_hundido', cant:[1,1] }] }
+    ]
+  },
+
+  // ── ARQUEOTÉCNICO (rango 5) ──
+  sector_muerto: {
+    id: 'sector_muerto',
+    nombre: 'Sector muerto',
+    desc: 'Una zona que ningún mapa de HELIX reconoce, sellada hace generaciones. Aquí abajo el aire late cada once segundos y los aparatos registran cosas que no deberían existir. Quien vuelve, no vuelve igual. Pero lo que se encuentra no tiene precio.',
+    riesgo: 'extremo',
+    alertaInicial: 28,
+    alertaPorEvento: 13,
+    eventosMin: 7,
+    eventosMax: 9,
+    bloqueada: true,
+    requisito: { tipo: 'rango', rango: 'Arqueotécnico' },
+    tablaBotin: [
+      { peso: 3, creditos: [180, 320], items: [{ id:'nucleo_optico', cant:[2,3] }] },
+      { peso: 2, creditos: [220, 400], items: [{ id:'servidor_hundido', cant:[1,2] }] }
+    ]
+  },
+  pecio_colonial: {
+    id: 'pecio_colonial',
+    nombre: 'Pecio de nave colonial',
+    desc: 'El esqueleto de una de las primeras naves colonia, estrellada en las Pilas siglos antes de HELIX. Tecnología que nadie sabe ya fabricar, y los restos de quienes viajaban en ella. Pisar aquí es pisar el origen de todo. Y el origen muerde.',
+    riesgo: 'extremo',
+    alertaInicial: 25,
+    alertaPorEvento: 12,
+    eventosMin: 7,
+    eventosMax: 9,
+    bloqueada: true,
+    requisito: { tipo: 'rango', rango: 'Arqueotécnico' },
+    tablaBotin: [
+      { peso: 3, creditos: [200, 360], items: [{ id:'servidor_hundido', cant:[1,2] }] },
+      { peso: 2, creditos: [240, 420], items: [{ id:'nucleo_optico', cant:[2,3] }] }
+    ]
   }
 };
 
@@ -411,6 +515,122 @@ const EVENTOS_EXPEDICION = [
       { texto: 'Darle algo para el dolor antes de irte', tono:'EMPATICO', requiere:'licor', gasta:{ licor:1 }, alerta:0, botin:true, botinReducido:true },
       { texto: 'No puedes cargar con su muerte ni su saco', tono:'HONESTO', alerta:0, botin:false }
     ]
+  },
+
+  // ════════════════════════════════════════════════════════════
+  //  EVENTOS DE ZONA (v0.106) — solo aparecen en sus zonas.
+  // ════════════════════════════════════════════════════════════
+
+  // ── Cementerio de drones (r3) ──
+  {
+    id: 'dron_vivo',
+    peso: 4,
+    zonas: ['cementerio_drones'],
+    narracion: 'Entre cientos de carcasas muertas, una óptica se enciende y gira hacia ti. Un dron de vigilancia que aún no sabe que lo dieron por chatarra. Te ha registrado.',
+    opciones: [
+      { texto: 'Reventarlo de un disparo antes de que avise', tono:'VIOLENTO', requiere:'arma_fuego', gasta:{ cargador:1 }, alerta:8, botin:true, probExito:0.85 },
+      { texto: 'Arrancarle el núcleo óptico en caliente', tono:'FRIO', requiere:'arma_blanca', alerta:5, botin:true, probExito:0.7, herida:'herida_brazo_d_leve' },
+      { texto: 'Cegarlo con el analizador y vaciarlo', tono:'FRIO', requiere:'analizador', gasta:{ carga_analizador:1 }, alerta:2, botin:true, probExito:0.9 },
+      { texto: 'Quedarte muy quieto y dejar que se apague solo', tono:'EVASIVO', alerta:0, botin:false }
+    ]
+  },
+  {
+    id: 'pila_carcasas',
+    peso: 3,
+    zonas: ['cementerio_drones', 'tren_descarrilado'],
+    narracion: 'Una montaña de carcasas apiladas, inestable. Lo bueno está en el fondo, donde nadie ha cavado porque toda la pila puede venirse encima.',
+    opciones: [
+      { texto: 'Cavar hasta el fondo sin prisa', tono:'VENAL', alerta:4, botin:true, herida:'pierna_herida_grave', probExito:0.75 },
+      { texto: 'Coger solo lo de arriba y largarte', tono:'FRIO', alerta:2, botin:true, botinReducido:true },
+      { texto: 'No vale la pierna', tono:'EVASIVO', alerta:0, botin:false }
+    ]
+  },
+
+  // ── Tren descarrilado (r3) ──
+  {
+    id: 'vagon_sellado',
+    peso: 4,
+    zonas: ['tren_descarrilado'],
+    narracion: 'Un vagón de carga aún precintado con sellos de HELIX, ladeado entre los escombros del túnel. Si nadie lo abrió fue por miedo al derrumbe. Por eso sigue lleno.',
+    opciones: [
+      { texto: 'Forzar el precinto con ganzúa', tono:'FRIO', requiere:'ganzua', gasta:{ ganzua:1 }, alerta:5, botin:true, probExito:0.85 },
+      { texto: 'Reventar la puerta a la fuerza', tono:'VIOLENTO', alerta:14, botin:true, multa:50, probExito:1, herida:'herida_brazo_d_leve' },
+      { texto: 'El techo cruje demasiado. Dejarlo', tono:'EVASIVO', alerta:0, botin:false }
+    ]
+  },
+
+  // ── Cripta de servidores (r4) ──
+  {
+    id: 'rack_caliente',
+    peso: 4,
+    zonas: ['cripta_servidores'],
+    narracion: 'Un rack de servidores sigue encendido, latiendo en la oscuridad, caliente al tacto. Dentro hay datos que HELIX tapió pero no borró. Sacar el módulo entero vale una fortuna; tocarlo mal, una descarga.',
+    opciones: [
+      { texto: 'Extraer el módulo con el analizador', tono:'FRIO', requiere:'analizador', gasta:{ carga_analizador:1 }, alerta:6, botin:true, probExito:0.9 },
+      { texto: 'Arrancarlo en caliente a mano', tono:'VIOLENTO', alerta:10, botin:true, probExito:0.6, herida:'conmocion' },
+      { texto: 'Dejar los datos dormir', tono:'EVASIVO', alerta:0, botin:false }
+    ]
+  },
+  {
+    id: 'voz_servidores',
+    peso: 2,
+    zonas: ['cripta_servidores', 'sector_muerto'],
+    narracion: 'Una consola se enciende sola al pasar. Una línea de texto aparece, dirigida a ti, no a nadie más: «¿Vienes a llevarte algo, o a quedarte a escuchar?» No hay nadie. Solo el zumbido y la pregunta parpadeando.',
+    opciones: [
+      { texto: 'Copiar lo que muestra y salir rápido', tono:'FRIO', alerta:8, botin:true },
+      { texto: 'Responder a la consola', tono:'HONESTO', alerta:4, botin:true, botinReducido:true },
+      { texto: 'Apagar la consola y no mirar atrás', tono:'EVASIVO', alerta:0, botin:false }
+    ]
+  },
+
+  // ── Morgue automatizada (r4) ──
+  {
+    id: 'cajon_implante',
+    peso: 4,
+    zonas: ['morgue_automatizada'],
+    narracion: 'Un brazo robótico abre y cierra un cajón sin descanso, ofreciendo y retirando un cuerpo con un implante óptico intacto en la sien. La máquina espera una orden que nunca llega. El implante vale meses de comida.',
+    opciones: [
+      { texto: 'Extraer el implante con cuidado quirúrgico', tono:'FRIO', requiere:'analizador', gasta:{ carga_analizador:1 }, alerta:4, botin:true, probExito:0.9 },
+      { texto: 'Arrancarlo deprisa, sin miramientos', tono:'VIOLENTO', alerta:6, botin:true, probExito:0.75 },
+      { texto: 'No profanar al muerto', tono:'HONESTO', alerta:0, botin:false }
+    ]
+  },
+
+  // ── Sector muerto (r5) — roza CERO ──
+  {
+    id: 'latido_once',
+    peso: 3,
+    zonas: ['sector_muerto'],
+    narracion: 'El aire late cada once segundos, y entre latido y latido oyes, muy bajo, algo que podría ser una voz o el eco de una. Tu analizador enloquece: marca una señal donde no hay fuente. Algo aquí abajo está despierto, y registra que has venido.',
+    opciones: [
+      { texto: 'Rastrear la señal hasta su origen', tono:'FRIO', requiere:'analizador', gasta:{ carga_analizador:1 }, alerta:12, botin:true, probExito:0.8 },
+      { texto: 'Coger lo que brilla y huir del latido', tono:'VENAL', alerta:8, botin:true, botinReducido:true },
+      { texto: 'Quedarte quieto y escuchar entre latidos', tono:'HONESTO', alerta:4, botin:false }
+    ]
+  },
+  {
+    id: 'reliquia_cero',
+    peso: 2,
+    zonas: ['sector_muerto', 'pecio_colonial'],
+    narracion: 'Encajado en el muro como si el muro hubiera crecido a su alrededor, un objeto que no es de esta época: liso, tibio, sin junturas, vibrando apenas. No sabes qué es. Sabes que es antiguo. Más antiguo que HELIX, que las Pilas, quizá que la humanidad.',
+    opciones: [
+      { texto: 'Arrancarlo del muro y llevártelo', tono:'VENAL', alerta:15, botin:true, probExito:0.7, herida:'herida_brazo_d_leve' },
+      { texto: 'Documentarlo con el analizador sin tocarlo', tono:'FRIO', requiere:'analizador', gasta:{ carga_analizador:1 }, alerta:6, botin:true, botinReducido:true },
+      { texto: 'Hay cosas que no deben moverse de su sitio', tono:'HONESTO', alerta:0, botin:false }
+    ]
+  },
+
+  // ── Pecio colonial (r5) ──
+  {
+    id: 'camara_tripulacion',
+    peso: 4,
+    zonas: ['pecio_colonial'],
+    narracion: 'La cámara de criosueño de la nave colonia. Decenas de cápsulas, todas abiertas, todas vacías... salvo una, empañada por dentro, que tu linterna no logra atravesar. En los paneles, tecnología que nadie sabe ya fabricar.',
+    opciones: [
+      { texto: 'Desmontar los paneles de tecnología perdida', tono:'FRIO', alerta:6, botin:true },
+      { texto: 'Limpiar el cristal de la cápsula cerrada y mirar', tono:'HONESTO', alerta:8, botin:true, botinReducido:true },
+      { texto: 'Coger lo fácil y no mirar la cápsula', tono:'EVASIVO', alerta:2, botin:true, botinReducido:true }
+    ]
   }
 ];
 
@@ -518,13 +738,18 @@ function siguienteEventoExpedicion(){
   if(run.eventoActual >= run.eventosMax) return null;
 
   // Ponderar: la alerta alta empuja hacia patrulla/encuentro.
-  const lista = EVENTOS_EXPEDICION.map(ev => {
-    let peso = ev.peso || 1;
-    if((ev.id === 'patrulla' || ev.id === 'encuentro')){
-      peso += Math.floor((run.alerta || 0) / 20); // +1 por cada 20 de alerta
-    }
-    return Object.assign({}, ev, { peso });
-  });
+  const idZonaRun = run.zona || run.idZona || null;
+  const lista = EVENTOS_EXPEDICION
+    // Si un evento declara 'zonas', solo aparece en esas zonas. Los
+    // eventos sin 'zonas' son genéricos y salen en cualquier sitio.
+    .filter(ev => !ev.zonas || (idZonaRun && ev.zonas.indexOf(idZonaRun) !== -1))
+    .map(ev => {
+      let peso = ev.peso || 1;
+      if((ev.id === 'patrulla' || ev.id === 'encuentro')){
+        peso += Math.floor((run.alerta || 0) / 20); // +1 por cada 20 de alerta
+      }
+      return Object.assign({}, ev, { peso });
+    });
   const elegido = _expElegirPonderado(lista);
   if(!elegido) return null;
 
@@ -563,7 +788,8 @@ function resolverOpcionExpedicion(evento, opcion){
   // 1) Tirada de éxito si la opción la tiene.
   let exito = true;
   if(typeof opcion.probExito === 'number'){
-    exito = Math.random() < opcion.probExito;
+    const _bonus = (typeof implanteBonusProbExpedicion === 'function') ? implanteBonusProbExpedicion() : 0;
+    exito = Math.random() < Math.min(0.97, opcion.probExito + _bonus);
   }
   resumen.fallo = !exito;
 

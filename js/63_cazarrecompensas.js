@@ -1443,7 +1443,9 @@ function resolverAbordaje(idx){
   const op = c.abordaje.opciones[idx];
   if(!op) return;
   if(op.requiereItem && !_cazaLleva(op.requiereItem)) return; // guardia
-  const exito = Math.random() < (op.prob || 0.5);
+  const _bonusProb = (typeof implanteBonusProbCaza === 'function') ? implanteBonusProbCaza() : 0;
+  const _prob = Math.min(0.97, (op.prob || 0.5) + _bonusProb);
+  const exito = Math.random() < _prob;
   _contratoAbordajeOk = exito;
   const res = exito ? op.exito : op.fallo;
   _cazaAplicarCostes(res);

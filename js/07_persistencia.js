@@ -43,6 +43,7 @@ function guardarPartida(){
       // cooldown). Sin esto, cerrar y abrir el juego perdía el oficio y
       // obligaba a volver a elegir profesión.
       profesiones: Estado.profesiones || {},
+      implantes: Estado.implantes || { instalados:{}, especial:null },
       guardadoEn: Date.now()
     };
     localStorage.setItem(CLAVE_PARTIDA, JSON.stringify(datos));

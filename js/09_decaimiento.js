@@ -37,15 +37,29 @@ function iniciarDecaimientoPasivo(){
     // serían ruido constante de fondo (cada hora subiría 3 stats +1).
     // El jugador ya ve esos cambios al abrir el panel ESTADO.
     _suprimirFlechasStat = true;
+    // Implantes: ralentizan el aumento de ciertas stats. Como el
+    // decaimiento es entero (+1/hora), acumulamos fracciones en
+    // Estado._decaimientoResto para no perder el efecto por redondeo.
+    Estado._decaimientoResto = Estado._decaimientoResto || { fatiga:0, aislamiento:0, hambre:0 };
+    const multF = (typeof implanteMultDecaimiento === 'function') ? implanteMultDecaimiento('fatiga') : 1;
+    const multA = (typeof implanteMultDecaimiento === 'function') ? implanteMultDecaimiento('aislamiento') : 1;
+    const multH = (typeof implanteMultDecaimiento === 'function') ? implanteMultDecaimiento('hambre') : 1;
+    const _acumular = (stat, mult) => {
+      Estado._decaimientoResto[stat] += mult; // mult ≈ 0.6..1.0
+      const entero = Math.floor(Estado._decaimientoResto[stat]);
+      if(entero >= 1){
+        ajustarHumano(stat, entero);
+        Estado._decaimientoResto[stat] -= entero;
+      }
+    };
     for(let i = 0; i < horasTranscurridas; i++){
       // Lluvia ácida del exterior se filtra siempre: fatiga lenta.
-      ajustarHumano('fatiga', 1);
+      _acumular('fatiga', multF);
       // Soledad acumulada: el apartamento no tiene compañía.
-      ajustarHumano('aislamiento', 1);
+      _acumular('aislamiento', multA);
       // Hambre: el cuerpo no espera. Sube despacio pero sin pausa.
-      ajustarHumano('hambre', 1);
+      _acumular('hambre', multH);
       // Disociación: si está alta, tiende a estabilizarse lentamente.
-      // Si está baja, no se mueve. Una vez te tocó, te suelta poco a poco.
       if(Estado.humano.disociacion > 60){
         ajustarHumano('disociacion', -1);
       }

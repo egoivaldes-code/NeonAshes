@@ -1248,9 +1248,14 @@ function _accionHospital(accion, zona, narr, opcEl){
     return;
   }
 
-  // ── IMPLANTES BÁSICOS ──
+  // ── IMPLANTES (catálogo real) ──
   if(accion === 'hospital_implantes'){
-    narr.innerHTML = 'La Dra. Malk señala una vitrina con módulos sellados al vacío. "Implantes básicos homologados por HELIX. Filtros hepáticos, reguladores de sueño, mallas dérmicas. Nada de lujos: cosas que te mantienen funcionando un año más." Hace una pausa. "El catálogo completo aún no está abierto al público en esta clínica. Vuelve pronto; lo estarán cargando en el sistema." Lo dice como si no se lo creyera del todo ella misma.';
+    if(typeof renderTiendaImplantes === 'function'){
+      narr.innerHTML = 'La Dra. Malk introduce un código y la vitrina se ilumina por dentro. "Catálogo HELIX homologado. Comprar el módulo es la mitad; instalarlo, la otra mitad. Y una vez dentro de ti, es tuyo: si lo cambias por otro, el viejo se destruye. HELIX no reutiliza lo que ya ha tocado un cuerpo." Te mira. "Cuatro de los normales y uno especial. Es todo lo que aguanta un sistema nervioso sin empezar a fallar. Elige con cabeza."'
+        + '<div id="impl-shop-host">' + renderTiendaImplantes() + '</div>';
+    } else {
+      narr.innerHTML = 'La vitrina está oscura. El sistema de catálogo no responde. "Vuelve más tarde", murmura la Dra. Malk.';
+    }
     opcEl.innerHTML = volver;
     return;
   }

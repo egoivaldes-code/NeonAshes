@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.107] - 2026-06-14
+### Added
+- Scavenger: seis zonas nuevas de expedición que desbloquean los rangos altos (Desguazador, Recuperador, Arqueotécnico), con eventos propios y botín escalado; las de rango máximo rozan a CERO.
+- Sistema de implantes estilo EVE en el Hospital HELIX: seis tipos normales y un especial que amplifica al resto, grados 1-5 (potencia grado x5%), cuatro ranuras normales y una especial. Efectos sobre decaimiento de stats, probabilidades de éxito y tiempo de acción. Sección AUMENTOS en el panel ESTADO.
+### Fixed
+- El Muro (deducción de Investigador): las pistas ahora se pueden arrastrar con el dedo en móvil, no solo tocar.
+
 ## [0.106] - 2026-06-14
 ### Added
 - Despido por inactividad: si pasan 7 días de juego sin ejercer una profesión que ya tenías, te despiden de ella (rango y progreso a cero). El panel de PROFESIONES avisa de los días restantes de cada oficio.
@@ -88,7 +95,7 @@
 ## [0.95] - 2026-06-09
 ### Added
 - Nueva profesión: Investigador Privado. Trabaja por casos en vez de tiradas. Desde el botón TRABAJAR se abre un tablón con un pool de casos de distinto contratante y peligrosidad (los más peligrosos piden más rango).
-- Caso completo de ejemplo, "Expediente en gris": investigación con varias líneas (escena del crimen, viuda, capataz), entrevistas con distintos enfoques (presionar, empatizar, mentir, sobornar) que dan pistas, y una deducción final (quién, por qué y cómo) con tres desenlaces según los aciertos: verdad completa, resolución parcial o final equivocado.
+- Caso completo de ejemplo, "Expediente en gris": investigación con varias líneas (escena del crimen, viuda, capataz), entrevistas con distintos enfoques (presionar, empathizar, mentir, sobornar) que dan pistas, y una deducción final (quién, por qué y cómo) con tres desenlaces según los aciertos: verdad completa, resolución parcial o final equivocado.
 
 ## [0.94] - 2026-06-09
 ### Added
@@ -553,7 +560,7 @@
 - En móvil el texto va sobre un panel oscuro con borde para que se lea sobre la imagen; en PC la pantalla se ve más amplia, con la imagen más presente y el texto más grande
 - En el apartamento, "mirar por la ventana" y "dormir" ahora desaparecen tras usarse (dormir, una vez por visita), en vez de quedarse en gris
 ### Fixed
-- El inventario mostraba "[object Object]": ahora los objetos salen con su nombre y descripción en la pestaña INVENTARIO
+- El inventario mostraba "[object Object]": now the objects salen con su nombre y descripción en la pestaña INVENTARIO
 - Los objetos aparecían en el panel ESTADO en lugar de en INVENTARIO; movidos a su sitio (las lesiones siguen en ESTADO)
 
 ## [0.70] - 2026-05-30
@@ -865,7 +872,7 @@
 ## v32 — Bug del botón CONTINUAR colgado
 
 - El velo oscuro (`.transito-overlay`) interceptaba los toques sobre el botón en la escena de tránsito de Mara.
-- Arreglado con `pointer-events:none` en el velo and `z-index:5` al contenedor `#tarjetas-loc-mision`.
+- Arreglado with `pointer-events:none` en el velo and `z-index:5` al contenedor `#tarjetas-loc-mision`.
 
 ## v31 — Rediseño del flujo del apartamento
 

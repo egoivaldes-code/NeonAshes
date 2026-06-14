@@ -411,7 +411,7 @@
   white-space: normal; line-height: 1.4; padding: 0.6rem 0.7rem;
 }
 
-/* ── Escaneo de vulnerabilidades (v0.104) ── */
+/* ── Escaneo de vulnerabilidades (v0.105) ── */
 .hack-det-bar {
   width: 100%; height: 8px; border-radius: 4px; overflow: hidden;
   background: rgba(8,11,16,0.85); border: 1px solid rgba(58,74,85,0.5);
@@ -439,7 +439,7 @@
 .hack-nodo-obj { border-color: rgba(255,0,110,0.5); }
 .hack-nodo-obj .hack-nodo-etq { color: #ffadcb; letter-spacing: 0.05em; }
 
-/* ── Ensamblador de malware (v0.104) ── */
+/* ── Ensamblador de malware (v0.105) ── */
 .hack-stats { display: flex; flex-direction: column; gap: 0.3rem; }
 .hack-stat {
   display: flex; align-items: center; gap: 0.5rem;
@@ -476,3 +476,79 @@
 }
 .hack-mod-on { background: rgba(0,40,28,0.5); border-color: rgba(120,255,200,0.6); }
 .hack-mod-lleno { opacity: 0.4; }
+
+/* ============================================================
+   IMPLANTES · TIENDA HELIX (v0.107)
+   ============================================================ */
+.impl-shop { display:flex; flex-direction:column; gap:0.6rem; margin-top:0.6rem; }
+.impl-saldo {
+  font-family:'Orbitron',sans-serif; font-size:0.7rem; letter-spacing:0.15em;
+  color:var(--cyan,#00e5ff);
+}
+.impl-slots {
+  font-family:'Rajdhani',sans-serif; font-size:0.72rem; letter-spacing:0.08em;
+  color:rgba(200,216,224,0.6);
+}
+.impl-sec-tit {
+  font-family:'Orbitron',sans-serif; font-size:0.62rem; letter-spacing:0.2em;
+  color:rgba(0,229,255,0.75); text-transform:uppercase;
+  margin-top:0.5rem; padding-bottom:0.2rem; border-bottom:1px solid rgba(58,74,85,0.4);
+}
+.impl-aviso {
+  font-family:'Rajdhani',sans-serif; font-size:0.8rem; color:#ff7aa8;
+  padding:0.4rem 0.6rem; border:1px solid rgba(255,0,110,0.4); border-radius:5px;
+  margin-bottom:0.5rem;
+}
+.impl-card {
+  background:rgba(8,11,16,0.82); border:1px solid rgba(58,74,85,0.5);
+  border-radius:6px; padding:0.6rem 0.7rem;
+}
+.impl-card-on { border-left:3px solid rgba(120,255,200,0.65); }
+.impl-card-top { display:flex; justify-content:space-between; align-items:center; gap:0.4rem; }
+.impl-nom { font-family:'Rajdhani',sans-serif; font-size:0.95rem; color:var(--blanco-suave); font-weight:600; }
+.impl-grado { font-family:'Orbitron',sans-serif; font-size:0.62rem; color:#7fffc8; letter-spacing:0.1em; }
+.impl-tipo { font-family:'Orbitron',sans-serif; font-size:0.55rem; color:rgba(0,229,255,0.7); letter-spacing:0.15em; }
+.impl-desc {
+  font-family:'Rajdhani',sans-serif; font-size:0.8rem; line-height:1.4;
+  color:rgba(200,216,224,0.75); margin:0.3rem 0;
+}
+.impl-efecto { font-family:'Rajdhani',sans-serif; font-size:0.78rem; color:#7fffc8; margin-top:0.2rem; }
+.impl-efecto-mini { font-family:'Rajdhani',sans-serif; font-size:0.7rem; color:rgba(255,200,120,0.8); margin:0.2rem 0; }
+.impl-grados { display:flex; flex-wrap:wrap; gap:0.3rem; margin-top:0.4rem; }
+.impl-gbtn {
+  flex:1 1 auto; min-width:0; font-size:0.62rem; padding:0.45rem 0.2rem;
+  white-space:nowrap;
+}
+.impl-gbtn-actual { border-color:rgba(120,255,200,0.7); color:#7fffc8; }
+.impl-gbtn-off { opacity:0.35; pointer-events:none; }
+.impl-gbtn-caro { opacity:0.45; }
+.impl-quitar { display:block; width:100%; margin-top:0.45rem; font-size:0.68rem; }
+
+/* Panel ESTADO · sección AUMENTOS */
+.estado-impl-vacio {
+  font-family:'Rajdhani',sans-serif; font-size:0.8rem; font-style:italic;
+  color:rgba(200,216,224,0.5); line-height:1.4;
+}
+.estado-impl {
+  background:rgba(8,11,16,0.6); border:1px solid rgba(58,74,85,0.45);
+  border-radius:5px; padding:0.45rem 0.6rem; margin-bottom:0.35rem;
+}
+.estado-impl-esp { border-color:rgba(255,0,110,0.45); }
+.estado-impl-top { display:flex; justify-content:space-between; align-items:center; }
+.estado-impl-nom { font-family:'Rajdhani',sans-serif; font-size:0.85rem; color:var(--blanco-suave); }
+.estado-impl-grado { font-family:'Orbitron',sans-serif; font-size:0.55rem; color:#7fffc8; letter-spacing:0.1em; }
+.estado-impl-esp .estado-impl-grado { color:#ff7aa8; }
+.estado-impl-ef { font-family:'Rajdhani',sans-serif; font-size:0.72rem; color:rgba(120,255,200,0.85); margin-top:0.15rem; }
+
+/* ── EL MURO · arrastre táctil (v0.107) ── */
+.muro-tarjeta { touch-action: none; } /* el dedo arrastra la tarjeta, no scrollea sobre ella */
+.muro-tarjeta-origen { opacity: 0.35; }
+.muro-tarjeta-arrastre {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  border-color: var(--cyan,#00e5ff) !important;
+}
+.muro-zona-hover {
+  background: rgba(0,229,255,0.12) !important;
+  border-color: var(--cyan,#00e5ff) !important;
+  box-shadow: inset 0 0 16px rgba(0,229,255,0.18);
+}

@@ -401,7 +401,9 @@ function ejercerProfesion(idProf, idAccion, idLugar){
   }
 
   // 1) Tiempo de juego (puede cruzar medianoche y cobrar alquiler).
-  if(typeof avanzarTiempoJuego === 'function') avanzarTiempoJuego(accion.minutos);
+  //    El implante Sincronizador Neural reduce el tiempo gastado.
+  const _multT1 = (typeof implanteMultTiempoAccion === 'function') ? implanteMultTiempoAccion() : 1;
+  if(typeof avanzarTiempoJuego === 'function') avanzarTiempoJuego(Math.round(accion.minutos * _multT1));
   if(typeof comprobarCobrosDiarios === 'function') comprobarCobrosDiarios();
 
   // 1b) Consumir los materiales que exija la acción (refinar gasta 5 de
@@ -519,7 +521,8 @@ function aplicarTrabajoRefinado(idProf, idAccion){
   if(!cd.puede) return { bloqueado: true, minutosRestantes: cd.minutosRestantes };
 
   // Tiempo de juego (puede cruzar medianoche y cobrar alquiler).
-  if(typeof avanzarTiempoJuego === 'function') avanzarTiempoJuego(accion.minutos || 60);
+  const _multT2 = (typeof implanteMultTiempoAccion === 'function') ? implanteMultTiempoAccion() : 1;
+  if(typeof avanzarTiempoJuego === 'function') avanzarTiempoJuego(Math.round((accion.minutos || 60) * _multT2));
   if(typeof comprobarCobrosDiarios === 'function') comprobarCobrosDiarios();
 
   // Progreso y ascenso (igual que la acción vieja, sin paga).

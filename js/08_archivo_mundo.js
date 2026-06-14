@@ -309,6 +309,8 @@ function aplicarPartidaCargada(datos){
   // progreso, cooldown). Si la partida es v1/v2 (sin este campo), se
   // deja el contenedor vacío y el jugador empezará sin oficio, como antes.
   if(datos.profesiones && typeof datos.profesiones === 'object') Estado.profesiones = datos.profesiones;
+  // v3+: restaurar implantes instalados (slots normales + especial).
+  if(datos.implantes && typeof datos.implantes === 'object') Estado.implantes = datos.implantes;
 }
 
 
