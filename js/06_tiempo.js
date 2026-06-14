@@ -122,6 +122,11 @@ function avanzarTiempoJuego(minutos){
   const fechaAhora = obtenerFechaJuego().getTime();
   Estado.tiempoJuego.timestampJuego = fechaAhora + (minutos * 60 * 1000);
   Estado.tiempoJuego.timestampReal = Date.now();
+  // El tiempo que avanzas trabajando (o por saltos de escena) corre
+  // contra las demás profesiones: despide las inactivas >= 7 días.
+  if(typeof comprobarDespidosProfesion === 'function'){
+    try { comprobarDespidosProfesion(); } catch(e){}
+  }
 }
 
 // Pausa el reloj del juego. Se llama al abrir un panel del hub.

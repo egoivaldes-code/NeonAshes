@@ -26,6 +26,11 @@ let _lugarAbierto = null;
 let _profAbierta = null;
 
 function renderTrabajos(){
+  // Antes de pintar, comprobar si el paso del tiempo ha despedido de
+  // alguna profesión por inactividad (>= 7 días de juego sin ejercer).
+  if(typeof comprobarDespidosProfesion === 'function'){
+    try { comprobarDespidosProfesion(); } catch(e){}
+  }
   const sub = (_subtabTrabajos === 'oficio') ? 'oficio' : 'encargos';
   const cuerpo = (sub === 'oficio') ? renderTrabajosOficio() : renderEncargos();
   const clsE = sub === 'encargos' ? 'cp-tab activa' : 'cp-tab';
@@ -202,6 +207,18 @@ function renderTrabajosOficio(){
       const barra = umbral > 0
         ? `<div style="margin-top:0.5rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.6;">PROGRESO: ${prog} / ${umbral}</div>`
         : `<div style="margin-top:0.5rem;font-size:0.5rem;letter-spacing:0.15em;opacity:0.6;">RANGO MÁXIMO ALCANZADO</div>`;
+      // Aviso de despido por inactividad: días de juego que quedan.
+      let avisoDespido = '';
+      if(typeof diasParaDespido === 'function'){
+        const d = diasParaDespido(p.id);
+        if(d != null){
+          const color = d <= 2 ? 'var(--magenta)' : (d <= 4 ? 'rgba(255,160,120,0.85)' : 'rgba(140,160,170,0.6)');
+          const txt = d <= 0
+            ? 'EN RIESGO DE DESPIDO'
+            : (d === 1 ? 'Te despedirán en 1 día si no ejerces' : `Te despedirán en ${d} días si no ejerces`);
+          avisoDespido = `<div style="margin-top:0.35rem;font-size:0.5rem;letter-spacing:0.1em;color:${color};">${txt}</div>`;
+        }
+      }
       const botonEntrar = enApt
         ? `<div style="margin-top:0.8rem;text-align:center;">
              <button class="btn-terminal" onclick="abrirOficioSubmenu('${p.id}')">ENTRAR →</button>
@@ -216,6 +233,7 @@ function renderTrabajosOficio(){
             <span class="trabajo-estado aceptado">${rango.nombre}</span>
           </div>
           ${barra}
+          ${avisoDespido}
           ${botonEntrar}
         </div>`;
     } else {
