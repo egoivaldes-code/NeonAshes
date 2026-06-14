@@ -37,6 +37,8 @@ if(audioEl){
     if(typeof window.AUDIO_ON !== 'undefined' && !window.AUDIO_ON) return;
     // En el apartamento con Main Theme ya sonado, manda 16_musica_misiones.
     if(window.MUSICA.enApartamento && window.MUSICA.mainThemeYaSono) return;
+    // En escena de oficio (investigador/caza), manda 65_musica_oficios.
+    if(window.MUSICA.pistaActual === 'loop_oficio') return;
 
     if(window.MUSICA.pistaActual === 'main'){
       window.MUSICA.mainThemeYaSono = true;

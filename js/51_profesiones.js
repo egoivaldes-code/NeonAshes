@@ -258,7 +258,8 @@ function elegirProfesion(id){
     activa: true,
     rango: 0,
     progreso: 0,
-    ultimoDiaISO: (typeof diaJuegoActual === 'function') ? diaJuegoActual() : null
+    ultimoDiaISO: (typeof diaJuegoActual === 'function') ? diaJuegoActual() : null,
+    ultimoTrabajoMs: (typeof obtenerFechaJuego === 'function') ? obtenerFechaJuego().getTime() : null
   };
   if(typeof guardarPartida === 'function') guardarPartida();
   if(typeof reproducirFX === 'function') reproducirFX('profesion', 0.7);
@@ -591,3 +592,75 @@ function rangoActualProfesion(idProf){
   return est ? (est.rango || 0) : 0;
 }
 window.rangoActualProfesion = rangoActualProfesion;
+
+// ============================================================
+//  DESPIDO POR INACTIVIDAD (v0.106)
+//  Ejercer una profesión hace avanzar el tiempo de juego. Ese
+//  tiempo corre contra TODAS las profesiones activas: si pasan
+//  7 días de juego sin ejercer una que ya tenías, te despiden
+//  de ella (rango y progreso a cero, queda inactiva).
+//  Así el jugador debe repartirse y no vivir en un solo oficio.
+// ============================================================
+const DIAS_DESPIDO = 7;
+const MS_DESPIDO = DIAS_DESPIDO * 24 * 60 * 60 * 1000; // en ms de JUEGO
+
+// Sella el momento del último "trabajo" de una profesión. Se llama
+// al elegirla (para arrancar el contador) y desde el motor al trabajar.
+function _sellarActividad(est){
+  if(!est) return;
+  est.ultimoTrabajoMs = _ahoraJuegoMs();
+}
+
+// Recorre las profesiones activas y despide las que lleven >= 7 días
+// de juego sin ejercerse. Devuelve un array con los nombres despedidos.
+// Idempotente y barato: seguro llamarlo a menudo (al trabajar, al abrir
+// el panel de oficios, al pasar tiempo).
+function comprobarDespidosProfesion(){
+  const todas = _asegurarProfesiones();
+  const ahora = _ahoraJuegoMs();
+  if(ahora == null) return [];
+  const despedidas = [];
+  Object.keys(todas).forEach(id => {
+    const est = todas[id];
+    if(!est || !est.activa) return;
+    // Una profesión recién tomada sin sello aún: la sellamos ahora y
+    // no la penalizamos (el contador empieza al tomarla).
+    if(typeof est.ultimoTrabajoMs !== 'number'){
+      est.ultimoTrabajoMs = ahora;
+      return;
+    }
+    // El rango 0 sin progreso no se "pierde" de forma dolorosa, pero
+    // igualmente se desactiva por coherencia: dejas de ejercer.
+    if(ahora - est.ultimoTrabajoMs >= MS_DESPIDO){
+      const prof = profesionPorId(id);
+      est.activa = false;
+      est.rango = 0;
+      est.progreso = 0;
+      est.despedida = true; // marca para avisar una sola vez
+      despedidas.push(prof ? prof.nombre : id);
+    }
+  });
+  if(despedidas.length){
+    if(typeof guardarPartida === 'function') guardarPartida();
+    if(typeof notificarCambio === 'function'){
+      despedidas.forEach(nom => {
+        notificarCambio(`DESPEDIDO · ${nom.toUpperCase()}`, 'rango');
+      });
+    }
+  }
+  return despedidas;
+}
+window.comprobarDespidosProfesion = comprobarDespidosProfesion;
+
+// Días de juego que le quedan a una profesión antes del despido por
+// inactividad (entero hacia arriba). null si no aplica. Útil para HUD.
+function diasParaDespido(idProf){
+  const est = estadoProfesion(idProf);
+  if(!est || !est.activa || typeof est.ultimoTrabajoMs !== 'number') return null;
+  const ahora = _ahoraJuegoMs();
+  if(ahora == null) return null;
+  const restanteMs = MS_DESPIDO - (ahora - est.ultimoTrabajoMs);
+  if(restanteMs <= 0) return 0;
+  return Math.ceil(restanteMs / (24 * 60 * 60 * 1000));
+}
+window.diasParaDespido = diasParaDespido;

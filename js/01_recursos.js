@@ -8,7 +8,7 @@
 
 // Versión actual del juego. ACTUALIZAR EN CADA ENTREGA.
 // Se muestra en el panel de depuración (Ctrl+D / tap arriba-izquierda).
-const JUEGO_VERSION = "0.105";
+const JUEGO_VERSION = "0.106";
 window.JUEGO_VERSION = JUEGO_VERSION;
 
 // ------------------------------------------------------------
@@ -76,6 +76,7 @@ const ASSETS = {
   MAIN_THEME: "assets/audio/main_theme.ogg",
   ASHES_OF_HELIX: "assets/audio/ashes_of_helix.ogg",
   INTRO_THEME: "assets/audio/intro_theme.mp3",
+  JAZZ_NOIR: "assets/audio/jazz_noir.mp3",
   FERRO_TRANSITO_1: "assets/images/ferro_transito_1.webp",
   FERRO_TRANSITO_2: "assets/images/ferro_transito_2.webp",
   FERRO_TRANSITO_3: "assets/images/ferro_transito_3.webp",

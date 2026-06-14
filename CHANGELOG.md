@@ -2,6 +2,11 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.106] - 2026-06-14
+### Added
+- Despido por inactividad: si pasan 7 días de juego sin ejercer una profesión que ya tenías, te despiden de ella (rango y progreso a cero). El panel de PROFESIONES avisa de los días restantes de cada oficio.
+- Tema de jazz noir con lluvia que suena en bucle al trabajar de Investigador o Cazarrecompensas.
+
 ## [0.105] - 2026-06-13
 ### Added
 - Investigador Privado: cuatro casos nuevos que cubren los rangos altos antes vacíos (intriga de facción, drama íntimo con implantes de HELIX, deepfake político y un caso cumbre que roza a CERO).
