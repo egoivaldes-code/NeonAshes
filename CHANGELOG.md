@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.112] - 2026-06-15
+### Added
+- Motor de corridas profundo estilo aventura: el camino ahora es un grafo con ramas reales (las bifurcaciones llevan a sitios distintos), una mochila de recursos durante la corrida (botín, créditos, carga) y eventos aleatorios que se intercalan entre paradas, así que dos corridas ya no son iguales.
+- Eventos imprevistos por bando: patrullas, alijos con riesgo de trampa, tratos con desconocidos, emboscadas y golpes de suerte.
+### Changed
+- La navegación de las corridas pasa de una lista fija a un grafo de nodos, manteniendo compatibilidad con las corridas actuales (siguen funcionando sobre el motor nuevo).
+
 ## [0.111] - 2026-06-15
 ### Added
 - Ocho corridas nuevas (cuatro por bando), sobre todo de rango bajo: contrabando de semillas, recuerdos, un desertor del Anillo y carga refrigerada; y por el lado de HELIX, notificaciones, un contrabandista de poca monta, un desalojo y un informante quemado.

@@ -199,3 +199,16 @@
   color:var(--magenta);
   font-weight:600;
 }
+
+/* ── Etiqueta de evento imprevisto (intercalado al azar) ───── */
+.corrida-evento-tag{
+  font-family:'Share Tech Mono', monospace;
+  font-size:0.5rem !important;
+  letter-spacing:0.4em;
+  color:var(--cyan);
+  opacity:0.75;
+  border-left:2px solid var(--cyan-dim);
+  padding-left:0.6rem;
+  margin-bottom:0.4rem !important;
+  text-transform:uppercase;
+}

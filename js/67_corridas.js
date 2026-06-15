@@ -123,7 +123,12 @@
   let _corrida = null;     // objeto de la corrida activa (de 68)
   let _bando = null;       // 'contrabando' | 'seguridad'
   let _profId = null;      // id de la profesión asociada al bando
-  let _nodoIdx = 0;        // índice del nodo actual
+  let _nodoIdx = 0;        // (compat) índice en corridas de formato lineal
+  let _nodoActual = null;  // id del nodo actual en el grafo
+  let _grafo = null;       // { inicio, nodos:{id:{...}} } construido al aceptar
+  let _eventosUsados = [];  // ids de eventos aleatorios ya gastados en esta corrida
+  let _pasosDados = 0;      // nº de transiciones, para ritmo de eventos
+  let _run = null;          // mochila de recursos de la corrida (botín, carga…)
   let _integridad = 0;     // vida de la corrida
   let _integridadMax = 0;
   let _alerta = 0;         // 0..100, presión creciente del distrito
@@ -253,6 +258,17 @@
     _alerta = c.alertaInicial || 0;
     _botin = 0;
     _enConfrontacion = null;
+    // Grafo + mochila de recursos de la corrida.
+    _grafo = _construirGrafo(c);
+    _nodoActual = _grafo.inicio;
+    _eventosUsados = [];
+    _pasosDados = 0;
+    _run = {
+      botin: [],              // hallazgos recogidos (se cobran al llegar)
+      carga: 0,               // bultos pesados acumulados
+      destinoPendiente: null, // a dónde ir tras un evento
+      eventoActual: null
+    };
     // Munición: las balas ya cargadas en el arma PERSISTEN entre corridas
     // (se guardan en memoria). Solo metemos un cargador nuevo si arrancas
     // con el arma vacía y llevas cargadores, para no dejarte sin opción de
@@ -286,23 +302,99 @@
       + '</div>';
   }
 
+  // ── GRAFO DE NODOS ──────────────────────────────────────
+  // Construye el grafo de la corrida. Soporta dos formatos:
+  //  · NUEVO: c.mapa = { inicio:'id', nodos:{ id:{...} } } con enlaces 'ir'.
+  //  · VIEJO: c.nodos = [n0,n1,...] → se lineariza (n0→n1→…→fin).
+  // Cada nodo del grafo final lleva un id y sus enlaces resueltos.
+  function _construirGrafo(c){
+    if(c.mapa && c.mapa.nodos){
+      // Clonado superficial para no mutar el catálogo original.
+      const nodos = {};
+      Object.keys(c.mapa.nodos).forEach(id => {
+        nodos[id] = Object.assign({}, c.mapa.nodos[id], { _id: id });
+      });
+      return { inicio: c.mapa.inicio, nodos: nodos };
+    }
+    // Linealizar el formato viejo.
+    const lista = c.nodos || [];
+    const nodos = {};
+    lista.forEach((n, i) => {
+      const id = 'n' + i;
+      const copia = Object.assign({}, n, { _id: id });
+      if(i < lista.length - 1){ copia.ir = 'n' + (i + 1); }
+      else { copia.fin = true; }
+      nodos[id] = copia;
+    });
+    return { inicio: lista.length ? 'n0' : null, nodos: nodos };
+  }
+
+  function _nodoPorId(id){
+    return (_grafo && _grafo.nodos && id) ? _grafo.nodos[id] : null;
+  }
+
+  // ── EVENTOS ALEATORIOS INTERCALADOS ─────────────────────
+  // Entre nodo y nodo, con cierta probabilidad, se cuela un evento de la
+  // reserva EVENTOS_CORRIDA[bando] (definida en 68). No se repiten en la
+  // misma corrida. Devuelve un nodo-evento o null.
+  function _quizaEvento(){
+    const reserva = (typeof EVENTOS_CORRIDA === 'object' && EVENTOS_CORRIDA && EVENTOS_CORRIDA[_bando])
+      ? EVENTOS_CORRIDA[_bando] : null;
+    if(!reserva || !reserva.length) return null;
+    // Probabilidad base 35%, sube con la alerta (hasta ~60%). No en el 1er paso.
+    if(_pasosDados < 1) return null;
+    const prob = 0.35 + Math.min(0.25, _alerta / 400);
+    if(Math.random() > prob) return null;
+    // Elegir uno no usado.
+    const libres = reserva.filter(e => _eventosUsados.indexOf(e.id) < 0);
+    if(!libres.length) return null;
+    const ev = libres[Math.floor(Math.random() * libres.length)];
+    _eventosUsados.push(ev.id);
+    return ev;
+  }
+
+  // Navega a un nodo del grafo. Si 'idDestino' es null/indefinido → desenlace.
+  // Antes de entrar al destino, puede intercalar un evento aleatorio: en ese
+  // caso se entra al evento y el evento, al resolverse, continúa al destino
+  // real guardado en _run.destinoPendiente.
+  function _irANodo(idDestino, saltarEvento){
+    _enConfrontacion = null;
+    if(!idDestino){ _resolverDesenlace(true); return; }
+    _pasosDados++;
+    if(!saltarEvento){
+      const ev = _quizaEvento();
+      if(ev){
+        // Guardamos a dónde íbamos; el evento nos devolverá aquí.
+        _run.destinoPendiente = idDestino;
+        _nodoActual = '__evento__';
+        _run.eventoActual = ev;
+        _guardar();
+        _pintarEvento(ev);
+        return;
+      }
+    }
+    _nodoActual = idDestino;
+    _guardar();
+    _pintarNodo();
+  }
+
   // ── avanzar / pintar el nodo actual ─────────────────────
   function _pintarNodo(){
     const cont = document.getElementById('corrida-wrap');
     if(!cont || !_corrida) return;
 
-    // ¿Corrida terminada?
-    if(_nodoIdx >= (_corrida.nodos || []).length){
-      _resolverDesenlace(true);
-      return;
-    }
     // ¿Caíste?
     if(_integridad <= 0){
       _resolverDesenlace(false);
       return;
     }
 
-    const nodo = _corrida.nodos[_nodoIdx];
+    const nodo = _nodoPorId(_nodoActual);
+    // Sin nodo válido o nodo final → desenlace de éxito.
+    if(!nodo || nodo.fin){
+      _resolverDesenlace(true);
+      return;
+    }
 
     // Si el nodo es una confrontación y aún no la hemos montado, montarla.
     const confronYaActiva = nodo.tipo === 'confrontacion' && _enConfrontacion;
@@ -325,16 +417,16 @@
       html += _pintarEncuentro(nodo);
     } else if(nodo.tipo === 'bifurcacion'){
       html += _pintarBifurcacion(nodo);
+    } else if(nodo.tipo === 'hallazgo'){
+      html += _pintarHallazgo(nodo);
     } else {
       // nodo narrativo simple
       html += '<button class="btn-terminal" onclick="avanzarCorrida()">AVANZAR →</button>';
     }
 
     // Opción de RETIRARSE: disponible en nodos que no sean confrontación
-    // (no es un escape de un mal turno) y a partir del segundo nodo (hay
-    // que haber empezado de verdad). Pierdes el botín y algo de progreso,
-    // pero conservas la integridad y no bajas de rango.
-    if(nodo.tipo !== 'confrontacion' && _nodoIdx > 0){
+    // (no es un escape de un mal turno) y tras haber dado al menos un paso.
+    if(nodo.tipo !== 'confrontacion' && _pasosDados > 0){
       html += '<button class="btn-terminal corrida-retirarse" '
         + 'onclick="retirarseCorrida()">ABORTAR Y RETIRARTE</button>';
     }
@@ -342,13 +434,17 @@
     cont.innerHTML = html;
   }
 
-  // ── avanzar al siguiente nodo ───────────────────────────
+  // ── avanzar al siguiente nodo (sigue el enlace 'ir') ────
   function avanzarCorrida(){
     if(!_corrida) return;
-    _enConfrontacion = null;
-    _nodoIdx++;
-    _guardar();
-    _pintarNodo();
+    // Si veníamos de un evento (p.ej. confrontación imprevista), continuar
+    // al destino que teníamos pendiente, sin encadenar otro evento.
+    if(_nodoActual === '__evento__'){
+      _irANodo(_run ? _run.destinoPendiente : null, true);
+      return;
+    }
+    const nodo = _nodoPorId(_nodoActual);
+    _irANodo(nodo ? nodo.ir : null);
   }
 
   // ============================================================
@@ -732,8 +828,8 @@
   }
 
   function _resolverObstaculo(via){
-    if(!_corrida || !_corrida.nodos[_nodoIdx]) return;
-    const nodo = _corrida.nodos[_nodoIdx];
+    const nodo = _nodoPorId(_nodoActual);
+    if(!nodo) return;
     let msg = '';
     if(via === 'obst_pagar'){
       const coste = nodo.coste || 50;
@@ -746,16 +842,11 @@
       if(nodo.heridaForzar){ _integridad = Math.max(0, _integridad - nodo.heridaForzar); }
       _fx('impacto', 0.45);
     }
-    const cont = document.getElementById('corrida-wrap');
-    let html = _hud();
-    html += '<div class="corrida-narr">' + msg + '</div>';
-    html += '<button class="btn-terminal" onclick="avanzarCorrida()">SEGUIR →</button>';
-    cont.innerHTML = html;
-    _guardar();
+    _pintarTransicion(msg, nodo.ir);
   }
 
   // ============================================================
-  //  ENCUENTRO — un trato
+  //  ENCUENTRO — un trato (puede ramificar: irAceptar / irRechazar)
   // ============================================================
   function _pintarEncuentro(nodo){
     let html = '<div class="corrida-ops">';
@@ -768,9 +859,10 @@
   }
 
   function _resolverEncuentro(via){
-    if(!_corrida || !_corrida.nodos[_nodoIdx]) return;
-    const nodo = _corrida.nodos[_nodoIdx];
+    const nodo = _nodoPorId(_nodoActual);
+    if(!nodo) return;
     let msg = '';
+    let destino;
     if(via === 'enc_aceptar'){
       msg = nodo.msgAceptar || 'Aceptas.';
       if(typeof nodo.creditos === 'number'){ _botin += nodo.creditos; }
@@ -778,48 +870,201 @@
       if(typeof nodo.alertaAceptar === 'number'){ _alerta = Math.min(100, _alerta + nodo.alertaAceptar); }
       if(typeof nodo.heridaAceptar === 'number'){ _integridad = Math.max(0, _integridad - nodo.heridaAceptar); }
       _fx('inv_acierto', 0.5);
+      destino = nodo.irAceptar || nodo.ir;
     } else {
       msg = nodo.msgRechazar || 'Sigues tu camino. No todo trato merece la pena.';
+      if(typeof nodo.alertaRechazar === 'number'){ _alerta = Math.min(100, _alerta + nodo.alertaRechazar); }
       _fx('inv_papel', 0.4);
+      destino = nodo.irRechazar || nodo.ir;
     }
-    const cont = document.getElementById('corrida-wrap');
-    let html = _hud();
-    html += '<div class="corrida-narr">' + msg + '</div>';
-    html += '<button class="btn-terminal" onclick="avanzarCorrida()">SEGUIR →</button>';
-    cont.innerHTML = html;
-    _guardar();
+    _pintarTransicion(msg, destino);
   }
 
   // ============================================================
-  //  BIFURCACIÓN — rápida (riesgo) vs limpia
+  //  BIFURCACIÓN — ramas reales: cada una lleva a un nodo distinto
+  //  nodo.ramas = [ { txt, sub, ir, coste?, req?, alerta?, botin?, msg? } ]
+  //  Compat: si no hay 'ramas', usa el formato viejo rápida/limpia.
   // ============================================================
   function _pintarBifurcacion(nodo){
     let html = '<div class="corrida-ops">';
-    html += _opNodo('bif_rapida', nodo.txtRapida || 'RUTA RÁPIDA',
-      nodo.subRapida || 'Antes, pero peligrosa', 'corrida-op-fuego');
-    html += _opNodo('bif_limpia', nodo.txtLimpia || 'RUTA LIMPIA',
-      nodo.subLimpia || 'Más larga, más segura', 'corrida-op-util');
+    const ramas = _ramasDe(nodo);
+    ramas.forEach((r, i) => {
+      // ¿Rama bloqueada por falta de item requerido?
+      if(r.req && !_lleva(r.req)){
+        html += '<div class="caso-nota">' + (r.txt || 'Ruta') + ' — necesitas algo que no llevas.</div>';
+        return;
+      }
+      // ¿Rama de pago que no puedes permitirte?
+      if(r.coste && _creditos() < r.coste){
+        html += '<div class="caso-nota">' + (r.txt || 'Ruta') + ' (' + r.coste + ' CR) — no te alcanza.</div>';
+        return;
+      }
+      const sub = (r.sub || '') + (r.coste ? ' · ' + r.coste + ' CR' : '');
+      const cls = i === 0 ? 'corrida-op-fuego' : 'corrida-op-util';
+      html += _opNodo('bif_' + i, r.txt || ('RUTA ' + (i + 1)), sub, cls);
+    });
     html += '</div>';
     return html;
   }
 
+  // Devuelve el array de ramas, convirtiendo el formato viejo si hace falta.
+  function _ramasDe(nodo){
+    if(Array.isArray(nodo.ramas) && nodo.ramas.length) return nodo.ramas;
+    // Compat viejo: rápida (riesgo) + limpia.
+    return [
+      { txt: nodo.txtRapida || 'RUTA RÁPIDA', sub: nodo.subRapida || 'Antes, pero peligrosa',
+        ir: nodo.ir, alerta: (typeof nodo.alertaRapida === 'number' ? nodo.alertaRapida : 15),
+        botin: nodo.creditosRapida || 0, msg: nodo.msgRapida },
+      { txt: nodo.txtLimpia || 'RUTA LIMPIA', sub: nodo.subLimpia || 'Más larga, más segura',
+        ir: nodo.ir, alerta: 0, botin: 0, msg: nodo.msgLimpia }
+    ];
+  }
+
   function _resolverBifurcacion(via){
-    if(!_corrida || !_corrida.nodos[_nodoIdx]) return;
-    const nodo = _corrida.nodos[_nodoIdx];
+    const nodo = _nodoPorId(_nodoActual);
+    if(!nodo) return;
+    const idx = parseInt(via.replace('bif_', ''), 10);
+    const ramas = _ramasDe(nodo);
+    const r = ramas[idx];
+    if(!r) return;
+    if(r.coste){ _cobrar(r.coste); }
+    if(typeof r.alerta === 'number'){ _alerta = Math.min(100, _alerta + r.alerta); }
+    if(typeof r.botin === 'number' && r.botin){ _botin += r.botin; }
+    _fx('click_metal', 0.4);
+    _pintarTransicion(r.msg || 'Tomas tu decisión y sigues adelante.', r.ir);
+  }
+
+  // ============================================================
+  //  HALLAZGO — un alijo/cofre con riesgo (¿abrir? ¿trampa?)
+  //  nodo = { texto, riesgo(0..1), trampaHerida, recompensaCreditos,
+  //           recompensaItem, msgAbrir, msgTrampa, msgDejar, ir }
+  // ============================================================
+  function _pintarHallazgo(nodo){
+    let html = '<div class="corrida-ops">';
+    html += _opNodo('hall_abrir', nodo.txtAbrir || 'ABRIR / REGISTRAR',
+      nodo.subAbrir || 'Puede haber algo. O puede estar trampeado', 'corrida-op-social');
+    html += _opNodo('hall_dejar', nodo.txtDejar || 'DEJARLO Y SEGUIR',
+      nodo.subDejar || 'No tocar lo que no conoces', 'corrida-op-util');
+    html += '</div>';
+    return html;
+  }
+
+  function _resolverHallazgo(via){
+    const nodo = _nodoPorId(_nodoActual);
+    if(!nodo) return;
     let msg = '';
-    if(via === 'bif_rapida'){
-      _alerta = Math.min(100, _alerta + (nodo.alertaRapida || 15));
-      if(typeof nodo.creditosRapida === 'number'){ _botin += nodo.creditosRapida; }
-      msg = nodo.msgRapida || 'Cortas por lo peligroso. Ganas tiempo y te juegas el cuello.';
+    if(via === 'hall_abrir'){
+      const riesgo = (typeof nodo.riesgo === 'number') ? nodo.riesgo : 0;
+      if(riesgo > 0 && Math.random() < riesgo){
+        // Trampa.
+        const herida = nodo.trampaHerida || 2;
+        _integridad = Math.max(0, _integridad - herida);
+        if(nodo.trampaAlerta){ _alerta = Math.min(100, _alerta + nodo.trampaAlerta); }
+        msg = nodo.msgTrampa || 'Estaba trampeado. Algo salta y te alcanza antes de que puedas retirar la mano.';
+        _fx('impacto', 0.55);
+      } else {
+        // Recompensa.
+        if(typeof nodo.recompensaCreditos === 'number'){ _botin += nodo.recompensaCreditos; }
+        if(nodo.recompensaItem && typeof darItemPorId === 'function'){ darItemPorId(nodo.recompensaItem); }
+        msg = nodo.msgAbrir || 'Hay algo aprovechable. Lo coges antes de que cambie de opinión el mundo.';
+        _fx('inv_acierto', 0.5);
+      }
     } else {
-      msg = nodo.msgLimpia || 'Das el rodeo. Más pasos, menos sustos.';
+      msg = nodo.msgDejar || 'Lo dejas donde está. La curiosidad mató a más de uno en estas calles.';
+      _fx('inv_papel', 0.4);
     }
+    _pintarTransicion(msg, nodo.ir);
+  }
+
+  // Pinta el resultado de una acción de nodo y ofrece SEGUIR → al destino.
+  // Guarda el destino en _run para que el botón sepa a dónde ir (incluido
+  // el posible evento aleatorio intercalado).
+  function _pintarTransicion(msg, destino){
+    _run.destinoTransicion = destino;
     const cont = document.getElementById('corrida-wrap');
     let html = _hud();
     html += '<div class="corrida-narr">' + msg + '</div>';
-    html += '<button class="btn-terminal" onclick="avanzarCorrida()">SEGUIR →</button>';
+    if(_integridad <= 0){
+      html += '<button class="btn-terminal" onclick="_seguirTransicion()">…</button>';
+    } else {
+      html += '<button class="btn-terminal" onclick="_seguirTransicion()">SEGUIR →</button>';
+    }
     cont.innerHTML = html;
     _guardar();
+  }
+
+  function _seguirTransicion(){
+    if(_integridad <= 0){ _resolverDesenlace(false); return; }
+    _irANodo(_run ? _run.destinoTransicion : null);
+  }
+
+  // ============================================================
+  //  EVENTO ALEATORIO — mini-nodo que se intercala entre paradas.
+  //  Al resolverse, continúa hacia _run.destinoPendiente.
+  //  Formatos de evento soportados:
+  //   { id, tipo:'narrativo', texto, alerta?, herida?, botin?, item? }
+  //   { id, tipo:'hallazgo', ...campos de hallazgo... }
+  //   { id, tipo:'encuentro', ...campos de encuentro... }
+  //   { id, tipo:'confrontacion', ...enemigos... }
+  // ============================================================
+  function _pintarEvento(ev){
+    const cont = document.getElementById('corrida-wrap');
+    if(!cont) return;
+    // La confrontación de evento se monta y delega en el sistema táctico.
+    if(ev.tipo === 'confrontacion'){
+      _montarConfrontacion(ev);
+      let html = _hud();
+      html += '<div class="corrida-narr corrida-evento-tag">IMPREVISTO</div>';
+      html += '<div class="corrida-narr">' + (ev.texto || '') + '</div>';
+      html += _pintarOpcionesConfrontacion();
+      cont.innerHTML = html;
+      return;
+    }
+    let html = _hud();
+    html += '<div class="corrida-narr corrida-evento-tag">IMPREVISTO</div>';
+    html += '<div class="corrida-narr">' + (ev.texto || '') + '</div>';
+    if(ev.tipo === 'hallazgo'){
+      html += _pintarHallazgo(ev);
+    } else if(ev.tipo === 'encuentro'){
+      html += _pintarEncuentro(ev);
+    } else {
+      // narrativo: aplica efectos inmediatos y ofrece seguir
+      if(typeof ev.alerta === 'number'){ _alerta = Math.min(100, _alerta + ev.alerta); }
+      if(typeof ev.herida === 'number'){ _integridad = Math.max(0, _integridad - ev.herida); }
+      if(typeof ev.botin === 'number'){ _botin += ev.botin; }
+      if(ev.item && typeof darItemPorId === 'function'){ darItemPorId(ev.item); }
+      if(_integridad <= 0){
+        html += '<button class="btn-terminal" onclick="_finEvento()">…</button>';
+      } else {
+        html += '<button class="btn-terminal" onclick="_finEvento()">SEGUIR →</button>';
+      }
+    }
+    cont.innerHTML = html;
+    _guardar();
+  }
+
+  // Resuelve la acción de un evento que ramifica (hallazgo/encuentro) y
+  // luego continúa al destino pendiente.
+  function _resolverEventoAccion(via){
+    const ev = _run ? _run.eventoActual : null;
+    if(!ev) return;
+    // Reutilizamos la lógica de hallazgo/encuentro pero sobre el evento.
+    // Truco: colocamos el evento como "nodo actual" temporal.
+    const guardaNodo = _nodoActual;
+    _grafo.nodos['__evento_tmp__'] = ev;
+    _nodoActual = '__evento_tmp__';
+    if(via.indexOf('hall_') === 0){ _resolverHallazgo(via); }
+    else if(via.indexOf('enc_') === 0){ _resolverEncuentro(via); }
+    // _resolverHallazgo/_Encuentro llaman a _pintarTransicion con ev.ir
+    // (normalmente undefined) → corregimos el destino al pendiente real.
+    _run.destinoTransicion = _run.destinoPendiente;
+    _nodoActual = guardaNodo;
+    delete _grafo.nodos['__evento_tmp__'];
+  }
+
+  function _finEvento(){
+    if(_integridad <= 0){ _resolverDesenlace(false); return; }
+    _irANodo(_run ? _run.destinoPendiente : null, true); // saltarEvento: no encadenar dos
   }
 
   // ============================================================
@@ -867,6 +1112,9 @@
 
     _corrida = null;
     _nodoIdx = 0;
+    _nodoActual = null;
+    _grafo = null;
+    _run = null;
     _enConfrontacion = null;
     _guardar();
   }
@@ -923,6 +1171,9 @@
     cont.innerHTML = html;
     _corrida = null;
     _nodoIdx = 0;
+    _nodoActual = null;
+    _grafo = null;
+    _run = null;
     _enConfrontacion = null;
     _guardar();
   }
@@ -947,9 +1198,16 @@
 
   // Despachador de obstáculo/encuentro/bifurcación desde el HTML.
   function corridaAccionNodo(via){
+    // Si estamos resolviendo un evento ramificable, enrutar al manejador
+    // de eventos (que continúa al destino pendiente).
+    if(_nodoActual === '__evento__' && _run && _run.eventoActual
+       && (via.indexOf('hall_') === 0 || via.indexOf('enc_') === 0)){
+      return _resolverEventoAccion(via);
+    }
     if(via.indexOf('obst_') === 0) return _resolverObstaculo(via);
     if(via.indexOf('enc_') === 0) return _resolverEncuentro(via);
     if(via.indexOf('bif_') === 0) return _resolverBifurcacion(via);
+    if(via.indexOf('hall_') === 0) return _resolverHallazgo(via);
   }
 
   // ── exponer al ámbito global (como hacen 62/63/64) ──────
@@ -960,6 +1218,8 @@
   window.elegirObjetivoCorrida = elegirObjetivoCorrida;
   window._continuarConfrontacion = _continuarConfrontacion;
   window.corridaAccionNodo = corridaAccionNodo;
+  window._seguirTransicion = _seguirTransicion;
+  window._finEvento = _finEvento;
   window.cerrarCorridaResuelta = cerrarCorridaResuelta;
   window.abandonarCorrida = abandonarCorrida;
   window.retirarseCorrida = retirarseCorrida;

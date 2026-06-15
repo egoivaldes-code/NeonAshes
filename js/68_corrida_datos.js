@@ -757,3 +757,80 @@ const CORRIDAS_DATOS = {
 };
 
 window.CORRIDAS_DATOS = CORRIDAS_DATOS;
+
+// ============================================================
+//  EVENTOS ALEATORIOS — se intercalan entre paradas del esqueleto.
+//  El motor (67) elige uno no usado con cierta probabilidad. Tipos:
+//   narrativo (efecto inmediato), hallazgo, encuentro, confrontacion.
+//  No llevan 'ir': el motor los devuelve al destino que tenía pendiente.
+// ============================================================
+const EVENTOS_CORRIDA = {
+
+  contrabando: [
+    { id:'ev_c_patrulla', tipo:'narrativo',
+      texto:'Una patrulla de HELIX pasa cerca, barriendo la calle con focos. Te pegas a un portal y contienes la respiración hasta que el zumbido de sus botas se aleja. No te han visto. Pero el corazón tarda en volver a su sitio.',
+      alerta:8 },
+    { id:'ev_c_alijo', tipo:'hallazgo',
+      texto:'Entre unos contenedores ves un paquete olvidado, o escondido. Cinta de embalar, sin marcas. Podría ser un golpe de suerte. Podría ser de alguien que vuelve a por él.',
+      txtAbrir:'Abrir el paquete', subAbrir:'Puede haber algo útil',
+      txtDejar:'Dejarlo donde está', subDejar:'No es tuyo',
+      riesgo:0.3, trampaHerida:2, trampaAlerta:5,
+      recompensaCreditos:60,
+      msgAbrir:'Dentro hay un fajo pequeño de créditos y un cargador. Te lo guardas sin pensarlo dos veces.',
+      msgTrampa:'Apenas tocas el paquete, una mano cae sobre tu hombro. Su dueño no viene solo, y la conversación es a empujones. Sales, pero magullado.',
+      recompensaItem:'cargador',
+      msgDejar:'Lo dejas. En estas calles, lo que brilla suele tener anzuelo.' },
+    { id:'ev_c_mendigo', tipo:'encuentro',
+      texto:'Un viejo sin hogar te llama desde un soportal. "Sé por dónde no hay ojos esta noche. Te lo cuento por lo que te sobre." Tiene la mirada lúcida de quien lo ve todo desde abajo.',
+      txtAceptar:'Darle algo por la información', subAceptar:'20 CR · baja la presión',
+      txtRechazar:'Seguir sin escucharle', subRechazar:'No te fías',
+      creditos:-20, alertaAceptar:-12,
+      msgAceptar:'Le dejas unos créditos. "Por la calleja de las tuberías, hoy no miran." Tenía razón: avanzas un tramo sin un alma.',
+      msgRechazar:'Sigues de largo. El viejo murmura algo que no llegas a oír, y quizá era importante.' },
+    { id:'ev_c_rival', tipo:'confrontacion',
+      texto:'Un correo de una banda rival te ha estado siguiendo y te corta el paso. No quiere tu mercancía: quiere que no llegues, para que el encargo caiga en los suyos.',
+      enemigos:[ { nombre:'Correo rival', desc:'Rápido y con prisa', integridad:2, fuerza:3, umbral:2 } ] },
+    { id:'ev_c_gotera', tipo:'narrativo',
+      texto:'Un tramo del túnel está inundado por una tubería rota. Vadeas el agua helada hasta la cintura, con la mercancía sobre la cabeza. Sales calado y temblando, pero al otro lado.',
+      herida:1 },
+    { id:'ev_c_suerte', tipo:'narrativo',
+      texto:'Te cruzas con un conocido de los muelles que te debía un favor. Sin que se lo pidas, te señala un atajo y te mete un par de billetes en el bolsillo. "Estamos en paz." A veces la calle también da.',
+      botin:40, alerta:-5 }
+  ],
+
+  seguridad: [
+    { id:'ev_s_civil', tipo:'encuentro',
+      texto:'Una mujer te frena, reconoce el uniforme. "Agente, mi hijo lleva dos días sin volver. Nadie en HELIX me escucha." Te tiende una foto arrugada. No es tu operación. Pero es alguien.',
+      txtAceptar:'Anotar el nombre y prometer mirarlo', subAceptar:'Cuesta un momento · te tranquiliza la conciencia',
+      txtRechazar:'"No es mi departamento"', subRechazar:'Sigues con lo tuyo',
+      alertaAceptar:-10,
+      msgAceptar:'Apuntas el nombre del chico en tu tablilla. Quizá no hagas nada. Quizá sí. Ella respira un poco mejor, y tú también, aunque no lo admitas.',
+      msgRechazar:'"No es mi departamento, señora." Te alejas antes de ver cómo se le apaga la cara. El uniforme pesa un poco más.' },
+    { id:'ev_s_soborno', tipo:'hallazgo',
+      texto:'Un tendero al que reconoces de otra redada te hace señas. Sobre el mostrador, discretamente, deja un sobre. "Para que la próxima vez mires hacia otro lado." Nadie os ve.',
+      txtAbrir:'Coger el sobre', subAbrir:'Créditos fáciles · pero te compras un dueño',
+      txtDejar:'No tocarlo', subDejar:'Limpio, por una vez',
+      riesgo:0.2, trampaAlerta:15,
+      recompensaCreditos:70,
+      msgAbrir:'Te guardas el sobre con un gesto practicado. Está bien pesado. Ahora le debes un silencio a alguien, y esas deudas no caducan.',
+      msgTrampa:'Cuando tu mano toca el sobre, notas el brillo de una lente al fondo del puesto. Te están grabando. Sea quien sea, ahora tiene algo tuyo.',
+      msgDejar:'Empujas el sobre de vuelta. "Guárdatelo." El tendero asiente, sorprendido. Tú también lo estás, un poco.' },
+    { id:'ev_s_disturbio', tipo:'narrativo',
+      texto:'Doblas una esquina y caes en mitad de una trifulca: vecinos contra un cobrador de HELIX. Vuelan insultos y algún objeto. Te abres paso a empujones, ni con ellos ni contra ellos. Una piedra perdida te alcanza el hombro.',
+      herida:1, alerta:10 },
+    { id:'ev_s_radio', tipo:'narrativo',
+      texto:'Tu radio crepita: otra unidad pide refuerzos a dos calles. Podrías desviarte y ayudar, pero perderías el rastro. Sigues a lo tuyo, y el ruido de la radio te acompaña como una mala conciencia portátil.',
+      alerta:5 },
+    { id:'ev_s_emboscada', tipo:'confrontacion',
+      texto:'Te esperaban. Alguien avisó de que un uniforme andaba por aquí, y dos del barrio salen de un portal con ganas de cobrarse algo viejo contra HELIX. No es contra ti. Es contra lo que llevas puesto.',
+      enemigos:[
+        { nombre:'Vecino resentido', desc:'Más rabia que técnica', integridad:2, fuerza:3, umbral:2 },
+        { nombre:'Compinche', desc:'Cubre por detrás', integridad:2, fuerza:3, umbral:2 }
+      ] },
+    { id:'ev_s_informe', tipo:'narrativo',
+      texto:'Encuentras, tirada, una tablilla de otro agente con un informe a medias. La recoges: información del barrio que te ahorra rodeos. Pequeñas ventajas de llevar la placa correcta.',
+      alerta:-8, botin:30 }
+  ]
+};
+
+window.EVENTOS_CORRIDA = EVENTOS_CORRIDA;
