@@ -2,6 +2,10 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.113] - 2026-06-15
+### Changed
+- Las veinte corridas de ambos bandos reescritas como aventuras ramificadas: caminos que se bifurcan de verdad y llevan a recorridos distintos, con hallazgos opcionales, encuentros y decisiones propias de cada ruta. Aprovecha el motor de grafo, recursos y eventos aleatorios introducido en la 0.112. Dos partidas de la misma corrida ya no se viven igual.
+
 ## [0.112] - 2026-06-15
 ### Added
 - Motor de corridas profundo estilo aventura: el camino ahora es un grafo con ramas reales (las bifurcaciones llevan a sitios distintos), una mochila de recursos durante la corrida (botín, créditos, carga) y eventos aleatorios que se intercalan entre paradas, así que dos corridas ya no son iguales.
