@@ -305,12 +305,17 @@
     const nodo = _corrida.nodos[_nodoIdx];
 
     // Si el nodo es una confrontación y aún no la hemos montado, montarla.
+    const confronYaActiva = nodo.tipo === 'confrontacion' && _enConfrontacion;
     if(nodo.tipo === 'confrontacion' && !_enConfrontacion){
       _montarConfrontacion(nodo);
     }
 
     let html = _hud();
-    html += '<div class="corrida-narr">' + (nodo.texto || '') + '</div>';
+    // El texto de intro del nodo solo en el primer pintado (no en cada turno
+    // de una confrontación ya en curso).
+    if(!confronYaActiva){
+      html += '<div class="corrida-narr">' + (nodo.texto || '') + '</div>';
+    }
 
     if(nodo.tipo === 'confrontacion'){
       html += _pintarOpcionesConfrontacion();
@@ -347,26 +352,107 @@
   }
 
   // ============================================================
-  //  CONFRONTACIÓN — el corazón del sistema
+  //  CONFRONTACIÓN TÁCTICA — varios enemigos, elegir objetivo,
+  //  refuerzos (guionizados y dinámicos por ruido). Compatible con
+  //  el formato antiguo de 1 enemigo (campos fuerza/umbral/etc.).
   // ============================================================
+
+  // Monta la confrontación. Si el nodo trae 'enemigos:[...]', modo grupo.
+  // Si no, fabrica un grupo de 1 desde los campos antiguos (compat).
   function _montarConfrontacion(nodo){
-    // La amenaza define su fuerza (cuánto te hace si no la superas), su
-    // detección (para escapar) y un texto de intención.
+    let enemigos;
+    if(Array.isArray(nodo.enemigos) && nodo.enemigos.length){
+      enemigos = nodo.enemigos.map((e, i) => _crearEnemigo(e, i));
+    } else {
+      enemigos = [ _crearEnemigo({
+        nombre: nodo.nombreEnemigo || 'Amenaza',
+        integridad: 1,                // el modelo viejo se resolvía en 1 golpe
+        fuerza: nodo.fuerza || 3,
+        umbral: nodo.umbral || 3,
+        ruidoExtra: nodo.ruidoExtra || 0
+      }, 0) ];
+    }
     _enConfrontacion = {
-      fuerza: nodo.fuerza || 3,
-      deteccion: nodo.deteccion || 2,
-      ruidoExtra: nodo.ruidoExtra || 0,
-      // umbral: cuánta "fuerza" tuya hace falta para resolver sin daño.
-      umbral: nodo.umbral || 3,
-      resuelta: false
+      enemigos: enemigos,
+      turno: 0,
+      escapado: false,
+      // refuerzos dinámicos: si la alerta llega a 'refuerzoSiRuido' y aún
+      // no han venido, entran 'refuerzoGrupo' enemigos nuevos.
+      refuerzoSiRuido: nodo.refuerzoSiRuido || 0,
+      refuerzoGrupo: nodo.refuerzoGrupo || null,
+      refuerzosLlegaron: false,
+      // refuerzos guionizados: en el turno N entran 'refuerzoTurnoGrupo'.
+      refuerzoTurno: nodo.refuerzoTurno || 0,
+      refuerzoTurnoGrupo: nodo.refuerzoTurnoGrupo || null,
+      refuerzoTurnoHecho: false,
+      ultimoMsg: ''
     };
-    if(_alerta >= 70) _enConfrontacion.fuerza += 1;  // alerta alta = peor
+    if(_alerta >= 70){ // alerta alta: todos pegan un poco más fuerte
+      _enConfrontacion.enemigos.forEach(e => { e.fuerza += 1; });
+    }
   }
 
-  // Construye las opciones DISPONIBLES leyendo el inventario real.
+  function _crearEnemigo(def, idx){
+    const integridad = def.integridad || 1;
+    return {
+      uid: 'e' + idx + '_' + Math.floor(Math.random() * 100000),
+      nombre: def.nombre || 'Enemigo',
+      desc: def.desc || '',
+      integridad: integridad,
+      integridadMax: integridad,
+      fuerza: def.fuerza || 3,     // daño que te hace al responder
+      umbral: def.umbral || 3,     // fuerza tuya para dañarle de forma notable
+      vivo: true
+    };
+  }
+
+  function _enemigosVivos(){
+    if(!_enConfrontacion) return [];
+    return _enConfrontacion.enemigos.filter(e => e.vivo);
+  }
+
+  // Construye opciones DISPONIBLES leyendo el inventario, y si hay más de
+  // un enemigo vivo, primero pide ELEGIR OBJETIVO.
   function _pintarOpcionesConfrontacion(){
     const cf = _enConfrontacion;
-    let html = '<div class="corrida-ops">';
+    const vivos = _enemigosVivos();
+
+    let html = '';
+
+    // Estado del grupo enemigo.
+    html += '<div class="corrida-enemigos">';
+    vivos.forEach(e => {
+      const barra = '▮'.repeat(Math.max(0, e.integridad)) + '▯'.repeat(Math.max(0, e.integridadMax - e.integridad));
+      html += '<div class="corrida-enemigo' + (cf._objetivo === e.uid ? ' corrida-enemigo-sel' : '') + '">'
+        + '<span class="corrida-enemigo-nom">' + e.nombre + '</span>'
+        + '<span class="corrida-enemigo-vida">' + barra + '</span></div>';
+    });
+    html += '</div>';
+
+    // Si hay más de un enemigo y no hay objetivo elegido, elegir objetivo.
+    if(vivos.length > 1 && !cf._objetivo){
+      html += '<div class="corrida-narr corrida-narr-sub">¿A quién vas?</div>';
+      html += '<div class="corrida-ops">';
+      vivos.forEach(e => {
+        html += '<button class="btn-terminal corrida-op corrida-op-objetivo" '
+          + 'onclick="elegirObjetivoCorrida(\'' + e.uid + '\')">'
+          + '<span class="corrida-op-txt">' + e.nombre.toUpperCase() + '</span>'
+          + (e.desc ? '<span class="corrida-op-sub">' + e.desc + '</span>' : '')
+          + '</button>';
+      });
+      html += '</div>';
+      return html;
+    }
+
+    // Objetivo fijado (o solo queda uno): mostrar las vías.
+    const objetivo = vivos.length === 1 ? vivos[0] : vivos.find(e => e.uid === cf._objetivo);
+    const nomObj = objetivo ? objetivo.nombre : 'el enemigo';
+    if(vivos.length > 1){
+      html += '<div class="corrida-narr corrida-narr-sub">Atacas a <b>' + nomObj + '</b>. '
+        + '<a class="corrida-cambiar-obj" onclick="elegirObjetivoCorrida(\'\')">(cambiar)</a></div>';
+    }
+
+    html += '<div class="corrida-ops">';
 
     // ── VÍA DISPAROS ──
     if(_lleva('arma_fuego')){
@@ -375,11 +461,9 @@
           'Fuerza alta · gasta 1 bala · mucho ruido' + _etiquetaEstadoArma('arma_fuego'),
           'corrida-op-fuego');
       } else {
-        // Sin balas: queda el farol.
         html += _op('amenazar', 'AMENAZAR CON EL ARMA',
           'Sin balas. Un farol: puede que recule, puede que no',
           'corrida-op-farol');
-        // Recargar, si llevas otro cargador.
         if(_lleva('cargador')){
           html += _op('recargar', 'RECARGAR',
             'Meter un cargador (+' + BALAS_POR_CARGADOR + ' balas)',
@@ -400,12 +484,12 @@
       'Fuerza baja · sin gasto · silencioso · lento',
       'corrida-op-punos');
 
-    // ── OPCIONES NO FÍSICAS según item ──
+    // ── OPCIONES NO FÍSICAS según item (afectan a TODO el grupo) ──
     const cfg = BANDOS[_bando];
     if(_lleva(cfg.itemSocial)){
       const etiqueta = (_bando === 'seguridad') ? 'IMPONER AUTORIDAD' : 'JUSTIFICARTE';
       const sub = (_bando === 'seguridad')
-        ? 'Enseñar la placa de HELIX. Si cuela, no hay pelea'
+        ? 'Enseñar la placa. Si cuela, se dispersan todos'
         : 'Enseñar la documentación. Si cuela, te dejan pasar';
       html += _op('justificar', etiqueta, sub, 'corrida-op-social');
     }
@@ -415,7 +499,7 @@
     }
     if(_lleva('senuelo')){
       html += _op('distraer', 'LANZAR SEÑUELO',
-        'Ruido y firma falsa para escabullirte · gasta el señuelo',
+        'Ruido y firma falsa para escabullirte de todos · gasta el señuelo',
         'corrida-op-util');
     }
 
@@ -439,38 +523,57 @@
       + '<span class="corrida-op-sub">' + sub + '</span></button>';
   }
 
-  // Resuelve la vía elegida. Cada vía: aporta "fuerza" contra el umbral,
-  // hace ruido (alerta) y puede herir (integridad).
+  // Elegir (o cambiar) el objetivo del próximo ataque.
+  function elegirObjetivoCorrida(uid){
+    if(!_enConfrontacion) return;
+    _enConfrontacion._objetivo = uid || null;
+    _pintarNodo();
+  }
+
+  // Resuelve la vía elegida sobre el objetivo actual. Tras el ataque del
+  // jugador, los enemigos vivos responden. Puede entrar refuerzo.
   function resolverConfrontacion(via){
     if(!_corrida) return;
     const cf = _enConfrontacion;
     if(!cf) return;
+    const vivos = _enemigosVivos();
+    if(!vivos.length){ _terminarConfrontacion(true, ''); return; }
+
+    // Objetivo: el único vivo, o el seleccionado.
+    let objetivo = vivos.length === 1 ? vivos[0] : vivos.find(e => e.uid === cf._objetivo);
+    // Vías que afectan al grupo entero no necesitan objetivo.
+    const viaGrupal = (via === 'justificar' || via === 'sobornar' || via === 'distraer' || via === 'amenazar' || via === 'recargar');
+    if(!objetivo && !viaGrupal){
+      // Falta elegir objetivo; repintar para que elija.
+      _pintarNodo();
+      return;
+    }
+
     let mensaje = '';
     let fuerzaJugador = 0;
     let ruido = 0;
-    let permiteEscape = false;
-    let evita = false;     // resuelve sin medir fuerza (social/distracción)
-    let avisoArma = '';    // texto si un arma se desgasta o se rompe
+    let evitaTodo = false;     // dispersa a TODO el grupo (social)
+    let escapaTodo = false;    // huida (señuelo)
+    let avisoArma = '';
+    let saltarRespuesta = false; // recargar: no atacas, pero te responden
 
     if(via === 'disparar'){
       if(_balas <= 0){ return; }
       _balas--; _sincronizarBalas();
       fuerzaJugador = 6;
-      ruido = 35 + cf.ruidoExtra;
-      mensaje = 'El perno sale con un chasquido que rebota en todo el pasillo. '
-        + 'Resuelve, sí. Pero ahora medio distrito sabe dónde estás.';
+      ruido = 35 + (objetivo ? 0 : 0);
+      mensaje = 'Disparas a ' + objetivo.nombre + '. El perno rebota en todo el pasillo: '
+        + 'resuelve, pero medio distrito te ha oído.';
       _fx('impacto', 0.6);
       avisoArma = _gastarArma('arma_fuego');
     } else if(via === 'amenazar'){
-      // Farol: 55% de que recule, sin gastar nada. Si falla, te embiste.
       ruido = 8;
-      if(Math.random() < 0.55){
-        evita = true;
-        mensaje = 'Levantas el arma vacía y sostienes la mirada. Funciona: '
-          + 'retrocede despacio, sin darte la espalda del todo.';
+      if(Math.random() < 0.5){
+        evitaTodo = true;
+        mensaje = 'Levantas el arma vacía y barres con ella al grupo. Dudan, '
+          + 'retroceden. El farol aguanta… esta vez.';
       } else {
-        fuerzaJugador = 0;
-        mensaje = 'El arma vacía no engaña a quien ha visto muchas. Se te echa encima.';
+        mensaje = 'El arma vacía no engaña a tantos ojos. Se envalentonan.';
       }
       _fx('inv_fallo', 0.5);
     } else if(via === 'recargar'){
@@ -478,95 +581,135 @@
         quitarItem('cargador', 1);
         _balas += BALAS_POR_CARGADOR; _sincronizarBalas();
       }
-      // Recargar consume el turno: la amenaza te golpea suave mientras tanto.
-      _integridad = Math.max(0, _integridad - 1);
-      _pintarNodo();
-      return;
+      mensaje = 'Metes un cargador con dedos torpes. Ganas balas, pierdes el turno.';
+      saltarRespuesta = false; // te responden mientras recargas
     } else if(via === 'acuchillar'){
       fuerzaJugador = 4;
       ruido = 6;
-      mensaje = 'Te acercas y resuelves de cerca, en silencio. '
-        + 'Pero de cerca también te alcanzan a ti.';
+      mensaje = 'Te echas sobre ' + objetivo.nombre + ' y resuelves de cerca, en silencio.';
       _fx('click_metal', 0.5);
       avisoArma = _gastarArma('arma_blanca');
     } else if(via === 'punos'){
       fuerzaJugador = 2;
       ruido = 3;
-      mensaje = 'Sin más herramienta que las manos. Funciona a medias, '
+      mensaje = 'Te lías a puñetazos con ' + objetivo.nombre + '. Funciona a medias, '
         + 'y duele en ambos lados.';
       _fx('impacto', 0.45);
     } else if(via === 'justificar'){
-      evita = true;
+      evitaTodo = true;
       ruido = 0;
       mensaje = (_bando === 'seguridad')
-        ? 'Enseñas la placa. La autoridad de HELIX todavía pesa aquí abajo: '
-          + 'baja la vista y se aparta.'
-        : 'Enseñas los papeles. No los lee del todo, pero el sello basta. '
-          + 'Te deja pasar con un gesto cansado.';
+        ? 'Enseñas la placa. La autoridad de HELIX pesa: el grupo se deshace, uno a uno.'
+        : 'Enseñas los papeles. El sello basta. Os abren paso de mala gana.';
       _fx('inv_acierto', 0.5);
     } else if(via === 'sobornar'){
       if(_creditos() < 40) return;
       _cobrar(40);
-      evita = true;
+      evitaTodo = true;
       ruido = 0;
-      mensaje = 'Unos créditos cambian de mano. Nadie ha visto nada. '
-        + 'Nadie ve nunca nada, si pagas lo justo.';
+      mensaje = 'Unos créditos cambian de mano. De pronto nadie tiene prisa por pelear.';
       _fx('energia', 0.5);
     } else if(via === 'distraer'){
       if(typeof quitarItem === 'function') quitarItem('senuelo', 1);
-      permiteEscape = true;
+      escapaTodo = true;
       ruido = 12;
-      mensaje = 'El señuelo escupe ruido a unos metros. La atención se va hacia allí '
-        + 'el tiempo justo para que tú no estés cuando vuelva.';
+      mensaje = 'El señuelo escupe ruido lejos. Las cabezas giran y tú ya no estás.';
       _fx('inv_acierto', 0.5);
     }
 
-    // Aplicar ruido a la alerta.
     if(ruido) _alerta = Math.min(100, _alerta + ruido);
 
-    // Resolución.
-    let herida = 0;
-    let resuelta = false;
-    if(evita){
-      resuelta = true;
-    } else if(permiteEscape){
-      // Escape: comparas tu sigilo (señuelo) contra su detección.
-      resuelta = true; // el señuelo siempre abre hueco; el coste es el ruido
-    } else {
-      // Vía física: tu fuerza contra el umbral de la amenaza.
-      if(fuerzaJugador >= cf.umbral){
-        resuelta = true;
-        // Aun ganando, las vías de cerca rozan.
-        if(via === 'acuchillar') herida = 1;
-        if(via === 'punos') herida = 1;
-      } else {
-        // No superas el umbral: la amenaza te hace daño según su fuerza,
-        // menos lo que hayas restado peleando.
-        resuelta = (fuerzaJugador > 0); // peleas pero te cuesta
-        herida = Math.max(1, cf.fuerza - Math.floor(fuerzaJugador / 2));
+    // ── Resolución social / huida: terminan la confrontación entera ──
+    if(evitaTodo){ _terminarConfrontacion(true, mensaje, avisoArma); return; }
+    if(escapaTodo){ cf.escapado = true; _terminarConfrontacion(true, mensaje, avisoArma); return; }
+
+    // ── Daño al objetivo ──
+    if(objetivo && fuerzaJugador > 0){
+      // Daño = 1 base, +1 si superas el umbral del enemigo (golpe sólido).
+      let dano = 1;
+      if(fuerzaJugador >= objetivo.umbral) dano = 2;
+      objetivo.integridad = Math.max(0, objetivo.integridad - dano);
+      if(objetivo.integridad <= 0){
+        objetivo.vivo = false;
+        mensaje += ' ' + objetivo.nombre + ' cae.';
+        if(cf._objetivo === objetivo.uid) cf._objetivo = null;
       }
     }
 
-    if(herida > 0) _integridad = Math.max(0, _integridad - herida);
+    cf.turno++;
 
-    cf.resuelta = resuelta;
+    // ── Refuerzos guionizados: en el turno N entran nuevos ──
+    let avisoRefuerzo = '';
+    if(cf.refuerzoTurno > 0 && !cf.refuerzoTurnoHecho && cf.turno >= cf.refuerzoTurno && cf.refuerzoTurnoGrupo){
+      cf.refuerzoTurnoHecho = true;
+      const base = cf.enemigos.length;
+      cf.refuerzoTurnoGrupo.forEach((e, i) => cf.enemigos.push(_crearEnemigo(e, base + i)));
+      avisoRefuerzo = 'Llegan refuerzos.';
+    }
+    // ── Refuerzos dinámicos por ruido ──
+    if(cf.refuerzoSiRuido > 0 && !cf.refuerzosLlegaron && _alerta >= cf.refuerzoSiRuido && cf.refuerzoGrupo){
+      cf.refuerzosLlegaron = true;
+      const base = cf.enemigos.length;
+      cf.refuerzoGrupo.forEach((e, i) => cf.enemigos.push(_crearEnemigo(e, base + i)));
+      avisoRefuerzo = (avisoRefuerzo ? avisoRefuerzo + ' ' : '')
+        + 'El ruido ha traído más. Un coche frena en seco y bajan varios.';
+    }
 
-    // Pintar resultado y dar paso a avanzar (o caer).
+    // ── ¿Quedan enemigos? Si no, victoria ──
+    const quedan = _enemigosVivos();
+    if(!quedan.length){
+      _terminarConfrontacion(true, mensaje, avisoArma);
+      return;
+    }
+
+    // ── Respuesta enemiga: cada vivo te hace daño según su fuerza ──
+    // (escala suave: no la suma bruta, para que un grupo no te funda de golpe)
+    let heridaTotal = 0;
+    quedan.forEach(e => { heridaTotal += Math.max(1, Math.round(e.fuerza / 2)); });
+    // Si recargaste, te pillan más expuesto (+1).
+    if(via === 'recargar') heridaTotal += 1;
+    _integridad = Math.max(0, _integridad - heridaTotal);
+
+    // ── Pintar el turno ──
     const cont = document.getElementById('corrida-wrap');
     let html = _hud();
     html += '<div class="corrida-narr">' + mensaje + '</div>';
-    if(herida > 0){
-      html += '<div class="corrida-aviso">Te alcanzan. −' + herida + ' integridad.</div>';
+    if(avisoRefuerzo){
+      html += '<div class="corrida-aviso corrida-aviso-refuerzo">' + avisoRefuerzo + '</div>';
     }
     if(avisoArma){
       html += '<div class="corrida-aviso corrida-aviso-arma">' + avisoArma + '</div>';
     }
+    if(heridaTotal > 0){
+      html += '<div class="corrida-aviso">Te alcanzan. −' + heridaTotal + ' integridad.</div>';
+    }
     if(_integridad <= 0){
-      html += '<button class="btn-terminal" onclick="avanzarCorrida()">…</button>';
+      html += '<button class="btn-terminal" onclick="_continuarConfrontacion()">…</button>';
     } else {
-      html += '<button class="btn-terminal" onclick="avanzarCorrida()">SEGUIR ADELANTE →</button>';
+      html += '<button class="btn-terminal" onclick="_continuarConfrontacion()">SEGUIR EN ELLO →</button>';
     }
     cont.innerHTML = html;
+    _guardar();
+  }
+
+  // Tras pintar el resultado de un turno: si caíste, desenlace; si quedan
+  // enemigos, otra ronda; si no, victoria.
+  function _continuarConfrontacion(){
+    if(_integridad <= 0){ _pintarNodo(); return; } // _pintarNodo detecta caída
+    if(!_enemigosVivos().length){ _terminarConfrontacion(true, ''); return; }
+    _pintarNodo(); // repinta opciones para el siguiente turno
+  }
+
+  // Cierra la confrontación y avanza al siguiente nodo.
+  function _terminarConfrontacion(resuelta, mensaje, avisoArma){
+    const cont = document.getElementById('corrida-wrap');
+    if(cont){
+      let html = _hud();
+      if(mensaje) html += '<div class="corrida-narr">' + mensaje + '</div>';
+      if(avisoArma) html += '<div class="corrida-aviso corrida-aviso-arma">' + avisoArma + '</div>';
+      html += '<button class="btn-terminal" onclick="avanzarCorrida()">SEGUIR ADELANTE →</button>';
+      cont.innerHTML = html;
+    }
     _guardar();
   }
 
@@ -814,6 +957,8 @@
   window.aceptarCorrida = aceptarCorrida;
   window.avanzarCorrida = avanzarCorrida;
   window.resolverConfrontacion = resolverConfrontacion;
+  window.elegirObjetivoCorrida = elegirObjetivoCorrida;
+  window._continuarConfrontacion = _continuarConfrontacion;
   window.corridaAccionNodo = corridaAccionNodo;
   window.cerrarCorridaResuelta = cerrarCorridaResuelta;
   window.abandonarCorrida = abandonarCorrida;

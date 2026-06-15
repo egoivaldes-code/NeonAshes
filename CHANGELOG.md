@@ -2,6 +2,14 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.110] - 2026-06-15
+### Added
+- Combate táctico por turnos en las corridas: las confrontaciones pueden tener varios enemigos a la vez, cada uno con su propia resistencia. Eliges a quién atacar en cada turno y los enemigos responden hasta que los neutralizas, escapas o caes.
+- Refuerzos enemigos: guionizados (llegan en un turno concreto de ciertas corridas) y dinámicos (si haces mucho ruido, un coche frena y bajan más).
+- Corridas más largas y variadas (6-9 nodos) para ambos bandos, con nuevas situaciones de rango alto: el testigo de Silencio Escarlata (Contrabando) y la limpieza que nadie firma (Seguridad), además del motín del Bloque 9 y el hierro para el Arrabal.
+### Changed
+- Reescrito el motor de confrontación para soportar grupos de enemigos manteniendo compatibilidad con los encuentros de un solo enemigo.
+
 ## [0.109] - 2026-06-14
 ### Added
 - Las armas se desgastan con el uso en las corridas y acaban rompiéndose: el cuchillo aguanta menos que la pistola. Su condición (gastada, comprometida) se ve tanto en la confrontación como en el inventario del panel ESTADO.

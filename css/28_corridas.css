@@ -149,3 +149,53 @@
   border-color:var(--gris) !important;
 }
 .corrida-retirarse:hover{ opacity:0.85; }
+
+/* ── Confrontación táctica: lista de enemigos ──────────────── */
+.corrida-enemigos{
+  display:flex;
+  flex-direction:column;
+  gap:0.35rem;
+  margin-bottom:0.9rem;
+  padding:0.5rem 0.6rem;
+  border:1px solid var(--gris);
+  border-radius:4px;
+  background:rgba(20,6,10,0.4);
+}
+.corrida-enemigo{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:0.6rem;
+  font-size:0.58rem;
+  letter-spacing:0.1em;
+}
+.corrida-enemigo-sel .corrida-enemigo-nom{ color:var(--magenta); }
+.corrida-enemigo-nom{ color:var(--blanco-suave); }
+.corrida-enemigo-vida{
+  color:var(--magenta);
+  letter-spacing:0.05em;
+  font-size:0.7rem;
+  white-space:nowrap;
+}
+
+/* Sub-narración (¿a quién vas?, atacas a X). */
+.corrida-narr-sub{
+  font-size:0.66rem !important;
+  opacity:0.85;
+  margin-bottom:0.6rem !important;
+}
+.corrida-cambiar-obj{
+  color:var(--cyan);
+  cursor:pointer;
+  text-decoration:underline;
+  font-size:0.92em;
+}
+
+/* Opción de elegir objetivo. */
+.corrida-op-objetivo{ border-left-color:var(--magenta-dim); }
+
+/* Aviso de refuerzos: rojo y con un punto de tensión. */
+.corrida-aviso-refuerzo{
+  color:var(--magenta);
+  font-weight:600;
+}
