@@ -970,6 +970,7 @@ function llegarAZona(){
     document.getElementById('transito-libre-escena').classList.remove('activa');
     document.getElementById('zona-escena').classList.add('activa');
   }
+  document.body.classList.add('zona-vista-activa');
 }
 
 
@@ -1013,6 +1014,7 @@ function accionZona(accion){
       document.getElementById('zona-escena').classList.remove('activa');
       document.getElementById('mapa-escena').classList.add('activa');
     }
+    document.body.classList.remove('zona-vista-activa');
     renderizarMapa();
     return;
   }

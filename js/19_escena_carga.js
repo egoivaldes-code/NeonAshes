@@ -32,6 +32,11 @@ function cambiarEscena(desde,hacia){
     document.getElementById(desde).classList.remove('activa');
     document.getElementById(hacia).classList.add('activa');
     ov.classList.remove('oscurecer');
+    // El reloj se atenúa solo dentro de la vista de zona. Al salir hacia
+    // cualquier otra escena, limpiamos la marca para que reaparezca.
+    if(hacia !== 'zona-escena'){
+      document.body.classList.remove('zona-vista-activa');
+    }
   },500);
 }
 
