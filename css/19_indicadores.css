@@ -75,6 +75,10 @@
    solaparse con el contenido del panel (que es más importante en
    ese momento). Mismo trato para el modal de inventario. */
 body.panel-abierto #reloj-diegetico { opacity: 0; pointer-events: none; }
+/* La vista de zona ocupa la pantalla y su título sube hasta arriba,
+   donde está el reloj fijo. Atenuamos el reloj mientras la zona está
+   activa para que no se solapen (la hora ya se ve antes de entrar). */
+body.zona-vista-activa #reloj-diegetico { opacity: 0; pointer-events: none; }
 #reloj-diegetico::before {
   content: '◉ ';
   color: rgba(0,229,255,0.7);

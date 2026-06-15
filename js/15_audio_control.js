@@ -187,6 +187,7 @@ document.body.addEventListener('touchmove', e=>{
     || t.closest('.mercado-inner')
     || t.closest('.hub-panel-cuerpo')
     || t.closest('.zona-detalle')
+    || t.closest('.zona-inner')           /* vista de zona: opciones, tienda de implantes */
     || t.closest('.inv-tab-contenido')   /* lista del inventario */
     || t.closest('.explorar-wrap')       /* exploración y expedición */
     || t.closest('.casos-wrap');         /* investigador: tablón, casos y deducción */

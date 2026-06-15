@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.111] - 2026-06-15
+### Added
+- Ocho corridas nuevas (cuatro por bando), sobre todo de rango bajo: contrabando de semillas, recuerdos, un desertor del Anillo y carga refrigerada; y por el lado de HELIX, notificaciones, un contrabandista de poca monta, un desalojo y un informante quemado.
+### Fixed
+- El scroll ya funciona en la ventana de implantes y en cualquier vista de zona con mucho contenido.
+- El reloj de arriba ya no se solapa con el título al entrar en una zona: se atenúa mientras estás dentro y reaparece al salir.
+
 ## [0.110] - 2026-06-15
 ### Added
 - Combate táctico por turnos en las corridas: las confrontaciones pueden tener varios enemigos a la vez, cada uno con su propia resistencia. Eliges a quién atacar en cada turno y los enemigos responden hasta que los neutralizas, escapas o caes.

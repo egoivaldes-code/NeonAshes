@@ -270,6 +270,144 @@ const CORRIDAS_DATOS = {
           refuerzoSiRuido:60, refuerzoGrupo:[{nombre:'Dron de combate', desc:'El ruido lo llamó', integridad:3, fuerza:5, umbral:6}] },
         { tipo:'narrativo', texto:'El transporte de los Fantasmas espera con los motores en marcha, una sombra entre la lluvia. El piloto, marciano por el acento, solo dice: "Subid. Ya." No hace falta que lo repita.' }
       ]
+    },
+
+    // ── RANGO 0 (nuevas) ─────────────────────────────────────
+    {
+      id:'cont_semillas',
+      titulo:'SEMILLAS QUE NO FIGURAN',
+      cliente:'Un horticultor de azotea, sin facción',
+      faccion:null,
+      peligro:1, pagaBase:150, progreso:80, rangoMin:0,
+      integridad:14, alertaInicial:0,
+      resumen:'Un saquito de semillas no modificadas, de las que HELIX prohibió porque no pagan licencia cada cosecha. Llevarlas de un invernadero clandestino a una azotea del otro lado del bloque. Verde contra el cemento. Pequeño delito, gran significado.',
+      cierreOk:'El horticultor abre el saco y hunde las manos en las semillas como quien toca agua limpia. "Esto germina sin permiso de nadie", dice, casi para sí. Te paga con créditos y con un tomate de verdad, de los que ya casi no existen. Sabe a tierra y a algo perdido.',
+      cierreFallo:'Las semillas acaban esparcidas por un suelo que nunca las hará crecer. Pisoteadas. HELIX se asegura de que ni lo verde sea libre.',
+      nodos:[
+        { tipo:'narrativo', texto:'El invernadero clandestino es un armario de luces moradas detrás de una caldera. El cultivador te entrega el saco con cuidado de partera. "No las aplastes. No las mojes. Y por lo que más quieras, que no las huela un dron de licencias."' },
+        { tipo:'confrontacion', texto:'Un inspector de licencias agrarias de HELIX, de los de a pie, te para en el descansillo. Va solo, aburrido, con ganas de cubrir cuota. "Ese saco. Ábrelo." Huele a problema más que a autoridad.',
+          enemigos:[
+            { nombre:'Inspector de licencias', desc:'Solo y con cuota que cubrir', integridad:2, fuerza:3, umbral:2 }
+          ] },
+        { tipo:'encuentro', texto:'Una vecina que cultiva en su ventana te reconoce el saco de un vistazo. "¿Llevas de las buenas? Te abro el montacargas si me guardas un puñado." Negocio justo entre quien no tiene nada.',
+          txtAceptar:'Darle un puñado por el montacargas', subAceptar:'Pierdes unas semillas, ganas un atajo',
+          msgAceptar:'Le dejas un puñado en el delantal. Ella sonríe con la boca cerrada y te abre el montacargas. Subes tres plantas en diez segundos.', alertaAceptar:-5,
+          txtRechazar:'Seguir por la escalera', subRechazar:'Lo entregas todo, pero subes a pie',
+          msgRechazar:'"Otra vez será." No insiste. Subes a pie, saco al hombro, contando descansillos.' },
+        { tipo:'obstaculo', texto:'La puerta de la azotea está cerrada con una barra antiincendios oxidada que no cede.',
+          coste:25,
+          txtPagar:'Pagar al conserje que tiene la llave', subPagar:'Rápido y discreto',
+          msgPagar:'El conserje aparece, abre sin mirarte y desaparece. La llave vuelve a su bolsillo como si nunca hubiera salido.',
+          txtForzar:'Forzar la barra a la fuerza', subForzar:'Ruidoso, pero abre',
+          msgForzar:'Empujas la barra con el hombro hasta que el óxido cede con un chirrido que despierta a media planta.', ruidoForzar:15 },
+        { tipo:'narrativo', texto:'La azotea es un jardín imposible entre antenas y tanques de agua. El horticultor te espera con las manos ya manchadas de tierra. Has traído algo vivo a un sitio que se moría.' }
+      ]
+    },
+
+    {
+      id:'cont_recuerdo',
+      titulo:'UN RECUERDO EN UNA CAJA',
+      cliente:'Una viuda del sector textil',
+      faccion:null,
+      peligro:2, pagaBase:210, progreso:90, rangoMin:0,
+      integridad:14, alertaInicial:5,
+      resumen:'Una caja de memoria personal incautada por HELIX cuando murió su marido: recuerdos familiares que ahora son "propiedad en disputa". Un funcionario corrupto la sacó del depósito. Tú la llevas de vuelta a la viuda antes de que la echen en falta.',
+      cierreOk:'La viuda conecta la caja a un visor viejo y por un instante la habitación se llena de la cara de un hombre riéndose en una playa que ya no existe. Se le quiebra algo en el gesto. "Gracias por traerme a casa lo único mío." No te mira a ti: mira la luz.',
+      cierreFallo:'La caja se pierde, y con ella la última cara, la última voz, el último día de sol de un hombre al que ya nadie podrá recordar bien. Hay pérdidas que no se pagan en créditos.',
+      nodos:[
+        { tipo:'narrativo', texto:'Recoges la caja de manos del funcionario, que no para de mirar por encima del hombro. "Si preguntan, esto nunca salió del depósito. Y yo no te conozco." La caja es liviana, pero pesa como pesan las cosas de los muertos.' },
+        { tipo:'bifurcacion', texto:'Dos rutas hasta el bloque de la viuda: el mercado nocturno, lleno de gente y de ojos, o el paso elevado sobre las vías, solitario pero a la intemperie.',
+          txtRapida:'El mercado nocturno', subRapida:'Te camuflas entre la multitud',
+          msgRapida:'Te metes en el río de gente del mercado. Nadie mira una caja más entre mil bultos. Sales por el otro lado sin un rasguño.', alertaRapida:0,
+          txtLimpia:'El paso elevado', subLimpia:'Solitario pero expuesto',
+          msgLimpia:'Cruzas el paso elevado bajo la lluvia. Estás solo, lo cual es bueno, hasta que dejas de estarlo.' },
+        { tipo:'confrontacion', texto:'Dos chatarreros de datos te han seguido desde el depósito: una caja de memoria es oro en el mercado negro. "Suéltala y nadie sale herido", dice uno, aunque sus ojos dicen otra cosa.',
+          enemigos:[
+            { nombre:'Chatarrero de datos', desc:'El que habla', integridad:2, fuerza:3, umbral:2 },
+            { nombre:'Chatarrero callado', desc:'Tantea por un lado', integridad:2, fuerza:3, umbral:2 }
+          ] },
+        { tipo:'encuentro', texto:'Un crío del barrio te ofrece, por unos créditos, "despistar a quien sea con un par de petardos en la esquina". Tiene una sonrisa de pillo y un cartucho de pirotecnia casera.',
+          txtAceptar:'Pagarle la distracción', subAceptar:'20 CR para bajar el calor',
+          msgAceptar:'Le pagas. Dos estallidos secos al fondo del callejón y todas las cabezas giran hacia allí menos la tuya. Aprovechas.', creditos:-20, alertaAceptar:-15,
+          txtRechazar:'Seguir sin trucos', subRechazar:'Gratis, pero sin red',
+          msgRechazar:'"No me hace falta, chaval." Él se encoge de hombros y se guarda los petardos para otro incauto.' },
+        { tipo:'narrativo', texto:'El bloque de la viuda huele a tela vieja y a comida de una sola persona. Llamas con los nudillos. Tarda en abrir, como si ya no esperara buenas noticias de nadie.' }
+      ]
+    },
+
+    // ── RANGO 1 (nueva) ──────────────────────────────────────
+    {
+      id:'cont_desertor',
+      titulo:'EL QUE SE BAJA DEL ANILLO',
+      cliente:'Una red de fuga, pago a plazos',
+      faccion:'sindicatos',
+      peligro:3, pagaBase:400, progreso:118, rangoMin:1,
+      integridad:16, alertaInicial:10,
+      resumen:'Un técnico de HELIX harto de firmar lo que firma quiere desaparecer del Anillo Blanco y bajar a la ciudad, donde no exista para sus jefes. Sacarlo de su torre y meterlo en el anonimato de Las Pilas antes del cambio de turno. Un hombre cambiando una jaula dorada por una libre y sucia.',
+      cierreOk:'El técnico mira las luces sucias de Las Pilas como quien ve el mar por primera vez. "Allá arriba todo brillaba y nada era mío", dice. "Aquí abajo, al menos, la mugre es honesta." Se pierde entre la gente. Por fin, nadie.',
+      cierreFallo:'Lo devuelven al Anillo entre dos agentes, y a la torre que creía dejar atrás. Quien intenta bajarse de HELIX aprende que la puerta solo gira hacia dentro.',
+      nodos:[
+        { tipo:'narrativo', texto:'El técnico te espera en un garaje del Anillo con una sola bolsa y la cara de quien lleva semanas sin dormir. "Tengo doce minutos antes de que el sistema note que no estoy en mi puesto. Después de eso, soy un fugitivo. Hazlos contar."' },
+        { tipo:'confrontacion', texto:'Seguridad privada del Anillo os intercepta en el aparcamiento. No saben aún que deserta; creen que es un robo de activo. Dos guardias con porras de descarga y trajes impecables. "Identifíquese y aléjese del empleado."',
+          enemigos:[
+            { nombre:'Guardia del Anillo', desc:'Pulcro, entrenado', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Guardia del Anillo', desc:'Pide refuerzos por radio', integridad:2, fuerza:3, umbral:2 }
+          ],
+          refuerzoSiRuido:55, refuerzoGrupo:[{nombre:'Patrulla del Anillo', desc:'La radio funcionó', integridad:2, fuerza:4, umbral:4}] },
+        { tipo:'obstaculo', texto:'El ascensor de servicio que baja del Anillo a la ciudad exige credencial de empleado. La del técnico ya está marcada como sospechosa.',
+          coste:70,
+          txtPagar:'Pagar al operario del montacargas de carga', subPagar:'Os baja con la chatarra',
+          msgPagar:'El operario os esconde entre palés de residuos y baja el montacargas sin registrar el viaje. Oléis a basura del Anillo, que es la basura mejor perfumada del mundo.',
+          txtForzar:'Anular el lector y bajar igual', subForzar:'Deja rastro en el sistema',
+          msgForzar:'El técnico puentea el lector con dedos temblorosos. El ascensor baja, pero deja una alarma silenciosa que tardará poco en sonar.', ruidoForzar:25 },
+        { tipo:'confrontacion', texto:'Ya en la ciudad, una unidad de recuperación de HELIX os espera: el sistema notó la ausencia. Tres agentes, y uno lleva el expediente del técnico en la mano. "Volver es más fácil para todos. Sobre todo para usted." El técnico tiembla a tu lado.',
+          enemigos:[
+            { nombre:'Agente de recuperación', desc:'Habla con calma de oficina', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Agente de recuperación', desc:'Corta la salida', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Agente novato', desc:'Más nervioso que tú', integridad:2, fuerza:3, umbral:2 }
+          ] },
+        { tipo:'bifurcacion', texto:'Falta el último tramo hasta el punto donde el técnico desaparece para siempre. Las calles anchas son rápidas pero vigiladas; los pasajes del mercado, lentos y ciegos.',
+          txtRapida:'Calles anchas', subRapida:'Rápido, con cámaras',
+          msgRapida:'Tiráis por las calles anchas. Avanzáis rápido bajo el ojo de las cámaras. El técnico encoge la cabeza en cada esquina.', alertaRapida:15,
+          txtLimpia:'Pasajes del mercado', subLimpia:'Lento y ciego',
+          msgLimpia:'Os hundís en los pasajes del mercado. Aquí no hay cámaras, solo cocinas y trapos tendidos. El técnico respira por primera vez en horas.' },
+        { tipo:'narrativo', texto:'El punto de fuga es una pensión sin nombre que alquila por horas y no pregunta. El técnico se gira antes de entrar, buscando palabras que no encuentra. Solo asiente. Es suficiente.' }
+      ]
+    },
+
+    // ── RANGO 2 (nueva) ──────────────────────────────────────
+    {
+      id:'cont_organos',
+      titulo:'CARGA REFRIGERADA',
+      cliente:'Una clínica que no aparece en ningún registro',
+      faccion:'eco',
+      peligro:4, pagaBase:580, progreso:150, rangoMin:2,
+      integridad:18, alertaInicial:15,
+      resumen:'Una nevera portátil con un riñón dentro, etiquetado con un código de barras de HELIX y destinado a alguien que no puede pagar la lista oficial. El Culto de la Carne Perfecta también quiere órganos, por otras razones. Llevas vida humana en una caja fría, y todos en esta ruta la quieren.',
+      cierreOk:'En la clínica clandestina, el cirujano abre la nevera y asiente. "Llega a tiempo. Alguien va a despertar mañana sin saber a quién se lo debe." El riñón, en su bolsa, con su código de barras de HELIX, parece lo más solitario del mundo. Cobras y procuras no pensar de dónde salió.',
+      cierreFallo:'La nevera cambia de manos equivocadas. En algún quirófano sin licencia, o en algún altar del Culto, esa víscera tendrá un destino que prefieres no imaginar. Y alguien, en una lista de espera, no despertará mañana.',
+      nodos:[
+        { tipo:'narrativo', texto:'Recoges la nevera en un muelle de carga. Pesa poco y zumba bajo, manteniendo el frío. En la tapa, una etiqueta impecable: código de barras, lote, fecha de caducidad. La burocracia de HELIX aplicada a un trozo de persona. Te revuelve más que cualquier sangre.' },
+        { tipo:'confrontacion', texto:'Fanáticos del Culto de la Carne Perfecta han olfateado la carga. Para ellos, un órgano sano es una reliquia. Tres figuras con túnicas manchadas te cierran el paso, serenas, sonrientes. "Esa carne merece un destino más alto que un mercado."',
+          enemigos:[
+            { nombre:'Devoto del Culto', desc:'Sonríe demasiado', integridad:2, fuerza:3, umbral:2 },
+            { nombre:'Devoto del Culto', desc:'Acaricia un bisturí', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Acólito joven', desc:'Aún no sabe lo que cree', integridad:2, fuerza:3, umbral:2 }
+          ],
+          refuerzoSiRuido:55, refuerzoGrupo:[{nombre:'Fiel rezagado', desc:'El alboroto lo trae', integridad:2, fuerza:3, umbral:2}] },
+        { tipo:'obstaculo', texto:'Un puesto de control sanitario de HELIX escanea toda carga refrigerada que cruza el sector. Un riñón sin papeles oficiales es una alarma garantizada.',
+          coste:90,
+          txtPagar:'Sobornar al técnico del escáner', subPagar:'Caro, pero la nevera pasa "vacía"',
+          msgPagar:'El técnico teclea que la nevera contiene "muestras de laboratorio sin valor" y os hace señas de que paséis. Los créditos compran adjetivos.',
+          txtForzar:'Desviar la carga por el conducto de residuos', subForzar:'Sucio, arriesgas la cadena de frío',
+          msgForzar:'Metes la nevera por el conducto de residuos y la recoges al otro lado, rezando por que el frío haya aguantado. La luz de la tapa sigue verde. Por los pelos.', ruidoForzar:18, heridaForzar:1 },
+        { tipo:'confrontacion', texto:'En el último tramo, una patrulla de la División de Anomalías de HELIX —que rastrea tráfico de tejidos no autorizado— os intercepta. No gritan. Uno mira la nevera y luego a ti. "Ese material es propiedad de HELIX hasta que se demuestre lo contrario. Entréguelo."',
+          enemigos:[
+            { nombre:'Agente sanitario', desc:'Frío como su carga', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Agente sanitario', desc:'Te corta la huida', integridad:3, fuerza:5, umbral:6 }
+          ] },
+        { tipo:'narrativo', texto:'La clínica clandestina es un sótano más limpio que cualquier calle de Las Pilas. El cirujano espera con los guantes ya puestos y los ojos cansados de quien salva vidas que el sistema descartó. Le tiendes la nevera.' }
+      ]
     }
   ],
 
@@ -484,6 +622,135 @@ const CORRIDAS_DATOS = {
             { nombre:'El agente', desc:'Herido, sin rendirse', integridad:3, fuerza:4, umbral:4 }
           ] },
         { tipo:'narrativo', texto:'Lo que queda de la noche lo harás en silencio. Recoges la caja —o lo que decidas recoger— y desandas el camino hacia un HELIX que nunca admitirá haberte enviado. La lluvia, al menos, no hace preguntas.' }
+      ]
+    },
+
+    // ── RANGO 0 (nuevas) ─────────────────────────────────────
+    {
+      id:'seg_multa',
+      titulo:'NOTIFICACIÓN EN MANO',
+      cliente:'HELIX · Recaudación de Distrito',
+      faccion:'helix',
+      peligro:1, pagaBase:150, progreso:80, rangoMin:0,
+      integridad:14, alertaInicial:0,
+      resumen:'Entregar en mano una notificación de multa por "consumo de agua no declarado" a un inquilino del Bloque 7. Papeleo. La clase de tarea que HELIX da a los nuevos para ver si tienen estómago para mirar a la cara a quien arruinan.',
+      cierreOk:'El hombre firma la notificación con una mano que no tiembla, porque ya no le queda con qué temblar. "Dile a HELIX que el agua que no declaré era la lluvia que entraba por el techo roto." Cierras el acta. La frase se te queda dentro más de lo que debería.',
+      cierreFallo:'La notificación no llega a firmarse y vuelves con el acta abierta. En Recaudación, un papel sin cerrar es un día sin cobrar, y eso lo notan enseguida.',
+      nodos:[
+        { tipo:'narrativo', texto:'El Bloque 7 tiene los pasillos a oscuras para ahorrar en luz. Buscas la puerta del moroso entre números medio borrados. Detrás de cada mirilla notas ojos que te calculan el uniforme.' },
+        { tipo:'encuentro', texto:'Una vecina te corta el paso, fingiendo barrer. "El del 314 es buena gente. Se le murió la mujer. ¿No puedes perder ese papel y ya?" Te mira como quien tantea cuánta humanidad le queda al de turno.',
+          txtAceptar:'"Hoy no he encontrado a nadie en casa"', subAceptar:'Aplazas la multa, mientes en el acta',
+          msgAceptar:'Asientes despacio. "Hoy no había nadie." Ella afloja los hombros. El del 314 tendrá una semana más antes de que manden a otro menos blando que tú.', alertaAceptar:0,
+          txtRechazar:'"Tengo que entregarla igual"', subRechazar:'Cumples la orden',
+          msgRechazar:'"Lo siento. Es mi trabajo." Ella vuelve a barrer un suelo ya limpio, y no te mira más.' },
+        { tipo:'confrontacion', texto:'El hijo del moroso te encuentra en el pasillo y se planta delante de la puerta de su padre con una tubería en la mano. "Por encima de mí no pasas." No es un matón. Es un crío defendiendo lo poco que le queda.',
+          enemigos:[
+            { nombre:'El hijo', desc:'Más miedo que furia', integridad:2, fuerza:3, umbral:2 }
+          ] },
+        { tipo:'narrativo', texto:'El padre aparta al hijo con una mano en el pecho, cansado. "Déjalo, que solo cumple. Dame el papel." Le tiendes la notificación. El acta espera tu firma, fría como siempre.' }
+      ]
+    },
+
+    {
+      id:'seg_contrabandista',
+      titulo:'EL PEZ PEQUEÑO',
+      cliente:'HELIX · Aduana Interior',
+      faccion:'helix',
+      peligro:2, pagaBase:250, progreso:92, rangoMin:0,
+      integridad:14, alertaInicial:10,
+      resumen:'Atrapar a un contrabandista de poca monta que mueve mercancía sin licencia por los túneles del mercado. La orden dice "detener e incautar". Lo que no dice es que el pez pequeño solo trafica para pagar el implante cardíaco de su hija. Vas a pescarlo igualmente.',
+      cierreOk:'Esposas el contrabandista contra un puesto cerrado. No forcejea. "El siguiente que mandéis encontrará a otro como yo al día siguiente", dice sin rencor. "Siempre habrá un pez pequeño. Vosotros os encargáis de eso." Cierras la incautación. Tiene razón y los dos lo sabéis.',
+      cierreFallo:'El contrabandista se te escurre entre los puestos y se traga los túneles. La incautación queda en nada, y Aduana apunta tu nombre en la columna de los que no rematan.',
+      nodos:[
+        { tipo:'narrativo', texto:'Los túneles bajo el mercado huelen a fritanga y a humedad. El contrabandista mueve cajas en un recodo, dándote la espalda, silbando bajito. No espera a nadie. Sobre todo, no te espera a ti.' },
+        { tipo:'bifurcacion', texto:'Puedes acercarte de frente, mostrando la placa, o rodear por un túnel paralelo para cortarle la única salida.',
+          txtRapida:'De frente, con la placa', subRapida:'Rápido, pero puede correr',
+          msgRapida:'Avanzas de frente. Él te ve, suelta la caja y arranca a correr. La persecución se complica antes de empezar.', alertaRapida:20,
+          txtLimpia:'Rodear y cortarle la salida', subLimpia:'Lento, pero lo acorralas',
+          msgLimpia:'Rodeas en silencio por el túnel paralelo. Cuando él se gira para huir, te encuentra bloqueándole el único camino. No hay a dónde correr.' },
+        { tipo:'confrontacion', texto:'Acorralado, el contrabandista no se rinde: empuja las cajas hacia ti y se defiende con un gancho de carga. "Tengo que llegar a casa esta noche", jadea. "No lo entiendes." Quizá sí lo entiendes. Da igual.',
+          enemigos:[
+            { nombre:'El contrabandista', desc:'Desesperado, no profesional', integridad:2, fuerza:3, umbral:2 }
+          ],
+          refuerzoSiRuido:60, refuerzoGrupo:[{nombre:'Compinche del túnel', desc:'Acude al jaleo', integridad:2, fuerza:3, umbral:2}] },
+        { tipo:'encuentro', texto:'Reducido el hombre, encuentras en su caja la mercancía... y una receta médica a nombre de una niña. Puedes incautarlo todo, o quedarte solo con la mercancía y "no ver" lo demás.',
+          txtAceptar:'Incautar solo la mercancía', subAceptar:'Cumples lo justo, le dejas la receta',
+          msgAceptar:'Sellas la mercancía en la bolsa de pruebas y dejas caer la receta al suelo, como si no la hubieras visto. Él la recoge sin decir nada. Hay silencios que valen más que palabras.', creditos:0, alertaAceptar:0,
+          txtRechazar:'Incautarlo todo, según el reglamento', subRechazar:'Por el libro, sin excepciones',
+          msgRechazar:'Lo metes todo en la bolsa, receta incluida. El reglamento no distingue. Tú decidiste no distinguir tampoco.', creditos:30 },
+        { tipo:'narrativo', texto:'Sacas al contrabandista a la superficie con las bridas puestas. La incautación está cerrada. Aduana tendrá su pez pequeño de hoy. Mañana habrá otro, y ambos lo sabéis.' }
+      ]
+    },
+
+    // ── RANGO 1 (nueva) ──────────────────────────────────────
+    {
+      id:'seg_desahucio',
+      titulo:'ORDEN DE DESALOJO',
+      cliente:'HELIX · Gestión Inmobiliaria',
+      faccion:'helix',
+      peligro:3, pagaBase:410, progreso:118, rangoMin:1,
+      integridad:16, alertaInicial:20,
+      resumen:'Ejecutar el desalojo de una planta entera del Bloque 4: HELIX la quiere vacía para reconvertirla en almacenes. Los inquilinos llevan generaciones ahí. La orden es firme. Lo que hagas con la gente que no tiene a dónde ir lo decides tú, pero la planta tiene que quedar vacía.',
+      cierreOk:'La planta queda despejada. El acta lo llamará "recuperación de activo inmobiliario". No mencionará a la anciana que se llevó una maceta como único equipaje, ni al hombre que se sentó en el rellano a mirar la puerta que ya no era suya. HELIX paga por metros cuadrados, no por historias.',
+      cierreFallo:'El desalojo se atasca, la planta sigue habitada y tu informe llega incompleto. Gestión Inmobiliaria no entiende de compasión ni de torpeza: solo ve una orden sin cumplir con tu firma debajo.',
+      nodos:[
+        { tipo:'narrativo', texto:'La planta del Bloque 4 huele a comida de muchas casas y a años de la misma gente. Pegas la orden de desalojo en la pared central. Las puertas empiezan a abrirse, una a una, con caras que ya conocen este momento de oídas.' },
+        { tipo:'encuentro', texto:'Un portavoz vecinal se te acerca con las manos abiertas. "Danos hasta el amanecer para sacar lo nuestro sin destrozarlo. A cambio, salimos sin pelea. Nadie quiere sangre por unos trastos." La oferta es razonable. Tu orden dice "inmediato".',
+          txtAceptar:'Darles hasta el amanecer', subAceptar:'Evitas el conflicto, desobedeces el "inmediato"',
+          msgAceptar:'Aceptas. "Hasta que salga el sol. Ni un minuto más." El portavoz asiente y la planta entera exhala. Recogerán sus vidas con dignidad. Tu acta tendrá que maquillar el retraso.', alertaAceptar:-20,
+          txtRechazar:'Ejecutar de inmediato', subRechazar:'Cumples la orden al pie de la letra',
+          msgRechazar:'"La orden dice ahora." El portavoz baja las manos. "Entonces que conste que lo intentamos por las buenas." Da media vuelta. El aire se tensa.', alertaAceptar:15 },
+        { tipo:'confrontacion', texto:'Un grupo de vecinos se atrinchera en el rellano, brazos enlazados, decididos a no moverse. Detrás, otros apilan muebles contra una puerta. No son violentos hasta que los empujas. Y tú vas a tener que empujar.',
+          enemigos:[
+            { nombre:'Vecino atrincherado', desc:'No piensa moverse', integridad:2, fuerza:3, umbral:2 },
+            { nombre:'Madre con sus cosas', desc:'Protege la puerta', integridad:2, fuerza:2, umbral:2 },
+            { nombre:'Joven furioso', desc:'Busca pelea', integridad:2, fuerza:4, umbral:4 }
+          ],
+          refuerzoSiRuido:50, refuerzoGrupo:[
+            { nombre:'Más vecinos', desc:'El grito los convoca', integridad:2, fuerza:3, umbral:2 },
+            { nombre:'Vecino mayor', desc:'Se suma con un bastón', integridad:1, fuerza:2, umbral:2 }
+          ] },
+        { tipo:'obstaculo', texto:'La última puerta está atrancada por dentro. Se oye dentro a alguien que se niega a abrir, y un llanto de niño que se cuela por la rendija.',
+          coste:50,
+          txtPagar:'Llamar a un mediador social de HELIX', subPagar:'Cuesta, pero abre sin violencia',
+          msgPagar:'Pagas para que suba un mediador. Tras veinte minutos de voz suave, la puerta se abre y sale una familia con los ojos rojos pero entera. A veces el dinero compra dignidad.',
+          txtForzar:'Echar la puerta abajo', subForzar:'Rápido y brutal',
+          msgForzar:'Revientas la puerta de una patada. El llanto del niño sube de tono. Apartas la vista mientras la familia sale a empujones. Esto pesará luego, en la cama, a oscuras.', ruidoForzar:20, heridaForzar:1 },
+        { tipo:'narrativo', texto:'La planta queda en silencio, las puertas abiertas a habitaciones vacías que aún huelen a vida. Sea como hayas llegado hasta aquí, HELIX tendrá sus metros cuadrados. El acta espera. Y tú también, aunque no sepas a qué.' }
+      ]
+    },
+
+    // ── RANGO 2 (nueva) ──────────────────────────────────────
+    {
+      id:'seg_chivato',
+      titulo:'EL INFORMANTE QUEMADO',
+      cliente:'HELIX · Inteligencia de Distrito',
+      faccion:'helix',
+      peligro:4, pagaBase:570, progreso:150, rangoMin:2,
+      integridad:18, alertaInicial:15,
+      resumen:'Un informante de HELIX dentro del Loto ha sido descubierto y tiene horas de vida. Inteligencia quiere extraerlo —no por humanidad, sino porque sabe demasiado. Sacarlo del Arrabal antes de que el Loto lo encuentre. Salvas a un traidor para proteger a la empresa. El heroísmo, aquí, tiene letra pequeña.',
+      cierreOk:'Entregas al informante, temblando pero vivo, al coche sin distintivos de Inteligencia. "Gracias", balbucea. No sabes si a ti o a su suerte. Lo que sabe seguirá siendo de HELIX, no del Loto. Eso es lo que has salvado: información. Que el hombre respire es un efecto secundario.',
+      cierreFallo:'El Loto encuentra al informante antes que tú. Lo que el hombre sabía morirá con él, de una forma que el Arrabal contará en susurros durante meses. Inteligencia anota la fuga como "activo perdido", dos palabras para una vida.',
+      nodos:[
+        { tipo:'narrativo', texto:'Encuentras al informante escondido en el altillo de una tienda de empeños del Arrabal, blanco como el papel. "Saben que soy yo. Lo saben." Te agarra del brazo. "El Loto no perdona a los chivatos. Sácame de aquí o soy hombre muerto antes del alba."' },
+        { tipo:'confrontacion', texto:'Cazadores del Loto peinan el Arrabal buscándolo. Tres dan con vosotros en un callejón. No traen prisa: el barrio es suyo y lo saben. "Entreganos al soplón y a lo mejor te dejamos salir entero, uniforme."',
+          enemigos:[
+            { nombre:'Cazador del Loto', desc:'El que decide', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Cazador del Loto', desc:'Disfruta esto', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Vigía del barrio', desc:'Avisa a los demás', integridad:1, fuerza:2, umbral:2 }
+          ],
+          refuerzoSiRuido:50, refuerzoGrupo:[{nombre:'Refuerzo del Loto', desc:'El vigía cumplió', integridad:2, fuerza:4, umbral:4}] },
+        { tipo:'encuentro', texto:'El informante, aterrado, te ofrece un nombre: "Conozco un pasadizo del Loto, uno que ni ellos vigilan, porque casi nadie sabe que existe. Te lo digo si me juras que llego vivo." La información puede salvaros... o ser su última mentira.',
+          txtAceptar:'Confiar en el pasadizo', subAceptar:'Si dice verdad, evitáis lo peor',
+          msgAceptar:'Sigues su indicación hacia una grieta entre dos muros que parece un callejón sin salida. No lo es. Os tragáis la oscuridad y dejáis atrás a los cazadores. El soplón, por una vez, no mintió.', alertaAceptar:-15,
+          txtRechazar:'No fiarte de un chivato', subRechazar:'Sigues tu propio criterio',
+          msgRechazar:'"Un hombre que traiciona a los suyos no me sirve de guía." Él traga saliva. Seguís por donde tú decides, a ciegas pero por tu cuenta.' },
+        { tipo:'confrontacion', texto:'Casi en la salida del Arrabal, el lugarteniente del Loto en persona os cierra el paso con dos hombres. Conoce al informante por su nombre. "Cuánto daño en una boca tan pequeña", dice, casi con pena. "Apártate, uniforme. Esto es asunto de familia."',
+          enemigos:[
+            { nombre:'Lugarteniente del Loto', desc:'Tranquilo, letal', integridad:4, fuerza:5, umbral:6 },
+            { nombre:'Soldado del Loto', desc:'Fiel hasta el final', integridad:3, fuerza:4, umbral:4 }
+          ] },
+        { tipo:'narrativo', texto:'El coche de Inteligencia espera con el motor en marcha al borde del Arrabal, donde el farolillo rojo da paso a la luz blanca de HELIX. El informante corre hacia él sin mirar atrás. Tu parte, la sucia, termina aquí.' }
       ]
     }
   ]
