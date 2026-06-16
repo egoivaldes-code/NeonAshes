@@ -35,6 +35,22 @@ const MERCADO_PRECIOS = {
   ganzua:            { compra: 55,  venta: 22 },
   mascara_filtro:    { compra: 130, venta: 55 },
 
+  // ── ARMADURAS (capa de corrida) ── compra cara, venta ~45%.
+  // La placa HELIX es material corporativo: la más cara y deseable.
+  chaqueta_kevlar:   { compra: 240, venta: 100 },
+  abrigo_trapero:    { compra: 190, venta: 80 },
+  placa_helix:       { compra: 520, venta: 210 },
+
+  // ── CONSUMIBLES DE COMBATE ── de un uso, asequibles salvo lo HELIX.
+  estimulante:       { compra: 95,  venta: 38 },
+  adrenalina:        { compra: 70,  venta: 28 },
+  inhibidor_dolor:   { compra: 140, venta: 58 },
+  granada_humo:      { compra: 85,  venta: 34 },
+
+  // ── ÍTEMS DE AVANCE ── cambian cómo cruzas el camino.
+  mapa_sector:       { compra: 120, venta: 48 },
+  credencial_falsa:  { compra: 260, venta: 105 },
+
   // EQUIPO DE OFICIO ── la credencial desbloquea la profesión Seguridad
   // HELIX; cara a propósito (el oficio "oficial" cuesta entrar). La
   // documentación sellada es la vía social barata del contrabandista.
@@ -54,6 +70,9 @@ const MERCADO_PRECIOS = {
 const _MERCADO_COMPRABLE = [
   'medkit','kit_trauma','cargador','ganzua','carga_analizador',
   'senuelo','racion_deshidratada','licor',
+  'estimulante','adrenalina','inhibidor_dolor','granada_humo',
+  'chaqueta_kevlar','abrigo_trapero','placa_helix',
+  'mapa_sector','credencial_falsa',
   'bateria_2v','bateria_4v','bateria_8v',
   'palanca_termica','mascara_filtro','arma_blanca','arma_fuego','analizador',
   'papel_helix','credencial_helix'

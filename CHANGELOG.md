@@ -2,6 +2,11 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.116] - 2026-06-16
+### Added
+- El equipo nuevo (armaduras, consumibles de combate e ítems de avance) ya forma parte de la economía: se compra y se vende en el mercado, con precios acordes a su valor (la placa balística HELIX es la pieza más cara y deseable).
+- Ese equipo aparece además como botín: en hallazgos de las corridas (una caja médica de HELIX, el abrigo de un trapero muerto, una taquilla de pertrechos, autoinyectores de combate) y rebuscando en las expediciones (chaqueta de kevlar en vehículos, humo y credenciales clonadas en el tren descarrilado, placa balística y estimulantes en el depósito orbital, consumibles HELIX en el contenedor corporativo).
+
 ## [0.115] - 2026-06-16
 ### Added
 - Armaduras equipables en las corridas (chaqueta de kevlar, placa balística HELIX, abrigo de trapero): reducen el daño por golpe y se desgastan con los impactos hasta romperse. Se equipa automáticamente la mejor que lleves.
