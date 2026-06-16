@@ -424,6 +424,13 @@
       html += '<button class="btn-terminal" onclick="avanzarCorrida()">AVANZAR →</button>';
     }
 
+    // Curarse con un kit de trauma: disponible fuera de combate si llevas
+    // uno y no estás a tope de integridad. Es el "respiro" entre peleas.
+    if(nodo.tipo !== 'confrontacion' && _lleva('kit_trauma') && _integridad < _integridadMax){
+      html += '<button class="btn-terminal corrida-curar" '
+        + 'onclick="curarseEnCorrida()">USAR KIT DE TRAUMA (recuperar integridad)</button>';
+    }
+
     // Opción de RETIRARSE: disponible en nodos que no sean confrontación
     // (no es un escape de un mal turno) y tras haber dado al menos un paso.
     if(nodo.tipo !== 'confrontacion' && _pasosDados > 0){
@@ -490,13 +497,17 @@
 
   function _crearEnemigo(def, idx){
     const integridad = def.integridad || 1;
+    // Mordida por rango: las corridas de rango alto pegan más fuerte, para
+    // que de verdad asusten. Rango 0-1 sin cambios; r2 +1 fuerza; r3 +2.
+    const rango = (_corrida && typeof _corrida.rangoMin === 'number') ? _corrida.rangoMin : 0;
+    const bonusFuerza = rango >= 3 ? 1 : 0;
     return {
       uid: 'e' + idx + '_' + Math.floor(Math.random() * 100000),
       nombre: def.nombre || 'Enemigo',
       desc: def.desc || '',
       integridad: integridad,
       integridadMax: integridad,
-      fuerza: def.fuerza || 3,     // daño que te hace al responder
+      fuerza: (def.fuerza || 3) + bonusFuerza,  // daño que te hace al responder
       umbral: def.umbral || 3,     // fuerza tuya para dañarle de forma notable
       vivo: true
     };
@@ -580,6 +591,14 @@
       'Fuerza baja · sin gasto · silencioso · lento',
       'corrida-op-punos');
 
+    // ── VÍA CURARSE (si llevas kit y estás herido) ──
+    // No atacas este turno, pero ganas integridad. Los enemigos responden.
+    if(_lleva('kit_trauma') && _integridad < _integridadMax){
+      html += _op('curar', 'USAR KIT DE TRAUMA',
+        'Recuperas integridad · no atacas (te responden)',
+        'corrida-op-util');
+    }
+
     // ── OPCIONES NO FÍSICAS según item (afectan a TODO el grupo) ──
     const cfg = BANDOS[_bando];
     if(_lleva(cfg.itemSocial)){
@@ -638,7 +657,7 @@
     // Objetivo: el único vivo, o el seleccionado.
     let objetivo = vivos.length === 1 ? vivos[0] : vivos.find(e => e.uid === cf._objetivo);
     // Vías que afectan al grupo entero no necesitan objetivo.
-    const viaGrupal = (via === 'justificar' || via === 'sobornar' || via === 'distraer' || via === 'amenazar' || via === 'recargar');
+    const viaGrupal = (via === 'justificar' || via === 'sobornar' || via === 'distraer' || via === 'amenazar' || via === 'recargar' || via === 'curar');
     if(!objetivo && !viaGrupal){
       // Falta elegir objetivo; repintar para que elija.
       _pintarNodo();
@@ -672,6 +691,14 @@
         mensaje = 'El arma vacía no engaña a tantos ojos. Se envalentonan.';
       }
       _fx('inv_fallo', 0.5);
+    } else if(via === 'curar'){
+      if(_lleva('kit_trauma') && typeof quitarItem === 'function'){
+        quitarItem('kit_trauma', 1);
+        _integridad = Math.min(_integridadMax, _integridad + 8);
+      }
+      mensaje = 'Te aplicas el kit de trauma a toda prisa, sin dejar de mirarlos. '
+        + 'Recuperas el aliento, pero bajar la guardia se paga.';
+      saltarRespuesta = false; // te responden mientras te curas
     } else if(via === 'recargar'){
       if(_lleva('cargador') && typeof quitarItem === 'function'){
         quitarItem('cargador', 1);
@@ -760,10 +787,19 @@
 
     // ── Respuesta enemiga: cada vivo te hace daño según su fuerza ──
     // (escala suave: no la suma bruta, para que un grupo no te funda de golpe)
+    // Daño enemigo del turno. Modelo: el enemigo "principal" (el primero
+    // vivo) te alcanza de lleno; el resto, que te rodea, pega a media
+    // potencia (te estás cubriendo de ellos). Además, tope por turno para
+    // que un grupo numeroso no te funda de un solo intercambio.
     let heridaTotal = 0;
-    quedan.forEach(e => { heridaTotal += Math.max(1, Math.round(e.fuerza / 2)); });
-    // Si recargaste, te pillan más expuesto (+1).
+    quedan.forEach((e, i) => {
+      const golpe = Math.max(1, Math.round(e.fuerza / 2));
+      heridaTotal += (i === 0) ? golpe : Math.max(1, Math.round(golpe / 2));
+    });
     if(via === 'recargar') heridaTotal += 1;
+    // Tope: nunca más de ~40% de la integridad máxima en un solo turno.
+    const topeTurno = Math.max(3, Math.round(_integridadMax * 0.4));
+    if(heridaTotal > topeTurno) heridaTotal = topeTurno;
     _integridad = Math.max(0, _integridad - heridaTotal);
 
     // ── Pintar el turno ──
@@ -1074,6 +1110,8 @@
     const cfg = BANDOS[_bando];
     const c = _corrida;
     let paga = 0, progreso = 0, ascenso = null;
+    Estado.memoria = Estado.memoria || {};
+    Estado.memoria._ultimoDesenlaceCorrida = exito ? 'ok' : 'fallo';
 
     if(exito){
       // La paga baja si terminaste con mucha alerta (chapucero).
@@ -1183,6 +1221,26 @@
     _pintarNodo();
   }
 
+  // Usar un kit de trauma para recuperar integridad durante la corrida.
+  function curarseEnCorrida(){
+    if(!_corrida || !_lleva('kit_trauma')) return;
+    if(_integridad >= _integridadMax) return;
+    if(typeof quitarItem === 'function') quitarItem('kit_trauma', 1);
+    const cura = 8;
+    _integridad = Math.min(_integridadMax, _integridad + cura);
+    _fx('inv_acierto', 0.5);
+    const cont = document.getElementById('corrida-wrap');
+    if(cont){
+      let html = _hud();
+      html += '<div class="corrida-narr">Te tomas un respiro a cubierto. El kit '
+        + 'de trauma sella lo que sangra y silencia lo que duele, al menos un rato. '
+        + 'Recuperas el aliento.</div>';
+      html += '<button class="btn-terminal" onclick="_volverAlNodo()">SEGUIR →</button>';
+      cont.innerHTML = html;
+    }
+    _guardar();
+  }
+
   // ── salir del tablón, volver a la escena previa ─────────
   function cerrarCorrida(){
     const idActual = 'corrida-escena';
@@ -1225,6 +1283,7 @@
   window.retirarseCorrida = retirarseCorrida;
   window.confirmarRetirada = confirmarRetirada;
   window._volverAlNodo = _volverAlNodo;
+  window.curarseEnCorrida = curarseEnCorrida;
   window.cerrarCorrida = cerrarCorrida;
   // Para que el inventario del panel ESTADO pueda mostrar la condición
   // del arma. Devuelve 'operativa' | 'gastada' | 'comprometida' | null.

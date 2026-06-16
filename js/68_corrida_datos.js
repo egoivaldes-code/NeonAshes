@@ -351,9 +351,8 @@ const CORRIDAS_DATOS = {
             { nombre:'Sicario veloz', desc:'Va a por el viejo', integridad:2, fuerza:4, umbral:4 },
             { nombre:'Sicario pesado', desc:'Bloquea la salida', integridad:4, fuerza:4, umbral:4 }
           ],
-          refuerzoTurno:3, refuerzoTurnoGrupo:[
-            { nombre:'Coche del Ferro', desc:'Frena en seco, bajan dos', integridad:2, fuerza:4, umbral:4 },
-            { nombre:'Segundo del coche', desc:'Recién llegado', integridad:2, fuerza:3, umbral:2 }
+          refuerzoTurno:4, refuerzoTurnoGrupo:[
+            { nombre:'Coche del Ferro', desc:'Frena en seco, baja uno', integridad:2, fuerza:4, umbral:4 }
           ],
           ir:'copia' },
         copia:{ tipo:'encuentro',
@@ -363,9 +362,17 @@ const CORRIDAS_DATOS = {
           alertaAceptar:5,
           msgAceptar:'Te guardas la copia en el forro. Ahora hay dos razones para que HELIX te quiera muerto. Pero si el viejo cae, la verdad sigue de pie.',
           msgRechazar:'"Vas a llegar tú y se la das tú." El viejo sonríe, sin creerte del todo, y guarda la copia. "Optimista. Hace mucho que no conocía a uno."',
-          irAceptar:'ruta', irRechazar:'ruta' },
+          irAceptar:'respiro', irRechazar:'respiro' },
+        respiro:{ tipo:'hallazgo',
+          texto:'Os agazapáis en un portal a recobrar el aliento. El viejo rebusca en su abrigo y te tiende, sin una palabra, un kit de trauma viejo pero sellado. "Cuarenta años escondiéndome enseñan a llevar siempre con qué remendarse", murmura.',
+          txtAbrir:'Aceptar el kit', subAbrir:'Un respiro antes de lo que viene',
+          txtDejar:'Decirle que lo guarde él', subDejar:'Él lo necesitará más',
+          riesgo:0,
+          recompensaItem:'kit_trauma',
+          msgAbrir:'Te guardas el kit. El viejo asiente. "Para cuando aprieten." Y aprietan siempre.',
+          msgDejar:'Le cierras la mano sobre el kit. "Guárdalo tú." Él te mira un instante, y por una vez no discute.',
+          ir:'ruta' },
         ruta:{ tipo:'bifurcacion',
-          texto:'La ruta directa al puerto está plagada de HELIX. Hay una alcantarilla que baja a los canales: más larga, más sucia, y el viejo no está para caminatas. Pero arriba os matan seguro. Dos caminos, dos noches distintas.',
           ramas:[
             { txt:'FORZAR LA RUTA DIRECTA', sub:'Corta, pero erizada de HELIX', ir:'directa', alerta:25 },
             { txt:'BAJAR A LOS CANALES', sub:'Larga y dura para el viejo', ir:'canales' }
@@ -391,11 +398,10 @@ const CORRIDAS_DATOS = {
         unidadnegra:{ tipo:'confrontacion',
           texto:'En el último tramo, una unidad negra de HELIX —los mismos trajes sin placa de siempre— os corta el paso. Saben quién es el viejo. Llevan décadas con esta orden. "Cuarenta años", dice uno, casi con respeto. "Casi lo consigue."',
           enemigos:[
-            { nombre:'Comandante sin placa', desc:'No tiene prisa', integridad:4, fuerza:6, umbral:6 },
-            { nombre:'Operativo negro', desc:'Eficiente, callado', integridad:3, fuerza:5, umbral:6 },
-            { nombre:'Operativo negro', desc:'Cubre el flanco', integridad:3, fuerza:4, umbral:4 }
+            { nombre:'Comandante sin placa', desc:'No tiene prisa', integridad:3, fuerza:5, umbral:6 },
+            { nombre:'Operativo negro', desc:'Eficiente, callado', integridad:3, fuerza:4, umbral:4 }
           ],
-          refuerzoSiRuido:60, refuerzoGrupo:[{nombre:'Dron de combate', desc:'El ruido lo llamó', integridad:3, fuerza:5, umbral:6}],
+          refuerzoSiRuido:65, refuerzoGrupo:[{nombre:'Dron de combate', desc:'El ruido lo llamó', integridad:2, fuerza:4, umbral:4}],
           ir:'final' },
         final:{ tipo:'narrativo',
           texto:'El transporte de los Fantasmas espera con los motores en marcha, una sombra entre la lluvia. El piloto, marciano por el acento, solo dice: "Subid. Ya." No hace falta que lo repita.',
@@ -866,13 +872,12 @@ const CORRIDAS_DATOS = {
         fantasmas:{ tipo:'confrontacion',
           texto:'El agente no viene solo: los Fantasmas de Marte lo escoltan. Veteranos de una guerra que HELIX dio por ganada. Salen de la oscuridad sin prisa, con la calma de quien ya ha sobrevivido a lo peor. "Otro perro de HELIX", dice uno. "¿Cuántos más vais a mandar?"',
           enemigos:[
-            { nombre:'Fantasma veterano', desc:'Curtido, sin miedo', integridad:4, fuerza:5, umbral:6 },
+            { nombre:'Fantasma veterano', desc:'Curtido, sin miedo', integridad:3, fuerza:5, umbral:6 },
             { nombre:'Fantasma joven', desc:'Tiene algo que demostrar', integridad:3, fuerza:4, umbral:4 },
-            { nombre:'Fantasma francotirador', desc:'Cubre desde atrás', integridad:2, fuerza:5, umbral:6 }
+            { nombre:'Fantasma francotirador', desc:'Cubre desde atrás', integridad:2, fuerza:4, umbral:6 }
           ],
-          refuerzoSiRuido:55, refuerzoGrupo:[
-            { nombre:'Coche de los Fantasmas', desc:'El tiroteo los llama', integridad:3, fuerza:4, umbral:4 },
-            { nombre:'Segundo Fantasma', desc:'Baja disparando', integridad:2, fuerza:4, umbral:4 }
+          refuerzoSiRuido:70, refuerzoGrupo:[
+            { nombre:'Coche de los Fantasmas', desc:'El tiroteo los llama', integridad:3, fuerza:4, umbral:4 }
           ],
           ir:'oferta' },
         oferta:{ tipo:'encuentro',
@@ -882,7 +887,16 @@ const CORRIDAS_DATOS = {
           alertaAceptar:5,
           msgAceptar:'Lees. Solo unas líneas, a la luz de un rótulo. Es suficiente. Lo que HELIX hizo en Marte no cabe en ningún acta. Cierras el archivo con las manos temblando. Sigas con la misión o no, esta noche ya no eres el mismo.',
           msgRechazar:'Apartas la copia sin mirarla. "No me pagan por leer." El agente asiente, casi con lástima. "Claro. Es más fácil así. Yo también lo creía."',
-          irAceptar:'persecucion', irRechazar:'persecucion' },
+          irAceptar:'respiro', irRechazar:'respiro' },
+        respiro:{ tipo:'hallazgo',
+          texto:'El agente se retira unos pasos, sin darte la espalda del todo. En el suelo, junto a un contenedor, hay un botiquín de campaña que alguien dejó caer en la huida. Los dos lo veis a la vez. Él no se mueve a por él.',
+          txtAbrir:'Coger el botiquín', subAbrir:'Lo vas a necesitar para lo que viene',
+          txtDejar:'Dejarlo, no bajar la guardia', subDejar:'No fiarte ni un segundo',
+          riesgo:0,
+          recompensaItem:'kit_trauma',
+          msgAbrir:'Recoges el botiquín sin perderlo de vista. "Quédatelo", dice el agente. "Yo ya no voy a necesitarlo." No sabes si es resignación o amenaza.',
+          msgDejar:'Lo dejas donde está. Entre vosotros dos, agacharte es un lujo que no te permites.',
+          ir:'persecucion' },
         persecucion:{ tipo:'bifurcacion',
           texto:'El agente corre hacia el puerto. Dos formas de cortarle, y cada una dice algo distinto sobre quién eres.',
           ramas:[
@@ -1061,13 +1075,13 @@ const CORRIDAS_DATOS = {
           texto:'Encuentras al informante escondido en el altillo de una tienda de empeños del Arrabal, blanco como el papel. "Saben que soy yo. Lo saben." Te agarra del brazo. "El Loto no perdona a los chivatos. Sácame de aquí o soy hombre muerto antes del alba."',
           ir:'cazadores' },
         cazadores:{ tipo:'confrontacion',
-          texto:'Cazadores del Loto peinan el Arrabal buscándolo. Tres dan con vosotros en un callejón. No traen prisa: el barrio es suyo y lo saben. "Entréganos al soplón y a lo mejor te dejamos salir entero, uniforme."',
+          texto:'Cazadores del Loto peinan el Arrabal buscándolo. Dos dan con vosotros en un callejón, y un tercero vigila desde la esquina. No traen prisa: el barrio es suyo y lo saben. "Entréganos al soplón y a lo mejor te dejamos salir entero, uniforme."',
           enemigos:[
             { nombre:'Cazador del Loto', desc:'El que decide', integridad:3, fuerza:4, umbral:4 },
-            { nombre:'Cazador del Loto', desc:'Disfruta esto', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Cazador del Loto', desc:'El otro, más lento', integridad:2, fuerza:3, umbral:2 },
             { nombre:'Vigía del barrio', desc:'Avisa a los demás', integridad:1, fuerza:2, umbral:2 }
           ],
-          refuerzoSiRuido:50, refuerzoGrupo:[{nombre:'Refuerzo del Loto', desc:'El vigía cumplió', integridad:2, fuerza:4, umbral:4}],
+          refuerzoSiRuido:65, refuerzoGrupo:[{nombre:'Refuerzo del Loto', desc:'El vigía cumplió', integridad:2, fuerza:3, umbral:2}],
           ir:'ruta' },
         ruta:{ tipo:'encuentro',
           texto:'El informante, aterrado, te ofrece un nombre: "Conozco un pasadizo del Loto, uno que ni ellos vigilan, porque casi nadie sabe que existe. Te lo digo si me juras que llego vivo." La información puede salvaros... o ser su última mentira.',
@@ -1076,11 +1090,17 @@ const CORRIDAS_DATOS = {
           alertaAceptar:-15,
           msgAceptar:'Sigues su indicación hacia una grieta entre dos muros que parece un callejón sin salida. No lo es. Os tragáis la oscuridad y dejáis atrás a los cazadores. El soplón, por una vez, no mintió.',
           msgRechazar:'"Un hombre que traiciona a los suyos no me sirve de guía." Él traga saliva. Seguís de frente, a tu manera, directos hacia donde más aprietan.',
-          irAceptar:'lugarteniente', irRechazar:'lugarteniente' },
+          irAceptar:'lugarteniente_solo', irRechazar:'lugarteniente' },
+        lugarteniente_solo:{ tipo:'confrontacion',
+          texto:'El pasadizo os escupe casi en la salida del Arrabal. Pero el lugarteniente del Loto conocía la grieta mejor que el informante: os espera, solo, sin escolta, con una pistola y una calma que hiela. "Cuánto daño en una boca tan pequeña", dice, casi con pena. "Esto es asunto de familia."',
+          enemigos:[
+            { nombre:'Lugarteniente del Loto', desc:'Solo, pero letal', integridad:3, fuerza:5, umbral:6 }
+          ],
+          ir:'final' },
         lugarteniente:{ tipo:'confrontacion',
           texto:'Casi en la salida del Arrabal, el lugarteniente del Loto en persona os cierra el paso con dos hombres. Conoce al informante por su nombre. "Cuánto daño en una boca tan pequeña", dice, casi con pena. "Apártate, uniforme. Esto es asunto de familia."',
           enemigos:[
-            { nombre:'Lugarteniente del Loto', desc:'Tranquilo, letal', integridad:4, fuerza:5, umbral:6 },
+            { nombre:'Lugarteniente del Loto', desc:'Tranquilo, letal', integridad:3, fuerza:5, umbral:6 },
             { nombre:'Soldado del Loto', desc:'Fiel hasta el final', integridad:3, fuerza:4, umbral:4 }
           ],
           ir:'final' },

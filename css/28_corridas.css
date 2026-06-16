@@ -150,6 +150,18 @@
 }
 .corrida-retirarse:hover{ opacity:0.85; }
 
+/* Botón de curarse fuera de combate (kit de trauma). */
+.corrida-curar{
+  display:block;
+  width:100%;
+  margin-top:0.8rem;
+  font-size:0.58rem !important;
+  letter-spacing:0.14em;
+  color:var(--cyan);
+  border-color:var(--cyan-dim) !important;
+}
+.corrida-curar:hover{ background:rgba(64,200,200,0.08); }
+
 /* ── Confrontación táctica: lista de enemigos ──────────────── */
 .corrida-enemigos{
   display:flex;
