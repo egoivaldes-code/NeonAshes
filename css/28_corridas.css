@@ -224,3 +224,32 @@
   margin-bottom:0.4rem !important;
   text-transform:uppercase;
 }
+
+/* ── Indicadores nuevos del HUD: armadura y estados temporales ───── */
+.corrida-hud-armadura{
+  font-family:'Share Tech Mono', monospace;
+  font-size:0.56rem;
+  letter-spacing:0.12em;
+  color:var(--ambar, #d8a24a);
+  opacity:0.85;
+  margin-left:0.4rem;
+}
+.corrida-hud-estado{
+  display:inline-block;
+  font-family:'Share Tech Mono', monospace;
+  font-size:0.5rem;
+  letter-spacing:0.1em;
+  color:var(--cyan);
+  border:1px solid var(--cyan-dim);
+  border-radius:2px;
+  padding:0 0.3rem;
+  margin-left:0.3rem;
+  opacity:0.9;
+}
+/* Aviso de mapa del sector activo en una bifurcación. */
+.corrida-mapa-activo{
+  color:var(--cyan) !important;
+  opacity:0.8;
+  border-left:2px solid var(--cyan-dim);
+  padding-left:0.5rem;
+}

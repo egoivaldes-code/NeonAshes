@@ -2,6 +2,14 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.115] - 2026-06-16
+### Added
+- Armaduras equipables en las corridas (chaqueta de kevlar, placa balística HELIX, abrigo de trapero): reducen el daño por golpe y se desgastan con los impactos hasta romperse. Se equipa automáticamente la mejor que lleves.
+- Consumibles de combate de un solo uso: estimulante (sube tu fuerza unos turnos), parche de adrenalina (curación rápida con resaca), inhibidor de dolor HELIX (ignoras el próximo golpe) y bote de humo (escapas de una pelea).
+- Estados temporales que duran varios turnos (estimulado, tembloroso, sin dolor), visibles en el marcador de la corrida.
+- Ítems de avance que cambian cómo resuelves el camino: mapa del sector (revela qué te espera en cada desvío) y credencial clonada (cruzas un control sin pagar ni hacer ruido, con usos limitados).
+- El marcador de la corrida muestra ahora el blindaje restante de la armadura y los estados activos.
+
 ## [0.114] - 2026-06-16
 ### Added
 - Posibilidad de usar un kit de trauma para recuperar integridad durante una corrida, tanto fuera de combate como en mitad de una confrontación (curarte no ataca ese turno, así que los enemigos responden).
