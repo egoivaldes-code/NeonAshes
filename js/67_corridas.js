@@ -50,6 +50,23 @@
   // ── helpers defensivos ──────────────────────────────────
   function _fx(clave, vol){ if(typeof reproducirFX === 'function') reproducirFX(clave, vol); }
   function _lleva(id){ return (typeof tieneItem === 'function') ? tieneItem(id) : false; }
+
+  // Nombre legible de un item (para mensajes). Cae al id si no se halla.
+  function _nombreItem(id){
+    if(typeof ITEMS_EXPEDICION !== 'undefined' && Array.isArray(ITEMS_EXPEDICION)){
+      const it = ITEMS_EXPEDICION.find(x => x.id === id);
+      if(it && it.nombre) return it.nombre.toLowerCase();
+    }
+    return id.replace(/_/g, ' ');
+  }
+
+  // Descuenta un turno a cada estado temporal activo; elimina los agotados.
+  function _ticEstados(){
+    Object.keys(_estados).forEach(k => {
+      _estados[k]--;
+      if(_estados[k] <= 0) delete _estados[k];
+    });
+  }
   function _guardar(){ if(typeof guardarPartida === 'function') guardarPartida(); }
   function _creditos(){ return (typeof Estado === 'object' && typeof Estado.creditos === 'number') ? Estado.creditos : 0; }
   function _cobrar(n){ if(typeof Estado === 'object' && typeof Estado.creditos === 'number'){ Estado.creditos = Math.max(0, Estado.creditos - n); } }
@@ -134,8 +151,18 @@
   let _alerta = 0;         // 0..100, presión creciente del distrito
   let _balas = 0;          // munición cargada en el arma de fuego
   let _botin = 0;          // créditos acumulados durante la corrida (bonus)
+  let _armadura = null;    // { id, reduccion, aguante, golpes } o null
+  let _estados = {};       // estados temporales: { nombre: turnosRestantes }
   let _volverA = 'apartamento';
   let _enConfrontacion = null;  // datos de la amenaza actual, o null
+
+  // Catálogo de armaduras conocido por el motor (espejo de 40_items.js).
+  // El motor no depende de que el item exista, pero usa estos valores.
+  const ARMADURAS = {
+    chaqueta_kevlar: { reduccion: 1, aguante: 10 },
+    placa_helix:     { reduccion: 2, aguante: 14 },
+    abrigo_trapero:  { reduccion: 1, aguante: 12, sigilo: true }
+  };
 
   // ── parámetros de bando ─────────────────────────────────
   // Cada bando nombra sus cosas distinto, pero la mecánica es idéntica.
@@ -258,6 +285,18 @@
     _alerta = c.alertaInicial || 0;
     _botin = 0;
     _enConfrontacion = null;
+    // Armadura: equipas la mejor que lleves (mayor reducción). Se desgasta.
+    _armadura = null;
+    Object.keys(ARMADURAS).forEach(aid => {
+      if(_lleva(aid)){
+        const a = ARMADURAS[aid];
+        if(!_armadura || a.reduccion > _armadura.reduccion){
+          _armadura = { id: aid, reduccion: a.reduccion, aguante: a.aguante, golpes: 0, sigilo: !!a.sigilo };
+        }
+      }
+    });
+    // Estados temporales (adrenalina, herido, etc.): vacíos al empezar.
+    _estados = {};
     // Grafo + mochila de recursos de la corrida.
     _grafo = _construirGrafo(c);
     _nodoActual = _grafo.inicio;
@@ -295,10 +334,26 @@
     if(_lleva('arma_fuego')){
       balasTxt = '<span class="corrida-hud-balas">BALAS ' + _balas + '</span>';
     }
+    // Armadura equipada (con su desgaste) y estados temporales activos.
+    let armaduraTxt = '';
+    if(_armadura){
+      const restante = Math.max(0, _armadura.aguante - _armadura.golpes);
+      armaduraTxt = '<span class="corrida-hud-armadura" title="Armadura: reduce daño">'
+        + 'BLINDAJE ' + restante + '</span>';
+    }
+    const nombresEstado = { estimulado:'ESTIMULADO', tembloroso:'TEMBLOROSO', inhibido:'SIN DOLOR' };
+    let estadosTxt = '';
+    Object.keys(_estados).forEach(k => {
+      if(_estados[k] > 0 && nombresEstado[k]){
+        estadosTxt += '<span class="corrida-hud-estado">' + nombresEstado[k] + '·' + _estados[k] + '</span>';
+      }
+    });
     return '<div class="corrida-hud">'
       + '<span class="corrida-hud-vida" title="' + cfg.etiquetaIntegridad + '">' + cfg.etiquetaIntegridad + ' ' + corazones + '</span>'
       + balasTxt
+      + armaduraTxt
       + '<span class="corrida-hud-alerta ' + nivelAlerta + '">' + cfg.etiquetaAlerta + ' ' + _alerta + '%</span>'
+      + estadosTxt
       + '</div>';
   }
 
@@ -598,6 +653,22 @@
         'Recuperas integridad · no atacas (te responden)',
         'corrida-op-util');
     }
+    if(_lleva('estimulante')){
+      html += _op('estimulante', 'ESTIMULANTE DE COMBATE',
+        '+fuerza unos turnos · no atacas este turno', 'corrida-op-util');
+    }
+    if(_lleva('adrenalina')){
+      html += _op('adrenalina', 'PARCHE DE ADRENALINA',
+        'Curación rápida pequeña · luego pulso tembloroso', 'corrida-op-util');
+    }
+    if(_lleva('inhibidor_dolor')){
+      html += _op('inhibidor', 'INHIBIDOR DE DOLOR',
+        'Ignoras el próximo golpe · no atacas este turno', 'corrida-op-util');
+    }
+    if(_lleva('granada_humo')){
+      html += _op('humo', 'BOTE DE HUMO',
+        'Escapas del combate sin herir a nadie', 'corrida-op-util');
+    }
 
     // ── OPCIONES NO FÍSICAS según item (afectan a TODO el grupo) ──
     const cfg = BANDOS[_bando];
@@ -657,7 +728,7 @@
     // Objetivo: el único vivo, o el seleccionado.
     let objetivo = vivos.length === 1 ? vivos[0] : vivos.find(e => e.uid === cf._objetivo);
     // Vías que afectan al grupo entero no necesitan objetivo.
-    const viaGrupal = (via === 'justificar' || via === 'sobornar' || via === 'distraer' || via === 'amenazar' || via === 'recargar' || via === 'curar');
+    const viaGrupal = (via === 'justificar' || via === 'sobornar' || via === 'distraer' || via === 'amenazar' || via === 'recargar' || via === 'curar' || via === 'estimulante' || via === 'adrenalina' || via === 'inhibidor' || via === 'humo');
     if(!objetivo && !viaGrupal){
       // Falta elegir objetivo; repintar para que elija.
       _pintarNodo();
@@ -699,6 +770,35 @@
       mensaje = 'Te aplicas el kit de trauma a toda prisa, sin dejar de mirarlos. '
         + 'Recuperas el aliento, pero bajar la guardia se paga.';
       saltarRespuesta = false; // te responden mientras te curas
+    } else if(via === 'estimulante'){
+      if(_lleva('estimulante') && typeof quitarItem === 'function') quitarItem('estimulante', 1);
+      _estados.estimulado = 3; // +fuerza durante 3 turnos
+      mensaje = 'Te clavas el estimulante en el muslo. El mundo se afila y el '
+        + 'miedo se apaga: durante unos segundos eres más rápido y pegas más fuerte.';
+      saltarRespuesta = false;
+      _fx('energia', 0.6);
+    } else if(via === 'adrenalina'){
+      if(_lleva('adrenalina') && typeof quitarItem === 'function') quitarItem('adrenalina', 1);
+      _integridad = Math.min(_integridadMax, _integridad + 4);
+      _estados.tembloroso = 2; // -fuerza un par de turnos (resaca)
+      mensaje = 'El parche descarga en tu cuello. Cierras la herida a medias y te '
+        + 'pones recto de golpe, pero el pulso te baila: cuesta apuntar.';
+      saltarRespuesta = false;
+      _fx('inv_acierto', 0.5);
+    } else if(via === 'inhibidor'){
+      if(_lleva('inhibidor_dolor') && typeof quitarItem === 'function') quitarItem('inhibidor_dolor', 1);
+      _estados.inhibido = 1; // ignora el próximo golpe (este turno)
+      mensaje = 'La ampolla de HELIX entra fría. El dolor desaparece de tu mapa: '
+        + 'el próximo golpe ni lo vas a notar.';
+      saltarRespuesta = false;
+      _fx('energia', 0.5);
+    } else if(via === 'humo'){
+      if(_lleva('granada_humo') && typeof quitarItem === 'function') quitarItem('granada_humo', 1);
+      escapaTodo = true;
+      ruido = 5;
+      mensaje = 'Tiras del bote y el callejón se traga en humo gris. Aprovechas la '
+        + 'ceguera de todos para desaparecer. No has ganado la pelea: la has dejado atrás.';
+      _fx('inv_papel', 0.5);
     } else if(via === 'recargar'){
       if(_lleva('cargador') && typeof quitarItem === 'function'){
         quitarItem('cargador', 1);
@@ -748,9 +848,13 @@
 
     // ── Daño al objetivo ──
     if(objetivo && fuerzaJugador > 0){
+      // Modificadores de estado: estimulado pega más, tembloroso peor.
+      let fuerzaEfectiva = fuerzaJugador;
+      if(_estados.estimulado && _estados.estimulado > 0) fuerzaEfectiva += 2;
+      if(_estados.tembloroso && _estados.tembloroso > 0) fuerzaEfectiva -= 1;
       // Daño = 1 base, +1 si superas el umbral del enemigo (golpe sólido).
       let dano = 1;
-      if(fuerzaJugador >= objetivo.umbral) dano = 2;
+      if(fuerzaEfectiva >= objetivo.umbral) dano = 2;
       objetivo.integridad = Math.max(0, objetivo.integridad - dano);
       if(objetivo.integridad <= 0){
         objetivo.vivo = false;
@@ -800,12 +904,36 @@
     // Tope: nunca más de ~40% de la integridad máxima en un solo turno.
     const topeTurno = Math.max(3, Math.round(_integridadMax * 0.4));
     if(heridaTotal > topeTurno) heridaTotal = topeTurno;
+
+    // Inhibidor de dolor: ignoras por completo el golpe de este turno.
+    let avisoEstado = '';
+    if(_estados.inhibido && _estados.inhibido > 0 && heridaTotal > 0){
+      avisoEstado += ' El inhibidor hace su trabajo: no sientes nada, no te frenan.';
+      heridaTotal = 0;
+    }
+    // Armadura: reduce el daño recibido (mínimo 1 si te alcanzan algo) y
+    // se desgasta con cada golpe que para.
+    if(heridaTotal > 0 && _armadura){
+      const antes = heridaTotal;
+      heridaTotal = Math.max(1, heridaTotal - _armadura.reduccion);
+      if(heridaTotal < antes){
+        _armadura.golpes++;
+        if(_armadura.golpes >= _armadura.aguante){
+          avisoEstado += ' Tu ' + _nombreItem(_armadura.id) + ' cede por fin: queda inservible.';
+          if(typeof quitarItem === 'function') quitarItem(_armadura.id, 1);
+          _armadura = null;
+        }
+      }
+    }
     _integridad = Math.max(0, _integridad - heridaTotal);
+
+    // Los estados temporales duran turnos: descuenta uno al cerrar el turno.
+    _ticEstados();
 
     // ── Pintar el turno ──
     const cont = document.getElementById('corrida-wrap');
     let html = _hud();
-    html += '<div class="corrida-narr">' + mensaje + '</div>';
+    html += '<div class="corrida-narr">' + mensaje + (avisoEstado || '') + '</div>';
     if(avisoRefuerzo){
       html += '<div class="corrida-aviso corrida-aviso-refuerzo">' + avisoRefuerzo + '</div>';
     }
@@ -859,6 +987,11 @@
     }
     html += _opNodo('obst_forzar', nodo.txtForzar || 'FORZARLO',
       nodo.subForzar || 'Gratis, pero hace ruido (+alerta)', 'corrida-op-fuego');
+    // Ítem de avance: credencial clonada → cruzas sin pagar ni hacer ruido.
+    if(_lleva('credencial_falsa')){
+      html += _opNodo('obst_credencial', 'USAR CREDENCIAL CLONADA',
+        'Pasas sin pagar ni ruido · gasta un uso', 'corrida-op-util');
+    }
     html += '</div>';
     return html;
   }
@@ -871,6 +1004,11 @@
       const coste = nodo.coste || 50;
       _cobrar(coste);
       msg = nodo.msgPagar || 'Pagas y la puerta se abre como si nunca hubiera estado cerrada.';
+      _fx('energia', 0.5);
+    } else if(via === 'obst_credencial'){
+      if(typeof quitarItem === 'function') quitarItem('credencial_falsa', 1);
+      msg = 'Acercas la credencial clonada al lector. Un parpadeo, un pitido dudoso… '
+        + 'y abre. Cruzas sin pagar y sin un ruido. La placa, eso sí, está más cerca de su última mentira.';
       _fx('energia', 0.5);
     } else {
       _alerta = Math.min(100, _alerta + (nodo.ruidoForzar || 20));
@@ -923,6 +1061,11 @@
   // ============================================================
   function _pintarBifurcacion(nodo){
     let html = '<div class="corrida-ops">';
+    const tieneMapa = _lleva('mapa_sector');
+    if(tieneMapa){
+      html += '<div class="caso-nota corrida-mapa-activo">Consultas el mapa del sector: '
+        + 'sabes lo que te espera en cada desvío.</div>';
+    }
     const ramas = _ramasDe(nodo);
     ramas.forEach((r, i) => {
       // ¿Rama bloqueada por falta de item requerido?
@@ -935,7 +1078,9 @@
         html += '<div class="caso-nota">' + (r.txt || 'Ruta') + ' (' + r.coste + ' CR) — no te alcanza.</div>';
         return;
       }
-      const sub = (r.sub || '') + (r.coste ? ' · ' + r.coste + ' CR' : '');
+      let sub = (r.sub || '') + (r.coste ? ' · ' + r.coste + ' CR' : '');
+      // Mapa del sector: revela la pista de lo que aguarda en la rama.
+      if(tieneMapa && r.pista){ sub += ' · [' + r.pista + ']'; }
       const cls = i === 0 ? 'corrida-op-fuego' : 'corrida-op-util';
       html += _opNodo('bif_' + i, r.txt || ('RUTA ' + (i + 1)), sub, cls);
     });
@@ -1153,6 +1298,8 @@
     _nodoActual = null;
     _grafo = null;
     _run = null;
+    _armadura = null;
+    _estados = {};
     _enConfrontacion = null;
     _guardar();
   }
@@ -1212,6 +1359,8 @@
     _nodoActual = null;
     _grafo = null;
     _run = null;
+    _armadura = null;
+    _estados = {};
     _enConfrontacion = null;
     _guardar();
   }

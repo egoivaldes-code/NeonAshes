@@ -219,6 +219,39 @@ const ITEMS_EXPEDICION = [
   { id:'mascara_filtro', nombre:'Máscara de filtro', tipo:'equipo', apilable:false,
     desc:'Goma vieja y dos cartuchos que silban al respirar. En los pozos y canales tóxicos es la diferencia entre rebuscar tranquilo y escupir sangre.' },
 
+  // ── ARMADURAS (capa de corrida) ──────────────────────────────
+  // Reducen el daño que recibes por golpe en combate. Se desgastan con
+  // los impactos, como las armas. Lore: ropa funcional de Las Pilas,
+  // nada de cota de malla. Solo una equipada a la vez (la mejor que lleves).
+  { id:'chaqueta_kevlar', nombre:'Chaqueta de kevlar sintético', tipo:'armadura', apilable:false,
+    reduccion:1, aguante:10,
+    desc:'Tejido de aramida cosido a mano, con remiendos sobre remiendos. Para un golpe de navaja o amortigua un perno. No es mucho, pero entre algo y nada, va un cuerpo.' },
+  { id:'placa_helix', nombre:'Placa balística HELIX', tipo:'armadura', apilable:false,
+    reduccion:2, aguante:14,
+    desc:'Inserto de cerámica con la hélice medio lijada, sacado de un chaleco de seguridad corporativo. Pesa y delata, pero para un disparo que te habría tumbado. Segunda mano, como todo aquí.' },
+  { id:'abrigo_trapero', nombre:'Abrigo de trapero reforzado', tipo:'armadura', apilable:false,
+    reduccion:1, aguante:12, sigilo:true,
+    desc:'Capas de lona, cuero y forro robado, pesado como una culpa. Para algún golpe y, sobre todo, te hace uno más entre los miles de don nadies de las Pilas. Pasar desapercibido también es una coraza.' },
+
+  // ── CONSUMIBLES DE COMBATE (capa de corrida) ─────────────────
+  // De un solo uso, se gastan dentro de una corrida. Distintos del kit
+  // de trauma (que solo cura): estos dan ventajas tácticas.
+  { id:'estimulante', nombre:'Estimulante de combate', tipo:'consumible', usos:1, apilable:true,
+    desc:'Autoinyector con un cóctel que el cuerpo agradece y luego cobra. Durante unos segundos pegas más fuerte y no sientes el miedo. Después, el bajón.' },
+  { id:'adrenalina', nombre:'Parche de adrenalina', tipo:'consumible', usos:1, apilable:true,
+    desc:'Se pega en el cuello y descarga de golpe. Cierra un poco la herida y te pone en pie al instante, pero deja el pulso temblón un rato. Remiendo de urgencia, no cura.' },
+  { id:'inhibidor_dolor', nombre:'Inhibidor de dolor HELIX', tipo:'consumible', usos:1, apilable:true,
+    desc:'Ampolla de uso hospitalario desviada del Hospital Público. Apaga el dolor tan a fondo que el próximo golpe ni lo notas. Lo que viene después, sí.' },
+  { id:'granada_humo', nombre:'Bote de humo', tipo:'consumible', usos:1, apilable:true,
+    desc:'Lata de feria reconvertida. Tiras de la anilla y el callejón desaparece en humo gris. No hiere a nadie, pero te regala la espalda para desaparecer de una pelea.' },
+
+  // ── ÍTEMS DE AVANCE (capa de corrida) ────────────────────────
+  // No tocan el combate: cambian cómo resuelves nodos de ruta.
+  { id:'mapa_sector', nombre:'Mapa del sector', tipo:'avance', apilable:false,
+    desc:'Plano garabateado a mano, vendido por un crío que se lo sabe de memoria. Te dice qué te espera en cada desvío antes de tomarlo. Saber es media huida.' },
+  { id:'credencial_falsa', nombre:'Credencial clonada', tipo:'avance', usos:2, apilable:false,
+    desc:'Una placa con un número que casi cuadra. Pasa un control si nadie mira dos veces. Dura poco antes de que el sistema la escupa: un par de usos y a tirarla.' },
+
   // ── CREDENCIAL HELIX (desbloquea la profesión Seguridad) ──────
   // No tiene por qué ser legítima: una placa robada, clonada o heredada
   // sirve igual. Quien la lleve puede ejercer de Seguridad de HELIX.
