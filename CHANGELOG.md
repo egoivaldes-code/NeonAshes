@@ -2,6 +2,16 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.114] - 2026-06-16
+### Added
+- Posibilidad de usar un kit de trauma para recuperar integridad durante una corrida, tanto fuera de combate como en mitad de una confrontación (curarte no ataca ese turno, así que los enemigos responden).
+### Changed
+- Rediseñado el daño de grupo en las confrontaciones: el enemigo que tienes encima pega de lleno y el resto a media potencia, con un tope de daño por turno. Las peleas contra grupos grandes dejan de ser una sentencia.
+- Las corridas de rango alto pegan algo más fuerte, para que de verdad supongan un reto.
+### Fixed
+- Corregida "El informante quemado", que era prácticamente insuperable: la primera emboscada es más asumible y la decisión de confiar en el pasadizo ahora aligera el enfrentamiento final.
+- Añadidos momentos de respiro (con kit de trauma) en los clímax de "El testigo de Silencio Escarlata" y "La limpieza que nadie firma".
+
 ## [0.113] - 2026-06-15
 ### Changed
 - Las veinte corridas de ambos bandos reescritas como aventuras ramificadas: caminos que se bifurcan de verdad y llevan a recorridos distintos, con hallazgos opcionales, encuentros y decisiones propias de cada ruta. Aprovecha el motor de grafo, recursos y eventos aleatorios introducido en la 0.112. Dos partidas de la misma corrida ya no se viven igual.
