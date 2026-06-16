@@ -71,7 +71,9 @@ const ZONAS_EXPEDICION = {
     tablaBotin: [
       { peso: 4, creditos: [30, 70], items: [{ id:'chatarra_cruda', cant:[2,5] }] },
       { peso: 2, creditos: [20, 50], items: [{ id:'nucleo_optico', cant:[1,1] }] },
-      { peso: 1, creditos: [0, 20], items: [{ id:'carga_analizador', cant:[1,2] }] }
+      { peso: 1, creditos: [0, 20], items: [{ id:'carga_analizador', cant:[1,2] }] },
+      { peso: 1, creditos: [0, 0], items: [{ id:'inhibidor_dolor', cant:[1,1] }] },
+      { peso: 1, creditos: [0, 0], items: [{ id:'estimulante', cant:[1,1] }] }
     ]
   },
 
@@ -88,7 +90,8 @@ const ZONAS_EXPEDICION = {
     tablaBotin: [
       { peso: 4, creditos: [0, 20], items: [{ id:'chatarra_cruda', cant:[1,2] }] },
       { peso: 2, creditos: [60, 120], items: [{ id:'chatarra_cruda', cant:[1,3] }] },
-      { peso: 1, creditos: [0, 0], items: [{ id:'arma_blanca', cant:[1,1] }] }
+      { peso: 1, creditos: [0, 0], items: [{ id:'arma_blanca', cant:[1,1] }] },
+      { peso: 1, creditos: [0, 0], items: [{ id:'chaqueta_kevlar', cant:[1,1] }] }
     ]
   },
 
@@ -141,7 +144,9 @@ const ZONAS_EXPEDICION = {
     requisito: { tipo: 'rango', rango: 'Buzo de Chatarra' },
     tablaBotin: [
       { peso: 3, creditos: [90, 180], items: [{ id:'nucleo_optico', cant:[1,2] }] },
-      { peso: 2, creditos: [120, 240], items: [{ id:'servidor_hundido', cant:[1,1] }] }
+      { peso: 2, creditos: [120, 240], items: [{ id:'servidor_hundido', cant:[1,1] }] },
+      { peso: 1, creditos: [0, 0], items: [{ id:'placa_helix', cant:[1,1] }] },
+      { peso: 1, creditos: [0, 0], items: [{ id:'estimulante', cant:[1,2] }] }
     ]
   },
 
@@ -177,7 +182,9 @@ const ZONAS_EXPEDICION = {
     tablaBotin: [
       { peso: 4, creditos: [60, 130], items: [{ id:'chatarra_cruda', cant:[4,7] }] },
       { peso: 2, creditos: [90, 170], items: [{ id:'nucleo_optico', cant:[1,1] }] },
-      { peso: 1, creditos: [120, 220], items: [{ id:'servidor_hundido', cant:[1,1] }] }
+      { peso: 1, creditos: [120, 220], items: [{ id:'servidor_hundido', cant:[1,1] }] },
+      { peso: 1, creditos: [0, 0], items: [{ id:'granada_humo', cant:[1,2] }] },
+      { peso: 1, creditos: [0, 0], items: [{ id:'credencial_falsa', cant:[1,1] }] }
     ]
   },
 

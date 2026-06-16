@@ -1151,7 +1151,24 @@ const EVENTOS_CORRIDA = {
       herida:1 },
     { id:'ev_c_suerte', tipo:'narrativo',
       texto:'Te cruzas con un conocido de los muelles que te debía un favor. Sin que se lo pidas, te señala un atajo y te mete un par de billetes en el bolsillo. "Estamos en paz." A veces la calle también da.',
-      botin:40, alerta:-5 }
+      botin:40, alerta:-5 },
+    { id:'ev_c_caja_medica', tipo:'hallazgo',
+      texto:'Un furgón sanitario de HELIX ha tenido un accidente y nadie ha venido aún a recoger lo que se desparramó. Entre el cristal roto, una caja con el logo de la hélice, intacta.',
+      txtAbrir:'Saquear la caja médica', subAbrir:'Material de HELIX, del bueno',
+      txtDejar:'No tentar a la suerte', subDejar:'Un furgón así no se queda solo mucho rato',
+      riesgo:0.3, trampaHerida:2, trampaAlerta:10,
+      recompensaItem:'inhibidor_dolor',
+      msgAbrir:'Dentro, ampollas de inhibidor de dolor de uso hospitalario. Vale una fortuna en la calle. Te guardas una y desapareces.',
+      msgTrampa:'Al abrir la caja, una alarma de inventario de HELIX chilla. Echas a correr antes de ver quién acude, pero algo te alcanza por el camino.',
+      msgDejar:'Lo dejas. El material de HELIX siempre viene con rastreador, y tú no necesitas otra correa.' },
+    { id:'ev_c_trapero', tipo:'hallazgo',
+      texto:'Un trapero muerto de frío, hace ya días, sigue sentado contra una pared con su abrigo pesado puesto. Nadie se lo ha llevado. En las Pilas, hasta a los muertos les cuesta encontrar quien los desnude.',
+      txtAbrir:'Quedarte el abrigo', subAbrir:'Él ya no lo necesita',
+      txtDejar:'Dejarlo descansar', subDejar:'Hay cosas que no se hacen',
+      riesgo:0,
+      recompensaItem:'abrigo_trapero',
+      msgAbrir:'Te pones el abrigo de trapero, pesado de lona y forros robados. Aún conserva el calor de la calle. Abriga, y esconde. Murmuras una disculpa que nadie oye.',
+      msgDejar:'Lo dejas con su dueño. No todo en las Pilas está en venta, ni siquiera cuando nadie mira.' }
   ],
 
   seguridad: [
@@ -1185,7 +1202,24 @@ const EVENTOS_CORRIDA = {
       ] },
     { id:'ev_s_informe', tipo:'narrativo',
       texto:'Encuentras, tirada, una tablilla de otro agente con un informe a medias. La recoges: información del barrio que te ahorra rodeos. Pequeñas ventajas de llevar la placa correcta.',
-      alerta:-8, botin:30 }
+      alerta:-8, botin:30 },
+    { id:'ev_s_pertrechos', tipo:'hallazgo',
+      texto:'Una taquilla de pertrechos de HELIX abierta y a medio vaciar, en un puesto de control abandonado. Tu credencial te da derecho... o eso te dices mientras rebuscas.',
+      txtAbrir:'Coger lo que sirva', subAbrir:'Material reglamentario, para ti',
+      txtDejar:'Dejar la taquilla', subDejar:'Hay cámaras hasta en los sitios vacíos',
+      riesgo:0.2, trampaAlerta:12,
+      recompensaItem:'placa_helix',
+      msgAbrir:'Dentro, un inserto balístico de cerámica HELIX, de segunda mano pero entero. Te lo metes bajo la chaqueta. Esto para un disparo que de otro modo te tumbaría.',
+      msgTrampa:'Al abrir la taquilla, un registro de acceso parpadea: tu credencial ha quedado anotada hurgando donde no debías. Mala señal.',
+      msgDejar:'Cierras la taquilla. El material de HELIX siempre lleva número de serie, y los números de serie hablan.' },
+    { id:'ev_s_estimulantes', tipo:'hallazgo',
+      texto:'En el botiquín de una garita encuentras un blíster de autoinyectores de combate, de los que HELIX da a sus operativos antes de una redada dura. Caducan pronto. Nadie los echará en falta.',
+      txtAbrir:'Guardarte un estimulante', subAbrir:'Para cuando aprieten',
+      txtDejar:'No tocar el botiquín', subDejar:'Cada cosa en su sitio',
+      riesgo:0.1,
+      recompensaItem:'estimulante',
+      msgAbrir:'Te guardas un autoinyector de estimulante de combate. Para el día en que pegar más fuerte sea la diferencia entre volver o no.',
+      msgDejar:'Lo dejas donde está. No te fías de lo que HELIX mete en esas ampollas, y haces bien.' }
   ]
 };
 
