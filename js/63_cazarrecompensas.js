@@ -1348,7 +1348,10 @@ function _pintarTablonCaza(){
   const cont = document.getElementById('caza-wrap');
   if(!cont) return;
   const rango = (typeof rangoActualProfesion === 'function') ? rangoActualProfesion(CAZA_PROF_ID) : 0;
-  let html = '<div class="casos-cab"><div class="casos-titulo">TABLÓN DE ENCARGOS</div>'
+  let html = (typeof barraFiltrosTablon === 'function')
+    ? barraFiltrosTablon('caza', '← SALIR DEL TABLÓN', 'cerrarContratos()', 'repintarTablonCaza')
+    : '';
+  html += '<div class="casos-cab"><div class="casos-titulo">TABLÓN DE ENCARGOS</div>'
     + '<div class="casos-sub">Alguien pone precio a una cabeza. Tú decides si la cobras.</div></div>';
   html += '<div class="casos-lista">';
   const ordenados = CONTRATOS_CAZA.slice().sort((a, b) =>
@@ -1356,10 +1359,16 @@ function _pintarTablonCaza(){
     || (a.peligro  || 0) - (b.peligro  || 0)
     || (a.pagaBase || 0) - (b.pagaBase || 0)
   );
+  let mostrados = 0;
   ordenados.forEach(c => {
     const bloqueadoRango = (c.rangoMin || 0) > rango;
-    const peligro = '◆'.repeat(c.peligro || 1) + '◇'.repeat(Math.max(0, 5 - (c.peligro || 1)));
     const yaHecho = _contratoHecho(c.id);
+    if(typeof pasaFiltrosTablon === 'function'
+       && !pasaFiltrosTablon('caza', { bloqueadoRango: bloqueadoRango, yaHecha: yaHecho })){
+      return;
+    }
+    mostrados++;
+    const peligro = '◆'.repeat(c.peligro || 1) + '◇'.repeat(Math.max(0, 5 - (c.peligro || 1)));
     let estado = yaHecho ? '<span class="casos-hecho">CERRADO</span>' : '';
     html += '<div class="caso-card' + (bloqueadoRango ? ' caso-bloq' : '') + '">'
       + '<div class="caso-card-top"><span class="caso-titulo">' + c.titulo + '</span>' + estado + '</div>'
@@ -1376,10 +1385,16 @@ function _pintarTablonCaza(){
     }
     html += '</div>';
   });
+  if(mostrados === 0 && typeof avisoTablonVacio === 'function'){
+    html += avisoTablonVacio('caza');
+  }
   html += '</div>';
-  html += '<button class="btn-terminal casos-salir" onclick="cerrarContratos()">← SALIR DEL TABLÓN</button>';
   cont.innerHTML = html;
 }
+
+// Repintado expuesto para los botones de filtro.
+function repintarTablonCaza(){ _pintarTablonCaza(); }
+window.repintarTablonCaza = repintarTablonCaza;
 
 function _contratoHecho(id){
   return !!(Estado.memoria && Estado.memoria.contratosHechos && Estado.memoria.contratosHechos[id]);

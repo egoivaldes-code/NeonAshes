@@ -238,7 +238,11 @@
     if(!cont) return;
     const cfg = BANDOS[_bando];
     const rango = _rango(_profId);
-    let html = '<div class="casos-cab"><div class="casos-titulo">' + cfg.tablonTitulo + '</div>'
+    const ctx = 'corrida_' + _bando;
+    let html = (typeof barraFiltrosTablon === 'function')
+      ? barraFiltrosTablon(ctx, '← DEJARLO POR HOY', 'cerrarCorrida()', 'repintarTablonCorrida')
+      : '';
+    html += '<div class="casos-cab"><div class="casos-titulo">' + cfg.tablonTitulo + '</div>'
       + '<div class="casos-sub">' + cfg.tablonSub + '</div></div>';
     html += '<div class="casos-lista">';
     const ordenadas = _catalogo().sort((a, b) =>
@@ -246,10 +250,16 @@
       || (a.peligro  || 0) - (b.peligro  || 0)
       || (a.pagaBase || 0) - (b.pagaBase || 0)
     );
+    let mostradas = 0;
     ordenadas.forEach(c => {
       const bloqueadoRango = (c.rangoMin || 0) > rango;
-      const peligro = '◆'.repeat(c.peligro || 1) + '◇'.repeat(Math.max(0, 5 - (c.peligro || 1)));
       const yaHecha = _hecha(c.id);
+      if(typeof pasaFiltrosTablon === 'function'
+         && !pasaFiltrosTablon(ctx, { bloqueadoRango: bloqueadoRango, yaHecha: yaHecha })){
+        return;
+      }
+      mostradas++;
+      const peligro = '◆'.repeat(c.peligro || 1) + '◇'.repeat(Math.max(0, 5 - (c.peligro || 1)));
       let estado = yaHecha ? '<span class="casos-hecho">CERRADA</span>' : '';
       html += '<div class="caso-card' + (bloqueadoRango ? ' caso-bloq' : '') + '">'
         + '<div class="caso-card-top"><span class="caso-titulo">' + c.titulo + '</span>' + estado + '</div>'
@@ -266,8 +276,10 @@
       }
       html += '</div>';
     });
+    if(mostradas === 0 && typeof avisoTablonVacio === 'function'){
+      html += avisoTablonVacio(ctx);
+    }
     html += '</div>';
-    html += '<button class="btn-terminal casos-salir" onclick="cerrarCorrida()">← DEJARLO POR HOY</button>';
     cont.innerHTML = html;
   }
 
@@ -1280,6 +1292,19 @@
     }
     if(exito) _marcarHecha(c.id);
 
+    // Eco en las noticias: el mundo reacciona a lo que acabas de mover, sin
+    // nombrarte. Según el bando y la facción cliente de la corrida.
+    if(exito && typeof marcarEcoProfesion === 'function'){
+      if(_bando === 'seguridad'){
+        marcarEcoProfesion('corrida_seguridad');
+      } else {
+        // Contrabando: matiz por facción cliente si la hay.
+        if(c.faccion === 'loto'){ marcarEcoProfesion('corrida_contrabando_loto'); }
+        else if(c.faccion === 'sindicatos'){ marcarEcoProfesion('corrida_contrabando_ferro'); }
+        else { marcarEcoProfesion('corrida_contrabando'); }
+      }
+    }
+
     const cont = document.getElementById('corrida-wrap');
     let html = '<div class="corrida-hud"><span class="corrida-hud-vida">'
       + (exito ? cfg.desenlaceOk : cfg.desenlaceFallo) + '</span></div>';
@@ -1419,6 +1444,7 @@
 
   // ── exponer al ámbito global (como hacen 62/63/64) ──────
   window.abrirCorrida = abrirCorrida;
+  window.repintarTablonCorrida = function(){ _pintarTablon(); };
   window.aceptarCorrida = aceptarCorrida;
   window.avanzarCorrida = avanzarCorrida;
   window.resolverConfrontacion = resolverConfrontacion;

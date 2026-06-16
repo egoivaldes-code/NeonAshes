@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.117] - 2026-06-16
+### Added
+- Barra fija en todos los tablones de misión (casos, encargos, red hacker y corridas) con el botón de volver siempre arriba y dos filtros: "MI RANGO" (oculta misiones por encima de tu rango) y "OCULTAR HECHAS" (oculta las ya completadas). Ambos vienen activados por defecto y se pueden desactivar; la barra se queda fija al hacer scroll.
+- Las corridas (contrabandista y seguridad) y las expediciones de rebusca ahora generan ecos en las noticias al completarse, igual que ya hacían los casos del investigador, los encargos del cazarrecompensas y los contratos del hacker.
+### Changed
+- El botón de salir de cada tablón se ha movido de abajo del todo a la barra fija superior, para no tener que bajar hasta el final de la lista.
+
 ## [0.116] - 2026-06-16
 ### Added
 - El equipo nuevo (armaduras, consumibles de combate e ítems de avance) ya forma parte de la economía: se compra y se vende en el mercado, con precios acordes a su valor (la placa balística HELIX es la pieza más cara y deseable).

@@ -703,7 +703,10 @@ function _pintarTablonHack(){
   const cont = document.getElementById('hack-wrap');
   if(!cont) return;
   const rango = (typeof rangoActualProfesion === 'function') ? rangoActualProfesion(HACK_PROF_ID) : 0;
-  let html = '<div class="casos-cab"><div class="casos-titulo">RED CLANDESTINA</div>'
+  let html = (typeof barraFiltrosTablon === 'function')
+    ? barraFiltrosTablon('hack', '← DESCONECTAR', 'cerrarRedHacker()', 'repintarTablonHack')
+    : '';
+  html += '<div class="casos-cab"><div class="casos-titulo">RED CLANDESTINA</div>'
     + '<div class="casos-sub">Contratos sin rostro. Alguien necesita una puerta abierta y no pregunta cómo.</div></div>';
   html += '<div class="casos-lista">';
   const ordenados = CONTRATOS_HACK.slice().sort((a, b) =>
@@ -711,10 +714,16 @@ function _pintarTablonHack(){
     || (a.peligro  || 0) - (b.peligro  || 0)
     || (a.pagaBase || 0) - (b.pagaBase || 0)
   );
+  let mostrados = 0;
   ordenados.forEach(c => {
     const bloqueadoRango = (c.rangoMin || 0) > rango;
-    const peligro = '◆'.repeat(c.peligro || 1) + '◇'.repeat(Math.max(0, 5 - (c.peligro || 1)));
     const yaHecho = _hackHecho(c.id);
+    if(typeof pasaFiltrosTablon === 'function'
+       && !pasaFiltrosTablon('hack', { bloqueadoRango: bloqueadoRango, yaHecha: yaHecho })){
+      return;
+    }
+    mostrados++;
+    const peligro = '◆'.repeat(c.peligro || 1) + '◇'.repeat(Math.max(0, 5 - (c.peligro || 1)));
     let estado = yaHecho ? '<span class="casos-hecho">CERRADO</span>' : '';
     html += '<div class="caso-card' + (bloqueadoRango ? ' caso-bloq' : '') + '">'
       + '<div class="caso-card-top"><span class="caso-titulo">' + c.titulo + '</span>' + estado + '</div>'
@@ -731,10 +740,16 @@ function _pintarTablonHack(){
     }
     html += '</div>';
   });
+  if(mostrados === 0 && typeof avisoTablonVacio === 'function'){
+    html += avisoTablonVacio('hack');
+  }
   html += '</div>';
-  html += '<button class="btn-terminal casos-salir" onclick="cerrarRedHacker()">← DESCONECTAR</button>';
   cont.innerHTML = html;
 }
+
+// Repintado expuesto para los botones de filtro.
+function repintarTablonHack(){ _pintarTablonHack(); }
+window.repintarTablonHack = repintarTablonHack;
 
 function aceptarHack(id){
   const c = CONTRATOS_HACK_POR_ID[id];

@@ -552,3 +552,61 @@
   border-color: var(--cyan,#00e5ff) !important;
   box-shadow: inset 0 0 16px rgba(0,229,255,0.18);
 }
+
+/* ── Barra de filtros fija del tablón (v0.117) ──────────────────
+   Se queda pegada arriba al hacer scroll dentro de .casos-wrap.
+   Compartida por todos los tablones (casos, encargos, corridas). */
+.tablon-barra-fija{
+  position: sticky;
+  top: -2.2rem; /* compensa el padding superior del wrap */
+  z-index: 20;
+  margin: -2.2rem -1.1rem 0.6rem;
+  padding: 0.7rem 1.1rem 0.6rem;
+  background: rgba(10,14,18,0.96);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.tablon-volver{
+  display: block; width: 100%;
+  opacity: 0.85;
+  font-size: 0.6rem !important;
+  letter-spacing: 0.18em;
+}
+.tablon-filtros{
+  display: flex;
+  gap: 0.5rem;
+}
+.filtro-btn{
+  flex: 1;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.45rem 0.3rem;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 3px;
+  background: transparent;
+  color: rgba(200,216,224,0.55);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filtro-btn::before{
+  content: '○ ';
+  opacity: 0.6;
+}
+.filtro-btn.filtro-on{
+  border-color: var(--cyan-dim, #2a6a6a);
+  color: var(--cyan, #40c8c8);
+  background: rgba(64,200,200,0.08);
+}
+.filtro-btn.filtro-on::before{
+  content: '● ';
+}
+.tablon-vacio{
+  text-align: center;
+  opacity: 0.6;
+  margin-top: 1rem;
+}

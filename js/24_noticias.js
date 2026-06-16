@@ -156,6 +156,29 @@ const NOTICIAS_ECOS_CALLE = {
   hack_helix: [
     { cat:'HELIX', txt:'HELIX informa de "una anomalía de acceso ya contenida" en una de sus redes internas. Insiste en que ningún dato sensible se vio comprometido. Insiste mucho.' },
     { cat:'INFO', txt:'Seguridad de Sistemas HELIX rastrea una sesión anónima en su capa clínica. El comunicado habla de "rutina"; el despliegue de auditores, de otra cosa.' }
+  ],
+
+  // ── Ecos de CORRIDAS (v0.117): contrabandista y seguridad. ──
+  // Contrabando genérico (cliente sin facción).
+  corrida_contrabando: [
+    { cat:'PILAS', txt:'Algo cambió de manos esta noche en los corredores bajos sin que conste en ningún registro. En las Pilas, lo que no se registra es lo que de verdad se mueve.' },
+    { cat:'VIDA', txt:'Un paquete llega a quien tenía que llegar, por rutas que no figuran en ningún mapa de HELIX. Alguien respira tranquilo. Alguien cobra y desaparece.' }
+  ],
+  // Contrabando para el Loto.
+  corrida_contrabando_loto: [
+    { cat:'PILAS', txt:'El Arrabal Carmesí recibe lo que esperaba. Un farol granate parpadea dos veces: la mercancía cruzó, y el Loto no olvida a quien cumple.' },
+    { cat:'VIDA', txt:'Corre por el Arrabal que cierta ruta sigue abierta pese a los controles. "Hay quien sabe pasar sin ser visto", susurran, casi con orgullo.' }
+  ],
+  // Contrabando para el Ferro.
+  corrida_contrabando_ferro: [
+    { cat:'PILAS', txt:'El Sindicato Ferro mueve sus piezas en los muelles con una precisión nueva. Algo les llegó a tiempo. En el Ferro, llegar a tiempo es media guerra ganada.' },
+    { cat:'INFO', txt:'Un cargamento esquiva un control del Sector 7 sin dejar rastro. HELIX revisa sus protocolos; el Ferro, ya en otra cosa.' }
+  ],
+  // Seguridad (operativo HELIX): orden cumplida, tono corporativo frío.
+  corrida_seguridad: [
+    { cat:'HELIX', txt:'Seguridad de Distrito HELIX informa de "una incidencia resuelta conforme a protocolo". No se ofrecen detalles. No suelen ofrecerse.' },
+    { cat:'INFO', txt:'HELIX agradece "la diligencia de sus operativos de campo" en la contención de un asunto menor. En las Pilas, los asuntos menores también dejan marca.' },
+    { cat:'PILAS', txt:'Una operación discreta de HELIX altera la rutina de un bloque entero por una noche. Para el amanecer, todo finge haber vuelto a la normalidad.' }
   ]
 };
 
