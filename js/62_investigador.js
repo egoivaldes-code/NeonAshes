@@ -1920,7 +1920,11 @@ function _pintarTablon(){
   const cont = document.getElementById('casos-wrap');
   if(!cont) return;
   const rango = (typeof rangoActualProfesion === 'function') ? rangoActualProfesion(INV_PROF_ID) : 0;
-  let html = '<div class="casos-cab"><div class="casos-titulo">TABLÓN DE CASOS</div>'
+  // Barra fija: volver + filtros (rango / ocultar hechas).
+  let html = (typeof barraFiltrosTablon === 'function')
+    ? barraFiltrosTablon('casos', '← SALIR DEL TABLÓN', 'cerrarCasos()', 'repintarTablonCasos')
+    : '';
+  html += '<div class="casos-cab"><div class="casos-titulo">TABLÓN DE CASOS</div>'
     + '<div class="casos-sub">Todo deja un rastro. Solo quien paga obtiene una respuesta.</div></div>';
   html += '<div class="casos-lista">';
   // Orden del tablón: los casos más accesibles arriba (rango, luego
@@ -1930,10 +1934,17 @@ function _pintarTablon(){
     || (a.peligro  || 0) - (b.peligro  || 0)
     || (a.pagaBase || 0) - (b.pagaBase || 0)
   );
+  let mostrados = 0;
   casosOrdenados.forEach(c => {
     const bloqueadoRango = (c.rangoMin || 0) > rango;
-    const peligro = '◆'.repeat(c.peligro || 1) + '◇'.repeat(Math.max(0, 5 - (c.peligro || 1)));
     const yaResuelto = _casoEstaResuelto(c.id);
+    // Aplicar filtros (los expedientes en preparación no se filtran por hechas).
+    if(typeof pasaFiltrosTablon === 'function'
+       && !pasaFiltrosTablon('casos', { bloqueadoRango: bloqueadoRango, yaHecha: yaResuelto })){
+      return;
+    }
+    mostrados++;
+    const peligro = '◆'.repeat(c.peligro || 1) + '◇'.repeat(Math.max(0, 5 - (c.peligro || 1)));
     let estado = '';
     if(c.enPreparacion) estado = '<span class="casos-wip">EXPEDIENTE SELLADO</span>';
     else if(yaResuelto) estado = '<span class="casos-hecho">CERRADO</span>';
@@ -1954,10 +1965,16 @@ function _pintarTablon(){
     }
     html += '</div>';
   });
+  if(mostrados === 0 && typeof avisoTablonVacio === 'function'){
+    html += avisoTablonVacio('casos');
+  }
   html += '</div>';
-  html += '<button class="btn-terminal casos-salir" onclick="cerrarCasos()">← SALIR DEL TABLÓN</button>';
   cont.innerHTML = html;
 }
+
+// Repintado del tablón de casos, expuesto para los botones de filtro.
+function repintarTablonCasos(){ _pintarTablon(); }
+window.repintarTablonCasos = repintarTablonCasos;
 
 // ¿El caso ya se cerró en esta partida? (se guarda en memoria)
 function _casoEstaResuelto(id){

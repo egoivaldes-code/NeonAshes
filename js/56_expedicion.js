@@ -979,6 +979,10 @@ function extraerExpedicion(){
   run.activa = false;
   Estado.expedicion = null;
   _expMarcarCooldownBuscar();
+  // Eco en las noticias: rebuscar deja huella en la calle (sin nombrarte).
+  if(typeof marcarEcoProfesion === 'function'){
+    marcarEcoProfesion('rebusca');
+  }
   return entregado;
 }
 
