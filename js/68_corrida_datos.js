@@ -609,6 +609,188 @@ const CORRIDAS_DATOS = {
           texto:'La clínica clandestina es un sótano más limpio que cualquier calle de Las Pilas. El cirujano espera con los guantes ya puestos y los ojos cansados de quien salva vidas que el sistema descartó. Le tiendes la nevera.',
           fin:true }
       }}
+    },
+
+    {
+      id:'cont_agua',
+      titulo:'AGUA QUE NO PASA EL FILTRO',
+      cliente:'Un fontanero del Bloque 12, sin facción',
+      faccion:null,
+      peligro:1, pagaBase:155, progreso:80, rangoMin:0,
+      integridad:14, alertaInicial:0,
+      resumen:'Bidones de agua sin tratar por HELIX, más barata y casi igual de limpia, de una cisterna clandestina a un bloque al que llevan semanas cortándole el suministro. Pesa, gotea y huele a desafío.',
+      cierreOk:'En el rellano del Bloque 12, una hilera de vecinos se pasa los bidones de mano en mano antes incluso de que cobres. Una cría bebe directamente del primero, con esa sed que no entiende de permisos. El fontanero te paga en monedas pequeñas y muchas. "Vuelve cuando quieras", dice. Sabes que volverás.',
+      cierreFallo:'Los bidones acaban requisados, vertidos en una alcantarilla bajo la mirada de un inspector que ni se molesta en mirarte. El Bloque 12 seguirá una semana más midiendo el agua en vasos. Y tú, sin cobrar.',
+      mapa:{ inicio:'cargar', nodos:{
+        cargar:{ tipo:'narrativo',
+          texto:'Cargas los bidones en una carretilla que chirría como un condenado. El agua se mueve dentro con un chapoteo que en el silencio de los corredores suena como una sirena. Cubres todo con una lona y rezas por que nadie tenga sed de preguntas.',
+          ir:'inspector' },
+        inspector:{ tipo:'encuentro',
+          texto:'Un inspector de aguas de HELIX, solo y con cara de pocos turnos libres, te ve la carretilla. "¿Eso lleva sello sanitario?" No lo lleva, y los dos lo sabéis. Su mano se demora cerca del bolsillo, no del comunicador.',
+          txtAceptar:'Untarle unos créditos', subAceptar:'30 CR · mira a otro lado',
+          txtRechazar:'Jurarle que es agua de lluvia', subRechazar:'Arriesgarte al farol',
+          creditos:-30, alertaAceptar:-5, alertaRechazar:15,
+          msgAceptar:'Los créditos cambian de mano con la naturalidad de quien lo ha hecho mil veces. "Agua de lluvia, claro", dice, y se va silbando. La corrupción, a veces, es la única tubería que funciona.',
+          msgRechazar:'"Agua de lluvia, en un bloque sin tejado al cielo." No te cree, pero le da pereza el papeleo. "Como te vea otra vez...", masculla, y te apunta la cara. Eso es lo que cuesta el farol: que te recuerden.',
+          irAceptar:'ruta', irRechazar:'ruta' },
+        ruta:{ tipo:'bifurcacion',
+          texto:'Dos formas de subir el agua hasta el Bloque 12, y con este peso la elección importa.',
+          ramas:[
+            { txt:'EL MONTACARGAS DE CARGA', sub:'Rápido · 30 CR al operario', ir:'final', coste:30, pista:'limpio' },
+            { txt:'SUBIR POR LA RAMPA A PULSO', sub:'Gratis, pero lento y a la vista', ir:'matones', alerta:10, pista:'gente' }
+          ] },
+        matones:{ tipo:'confrontacion',
+          texto:'A mitad de la rampa, dos correos de un aguador rival te cierran el paso. No les gusta que alguien venda agua más barata en su zona. "Esto no se sube hoy", dice uno, dándole una patada a un bidón.',
+          enemigos:[
+            { nombre:'Correo del aguador', desc:'Protege un monopolio', integridad:2, fuerza:3, umbral:2 },
+            { nombre:'Compinche', desc:'Va a por los bidones', integridad:2, fuerza:3, umbral:2 }
+          ],
+          ir:'final' },
+        final:{ tipo:'narrativo',
+          texto:'El Bloque 12 huele a ropa tendida y a gente apretada. En cuanto asomas la carretilla por el rellano, una puerta se abre, y luego otra, y otra. La voz ha corrido más rápido que tú.',
+          fin:true }
+      }}
+    },
+
+    {
+      id:'cont_gato',
+      titulo:'EL ÚLTIMO ENVÍO DE UNA VIDA',
+      cliente:'Una anciana que se muda al fondo del nivel',
+      faccion:null,
+      peligro:1, pagaBase:140, progreso:80, rangoMin:0,
+      integridad:14, alertaInicial:0,
+      resumen:'Una caja con las pertenencias de toda una vida —fotos, una vajilla desportillada, un gato vivo dentro de un transportín— de un piso embargado a un cuartucho al fondo del nivel. Frágil, ruidoso, y más pesado por dentro que por fuera.',
+      cierreOk:'La anciana abre el transportín y el gato sale como si nada, indignado y vivo. Ella lo abraza y por un momento se olvida de la caja, del embargo, de ti. "Es lo único que me dejaron llevarme con corazón", dice del gato. Te paga lo que puede, que es poco, y te da las gracias dos veces por la misma cosa.',
+      cierreFallo:'La caja se pierde en el trasiego, o se rompe, o el transportín queda abierto en algún corredor oscuro. La anciana llegará a su cuartucho sin lo único que le quedaba. Hay encargos que, al fallarlos, fallas a algo más que a un cliente.',
+      mapa:{ inicio:'recoger', nodos:{
+        recoger:{ tipo:'narrativo',
+          texto:'Recoges la caja en el piso medio vacío, con las marcas de los muebles aún en el polvo de las paredes. El gato protesta dentro del transportín con un maullido largo que rebota por el hueco de la escalera. La anciana te mira partir desde la puerta que ya no es suya.',
+          ir:'cria' },
+        cria:{ tipo:'encuentro',
+          texto:'Una cría del corredor oye al gato y se planta delante, fascinada. "¿Me lo enseñas? Solo un segundo." Detrás de ella, su madre vigila con desconfianza. Pararte es perder tiempo y exponerte; pero la cría no se mueve.',
+          txtAceptar:'Enseñarle el gato un momento', subAceptar:'Pierdes tiempo, ganas una sonrisa',
+          txtRechazar:'Seguir sin pararte', subRechazar:'No es momento de ternuras',
+          alertaRechazar:5,
+          msgAceptar:'Bajas el transportín a su altura. La cría mete un dedo entre los barrotes y el gato, contra todo pronóstico, ronronea. La madre afloja el gesto. "Gracias", dice, y de pronto el corredor entero parece menos hostil contigo.',
+          msgRechazar:'"Tengo prisa, pequeña." La apartas con suavidad y sigues. A tu espalda, la oyes preguntarle a su madre por qué la gente siempre tiene prisa. No tienes respuesta.',
+          irAceptar:'ruta', irRechazar:'ruta' },
+        ruta:{ tipo:'bifurcacion',
+          texto:'El gato no para de maullar, y el ruido atrae miradas. Dos caminos al fondo del nivel.',
+          ramas:[
+            { txt:'EL CORREDOR PRINCIPAL', sub:'Corto, pero lleno de gente y oídos', ir:'perro', alerta:10, pista:'gente' },
+            { txt:'EL PASILLO DE MANTENIMIENTO', sub:'Largo y solitario, sin testigos', ir:'hallazgo_caja', pista:'tranquilo' }
+          ] },
+        perro:{ tipo:'confrontacion',
+          texto:'En el corredor principal, un perro callejero enorme huele al gato y se lanza, ladrando como un demonio. Su dueño, un tipo curtido, no hace nada por frenarlo: le divierte. Tienes que proteger la caja y el transportín del animal.',
+          enemigos:[
+            { nombre:'Perro furioso', desc:'Va a por el transportín', integridad:2, fuerza:3, umbral:2 }
+          ],
+          ir:'final' },
+        hallazgo_caja:{ tipo:'hallazgo',
+          texto:'El pasillo de mantenimiento está en silencio, salvo por el gato. En una esquina, alguien dejó un petate de operario con herramientas y, asomando, lo que parece un fajo de créditos.',
+          txtAbrir:'Mirar el petate', subAbrir:'Nadie lo reclama aquí',
+          txtDejar:'Dejarlo y seguir', subDejar:'No cargar con más de lo que llevas',
+          riesgo:0.2, trampaHerida:1,
+          recompensaCreditos:45,
+          msgAbrir:'Unos créditos y una linterna. El operario que los dejó no va a volver a buscarlos en una temporada. Te los guardas y sigues, con el gato de banda sonora.',
+          msgTrampa:'Al tirar del petate, un tubo metálico mal apoyado se te viene encima y te golpea el hombro. Más ruido que daño, pero el gato se vuelve loco un buen rato.',
+          msgDejar:'Lo dejas. Ya cargas con la vida entera de alguien; no necesitas la de otro encima.',
+          ir:'final' },
+        final:{ tipo:'narrativo',
+          texto:'El cuartucho del fondo del nivel es pequeño y oscuro, pero limpio. La anciana ya está allí, sentada en la única silla, esperando con las manos en el regazo. Al oír el maullido, se levanta de golpe, veinte años más joven de repente.',
+          fin:true }
+      }}
+    },
+
+    {
+      id:'cont_meds_loto',
+      titulo:'LA FARMACIA DEL ARRABAL',
+      cliente:'Mano Roja · célula del Loto',
+      faccion:'loto',
+      peligro:3, pagaBase:380, progreso:115, rangoMin:1,
+      integridad:16, alertaInicial:10,
+      resumen:'Un lote de fármacos desviados del Hospital HELIX para la clínica clandestina que el Loto sostiene en el Arrabal Carmesí. Antibióticos, analgésicos, supresores. Lo que HELIX raciona, el Loto reparte. Cruzar el lote sin que la División de Anomalías lo huela.',
+      cierreOk:'En la clínica del Arrabal, una enfermera del Loto abre las cajas y empieza a ordenar frascos antes de que termines de descargar. "Esto son tres vidas, por lo menos", dice sin levantar la vista. Mano Roja, desde la puerta, te dedica un cabeceo. El Loto cuida a los suyos, y ahora tú eres un poco de los suyos.',
+      cierreFallo:'El lote se pierde, y con él los fármacos que la clínica del Arrabal esperaba. Alguien que iba a curarse esta semana no lo hará. El Loto no te culpa en voz alta, pero el Arrabal tiene memoria, y la memoria del Arrabal es una deuda.',
+      mapa:{ inicio:'recoger', nodos:{
+        recoger:{ tipo:'narrativo',
+          texto:'Recoges el lote en un muelle de carga del Hospital, de manos de un celador comprado que no te mira a los ojos. Las cajas llevan el sello de la hélice y un olor aséptico que delata lo que valen. Las metes en una mochila de reparto y te fundes con la noche.',
+          ir:'control' },
+        control:{ tipo:'bifurcacion',
+          texto:'Entre el Hospital y el Arrabal hay un puesto de control de la División de Anomalías que escanea cargas médicas. Dos formas de sortearlo.',
+          ramas:[
+            { txt:'RODEAR POR LOS TEJADOS', sub:'Largo y agotador, pero sin escáner', ir:'tejados', pista:'tranquilo' },
+            { txt:'CRUZAR CON LA MULTITUD DEL MERCADO', sub:'Rápido, pero entre ojos', ir:'mercado', alerta:15, pista:'gente' }
+          ] },
+        tejados:{ tipo:'hallazgo',
+          texto:'Subes a los tejados y avanzas entre antenas y depósitos de agua. El Arrabal se extiende abajo, rojo de farolillos. En un palomar reconvertido en escondrijo, encuentras un alijo que alguien del Loto dejó y no recogió.',
+          txtAbrir:'Registrar el escondrijo', subAbrir:'Material del Loto, quizá aprovechable',
+          txtDejar:'Respetar el alijo ajeno', subDejar:'En el Arrabal, robar al Loto se paga',
+          riesgo:0.2, trampaAlerta:10,
+          recompensaCreditos:60, recompensaItem:'kit_trauma',
+          msgAbrir:'Un kit de trauma y unos créditos. Material de la célula, abandonado en una huida. Lo tomas prestado: total, todo va al mismo Arrabal.',
+          msgTrampa:'Al abrir el escondrijo, una marca de tiza en la pared te dice que era un alijo vigilado. Aceleras antes de que aparezca su dueño, con el corazón en la boca.',
+          msgDejar:'Lo dejas intacto. En el Arrabal, el respeto entre los del Loto es lo único que aún se cotiza más que los créditos.',
+          ir:'sicarios' },
+        mercado:{ tipo:'confrontacion',
+          texto:'Cruzas el mercado nocturno entre el gentío. A mitad de camino, un buscavidas que trabaja de informante para HELIX reconoce el olor del lote médico. "Eso vale una recompensa", dice, cerrándote el paso con una sonrisa torcida.',
+          enemigos:[
+            { nombre:'Informante de HELIX', desc:'Huele la recompensa', integridad:2, fuerza:3, umbral:2 }
+          ],
+          ir:'sicarios' },
+        sicarios:{ tipo:'confrontacion',
+          texto:'Casi en el Arrabal, una agente de la División de Anomalías peina la zona buscando precisamente fármacos desviados. No grita: aparece. "Material sanitario no autorizado", dice, leyendo el aire como si oliera las cajas. "Entréguelo."',
+          enemigos:[
+            { nombre:'Agente de Anomalías', desc:'Fría, metódica', integridad:2, fuerza:3, umbral:2 }
+          ],
+          ir:'final' },
+        final:{ tipo:'narrativo',
+          texto:'La clínica del Arrabal es un sótano más blanco y más limpio que cualquier cosa en kilómetros. Huele a alcohol y a esperanza administrada con cuentagotas. La enfermera del Loto te abre la puerta antes de que llames: te esperaba.',
+          fin:true }
+      }}
+    },
+
+    {
+      id:'cont_pieza_ferro',
+      titulo:'LA PIEZA QUE FALTA',
+      cliente:'Don Vasek · Sindicato Ferro',
+      faccion:'sindicatos',
+      peligro:3, pagaBase:420, progreso:120, rangoMin:1,
+      integridad:16, alertaInicial:10,
+      resumen:'Una pieza de maquinaria pesada —un regulador de presión del tamaño de un torso— que el Ferro necesita para que su taller del Distrito Ferro no se pare. Sin ella, una cadena entera de trabajo se detiene. Es legal a medias y pesa como un pecado.',
+      cierreOk:'En el taller del Ferro, un capataz coge el regulador con las dos manos y lo encaja en la máquina muerta. Algo zumba, tose, y vuelve a la vida con un rugido grave. Los obreros levantan la vista. Don Vasek, desde una pasarela, te observa sin sonreír, que es como el Ferro da las gracias. "El orden vuelve a su sitio."',
+      cierreFallo:'La pieza no llega, y el taller del Ferro pasa la noche en silencio, parado, sangrando créditos por cada hora muerta. Don Vasek no olvida lo que cuesta una cadena detenida. Ni quién la dejó detenida.',
+      mapa:{ inicio:'cargar', nodos:{
+        cargar:{ tipo:'narrativo',
+          texto:'Cargas el regulador en una carretilla reforzada. Pesa lo que pesan las cosas que mueven otras cosas. Grasa negra te mancha las manos al primer contacto. Lo tapas con sacos y empujas hacia el Distrito Ferro, sintiendo cada junta del suelo en los riñones.',
+          ir:'peaje' },
+        peaje:{ tipo:'obstaculo',
+          texto:'Una verja de seguridad cierra el paso al sector industrial. Un guardia privado, ni de HELIX ni del Ferro, cobra por abrir.',
+          coste:50,
+          txtPagar:'Pagar el peaje', subPagar:'Rápido y sin preguntas',
+          msgPagar:'El guardia cuenta los créditos, abre la verja y vuelve a su garita sin una palabra. Hay puertas que solo entienden un idioma.',
+          txtForzar:'Forzar la verja', subForzar:'Ruidoso, pero gratis',
+          msgForzar:'Empujas la verja con la carretilla como ariete hasta que el pestillo cede con un chasquido metálico que retumba por todo el sector.', ruidoForzar:20,
+          ir:'ruta' },
+        ruta:{ tipo:'bifurcacion',
+          texto:'El Distrito Ferro está a un tramo. Pero la zona la disputan el Ferro y bandas sueltas. Dos rutas.',
+          ramas:[
+            { txt:'LA AVENIDA DEL FERRO', sub:'Territorio sindicato, más seguro', ir:'final', pista:'tranquilo' },
+            { txt:'EL ATAJO POR LOS DESGUACES', sub:'Corta camino, zona de nadie', ir:'chatarreros', alerta:12, pista:'combate' }
+          ] },
+        chatarreros:{ tipo:'confrontacion',
+          texto:'En los desguaces, una banda de chatarreros ve el regulador asomando bajo los sacos y se le iluminan los ojos: una pieza así vale meses de rebusca. Tres salen de entre los hierros oxidados, palancas en mano. "Suéltala y vete andando."',
+          enemigos:[
+            { nombre:'Chatarrero jefe', desc:'Tasa la pieza con la mirada', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Chatarrero con palanca', desc:'Impaciente', integridad:2, fuerza:3, umbral:2 },
+            { nombre:'Chatarrero joven', desc:'Más hambre que oficio', integridad:2, fuerza:3, umbral:2 }
+          ],
+          refuerzoSiRuido:55, refuerzoGrupo:[{nombre:'Chatarrero rezagado', desc:'Acude al ruido', integridad:2, fuerza:3, umbral:2}],
+          ir:'final' },
+        final:{ tipo:'narrativo',
+          texto:'El taller del Ferro late con el ruido de cien máquinas, salvo una, parada y muda en mitad de la nave, esperando su corazón. El capataz te ve llegar con la carretilla y grita algo por encima del estruendo. Los obreros se apartan para dejarte pasar.',
+          fin:true }
+      }}
     }
   ],
 
@@ -1106,6 +1288,200 @@ const CORRIDAS_DATOS = {
           ir:'final' },
         final:{ tipo:'narrativo',
           texto:'El coche de Inteligencia espera con el motor en marcha al borde del Arrabal, donde el farolillo rojo da paso a la luz blanca de HELIX. El informante corre hacia él sin mirar atrás. Tu parte, la sucia, termina aquí.',
+          fin:true }
+      }}
+    },
+
+    {
+      id:'seg_ronda',
+      titulo:'RONDA NOCTURNA',
+      cliente:'HELIX · Seguridad de Distrito',
+      faccion:'helix',
+      peligro:1, pagaBase:160, progreso:80, rangoMin:0,
+      integridad:14, alertaInicial:0,
+      resumen:'Una ronda rutinaria por los corredores del Sector 7: comprobar tres puntos marcados, "disuadir actividad irregular" y cerrar el parte. La clase de turno aburrido en el que nunca pasa nada. Hasta que pasa.',
+      cierreOk:'Cierras el parte en la última baliza. "Ronda sin incidencias", escribes, aunque la noche haya tenido más de lo que cabe en esas tres palabras. HELIX paga igual por una ronda tranquila que por una movida, mientras el parte diga lo correcto. Aprendes qué es lo correcto.',
+      cierreFallo:'La ronda se tuerce y el parte queda sin cerrar. En Seguridad de Distrito, una baliza sin marcar es un turno sin cobrar y una pregunta en tu expediente. Las preguntas, en HELIX, se acumulan.',
+      mapa:{ inicio:'inicio', nodos:{
+        inicio:{ tipo:'narrativo',
+          texto:'Las balizas de control parpadean en rojo, esperando tu credencial. El Sector 7 a estas horas es un pasillo de luces muertas y goteras. Tu propia respiración suena demasiado fuerte. Empiezas la ronda.',
+          ir:'borracho' },
+        borracho:{ tipo:'encuentro',
+          texto:'En la primera baliza, un hombre borracho duerme la mona tirado justo sobre el lector. No es peligroso, solo está roto. La orden dice "disuadir actividad irregular". Él es, técnicamente, actividad irregular.',
+          txtAceptar:'Despertarlo con buenas y apartarlo', subAceptar:'Pierdes un minuto, ganas tu alma',
+          txtRechazar:'Echarlo a la fuerza, como manda el manual', subRechazar:'Rápido y reglamentario',
+          alertaAceptar:-5, alertaRechazar:10,
+          msgAceptar:'Lo zarandeas con suavidad y lo guías hasta un rincón seco. "Gracias, jefe", balbucea, sin saber a quién. Marcas la baliza. Nadie se ha enterado de tu pequeña desobediencia humana.',
+          msgRechazar:'Lo levantas de un tirón y lo empujas fuera del corredor. Cae, maldice, se arrastra. Marcas la baliza con eficiencia. El manual estaría orgulloso. Tú, menos.',
+          irAceptar:'ruido', irRechazar:'ruido' },
+        ruido:{ tipo:'bifurcacion',
+          texto:'Camino a la segunda baliza, oyes un ruido en un callejón lateral: metal, voces bajas. Tu ronda no pasa por ahí. Pero el ruido existe.',
+          ramas:[
+            { txt:'INVESTIGAR EL RUIDO', sub:'No es tu ruta, pero podría ser algo', ir:'ladrones', alerta:10, pista:'combate' },
+            { txt:'SEGUIR LA RUTA MARCADA', sub:'Lo que no ves, no consta', ir:'baliza2', pista:'tranquilo' }
+          ] },
+        ladrones:{ tipo:'confrontacion',
+          texto:'En el callejón, dos tipos fuerzan la persiana de un almacén. Te ven el uniforme y, en vez de huir, deciden que es más fácil quitarte las ganas a golpes. "Mira, el héroe de la ronda."',
+          enemigos:[
+            { nombre:'Ladrón con barra', desc:'No esperaba compañía', integridad:2, fuerza:3, umbral:2 },
+            { nombre:'Ladrón nervioso', desc:'Quiere acabar y huir', integridad:2, fuerza:3, umbral:2 }
+          ],
+          ir:'baliza2' },
+        baliza2:{ tipo:'narrativo',
+          texto:'Llegas a la segunda baliza y pasas la credencial. Luz verde. El zumbido del lector es lo más parecido a la compañía que tendrás esta noche. Queda una.',
+          ir:'final' },
+        final:{ tipo:'narrativo',
+          texto:'La tercera baliza está al fondo de un corredor que la humedad ha vuelto resbaladizo. El parte espera en tu tablilla, con su campo de "incidencias" parpadeando, esperando que decidas qué fue real esta noche y qué no.',
+          fin:true }
+      }}
+    },
+
+    {
+      id:'seg_extravio',
+      titulo:'UN MENOR EXTRAVIADO',
+      cliente:'HELIX · Servicios al Ciudadano',
+      faccion:'helix',
+      peligro:1, pagaBase:165, progreso:80, rangoMin:0,
+      integridad:14, alertaInicial:0,
+      resumen:'Una niña de seis años se ha perdido entre los niveles del Sector 7 y los padres han pagado el servicio de localización de HELIX. Encontrarla y devolverla antes de que el frío, o algo peor, la encuentre primero. Reloj en contra y un nivel entero por delante.',
+      cierreOk:'Encuentras a la cría dormida sobre unos cartones, abrazada a un peluche sin un ojo, más tranquila de lo que tú has estado en toda la noche. Cuando la devuelves, la madre se derrumba de alivio y el padre te estrecha la mano sin soltarla. HELIX cobra su tarifa; tú te quedas con la cara de la niña al despertar y reconocer a su madre.',
+      cierreFallo:'La búsqueda se alarga, se tuerce, se enfría. Cuando cierras el servicio sin resultado, sabes que en algún rincón de este nivel hay una niña y unos padres que esta noche no se reencontrarán. HELIX lo registra como "localización no concluida". Dos palabras para un agujero.',
+      mapa:{ inicio:'inicio', nodos:{
+        inicio:{ tipo:'narrativo',
+          texto:'Los padres te enseñan una foto borrosa en un terminal: pelo oscuro, un peluche de un solo ojo, una sonrisa con un diente menos. "Salió a jugar al corredor y no volvió." El nivel es enorme y la noche, larga. Empiezas por donde la vieron por última vez.',
+          ir:'testigo' },
+        testigo:{ tipo:'encuentro',
+          texto:'Una vendedora ambulante recuerda haber visto a la cría. "Iba hacia los niveles bajos, siguiendo un gato. Pero por ahí abajo hay gente rara, agente. Te puedo decir por dónde, si me compensas el rato." El reloj corre.',
+          txtAceptar:'Pagarle por la información', subAceptar:'20 CR · te ahorra dar vueltas',
+          txtRechazar:'Buscar tú mismo, sin pagar', subRechazar:'Gratis, pero a ciegas',
+          creditos:-20, alertaAceptar:-10,
+          msgAceptar:'Le pagas y te describe la ruta exacta de la cría, gato incluido. Ganas un tiempo precioso. En una búsqueda contrarreloj, una buena pista vale más que cualquier placa.',
+          msgRechazar:'"Como quieras, agente." Sigues por instinto, perdiendo minutos en cada cruce equivocado. El nivel es un laberinto y la niña, pequeña.',
+          irAceptar:'ruta', irRechazar:'ruta' },
+        ruta:{ tipo:'bifurcacion',
+          texto:'Los niveles bajos se ramifican. Dos zonas donde una cría podría haberse refugiado, y son muy distintas.',
+          ramas:[
+            { txt:'LOS CONDUCTOS DE VENTILACIÓN', sub:'Un crío cabe donde un adulto no', ir:'conductos', pista:'tranquilo' },
+            { txt:'EL MERCADO CERRADO', sub:'Caliente y con gente, pero turbia', ir:'mercado', alerta:10, pista:'gente' }
+          ] },
+        conductos:{ tipo:'hallazgo',
+          texto:'Te metes a gatas por los conductos de ventilación, llamándola por su nombre. El eco te devuelve tu propia voz. En un recodo, encuentras su peluche de un solo ojo, tirado. Cerca, algo más: una mochila escolar abandonada hace tiempo, de otro niño.',
+          txtAbrir:'Registrar la mochila', subAbrir:'Podría tener pistas, o algo útil',
+          txtDejar:'Coger solo el peluche y seguir', subDejar:'La niña es lo único que importa',
+          riesgo:0.15, trampaHerida:1,
+          recompensaCreditos:40,
+          msgAbrir:'En la mochila, créditos viejos y un mapa infantil del nivel garabateado. El mapa te ayuda a orientarte. El peluche te dice que ella pasó por aquí. Vas bien.',
+          msgTrampa:'Al abrir la mochila, te golpeas la cabeza contra el techo del conducto en la postura imposible en la que estás. Ves estrellas un momento, pero recuperas el peluche.',
+          msgDejar:'Coges el peluche y dejas lo demás. Es su rastro, y es lo único que necesitas seguir.',
+          ir:'final' },
+        mercado:{ tipo:'confrontacion',
+          texto:'En el mercado cerrado, un grupo de gente turbia ha rodeado a la cría, no se sabe aún con qué intención. Cuando te ven llegar con el uniforme, uno se interpone, demasiado rápido, demasiado nervioso. "Aquí no hay ninguna niña, agente." La hay. La ves detrás de él.',
+          enemigos:[
+            { nombre:'Tipo nervioso', desc:'Esconde algo, o a alguien', integridad:2, fuerza:4, umbral:4 },
+            { nombre:'Compinche', desc:'No quiere problemas con HELIX', integridad:2, fuerza:3, umbral:2 }
+          ],
+          ir:'final' },
+        final:{ tipo:'narrativo',
+          texto:'La encuentras hecha un ovillo, medio dormida, con el rastro de lágrimas secas en la cara sucia. Al verte —al ver el peluche que le tiendes— sus ojos se abren enormes. "¿Me llevas con mamá?" Asientes. Es la parte fácil. La difícil ya pasó.',
+          fin:true }
+      }}
+    },
+
+    {
+      id:'seg_testigo_protegido',
+      titulo:'EL TESTIGO QUE TIEMBLA',
+      cliente:'HELIX · Asuntos Internos',
+      faccion:'helix',
+      peligro:3, pagaBase:390, progreso:115, rangoMin:1,
+      integridad:16, alertaInicial:5,
+      resumen:'Un empleado de HELIX va a declarar contra su propio supervisor por desvío de fondos, y alguien quiere que no llegue a la sala. Escoltarlo desde su cubículo hasta Asuntos Internos, vivo y dispuesto a hablar. El edificio entero parece tener oídos en las paredes.',
+      cierreOk:'Lo dejas en la puerta de Asuntos Internos, pálido pero entero, con su declaración apretada en una carpeta. "No sé si soy valiente o idiota", te dice antes de entrar. "Las dos cosas", respondes, y por primera vez en toda la noche, sonríe. HELIX cobra; un supervisor corrupto cae; el testigo desaparece en el programa. Tú vuelves a casa preguntándote a quién protegiste de verdad.',
+      cierreFallo:'El testigo no llega a declarar. Lo que sabía se queda sin decir, el supervisor sigue en su puesto, y en Asuntos Internos tachan tu nombre de la lista de gente fiable. En HELIX, caer de esa lista es caer muy hondo.',
+      mapa:{ inicio:'recoger', nodos:{
+        recoger:{ tipo:'narrativo',
+          texto:'Lo recoges en su cubículo, a oscuras, donde lleva una hora sin encender la luz para que no sepan que sigue allí. Tiembla, pero la carpeta la sujeta firme. "Saben que voy a hablar. Sácame de aquí." Las plantas de oficinas vacías de HELIX de noche tienen algo de tumba.',
+          ir:'ascensor' },
+        ascensor:{ tipo:'bifurcacion',
+          texto:'Bajar las treinta plantas hasta Asuntos Internos. El ascensor principal está vigilado; las escaleras de servicio, no. Dos descensos posibles.',
+          ramas:[
+            { txt:'EL ASCENSOR PRINCIPAL', sub:'Rápido, pero con cámaras y compañía', ir:'matones', alerta:15, pista:'combate' },
+            { txt:'LAS ESCALERAS DE SERVICIO', sub:'Lentas y agotadoras, pero a ciegas', ir:'escaleras', pista:'tranquilo' }
+          ] },
+        matones:{ tipo:'confrontacion',
+          texto:'El ascensor se detiene en una planta intermedia que tú no has pulsado. Las puertas se abren y entran dos hombres de seguridad privada con la sonrisa equivocada. "Nos llevamos al señor a otra reunión." El testigo se encoge contra el rincón del ascensor.',
+          enemigos:[
+            { nombre:'Seguridad privada', desc:'Trajeado y entrenado', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Seguridad privada', desc:'Bloquea las puertas', integridad:2, fuerza:4, umbral:4 }
+          ],
+          ir:'pasillo' },
+        escaleras:{ tipo:'hallazgo',
+          texto:'Bajáis las escaleras de servicio, planta tras planta, el testigo resoplando detrás de ti. En un rellano, una taquilla de mantenimiento entreabierta deja ver material de seguridad olvidado.',
+          txtAbrir:'Revisar la taquilla', subAbrir:'Equipo útil para lo que viene',
+          txtDejar:'No perder tiempo', subDejar:'Cada planta cuenta',
+          riesgo:0.1,
+          recompensaItem:'chaqueta_kevlar',
+          msgAbrir:'Dentro, una chaqueta de kevlar de la vieja dotación de seguridad. Te la pones sobre el uniforme. Si esto se tuerce más abajo, agradecerás cada capa.',
+          msgDejar:'Cierras la taquilla. El testigo te mira sin entender por qué dudas siquiera; para él, cada segundo parado es un segundo más cerca de los que lo buscan.',
+          ir:'pasillo' },
+        pasillo:{ tipo:'confrontacion',
+          texto:'En la planta de Asuntos Internos, el supervisor en persona os espera en el pasillo con un último hombre. No grita: razona, que es peor. "Piénsalo. Lo que cobras por escoltarlo es calderilla. Yo pago de verdad. Solo tienes que mirar a otro lado treinta segundos."',
+          enemigos:[
+            { nombre:'El supervisor', desc:'Compra antes de pegar', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Último guardaespaldas', desc:'Fiel al mejor postor', integridad:3, fuerza:4, umbral:4 }
+          ],
+          ir:'final' },
+        final:{ tipo:'narrativo',
+          texto:'La puerta de Asuntos Internos es de cristal esmerilado, con luz al otro lado. El testigo se planta delante de ella y respira hondo, como quien va a tirarse al agua fría. Te mira una última vez. Tu trabajo termina cuando esa puerta se abra.',
+          fin:true }
+      }}
+    },
+
+    {
+      id:'seg_evacuacion',
+      titulo:'DESALOJO POR FUGA',
+      cliente:'HELIX · Gestión de Crisis',
+      faccion:'helix',
+      peligro:3, pagaBase:410, progreso:120, rangoMin:1,
+      integridad:16, alertaInicial:15,
+      resumen:'Una fuga química en un nivel residencial: un reactor de barrio reventado escupe gases por los conductos. HELIX manda evacuar el sector antes de que el aire mate, pero la gente no quiere dejar sus casas y el reloj corre. Sacar a todos los que puedas, a tiempo.',
+      cierreOk:'Cuando el último rezagado cruza el cordón, los selladores automáticos cierran el nivel con un golpe sordo. Detrás del cristal, las casas que esa gente no quería dejar se llenan de niebla tóxica. Pero la gente está fuera, tosiendo, viva, contando cabezas. HELIX lo registra como "evacuación nominal". Tú lo registras como una noche en que, por una vez, salvaste más de lo que rompiste.',
+      cierreFallo:'La evacuación se desborda, el reloj gana, y los selladores se cierran con gente aún dentro, o contigo demasiado cerca del aire malo. HELIX archiva las pérdidas con un número frío. Tú archivas algo que no se va con una ducha.',
+      mapa:{ inicio:'inicio', nodos:{
+        inicio:{ tipo:'narrativo',
+          texto:'El nivel huele a almendras amargas y a plástico quemado: el olor del gas que mata sin avisar. Las alarmas aúllan. Tienes que vaciar tres bloques antes de que los selladores cierren el sector. La gente, en las puertas, te mira sin moverse: para ellos, esto es su casa, no una zona de crisis.',
+          ir:'anciano' },
+        anciano:{ tipo:'encuentro',
+          texto:'Un anciano se niega a salir de su piso. "Llevo aquí cuarenta años. No me voy por un poco de humo." Tose mientras lo dice. El gas no entiende de testarudez, y el reloj no para por nadie.',
+          txtAceptar:'Convencerlo con paciencia', subAceptar:'Cuesta minutos preciosos, pero sale por su pie',
+          txtRechazar:'Sacarlo a la fuerza', subRechazar:'Rápido, pero indigno',
+          alertaAceptar:-10, alertaRechazar:10,
+          msgAceptar:'Te sientas un segundo a su altura y le hablas de su mujer, de la foto en la pared, de quién lo va a llorar si se queda. Algo cede. Se levanta, coge la foto, y sale contigo apoyado en tu brazo. Tardas, pero lo sacas entero, por dentro y por fuera.',
+          msgRechazar:'Lo cargas al hombro pese a sus protestas y sus golpes débiles. Lo pones a salvo, sí, pero llorando de rabia y vergüenza. A veces salvar un cuerpo cuesta romper algo que no se ve.',
+          irAceptar:'ruta', irRechazar:'ruta' },
+        ruta:{ tipo:'bifurcacion',
+          texto:'Quedan dos bloques y poco tiempo. No puedes con los dos a la vez. ¿Por dónde empiezas?',
+          ramas:[
+            { txt:'EL BLOQUE MÁS CERCANO AL ESCAPE', sub:'Más gente, pero más segura de sacar', ir:'estampida', pista:'gente' },
+            { txt:'EL BLOQUE PEGADO AL REACTOR', sub:'Pocos, pero los que peor respiran', ir:'reactor', alerta:10, pista:'tranquilo' }
+          ] },
+        estampida:{ tipo:'confrontacion',
+          texto:'En el bloque cercano, el pánico ha cundido y la gente se agolpa en una salida estrecha, pisándose. Una estampida en ciernes. Si no impones orden, se matarán entre ellos antes de que el gas llegue. Dos hombres fuera de sí empujan a los demás para pasar.',
+          enemigos:[
+            { nombre:'Hombre presa del pánico', desc:'Pisa a quien sea', integridad:2, fuerza:3, umbral:2 },
+            { nombre:'Otro aterrado', desc:'Empuja a ciegas', integridad:2, fuerza:3, umbral:2 }
+          ],
+          ir:'final' },
+        reactor:{ tipo:'hallazgo',
+          texto:'El bloque pegado al reactor está ya lleno de neblina. Avanzas conteniendo la respiración, sacando a tos limpia a los que quedan. En un piso vacío, sobre una mesa, ves una máscara de filtro industrial, de las buenas, olvidada por algún técnico que huyó.',
+          txtAbrir:'Coger la máscara de filtro', subAbrir:'Aquí dentro vale más que el oro',
+          txtDejar:'Seguir sin perder un segundo', subDejar:'Hay gente que sacar ya',
+          riesgo:0,
+          recompensaItem:'mascara_filtro',
+          msgAbrir:'Te calas la máscara de filtro y el mundo deja de oler a almendras amargas. Ahora puedes respirar donde otros se ahogan. La usarás para sacar a los que sin ella no podrías.',
+          msgDejar:'La dejas: cada segundo es un pulmón. Sales con los tuyos medio asfixiado, pero sales.',
+          ir:'final' },
+        final:{ tipo:'narrativo',
+          texto:'El cordón de evacuación está a la vista, con sus luces giratorias y sus mantas térmicas. Detrás de ti, los selladores empiezan a zumbar, avisando de que el nivel se va a cerrar. Empujas al último grupo hacia la luz. Ya casi está.',
           fin:true }
       }}
     }
