@@ -2,6 +2,10 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.118] - 2026-06-17
+### Added
+- Ocho corridas nuevas de rango bajo para dar más variedad al arranque, cuatro por cada bando. Contrabando: "Agua que no pasa el filtro" y "El último envío de una vida" (rango 0), "La farmacia del Arrabal" y "La pieza que falta" (rango 1). Seguridad: "Ronda nocturna" y "Un menor extraviado" (rango 0), "El testigo que tiembla" y "Desalojo por fuga" (rango 1). Cada bando pasa de 10 a 14 corridas (ahora 6 de rango 0 y 4 de rango 1).
+
 ## [0.117] - 2026-06-16
 ### Added
 - Barra fija en todos los tablones de misión (casos, encargos, red hacker y corridas) con el botón de volver siempre arriba y dos filtros: "MI RANGO" (oculta misiones por encima de tu rango) y "OCULTAR HECHAS" (oculta las ya completadas). Ambos vienen activados por defecto y se pueden desactivar; la barra se queda fija al hacer scroll.
