@@ -24,6 +24,8 @@
     opciones: [
       { texto: 'Quedarte quieto y dejar que te escanee.', lleva: 'ev_canal_2a' },
       { texto: 'Meterte bajo la pasarela.', efectos:{ fatiga:+6 }, lleva: 'ev_canal_2b' },
+      { texto: 'Reventar un bote de humo y desaparecer en él.', req:{ item:'granada_humo' }, pista:'necesitas un bote de humo',
+        efectos:{ quitaItem:'granada_humo', fatiga:+4 }, resultado:'El humo se traga el foco y a ti con él. Para cuando se disipa, el dron busca a alguien que ya no está.', lleva:'ev_canal_2b' },
       { texto: 'Saludar al dron como si nada.', efectos:{ disociacion:+3 }, lleva: 'ev_canal_2b' }
     ]
   },
@@ -56,7 +58,9 @@
       { texto: 'Aceptar la tarjeta.', efectos:{ item:'llave_magnetica', faccion:'sindicatos', rep:+3 },
         resultado:'La guardas. Pesa como una promesa o como una trampa; aún no sabes cuál.' },
       { texto: 'Preguntar por qué te ayuda.', efectos:{ aislamiento:-3 },
-        resultado:'"Porque alguien lo hizo por mí, una vez." Se va antes de que puedas dar las gracias.' }
+        resultado:'"Porque alguien lo hizo por mí, una vez." Se va antes de que puedas dar las gracias.' },
+      { texto: 'Rebuscar entre los restos de la sala de bombas.', efectos:{ item:'chatarra', fatiga:+3 },
+        resultado:'Entre tubería muerta sacas un puñado de chatarra aprovechable. El hombre finge no verte hacerlo.' }
     ]
   },
 
@@ -98,8 +102,8 @@
     texto: 'En los auriculares no hay música. Hay un pulso lento, como una respiración enorme y lejana. '
          + 'Por un instante juras que se acompasa con la tuya. Luego, estática. La mujer te observa.',
     opciones: [
-      { texto: '"¿Qué era eso?"', efectos:{ faccion:'eco', rep:+4, disociacion:+4 },
-        resultado:'"Compañía", dice. "La única que no te cobra HELIX." Te deja quedarte los auriculares.', efectos:{ item:'chip_datos_corrupto', faccion:'eco', rep:+4 } },
+      { texto: '"¿Qué era eso?"',
+        resultado:'"Compañía", dice. "La única que no te cobra HELIX." Te deja quedarte los auriculares.', efectos:{ item:'chip_datos_corrupto', faccion:'eco', rep:+4, disociacion:+4 } },
       { texto: 'Devolverlos deprisa.', efectos:{ disociacion:+2 },
         resultado:'Te los quitas como si quemaran. El pulso sigue, débil, en algún lugar detrás de tus dientes.' }
     ]
@@ -143,7 +147,10 @@
       { texto: 'Aceptarlo y darle las gracias.', efectos:{ item:'analgesico_helix', faccion:'eco', rep:+2 },
         resultado:'Te lo guardas. Es lo más parecido a un gesto amable que recibes en días.' },
       { texto: 'Pedirle que se lo dé al chaval.', efectos:{ aislamiento:-3, faccion:'eco', rep:+4 },
-        resultado:'Ella te mira un segundo de más. "Igual sí que eres de aquí." Asiente y vuelve dentro.' }
+        resultado:'Ella te mira un segundo de más. "Igual sí que eres de aquí." Asiente y vuelve dentro.' },
+      { texto: '"¿Te sobra un kit de trauma?"', azar:{ prob:0.5,
+          exito:{ efectos:{ item:'kit_trauma' }, resultado:'Rebusca, maldice, y al final te lanza uno. "El último. No lo gastes en tonterías."' },
+          fallo:{ efectos:{ aislamiento:+1 }, resultado:'"¿Te parece que esto es una farmacia?" No lo dice con rencor. Es que no hay nada que dar.' } } }
     ]
   },
 
@@ -189,8 +196,13 @@
     opciones: [
       { texto: 'Cobrar e irte sin mirar la caja.', efectos:{ creditos:+50 },
         resultado:'Los créditos aparecen en tu cuenta sin mensaje. Te vas rápido. Algunas cosas es mejor no saberlas.' },
-      { texto: 'Abrir la caja antes de irte.', efectos:{ disociacion:+10 },
-        resultado:'Dentro hay un implante neural aún caliente, latiendo solo. Cierras la tapa. No cobras. Corres.', efectos:{ disociacion:+12, faccion:'sindicatos', rep:-4 } }
+      { texto: 'Abrir la caja antes de irte.',
+        resultado:'Dentro hay un implante neural aún caliente, latiendo solo. Cierras la tapa. No cobras. Corres.', efectos:{ disociacion:+12, faccion:'sindicatos', rep:-4 } },
+      { texto: 'Llevarte una de las piezas del alijo antes de irte.', azar:{ prob:0.4,
+          exito:{ efectos:{ item:'arma_fuego', faccion:'sindicatos', rep:-3 },
+            resultado:'Bajo la carga, envuelta en trapo, una pistola de raíl casera. Te la guardas en el cinto. Si el Ferro lo nota, será problema de otro día.' },
+          fallo:{ efectos:{ condicion:'conmocion', faccion:'sindicatos', rep:-5 },
+            resultado:'La mano del Ferro cae sobre la tuya antes de que toques nada. "Eso no estaba en el trato." Lo que viene después no lo recuerdas entero.' } } }
     ]
   },
 
@@ -278,7 +290,9 @@
       { texto: 'Aceptar el libro.', efectos:{ item:'foto_quemada', faccion:'archivistas', rep:+5 },
         resultado:'Lo escondes contra el pecho. Pesa menos que el papel de HELIX y, aun así, más.' },
       { texto: '"No puedo cargar con eso."', efectos:{ aislamiento:+2 },
-        resultado:'Niegas con la cabeza. Él asiente, comprensivo. "Otro día, quizá." Sabes que no habrá otro día.' }
+        resultado:'Niegas con la cabeza. Él asiente, comprensivo. "Otro día, quizá." Sabes que no habrá otro día.' },
+      { texto: 'Preguntar si guarda mapas de los niveles bajos.', efectos:{ item:'mapa_sector', faccion:'archivistas', rep:+2 },
+        resultado:'"Mapas de antes de que HELIX renombrara las calles." Te tiende uno, dibujado a mano. "Los suyos mienten. Este no."' }
     ]
   },
 
@@ -323,7 +337,9 @@
       { texto: 'Aceptar la llave.', efectos:{ item:'llave_magnetica', faccion:'eco', rep:+3 },
         resultado:'La guardas. En las Pilas, una llave es más que un metal: es saber que alguien pensó en ti.' },
       { texto: '"Guárdala, la necesitaréis más."', efectos:{ aislamiento:-4, faccion:'eco', rep:+5 },
-        resultado:'Ella cierra tu mano sobre la suya, vacía. "Ya nos hemos ayudado bastante por hoy." Asientes.' }
+        resultado:'Ella cierra tu mano sobre la suya, vacía. "Ya nos hemos ayudado bastante por hoy." Asientes.' },
+      { texto: 'Reparar en un abrigo viejo y reforzado junto a la puerta.', efectos:{ item:'abrigo_trapero', faccion:'eco', rep:+1 },
+        resultado:'"Era de mi hombre. A él ya no le abriga." Te lo echa sobre los hombros. "A ti puede que te pare algo peor que el frío."' }
     ]
   },
 
@@ -336,7 +352,12 @@
     opciones: [
       { texto: '"Debe de haber un error."', lleva:'ev_cobro_2' },
       { texto: '"¿Cuánto y a quién?"', lleva:'ev_cobro_2b' },
-      { texto: 'Echar a correr.', efectos:{ fatiga:+12 }, lleva:'ev_cobro_2c' }
+      { texto: 'Echar a correr.', efectos:{ fatiga:+12 }, lleva:'ev_cobro_2c' },
+      { texto: 'Apartar la chaqueta para que vea el arma.', req:{ item:'arma_fuego' }, pista:'necesitas un arma', azar:{ prob:0.5,
+          exito:{ efectos:{ faccion:'sindicatos', rep:-1 },
+            resultado:'Ve el metal. Calcula. "Otro día, entonces." Se va con su lista y sus dos sombras. La deuda no, pero el plazo se estira.' },
+          fallo:{ efectos:{ disociacion:+4, faccion:'sindicatos', rep:-2 },
+            resultado:'Ni se inmuta. "¿Vas a usarla aquí, delante de las cámaras del Ferro?" No. Bajas la mano. Él sonríe. Ahora le debes también el respeto.' } } }
     ]
   },
   'ev_cobro_2': {
@@ -366,7 +387,9 @@
       { texto: 'Recuperar el aliento y seguir escondido.', efectos:{ fatiga:+6, aislamiento:+4 },
         resultado:'Esperas en la oscuridad hasta que las piernas dejan de temblarte. La deuda espera contigo.' },
       { texto: 'Usar una llave para perderte por los conductos.', cond:{ item:'llave_magnetica' },
-        efectos:{ fatiga:+4 }, resultado:'La llave abre un conducto que no figura en ningún mapa de HELIX. Te tragas la ciudad por dentro.', lleva:'ev_cobro_3' }
+        efectos:{ fatiga:+4 }, resultado:'La llave abre un conducto que no figura en ningún mapa de HELIX. Te tragas la ciudad por dentro.', lleva:'ev_cobro_3' },
+      { texto: 'Clavarte un parche de adrenalina y no dejar de correr.', req:{ item:'adrenalina' }, pista:'necesitas adrenalina',
+        efectos:{ quitaItem:'adrenalina', fatiga:-8, disociacion:+3 }, resultado:'El parche te muerde el cuello y el mundo se acelera. Corres hasta que las Pilas se vuelven un borrón. Cuando paras, no sabes dónde estás. Pero estás lejos.', lleva:'ev_cobro_3' }
     ]
   },
   'ev_cobro_3': {

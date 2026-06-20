@@ -70,7 +70,12 @@
           fallo:{ resultado:'La puerta no se mueve un milímetro y tú te llevas todo el golpe. Te apartas cojeando del orgullo. Hace falta una herramienta, no fuerza bruta.', efectos:{ fatiga:+7 } } } },
       { texto: 'Respetar el aviso y seguir.',
         efectos:{ aislamiento:+1 },
-        resultado:'"AQUÍ NO." Le haces caso. Hay avisos en esta ciudad que se escribieron con motivo. Sigues tu camino sin mirar atrás.' }
+        resultado:'"AQUÍ NO." Le haces caso. Hay avisos en esta ciudad que se escribieron con motivo. Sigues tu camino sin mirar atrás.' },
+      { texto: 'Meterte un estimulante y reventar la puerta a embestidas.', req:{ item:'estimulante' }, pista:'necesitas un estimulante',
+        efectos:{ quitaItem:'estimulante', fatiga:+7 }, azar:{ prob:0.75,
+          exito:{ resultado:'Con la química rugiéndote en las venas, embistes sin sentir los golpes. Al tercer impacto el óxido cede de golpe y entras de cabeza en el cuarto seco. Cuando baja el subidón, te duele todo, pero estás dentro.', lleva:'ev4_sotano_dentro' },
+          fallo:{ efectos:{ condicion:'costillas' },
+            resultado:'Ni con el estimulante: la puerta aguanta más que tus costillas. Rebotas contra la chapa una y otra vez hasta que el dolor puede más que la química. Te apartas, derrotado y dolorido. Hace falta una herramienta, no furia.' } } }
     ]
   },
   'ev4_sotano_dentro': {
@@ -84,7 +89,9 @@
           fallo:{ resultado:'Dentro hay una fotografía a medio quemar y nada más. Una familia que ya no existe, guardada con más cuidado que cualquier tesoro. La coges. No sabrías decir por qué.', efectos:{ item:'foto_quemada', aislamiento:+3 } } } },
       { texto: 'Dejarla cerrada y salir.',
         efectos:{ aislamiento:+2 },
-        resultado:'Vuelves a poner la caja donde estaba. Hay tumbas que es mejor no abrir, aunque no tengan cuerpo. Sales del cuarto y dejas que el óxido lo selle otra vez.' }
+        resultado:'Vuelves a poner la caja donde estaba. Hay tumbas que es mejor no abrir, aunque no tengan cuerpo. Sales del cuarto y dejas que el óxido lo selle otra vez.' },
+      { texto: 'Registrar las estanterías antes de salir.', efectos:{ item:'chatarra', fatiga:+2 },
+        resultado:'Entre cajas reventadas y herramienta oxidada rescatas un puñado de chatarra que el agua nunca alcanzó. Poca cosa, pero seca y limpia, que en las Pilas ya es un lujo.' }
     ]
   },
 
