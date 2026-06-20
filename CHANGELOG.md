@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.119] - 2026-06-20
+### Added
+- Modo libre "Explorar la ciudad" reconstruido sobre el motor de corridas: deriva sin límite de escenas por Las Pilas, evento tras evento, hasta que vuelves al apartamento o mueres de verdad.
+- La integridad en pantalla refleja tu fatiga real: las heridas de la deriva persisten al volver a casa y, si la fatiga llega al límite, mueres de verdad.
+### Changed
+- El botón "Explorar la ciudad" del mapa ahora lanza el modo libre nuevo. El viaje viejo de 10 escenas y su contenido siguen en el repo, en reposo, para reconectarlos en la próxima versión.
+
 ## [0.118] - 2026-06-17
 ### Added
 - Ocho corridas nuevas de rango bajo para dar más variedad al arranque, cuatro por cada bando. Contrabando: "Agua que no pasa el filtro" y "El último envío de una vida" (rango 0), "La farmacia del Arrabal" y "La pieza que falta" (rango 1). Seguridad: "Ronda nocturna" y "Un menor extraviado" (rango 0), "El testigo que tiembla" y "Desalojo por fuga" (rango 1). Cada bando pasa de 10 a 14 corridas (ahora 6 de rango 0 y 4 de rango 1).
