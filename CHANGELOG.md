@@ -2,6 +2,12 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.121] - 2026-06-20
+### Added
+- Todo el banco de escenas de exploración se cruza ahora con el equipo de las corridas: encontrar botín (chatarra, kit de trauma, mapa del sector, armaduras como el abrigo de trapero o la chaqueta de kevlar, y rara vez una pistola con riesgo), opciones nuevas que se desbloquean si vas armado, y consumibles que se pueden gastar para resolver situaciones (bote de humo, adrenalina, estimulante, credencial clonada).
+### Fixed
+- Dos opciones del lote 1 tenían efectos duplicados que se anulaban entre sí; ahora se aplican correctamente.
+
 ## [0.120] - 2026-06-20
 ### Added
 - Puente del modo libre "Explorar la ciudad": la deriva ahora reproduce también las escenas con ramas del banco escrito a mano (opciones, condiciones y efectos sobre el cuerpo real), mezcladas con los eventos sueltos. Las heridas persisten y la muerte real se mantiene tras cada escena.

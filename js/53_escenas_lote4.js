@@ -214,7 +214,15 @@
           exito:{ resultado:'Llenas los bolsillos de piezas y vuelves al montacargas antes de averiguar qué hacía ese silencio. Subes con el corazón a mil y el botín a salvo. No miras atrás.', efectos:{ item:'chatarra', fatiga:+4, disociacion:+2 } },
           fallo:{ resultado:'A medio cargar, algo se mueve en la oscuridad: pasos, o el eco de los tuyos devuelto con retraso. El pánico te hace tropezar y golpearte al correr al montacargas. Subes sin nada, temblando.', efectos:{ condicion:'mareado', disociacion:+5, fatiga:+5 } } } },
       { texto: 'Esto da mala espina. Subir ya.', efectos:{ disociacion:+2 },
-        resultado:'Vuelves al montacargas sin tocar nada. A veces el instinto grita más fuerte que la codicia. Subes y, arriba, respiras hondo, agradecido de la luz mugrienta de tu nivel.' }
+        resultado:'Vuelves al montacargas sin tocar nada. A veces el instinto grita más fuerte que la codicia. Subes y, arriba, respiras hondo, agradecido de la luz mugrienta de tu nivel.' },
+      { texto: 'Acercarte a la silueta inmóvil del fondo.', azar:{ prob:0.55,
+          exito:{ efectos:{ item:'chaqueta_kevlar', disociacion:+6 },
+            resultado:'No es una máquina. Es alguien que bajó antes que tú y ya no subió, sentado contra un motor muerto. Lleva una chaqueta de kevlar que a él ya no le sirve. Se la quitas con un nudo en la garganta y subes rápido, sin mirarle la cara.' },
+          fallo:{ efectos:{ condicion:'mareado', disociacion:+8, fatiga:+6 },
+            resultado:'Te acercas y la silueta... no estaba. O nunca estuvo. El frío se te mete en los huesos y un zumbido te llena la cabeza. Subes a trompicones, sin nada, convencido de que algo te ha mirado desde dentro del silencio.' } } },
+      { texto: 'Bajar con el arma lista y registrar a fondo.', req:{ item:'arma_fuego' }, pista:'necesitas un arma',
+        efectos:{ fatiga:+5, item:'chatarra' },
+        resultado:'Con el cañón apuntando a la oscuridad, registras sin prisa. El silencio sigue siendo silencio: nada se atreve a salir. Cargas todo el metal aprovechable y subes entero, por una vez sin pagar el botín con sangre.' }
     ]
   },
 

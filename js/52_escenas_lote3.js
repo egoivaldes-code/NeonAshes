@@ -233,7 +233,12 @@
         efectos:{ creditos:-25, aislamiento:+2 },
         resultado:'"Por las molestias", dices, y le pones unos créditos en la mano. Los mira, asiente, te deja ir. Comprar tranquilidad es caro, pero hoy te lo puedes permitir.' },
       { texto: 'Echar a correr.', efectos:{ fatiga:+10 },
-        resultado:'Sales disparado por el callejón. No te sigue: no merecías tanto esfuerzo. Llegas lejos, sin aliento, con la lección de que correr siempre cuesta caro.' }
+        resultado:'Sales disparado por el callejón. No te sigue: no merecías tanto esfuerzo. Llegas lejos, sin aliento, con la lección de que correr siempre cuesta caro.' },
+      { texto: 'Apartar la chaqueta para que vea el hierro.', req:{ item:'arma_fuego' }, pista:'necesitas un arma', azar:{ prob:0.65,
+          exito:{ efectos:{ disociacion:+2 },
+            resultado:'Ve el arma. Levanta las manos, conciliador. "Eh, tranquilo. Confusión mía." Se aleja deprisa. No has disparado, pero algo en ti registra lo fácil que habría sido.' },
+          fallo:{ efectos:{ condicion:'costillas' },
+            resultado:'"¿En serio?" Más rápido de lo que esperas, te aparta el brazo de un manotazo y te estampa contra la pared. "Guarda eso antes de que te lo coma." Sales humillado y dolorido.' } } }
     ]
   },
 
@@ -267,7 +272,12 @@
       { texto: 'Asomarte sin entrar.', efectos:{ disociacion:+2 },
         resultado:'Metes solo la cabeza. La oscuridad no te devuelve nada salvo un olor a cerrado y a tiempo detenido. Cierras la puerta tú mismo y sigues.' },
       { texto: 'No tocar lo que no entiendes.', efectos:{ aislamiento:+1 },
-        resultado:'Dejas la puerta como está y sigues camino. Algunas curiosidades cuestan demasiado en este sitio.' }
+        resultado:'Dejas la puerta como está y sigues camino. Algunas curiosidades cuestan demasiado en este sitio.' },
+      { texto: 'Entrar con el arma por delante, sin prisa.', req:{ item:'arma_fuego' }, pista:'necesitas un arma', azar:{ prob:0.75,
+          exito:{ efectos:{ item:'granada_humo', fatiga:+3 },
+            resultado:'Con el cañón por delante, registras a fondo. Lo que se movía en la sombra prefiere no probar suerte contra el metal. Entre cajas viejas encuentras un bote de humo de obra, intacto. Sales tranquilo.' },
+          fallo:{ efectos:{ fatiga:+4 },
+            resultado:'No hay nada que valga, solo polvo y ratas. Pero con el arma en la mano sales sin un rasguño. A veces no encontrar nada y salir entero ya es ganar.' } } }
     ]
   },
 

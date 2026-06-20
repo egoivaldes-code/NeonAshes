@@ -146,7 +146,12 @@
           exito:{ resultado:'Hablas rápido y razonable: un muerto no paga, un plazo sí. El gordo escucha, sopesa, asiente. "Listo el amigo. Fin de semana, ni un día más." Se van. El viejo te mira como a un milagro. La labia, hoy, ha valido más que los puños.', efectos:{ aislamiento:-4 }, lleva:'ev3_deuda_final' },
           fallo:{ resultado:'Hablas demasiado. "Te crees listo", dice el flaco, y la cosa se tuerce. Un par de empujones, una advertencia con el dedo en tu pecho. Se van enfadados. No te han roto nada, pero al viejo le has complicado la cuenta. La labia, a veces, irrita.', efectos:{ disociacion:+3, aislamiento:+1 }, lleva:'ev3_deuda_final' } } },
       { texto: 'Quedarte callado en un rincón.', efectos:{ aislamiento:+2, disociacion:+2 },
-        resultado:'Te quedas mudo, presente pero inútil. Los hombres se relajan al ver que no eres amenaza. Zarandean al viejo, le recuerdan la fecha y se van. No ha ido a más, quizá por tu sola presencia. Pero te vas con la sensación de no haber estado del todo ahí.', lleva:'ev3_deuda_final' }
+        resultado:'Te quedas mudo, presente pero inútil. Los hombres se relajan al ver que no eres amenaza. Zarandean al viejo, le recuerdan la fecha y se van. No ha ido a más, quizá por tu sola presencia. Pero te vas con la sensación de no haber estado del todo ahí.', lleva:'ev3_deuda_final' },
+      { texto: 'Dejar ver, sin sacarla, que llevas un arma.', req:{ item:'arma_fuego' }, pista:'necesitas un arma', azar:{ prob:0.55,
+          exito:{ efectos:{ aislamiento:-2 },
+            resultado:'Mueves apenas el abrigo. El flaco baja la vista, ve el metal y le toca el codo al gordo. "Déjalo. No vale el ruido." Se van mirándote bien la cara. El viejo respira. No has tenido que hacer nada: a veces basta con poder.', lleva:'ev3_deuda_final' },
+          fallo:{ efectos:{ condicion:'costillas', disociacion:+4 },
+            resultado:'El gordo se ríe. "¿Esa chatarra? Aquí todos llevamos una." Antes de que reacciones, el flaco te la aparta de un golpe y te tira al suelo. Se ensañan un poco más, precisamente por el alarde. El viejo lo paga también. El farol ha salido caro.', lleva:'ev3_deuda_final' } } }
     ]
   },
   'ev3_deuda_final': {
@@ -238,7 +243,10 @@
     opciones: [
       { texto: 'Correr con la multitud hacia las salidas.', lleva:'ev3_redada_huida' },
       { texto: 'Quedarte quieto: no has hecho nada.', lleva:'ev3_redada_control' },
-      { texto: 'Ayudar a una vendedora a recoger.', lleva:'ev3_redada_vendedora' }
+      { texto: 'Ayudar a una vendedora a recoger.', lleva:'ev3_redada_vendedora' },
+      { texto: 'Reventar un bote de humo y desaparecer en el caos.', req:{ item:'granada_humo' }, pista:'necesitas un bote de humo',
+        efectos:{ quitaItem:'granada_humo', fatiga:+4 },
+        resultado:'Tiras el bote al suelo y el mercado se vuelve una nube blanca. Entre toses y empujones, los agentes pierden de vista a todo el mundo, tú incluido. Para cuando despeja, ya eres tres calles de sombra más allá.', lleva:'ev3_redada_final_libre' }
     ]
   },
   'ev3_redada_huida': {
@@ -277,7 +285,11 @@
           exito:{ resultado:'El escáner pita en verde. "Circula." El agente ya mira al siguiente antes de terminar la palabra. Sueltas el aire despacio y te alejas sin correr, sintiendo cómo el corazón vuelve a su sitio paso a paso. Otra vez has sido invisible, y hoy eso es una bendición.', efectos:{ disociacion:+1 }, lleva:'ev3_redada_final_libre' },
           fallo:{ resultado:'El escáner pita en ámbar: "dato incompleto". El agente frunce algo tras el visor y te retiene para "verificación". Veinte minutos de preguntas secas en un rincón antes de soltarte sin disculpas. No eras nadie, solo un trámite. Sales agotado y humillado.', efectos:{ disociacion:+4, fatiga:+5 }, lleva:'ev3_redada_final_libre' } } },
       { texto: 'Soltar un comentario nervioso de más.', efectos:{ disociacion:+3, fatiga:+3 },
-        resultado:'Hablas más de lo que debías por puro nervio. El agente te mira fijo, alarga el control solo porque puede, y te hace repetir tus datos tres veces. Al final te suelta, aburrido. Aprendes que ante un visor opaco, el silencio es la única respuesta segura.', lleva:'ev3_redada_final_libre' }
+        resultado:'Hablas más de lo que debías por puro nervio. El agente te mira fijo, alarga el control solo porque puede, y te hace repetir tus datos tres veces. Al final te suelta, aburrido. Aprendes que ante un visor opaco, el silencio es la única respuesta segura.', lleva:'ev3_redada_final_libre' },
+      { texto: 'Tenderle la credencial clonada.', req:{ item:'credencial_falsa' }, pista:'necesitas una credencial clonada', efectos:{ quitaItem:'credencial_falsa' }, azar:{ prob:0.8,
+          exito:{ resultado:'Le das la credencial clonada. El escáner pita en verde sin rechistar. "Circula." Pasas con una identidad que no es la tuya y un alivio que sí. El clon ha hecho su trabajo.', lleva:'ev3_redada_final_libre' },
+          fallo:{ efectos:{ disociacion:+5, fatiga:+5 },
+            resultado:'El escáner pita en rojo: la credencial está quemada. El visor se gira hacia ti, despacio. "Acompáñame." Lo que viene después son horas que prefieres no recordar. Cuando te sueltan, te falta el clon y te sobra miedo.', lleva:'ev3_redada_final_libre' } } }
     ]
   },
   'ev3_redada_final_libre': {

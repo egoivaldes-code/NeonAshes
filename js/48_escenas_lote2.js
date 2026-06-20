@@ -51,7 +51,9 @@
       { texto: 'Agradecer el dato.', efectos:{ aislamiento:-2 },
         resultado:'Asientes. Un nombre nuevo en la cabeza: Archivistas. En las Pilas, un nombre es un mapa.' },
       { texto: '"¿Por qué me ayudas?"', efectos:{ faccion:'ia', rep:+2 },
-        resultado:'"Porque a mí nadie lo hizo." Vuelve a su cliente dormido. La conversación ha terminado.' }
+        resultado:'"Porque a mí nadie lo hizo." Vuelve a su cliente dormido. La conversación ha terminado.' },
+      { texto: 'Pedirle restos de su banco antes de salir.', efectos:{ item:'chatarra' },
+        resultado:'Señala una caja de piezas muertas. "Coge lo que quieras de ahí, es basura." Para ti no lo es: te llevas chatarra aprovechable.' }
     ]
   },
 
@@ -87,7 +89,10 @@
          + '"Pero ya que estás: ¿buscas algo de verdad, o solo huyes de algo? Porque vendo las dos cosas."',
     opciones: [
       { texto: '"Busco no llamar la atención."', efectos:{ faccion:'ia', rep:+1 }, lleva:'ev_sumergido_3' },
-      { texto: '"Huyo. ¿Tan obvio es?"', efectos:{ aislamiento:+3 }, lleva:'ev_sumergido_3' }
+      { texto: '"Huyo. ¿Tan obvio es?"', efectos:{ aislamiento:+3 }, lleva:'ev_sumergido_3' },
+      { texto: '"¿Vendes algo para perder a quien te sigue?"', req:{ creditosMin:30 }, pista:'30 créditos',
+        efectos:{ creditos:-30, item:'granada_humo' },
+        resultado:'Sonríe. "Ahora hablamos." Te pasa bajo el mostrador un bote de humo de obra. "Tira y corre. Nunca mires el humo: mira la salida." Lo guardas.', lleva:'ev_sumergido_3' }
     ]
   },
   'ev_sumergido_3': {
@@ -130,7 +135,10 @@
     opciones: [
       { texto: 'Sentarte y fingir calma.', efectos:{ disociacion:+5 }, lleva:'ev_tren_3' },
       { texto: 'Forzar una puerta con la llave.', cond:{ item:'llave_magnetica' }, efectos:{ fatiga:+6 },
-        resultado:'La llave cede el cierre de emergencia. Te escurres al túnel justo cuando suben los agentes. Corres en la oscuridad.', lleva:'ev_tren_3' }
+        resultado:'La llave cede el cierre de emergencia. Te escurres al túnel justo cuando suben los agentes. Corres en la oscuridad.', lleva:'ev_tren_3' },
+      { texto: 'Reventar un bote de humo y escabullirte en la confusión.', req:{ item:'granada_humo' }, pista:'necesitas un bote de humo',
+        efectos:{ quitaItem:'granada_humo', fatiga:+5, disociacion:+2 },
+        resultado:'El humo llena el vagón. Entre toses y gritos, te cuelas por el hueco de una puerta a medio sellar. Para cuando despeja, los agentes registran a quien queda. Tú ya no estás.', lleva:'ev_tren_3' }
     ]
   },
   'ev_tren_3': {
@@ -242,7 +250,11 @@
       { texto: 'Pasar el control con calma.', lleva:'ev_control_2' },
       { texto: 'Buscar un desvío antes de llegar.', efectos:{ fatiga:+5 }, lleva:'ev_control_2alt' },
       { texto: 'Usar la placa del Sindicato.', cond:{ item:'placa_sindicato' }, efectos:{ faccion:'sindicatos', rep:+1 },
-        resultado:'Enseñas la placa del Ferro al agente. Mira, duda, te deja pasar por el carril lateral. El Ferro abre puertas que el miedo cierra.', lleva:'ev_control_3' }
+        resultado:'Enseñas la placa del Ferro al agente. Mira, duda, te deja pasar por el carril lateral. El Ferro abre puertas que el miedo cierra.', lleva:'ev_control_3' },
+      { texto: 'Pasar con la credencial clonada.', req:{ item:'credencial_falsa' }, pista:'necesitas una credencial clonada',
+        efectos:{ quitaItem:'credencial_falsa' }, azar:{ prob:0.8,
+          exito:{ resultado:'Apoyas la credencial en el lector. Un parpadeo verde. "Adelante, ciudadano." Pasas por el carril preferente, conteniendo la sonrisa. El clon ha aguantado una vez más.', lleva:'ev_control_3' },
+          fallo:{ efectos:{ disociacion:+5 }, resultado:'El lector pita en rojo. "Credencial revocada." El clon estaba quemado. Tienes medio segundo para decidir si corres antes de que el agente levante la vista.', lleva:'ev_control_2' } } }
     ]
   },
   'ev_control_2': {
@@ -480,7 +492,11 @@
       { texto: 'Subir y buscar ayuda arriba.', efectos:{ fatiga:+12 }, azar:{ prob:0.6,
           exito:{ resultado:'Trepas hasta una compuerta de servicio y avisas a un técnico. Vuelven a por los demás. Te bajas con las manos en carne viva, pero todos salen.', efectos:{ aislamiento:-5, faccion:'eco', rep:+4 }, lleva:'ev_ascensor_3' },
           fallo:{ resultado:'A medio trepar, un peldaño cede. Caes sobre el techo del ascensor con un golpe seco. Te arrastras dentro otra vez, dolorido y sin haber logrado nada.', efectos:{ condicion:'pierna_herida_grave' }, lleva:'ev_ascensor_3' } } },
-      { texto: 'Cerrar la trampilla, es muy peligroso.', efectos:{ aislamiento:+2 }, lleva:'ev_ascensor_3' }
+      { texto: 'Cerrar la trampilla, es muy peligroso.', efectos:{ aislamiento:+2 }, lleva:'ev_ascensor_3' },
+      { texto: 'Meterte un estimulante y trepar sin dudar.', req:{ item:'estimulante' }, pista:'necesitas un estimulante',
+        efectos:{ quitaItem:'estimulante', fatiga:+6 }, azar:{ prob:0.9,
+          exito:{ resultado:'El estimulante te borra el miedo y el cansancio. Subes la escalerilla como una araña, sin pensar, y avisas a un técnico. Los sacan a todos. Cuando bajas, te tiemblan las manos por el bajón, pero todos viven.', efectos:{ aislamiento:-5, faccion:'eco', rep:+4 }, lleva:'ev_ascensor_3' },
+          fallo:{ resultado:'Ni con el estimulante: un peldaño podrido cede bajo tu peso y caes sobre el techo del ascensor. Te arrastras dentro, dolorido, con el corazón disparado por la química.', efectos:{ condicion:'pierna_herida_grave' }, lleva:'ev_ascensor_3' } } }
     ]
   },
   'ev_ascensor_3': {
