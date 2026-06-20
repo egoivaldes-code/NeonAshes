@@ -155,6 +155,7 @@
   let _estados = {};       // estados temporales: { nombre: turnosRestantes }
   let _volverA = 'apartamento';
   let _enConfrontacion = null;  // datos de la amenaza actual, o null
+  let _modoLibre = false;       // true = deriva libre (explorar), no corrida
 
   // Catálogo de armaduras conocido por el motor (espejo de 40_items.js).
   // El motor no depende de que el item exista, pero usa estos valores.
@@ -188,6 +189,19 @@
       desenlaceFallo: 'OPERACIÓN FALLIDA',
       itemSocial: 'credencial_helix', // la placa: justificarte = autoridad
       requiereItem: 'credencial_helix'
+    },
+    // DERIVA LIBRE (explorar la ciudad). No es una profesión: no tiene
+    // tablón, ni paga, ni progreso. Solo reusa el motor para deambular.
+    deriva: {
+      profId: null,
+      tablonTitulo: 'LAS PILAS',
+      tablonSub: 'Sin destino. Sin nadie esperándote. Solo la calle y lo que traiga.',
+      etiquetaIntegridad: 'CUERPO',
+      etiquetaAlerta: 'TENSIÓN',
+      desenlaceOk: 'VUELVES',
+      desenlaceFallo: 'NO VUELVES',
+      itemSocial: 'papel_helix',
+      requiereItem: null
     }
   };
 
@@ -289,6 +303,7 @@
   function aceptarCorrida(id){
     const c = _catalogo().find(x => x.id === id);
     if(!c) return;
+    _modoLibre = false;   // una corrida normal nunca es deriva libre
     _fx('inv_papel', 0.55);
     _corrida = c;
     _nodoIdx = 0;
@@ -510,6 +525,11 @@
 
   // ── avanzar al siguiente nodo (sigue el enlace 'ir') ────
   function avanzarCorrida(){
+    if(_modoLibre){
+      if(_muertoDeVerdad()) return;
+      _pintarInterludioDeriva();
+      return;
+    }
     if(!_corrida) return;
     // Si veníamos de un evento (p.ej. confrontación imprevista), continuar
     // al destino que teníamos pendiente, sin encadenar otro evento.
@@ -937,7 +957,7 @@
         }
       }
     }
-    _integridad = Math.max(0, _integridad - heridaTotal);
+    _aplicarHerida(heridaTotal);
 
     // Los estados temporales duran turnos: descuenta uno al cerrar el turno.
     _ticEstados();
@@ -967,6 +987,12 @@
   // Tras pintar el resultado de un turno: si caíste, desenlace; si quedan
   // enemigos, otra ronda; si no, victoria.
   function _continuarConfrontacion(){
+    if(_modoLibre){
+      if(_muertoDeVerdad()) return;                  // muerte real: pantalla tomada
+      if(!_enemigosVivos().length){ _terminarConfrontacion(true, ''); return; }
+      _repintarConfrontacionDeriva();                // siguiente turno, sin grafo
+      return;
+    }
     if(_integridad <= 0){ _pintarNodo(); return; } // _pintarNodo detecta caída
     if(!_enemigosVivos().length){ _terminarConfrontacion(true, ''); return; }
     _pintarNodo(); // repinta opciones para el siguiente turno
@@ -1223,9 +1249,12 @@
     } else {
       // narrativo: aplica efectos inmediatos y ofrece seguir
       if(typeof ev.alerta === 'number'){ _alerta = Math.min(100, _alerta + ev.alerta); }
-      if(typeof ev.herida === 'number'){ _integridad = Math.max(0, _integridad - ev.herida); }
-      if(typeof ev.botin === 'number'){ _botin += ev.botin; }
+      if(typeof ev.herida === 'number'){ _aplicarHerida(ev.herida); }
+      if(typeof ev.botin === 'number'){ _ganarBotin(ev.botin); }
       if(ev.item && typeof darItemPorId === 'function'){ darItemPorId(ev.item); }
+      // En deriva, si el daño te ha matado, la muerte global ya tomó la
+      // pantalla: no pintamos botón de seguir.
+      if(_modoLibre && _muertoDeVerdad()){ return; }
       if(_integridad <= 0){
         html += '<button class="btn-terminal" onclick="_finEvento()">…</button>';
       } else {
@@ -1256,6 +1285,11 @@
   }
 
   function _finEvento(){
+    if(_modoLibre){
+      if(_muertoDeVerdad()) return;       // la muerte global manda
+      _pintarInterludioDeriva();           // volver al respiro entre eventos
+      return;
+    }
     if(_integridad <= 0){ _resolverDesenlace(false); return; }
     _irANodo(_run ? _run.destinoPendiente : null, true); // saltarEvento: no encadenar dos
   }
@@ -1400,8 +1434,9 @@
     if(!_corrida || !_lleva('kit_trauma')) return;
     if(_integridad >= _integridadMax) return;
     if(typeof quitarItem === 'function') quitarItem('kit_trauma', 1);
-    const cura = 8;
-    _integridad = Math.min(_integridadMax, _integridad + cura);
+    // En deriva el kit baja tu fatiga REAL; en corrida sube la vida local.
+    const cura = _modoLibre ? 22 : 8;
+    _curarJugador(cura);
     _fx('inv_acierto', 0.5);
     const cont = document.getElementById('corrida-wrap');
     if(cont){
@@ -1409,7 +1444,8 @@
       html += '<div class="corrida-narr">Te tomas un respiro a cubierto. El kit '
         + 'de trauma sella lo que sangra y silencia lo que duele, al menos un rato. '
         + 'Recuperas el aliento.</div>';
-      html += '<button class="btn-terminal" onclick="_volverAlNodo()">SEGUIR →</button>';
+      const seguir = _modoLibre ? 'seguirInterludioDeriva()' : '_volverAlNodo()';
+      html += '<button class="btn-terminal" onclick="' + seguir + '">SEGUIR →</button>';
       cont.innerHTML = html;
     }
     _guardar();
@@ -1442,6 +1478,200 @@
     if(via.indexOf('hall_') === 0) return _resolverHallazgo(via);
   }
 
+  // ============================================================
+  //  DERIVA LIBRE — "Explorar la ciudad" sobre el motor de corridas
+  // ------------------------------------------------------------
+  //  Sin camino fijo, sin desenlace, sin paga. El motor saca eventos
+  //  del saco EVENTOS_DERIVA (70_deriva_datos.js) uno tras otro. La
+  //  INTEGRIDAD en pantalla es el reflejo de tu FATIGA real: los golpes
+  //  suben fatiga de verdad (te la llevas a casa) y, si llega a 100,
+  //  salta el motor de muerte global del juego. Solo terminas de dos
+  //  maneras: volviendo al apartamento, o muriendo.
+  // ============================================================
+
+  // Fatiga (0..100) → corazones de integridad (0.._integridadMax).
+  function _vidaDeriva(){
+    const fat = (Estado.humano && typeof Estado.humano.fatiga === 'number') ? Estado.humano.fatiga : 0;
+    return Math.max(0, Math.ceil(_integridadMax * (100 - fat) / 100));
+  }
+
+  // Aplica daño al jugador. En deriva va a la FATIGA real (puede matar
+  // de verdad). En corrida, a la vida local de la corrida.
+  function _aplicarHerida(n){
+    if(n <= 0) return;
+    if(_modoLibre){
+      if(typeof ajustarHumano === 'function') ajustarHumano('fatiga', n);
+      _integridad = _vidaDeriva();
+    } else {
+      _integridad = Math.max(0, _integridad - n);
+    }
+  }
+
+  // Cura al jugador. En deriva BAJA la fatiga real (te curas de verdad).
+  function _curarJugador(n){
+    if(n <= 0) return;
+    if(_modoLibre){
+      if(typeof ajustarHumano === 'function') ajustarHumano('fatiga', -n);
+      _integridad = _vidaDeriva();
+    } else {
+      _integridad = Math.min(_integridadMax, _integridad + n);
+    }
+  }
+
+  // Botín. En deriva no hay desenlace que pague: se cobra en el acto.
+  function _ganarBotin(n){
+    if(!n) return;
+    if(_modoLibre){
+      if(typeof ajustarCreditos === 'function') ajustarCreditos(n);
+      else if(typeof Estado === 'object'){ Estado.creditos = Math.max(0, (Estado.creditos || 0) + n); }
+    } else {
+      _botin += n;
+    }
+  }
+
+  // ¿El jugador ha muerto de verdad? (en deriva, la muerte global manda)
+  function _muertoDeVerdad(){
+    return !!(typeof Estado === 'object' && Estado.muerto);
+  }
+
+  // Arranca la deriva libre. Lo llama el botón "Explorar la ciudad".
+  function iniciarDerivaLibre(volverA){
+    _modoLibre = true;
+    _bando = 'deriva';
+    _profId = null;
+    _volverA = volverA || 'apartamento';
+    _corrida = { id: '__deriva__', libre: true };  // sintético: pasa los guards
+    _integridadMax = 10;
+    _integridad = _vidaDeriva();
+    _alerta = 0;
+    _botin = 0;
+    _enConfrontacion = null;
+    // Armadura: equipas la mejor que lleves (igual que en una corrida).
+    _armadura = null;
+    Object.keys(ARMADURAS).forEach(aid => {
+      if(_lleva(aid)){
+        const a = ARMADURAS[aid];
+        if(!_armadura || a.reduccion > _armadura.reduccion){
+          _armadura = { id: aid, reduccion: a.reduccion, aguante: a.aguante, golpes: 0, sigilo: !!a.sigilo };
+        }
+      }
+    });
+    _estados = {};
+    _grafo = { inicio: null, nodos: {} };  // sin camino fijo
+    _nodoActual = null;
+    _eventosUsados = [];
+    _pasosDados = 0;
+    _run = { botin: [], carga: 0, destinoPendiente: null, eventoActual: null };
+    // Munición cargada persiste igual que en las corridas.
+    Estado.memoria = Estado.memoria || {};
+    _balas = (typeof Estado.memoria.balasCargadas === 'number') ? Estado.memoria.balasCargadas : 0;
+    if(_lleva('arma_fuego') && _balas <= 0 && _lleva('cargador')){
+      if(typeof quitarItem === 'function') quitarItem('cargador', 1);
+      _balas = BALAS_POR_CARGADOR;
+    }
+    if(!_lleva('arma_fuego')) _balas = 0;
+    Estado.memoria.balasCargadas = _balas;
+
+    // Montar el panel (mismo cambio de escena que abrirCorrida).
+    if(typeof cerrarPanelHub === 'function'){ try { cerrarPanelHub(); } catch(e){} }
+    if(typeof saltoDeEscena === 'function') saltoDeEscena();
+    const desde = document.querySelector('.escena.activa');
+    const idDesde = desde ? desde.id : _volverA;
+    if(typeof cambiarEscena === 'function'){
+      cambiarEscena(idDesde, 'corrida-escena');
+    } else {
+      if(desde) desde.classList.remove('activa');
+      const e = document.getElementById('corrida-escena');
+      if(e) e.classList.add('activa');
+    }
+    _fx('panel_abrir', 0.5);
+    _guardar();
+    _pintarInterludioDeriva(true);
+  }
+
+  // Elige un evento no visto del saco. Si se agotan, se reinicia el
+  // ciclo (la deriva no se acaba: quedarse sin novedades no te detiene).
+  function _elegirEventoDeriva(){
+    const saco = (typeof EVENTOS_DERIVA !== 'undefined' && Array.isArray(EVENTOS_DERIVA)) ? EVENTOS_DERIVA : null;
+    if(!saco || !saco.length) return null;
+    let libres = saco.filter(e => _eventosUsados.indexOf(e.id) < 0);
+    if(!libres.length){ _eventosUsados = []; libres = saco.slice(); }
+    return libres[Math.floor(Math.random() * libres.length)];
+  }
+
+  // Siguiente paso de la deriva: saca un evento y lo reproduce.
+  function _avanzarDeriva(){
+    if(!_modoLibre) return;
+    if(_muertoDeVerdad()) return;            // la muerte global manda
+    _pasosDados++;
+    _integridad = _vidaDeriva();             // sincroniza con el cuerpo real
+    const ev = _elegirEventoDeriva();
+    if(!ev){ _pintarInterludioDeriva(); return; }
+    _eventosUsados.push(ev.id);
+    _run.eventoActual = ev;
+    _run.destinoPendiente = null;            // en deriva no hay destino
+    _nodoActual = '__evento__';
+    _guardar();
+    _pintarEvento(ev);                        // reutiliza el render de eventos
+  }
+
+  // El "respiro" entre eventos: aquí decides seguir caminando o volver.
+  const _AMBIENTE_DERIVA = [
+    'Caminas sin rumbo. Las luces de los anuncios se reflejan en el agua sucia y nadie te mira a los ojos.',
+    'Doblas otra esquina idéntica a la anterior. Las Pilas no se acaban; solo cambian de cara.',
+    'Te paras un segundo bajo un alero. El zumbido de la ciudad nunca calla del todo.',
+    'Sigues. En un sitio como este, moverse es lo único que se parece a tener un plan.'
+  ];
+  function _pintarInterludioDeriva(primera){
+    if(_muertoDeVerdad()) return;
+    _integridad = _vidaDeriva();
+    const cont = document.getElementById('corrida-wrap');
+    if(!cont) return;
+    let html = _hud();
+    const txt = primera
+      ? 'Sales del bloque sin destino fijo. La lluvia te recibe como recibe a todos: sin preguntar quién eres.'
+      : _AMBIENTE_DERIVA[Math.floor(Math.random() * _AMBIENTE_DERIVA.length)];
+    html += '<div class="corrida-narr">' + txt + '</div>';
+    html += '<button class="btn-terminal" onclick="seguirDeriva()">SEGUIR CAMINANDO →</button>';
+    if(_lleva('kit_trauma') && _integridad < _integridadMax){
+      html += '<button class="btn-terminal corrida-curar" '
+        + 'onclick="curarseEnCorrida()">USAR KIT DE TRAUMA (recuperar fuerzas)</button>';
+    }
+    html += '<button class="btn-terminal corrida-retirarse" '
+      + 'onclick="retirarDeriva()">VOLVER AL APARTAMENTO</button>';
+    cont.innerHTML = html;
+    _guardar();
+  }
+
+  // Botón "SEGUIR CAMINANDO": pide el siguiente evento.
+  function seguirDeriva(){ _avanzarDeriva(); }
+
+  // Tras curarte: vuelves al respiro (no a un evento nuevo).
+  function seguirInterludioDeriva(){ _pintarInterludioDeriva(); }
+
+  // Repinta las opciones de la confrontación actual sin pasar por el
+  // grafo (que en deriva no existe).
+  function _repintarConfrontacionDeriva(){
+    const cont = document.getElementById('corrida-wrap');
+    if(!cont) return;
+    cont.innerHTML = _hud() + _pintarOpcionesConfrontacion();
+  }
+
+  // Volver al apartamento. Conservas todo lo que encontraste (ya aplicado).
+  function retirarDeriva(){
+    _modoLibre = false;
+    _corrida = null;
+    _enConfrontacion = null;
+    _run = null;
+    _grafo = null;
+    _armadura = null;
+    _estados = {};
+    _nodoActual = null;
+    _guardar();
+    cerrarCorrida();
+  }
+
+
   // ── exponer al ámbito global (como hacen 62/63/64) ──────
   window.abrirCorrida = abrirCorrida;
   window.repintarTablonCorrida = function(){ _pintarTablon(); };
@@ -1463,5 +1693,11 @@
   // Para que el inventario del panel ESTADO pueda mostrar la condición
   // del arma. Devuelve 'operativa' | 'gastada' | 'comprometida' | null.
   window.estadoDesgasteArma = function(id){ return _estadoArma(id); };
+
+  // ── deriva libre (explorar la ciudad) ──
+  window.iniciarDerivaLibre = iniciarDerivaLibre;
+  window.seguirDeriva = seguirDeriva;
+  window.seguirInterludioDeriva = seguirInterludioDeriva;
+  window.retirarDeriva = retirarDeriva;
 
 })();

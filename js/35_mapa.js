@@ -511,7 +511,8 @@ function aceptarExplorarCiudad(){
     btn.textContent = 'VIAJAR AQUÍ';
     btn.setAttribute('onclick', 'iniciarViajeAZona()');
   }
-  if(typeof iniciarExplorarCiudad === 'function') iniciarExplorarCiudad();
+  if(typeof iniciarDerivaLibre === 'function') iniciarDerivaLibre('apartamento');
+  else if(typeof iniciarExplorarCiudad === 'function') iniciarExplorarCiudad();
 }
 if(typeof window !== 'undefined'){
   window.confirmarExplorarCiudad = confirmarExplorarCiudad;
