@@ -39,6 +39,13 @@ function _egAsegurarVistos(){
 // ------------------------------------------------------------
 window._cadenasTocadasEnRun = window._cadenasTocadasEnRun || [];
 
+// Contenedor donde el reproductor pinta. Por defecto, el del explorar
+// viejo. La deriva libre (v0.120) lo cambia a 'corrida-wrap' para
+// reproducir estas mismas escenas dentro de su panel.
+let _egCont = 'explorar-cuerpo';
+function egFijarContenedor(id){ _egCont = id || 'explorar-cuerpo'; }
+window.egFijarContenedor = egFijarContenedor;
+
 // Llamar al INICIO de cada run de exploración para resetear el límite.
 function reiniciarCadenasDeRun(){
   window._cadenasTocadasEnRun = [];
@@ -186,7 +193,7 @@ function reproducirEscenaGuion(id, onCerrar){
     if(capa) capa.style.backgroundImage = `url('${ASSETS[e.img]}')`;
   }
 
-  const cont = document.getElementById('explorar-cuerpo');
+  const cont = document.getElementById(_egCont);
   if(!cont){ if(typeof onCerrar==='function') onCerrar(); return; }
 
   // texto de la escena
@@ -248,7 +255,7 @@ function _egResolverOpcion(op, onCerrar){
   };
 
   if(resultado){
-    const cont = document.getElementById('explorar-cuerpo');
+    const cont = document.getElementById(_egCont);
     if(cont){
       cont.innerHTML = `<div class="exp-narracion eg-texto eg-resultado">${resultado}</div>`
         + `<div class="exp-opciones" id="eg-opciones"></div>`;
