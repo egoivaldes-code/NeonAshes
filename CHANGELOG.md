@@ -2,6 +2,11 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.122] - 2026-06-20
+### Added
+- NPCs recurrentes con vínculo: cuatro personajes (Doc Varga, el Archivero, Hermana Lía y Tomás) se vuelven a cruzar contigo en la deriva. Conocerlos y tratarlos bien estrecha un vínculo que progresa por escenas; al alcanzar confianza, el personaje sigue apareciendo y te ofrece una pequeña ayuda práctica además del peso emocional.
+- Soporte en el motor de escenas para condiciones y efectos de NPC (conocer, vínculo mínimo) y un flag de escena repetible para los reencuentros de vínculo alto.
+
 ## [0.121] - 2026-06-20
 ### Added
 - Todo el banco de escenas de exploración se cruza ahora con el equipo de las corridas: encontrar botín (chatarra, kit de trauma, mapa del sector, armaduras como el abrigo de trapero o la chaqueta de kevlar, y rara vez una pistola con riesgo), opciones nuevas que se desbloquean si vas armado, y consumibles que se pueden gastar para resolver situaciones (bote de humo, adrenalina, estimulante, credencial clonada).
