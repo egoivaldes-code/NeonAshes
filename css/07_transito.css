@@ -8,7 +8,7 @@
 .transito-overlay{background:linear-gradient(180deg,rgba(3,5,8,0.5) 0%,rgba(3,5,8,0.45) 45%,rgba(3,5,8,0.97) 73%,rgba(3,5,8,1) 100%);pointer-events:none;}
 #tarjetas-loc-mision{position:relative;z-index:5;width:100%;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:2rem 1.5rem 7rem 1.5rem;}
 .transito-inner{position:relative;z-index:5;width:100%;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:2rem 1.5rem 7rem 1.5rem;}
-.ambiente-bg{position:absolute;top:15%;left:50%;transform:translateX(-50%);font-family:'Rajdhani',sans-serif;font-size:clamp(4rem,18vw,10rem);font-weight:700;letter-spacing:-0.05em;color:rgba(0,229,255,0.04);text-align:center;line-height:0.9;pointer-events:none;white-space:nowrap;}
+.ambiente-bg{display:none;position:absolute;top:15%;left:50%;transform:translateX(-50%);font-family:'Rajdhani',sans-serif;font-size:clamp(4rem,18vw,10rem);font-weight:700;letter-spacing:-0.05em;color:rgba(0,229,255,0.04);text-align:center;line-height:0.9;pointer-events:none;white-space:nowrap;}
 .tarjeta-loc{border-left:2px solid var(--magenta);padding:1rem 1.2rem;margin-bottom:1rem;background:rgba(0,0,0,0.82);opacity:0;transform:translateX(-20px);transition:all 0.5s ease;}
 .tarjeta-loc.visible{opacity:1;transform:translateX(0);}
 .loc-nombre{font-family:'Rajdhani',sans-serif;font-size:clamp(0.8rem,3vw,1rem);font-weight:600;letter-spacing:0.2em;color:var(--magenta);margin-bottom:0.3rem;text-transform:uppercase;}

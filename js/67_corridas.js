@@ -1540,6 +1540,10 @@
     _bando = 'deriva';
     _profId = null;
     _volverA = volverA || 'apartamento';
+    // Nueva run: las cadenas de lore vuelven a poder avanzar y los ecos de
+    // calle de la salida anterior se limpian (igual que el explorar viejo).
+    if(typeof reiniciarCadenasDeRun === 'function') reiniciarCadenasDeRun();
+    if(typeof reiniciarEcosCalle === 'function') reiniciarEcosCalle();
     _corrida = { id: '__deriva__', libre: true };  // sintético: pasa los guards
     _integridadMax = 10;
     _integridad = _vidaDeriva();
@@ -1605,6 +1609,20 @@
     if(_muertoDeVerdad()) return;            // la muerte global manda
     _pasosDados++;
     _integridad = _vidaDeriva();             // sincroniza con el cuerpo real
+    // PUENTE (v0.120): con prioridad, una escena CON RAMAS del banco a mano
+    // (las ~160 del explorar viejo). Si no hay disponible, un evento suelto
+    // del saco de deriva. Mezcla de ambos contenidos sobre el mismo bucle.
+    if(typeof hayEscenaGuionDisponible === 'function' && hayEscenaGuionDisponible()
+       && typeof reproducirEscenaGuion === 'function' && Math.random() < 0.7){
+      const idEsc = (typeof elegirEscenaGuion === 'function') ? elegirEscenaGuion() : null;
+      if(idEsc){
+        _nodoActual = '__guion__';
+        if(typeof egFijarContenedor === 'function') egFijarContenedor('corrida-wrap');
+        _guardar();
+        reproducirEscenaGuion(idEsc, _finGuionDeriva);
+        return;
+      }
+    }
     const ev = _elegirEventoDeriva();
     if(!ev){ _pintarInterludioDeriva(); return; }
     _eventosUsados.push(ev.id);
@@ -1615,6 +1633,13 @@
     _pintarEvento(ev);                        // reutiliza el render de eventos
   }
 
+  // Al terminar una escena de guion: restaura el contenedor del explorar
+  // viejo y vuelve al respiro (que hace la sincronización de muerte real).
+  function _finGuionDeriva(){
+    if(typeof egFijarContenedor === 'function') egFijarContenedor('explorar-cuerpo');
+    _pintarInterludioDeriva();
+  }
+
   // El "respiro" entre eventos: aquí decides seguir caminando o volver.
   const _AMBIENTE_DERIVA = [
     'Caminas sin rumbo. Las luces de los anuncios se reflejan en el agua sucia y nadie te mira a los ojos.',
@@ -1623,6 +1648,11 @@
     'Sigues. En un sitio como este, moverse es lo único que se parece a tener un plan.'
   ];
   function _pintarInterludioDeriva(primera){
+    // Las escenas de guion suben la fatiga directamente, sin pasar por el
+    // motor de muerte. Si una te ha dejado al límite, cerramos aquí la
+    // promesa de muerte real antes de seguir.
+    if(!_muertoDeVerdad() && Estado.humano && Estado.humano.fatiga >= 100
+       && typeof dispararMuerte === 'function'){ dispararMuerte('fatiga'); return; }
     if(_muertoDeVerdad()) return;
     _integridad = _vidaDeriva();
     const cont = document.getElementById('corrida-wrap');

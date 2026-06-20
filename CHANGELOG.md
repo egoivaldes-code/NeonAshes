@@ -2,6 +2,12 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.120] - 2026-06-20
+### Added
+- Puente del modo libre "Explorar la ciudad": la deriva ahora reproduce también las escenas con ramas del banco escrito a mano (opciones, condiciones y efectos sobre el cuerpo real), mezcladas con los eventos sueltos. Las heridas persisten y la muerte real se mantiene tras cada escena.
+### Fixed
+- Las escenas de viaje de la misión de Mara ya no muestran la palabra de ambiente en azul gigante de fondo (ASCENSOR, PILAS, NIVEL 4...).
+
 ## [0.119] - 2026-06-20
 ### Added
 - Modo libre "Explorar la ciudad" reconstruido sobre el motor de corridas: deriva sin límite de escenas por Las Pilas, evento tras evento, hasta que vuelves al apartamento o mueres de verdad.
@@ -63,7 +69,7 @@
 
 ## [0.110] - 2026-06-15
 ### Added
-- Combate táctico por turnos en las corridas: las confrontaciones pueden tener varios enemigos a la vez, cada uno con su propia resistencia. Eliges a quién atacar en cada turno y los enemigos responden hasta que los neutralizas, escapas o caes.
+- Combate táctico por turnos en las corridas: las confrontaciones pueden tener varios enemigos a la vez, cada uno con su propia resistencia. Eliges a quién atacar en cada turno y los enemigos responden hasta que los neutralizas, escapas o cae.
 - Refuerzos enemigos: guionizados (llegan en un turno concreto de ciertas corridas) y dinámicos (si haces mucho ruido, un coche frena y bajan más).
 - Corridas más largas y variadas (6-9 nodos) para ambos bandos, con nuevas situaciones de rango alto: el testigo de Silencio Escarlata (Contrabando) y la limpieza que nadie firma (Seguridad), además del motín del Bloque 9 y el hierro para el Arrabal.
 ### Changed
