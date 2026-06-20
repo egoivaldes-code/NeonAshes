@@ -156,9 +156,30 @@ function describirNpcParaIA(id){
   return lineas.filter(Boolean).join('\n');
 }
 
+// ---- VÍNCULO con un NPC (relación que crece con los buenos encuentros) ----
+// Nivel 0 (desconocido) a 5. Sube cuando el jugador trata bien al personaje.
+// Persiste en Estado.npcVinculos. Un vínculo > 0 implica haberlo conocido.
+function _asegurarVinculos(){
+  if(!Estado.npcVinculos || typeof Estado.npcVinculos !== 'object') Estado.npcVinculos = {};
+}
+function vinculoNpc(id){
+  _asegurarVinculos();
+  return Estado.npcVinculos[id] || 0;
+}
+function subirVinculo(id, n){
+  if(!id) return;
+  _asegurarVinculos();
+  const inc = (typeof n === 'number') ? n : 1;
+  Estado.npcVinculos[id] = Math.max(0, Math.min(5, (Estado.npcVinculos[id] || 0) + inc));
+  marcarNpcVisto(id);
+  if(typeof guardarPartida === 'function') guardarPartida();
+}
+
 window.NPCS_RECURRENTES = NPCS_RECURRENTES;
 window.npcPorId = npcPorId;
 window.npcAleatorio = npcAleatorio;
 window.marcarNpcVisto = marcarNpcVisto;
 window.haVistoNpc = haVistoNpc;
 window.describirNpcParaIA = describirNpcParaIA;
+window.vinculoNpc = vinculoNpc;
+window.subirVinculo = subirVinculo;

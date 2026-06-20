@@ -85,6 +85,11 @@ function _egCumple(cond){
     const vistos = _egAsegurarVistos();
     if(cond.visto && vistos.indexOf(cond.visto) === -1) return false;
     if(cond.noVisto && vistos.indexOf(cond.noVisto) !== -1) return false;
+    if(cond.npcConocido && !(typeof haVistoNpc==='function' && haVistoNpc(cond.npcConocido))) return false;
+    if(cond.npcNoConocido && (typeof haVistoNpc==='function' && haVistoNpc(cond.npcNoConocido))) return false;
+    if(cond.vinculoMin && typeof vinculoNpc==='function'){
+      if(vinculoNpc(cond.vinculoMin.id) < (cond.vinculoMin.n || 1)) return false;
+    }
   }catch(e){ return true; }
   return true;
 }
@@ -125,6 +130,9 @@ function _egAplicarEfectos(ef){
       if(v.indexOf(ef.marcaVisto) === -1) v.push(ef.marcaVisto);
       if(typeof guardarEstado === 'function') guardarEstado();
     }
+    // NPCs recurrentes: conocer a alguien y/o estrechar el vínculo.
+    if(ef.conocer && typeof marcarNpcVisto === 'function') marcarNpcVisto(ef.conocer);
+    if(ef.vinculo && typeof subirVinculo === 'function') subirVinculo(ef.vinculo.id, ef.vinculo.mas);
     if(typeof actualizarHUD === 'function') actualizarHUD();
   }catch(e){}
 }
@@ -175,7 +183,9 @@ function reproducirEscenaGuion(id, onCerrar){
   const e = ESCENAS_GUION[id];
 
   // marcar como visto el momento de ENTRADA (se agota una vez).
-  if(e.entrada){
+  // Excepción: las escenas 'repetible' (p.ej. reencuentros con un NPC de
+  // vínculo alto) no se agotan, para que el personaje pueda volver a salir.
+  if(e.entrada && !e.repetible){
     const vistos = _egAsegurarVistos();
     if(vistos.indexOf(id) === -1) vistos.push(id);
     // Si es parte de una cadena, bloquear más partes de esa cadena en esta run.
