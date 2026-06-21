@@ -65,12 +65,36 @@ const EVENTOS_DERIVA = [
   { id:'der_carterista', tipo:'confrontacion',
     texto:'Un chaval flaco te ha estado siguiendo media calle y por fin se decide: te corta el paso con una navaja que '
         + 'le tiembla en la mano. No quiere hacerte daño. Quiere lo que lleves encima, y tiene hambre de la de verdad.',
-    enemigos:[ { nombre:'Carterista', desc:'Flaco, asustado, rápido', integridad:2, fuerza:2, umbral:2 } ] },
+    enemigos:[ { nombre:'Carterista', desc:'Flaco, asustado, rápido', tipo:'cobarde', integridad:2, fuerza:2, umbral:2 } ] },
 
   { id:'der_maton', tipo:'confrontacion',
     texto:'Un matón de cobros te reconoce, o cree reconocerte. "Tú le debes a quien yo cobro", dice, y no parece de los '
         + 'que escuchan explicaciones. Cierra el callejón con su cuerpo y espera a ver qué haces.',
-    enemigos:[ { nombre:'Matón de cobros', desc:'Grande y sin prisa', integridad:3, fuerza:3, umbral:3 } ] }
+    enemigos:[ { nombre:'Matón de cobros', desc:'Grande y sin prisa', tipo:'bruto', integridad:3, fuerza:3, umbral:3 } ] },
+
+  // ── Confrontaciones que estrenan los estados (v0.128) ──
+  { id:'der_navajero', tipo:'confrontacion',
+    texto:'Sale de un quicio sin avisar, navaja baja y pasos cortos. No habla, no amenaza: solo busca el hueco para '
+        + 'rajarte y salir corriendo con lo que pueda. Si te descuidas, te deja sangrando en mitad de la calle.',
+    enemigos:[ { nombre:'Navajero', desc:'Corta y se aparta · te hace sangrar', tipo:'rapido', integridad:2, fuerza:3, umbral:2 } ] },
+
+  { id:'der_pareja_cobro', tipo:'confrontacion',
+    texto:'Dos figuras te cierran la calle: uno enorme, plantado como un muro, y otro pequeño que se esconde detrás y '
+        + 'habla mucho. El grande no tiene prisa. El pequeño, en cuanto la cosa se ponga fea, va a recordar que tiene piernas.',
+    enemigos:[
+      { nombre:'El grandullón', desc:'Aguanta y aturde', tipo:'bruto', integridad:3, fuerza:4, umbral:6 },
+      { nombre:'El bocazas', desc:'Huye si se tuerce', tipo:'cobarde', integridad:2, fuerza:2, umbral:2 }
+    ] },
+
+  { id:'der_banda_esquina', tipo:'confrontacion',
+    texto:'Una esquina mal iluminada, tres siluetas y uno que claramente manda. Mientras él aguante, los otros se crecen. '
+        + 'Y si esto se llena de ruido, la calle tiene oídos: en nada baja alguien más a ver el espectáculo.',
+    enemigos:[
+      { nombre:'El que manda', desc:'Mátalo y los otros dudan', tipo:'lider', integridad:3, fuerza:4, umbral:4 },
+      { nombre:'Secuaz', desc:'Fiel mientras gane', integridad:2, fuerza:3, umbral:2 }
+    ],
+    refuerzoSiRuido:60,
+    refuerzoGrupo:[ { nombre:'Curioso con ganas', desc:'El ruido lo trajo', tipo:'rapido', integridad:2, fuerza:3, umbral:2 } ] }
 
 ];
 

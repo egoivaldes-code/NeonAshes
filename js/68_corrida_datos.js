@@ -140,7 +140,7 @@ const CORRIDAS_DATOS = {
         loto:{ tipo:'confrontacion',
           texto:'A la salida del cruce, dos del Loto te esperaban. Alguien ha hablado. "El Ferro paga poco por ese chip", dice el de delante, abriendo una navaja. "Nosotros pagamos en seguir vivos."',
           enemigos:[
-            { nombre:'Loto de la navaja', desc:'Habla, gana tiempo', integridad:2, fuerza:4, umbral:4 },
+            { nombre:'Loto de la navaja', desc:'Habla, gana tiempo', tipo:'lider', integridad:2, fuerza:4, umbral:4 },
             { nombre:'Loto callado', desc:'Se mueve para flanquearte', tipo:'rapido', integridad:2, fuerza:3, umbral:2 }
           ],
           ir:'patrulla' },
@@ -398,8 +398,8 @@ const CORRIDAS_DATOS = {
         unidadnegra:{ tipo:'confrontacion',
           texto:'En el último tramo, una unidad negra de HELIX —los mismos trajes sin placa de siempre— os corta el paso. Saben quién es el viejo. Llevan décadas con esta orden. "Cuarenta años", dice uno, casi con respeto. "Casi lo consigue."',
           enemigos:[
-            { nombre:'Comandante sin placa', desc:'No tiene prisa', integridad:3, fuerza:5, umbral:6 },
-            { nombre:'Operativo negro', desc:'Eficiente, callado', integridad:3, fuerza:4, umbral:4 }
+            { nombre:'Comandante sin placa', desc:'No tiene prisa', tipo:'lider', integridad:3, fuerza:5, umbral:6 },
+            { nombre:'Operativo negro', desc:'Eficiente, callado', tipo:'rapido', integridad:3, fuerza:4, umbral:4 }
           ],
           refuerzoSiRuido:65, refuerzoGrupo:[{nombre:'Dron de combate', desc:'El ruido lo llamó', integridad:2, fuerza:4, umbral:4}],
           ir:'final' },
@@ -518,7 +518,7 @@ const CORRIDAS_DATOS = {
           texto:'Seguridad privada del Anillo os intercepta en el aparcamiento. No saben aún que deserta; creen que es un robo de activo. Dos guardias con porras de descarga y trajes impecables. "Identifíquese y aléjese del empleado."',
           enemigos:[
             { nombre:'Guardia del Anillo', desc:'Pulcro, entrenado', integridad:3, fuerza:4, umbral:4 },
-            { nombre:'Guardia del Anillo', desc:'Pide refuerzos por radio', integridad:2, fuerza:3, umbral:2 }
+            { nombre:'Guardia del Anillo', desc:'Pide refuerzos por radio', tipo:'lider', integridad:2, fuerza:3, umbral:2 }
           ],
           refuerzoSiRuido:55, refuerzoGrupo:[{nombre:'Patrulla del Anillo', desc:'La radio funcionó', integridad:2, fuerza:4, umbral:4}],
           ir:'bajada' },
@@ -574,7 +574,7 @@ const CORRIDAS_DATOS = {
           texto:'Fanáticos del Culto de la Carne Perfecta han olfateado la carga. Para ellos, un órgano sano es una reliquia. Tres figuras con túnicas manchadas te cierran el paso, serenas, sonrientes. "Esa carne merece un destino más alto que un mercado."',
           enemigos:[
             { nombre:'Devoto del Culto', desc:'Sonríe demasiado', integridad:2, fuerza:3, umbral:2 },
-            { nombre:'Devoto del Culto', desc:'Acaricia un bisturí', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Devoto del Culto', desc:'Acaricia un bisturí', tipo:'rapido', integridad:3, fuerza:4, umbral:4 },
             { nombre:'Acólito joven', desc:'Aún no sabe lo que cree', integridad:2, fuerza:3, umbral:2 }
           ],
           refuerzoSiRuido:55, refuerzoGrupo:[{nombre:'Fiel rezagado', desc:'El alboroto lo trae', integridad:2, fuerza:3, umbral:2}],
@@ -683,7 +683,7 @@ const CORRIDAS_DATOS = {
         perro:{ tipo:'confrontacion',
           texto:'En el corredor principal, un perro callejero enorme huele al gato y se lanza, ladrando como un demonio. Su dueño, un tipo curtido, no hace nada por frenarlo: le divierte. Tienes que proteger la caja y el transportín del animal.',
           enemigos:[
-            { nombre:'Perro furioso', desc:'Va a por el transportín', integridad:2, fuerza:3, umbral:2 }
+            { nombre:'Perro furioso', desc:'Va a por el transportín', tipo:'rapido', integridad:2, fuerza:3, umbral:2 }
           ],
           ir:'final' },
         hallazgo_caja:{ tipo:'hallazgo',
@@ -791,7 +791,65 @@ const CORRIDAS_DATOS = {
           texto:'El taller del Ferro late con el ruido de cien máquinas, salvo una, parada y muda en mitad de la nave, esperando su corazón. El capataz te ve llegar con la carretilla y grita algo por encima del estruendo. Los obreros se apartan para dejarte pasar.',
           fin:true }
       }}
+    },
+    // ── RUTAS DE COMBATE TÁCTICO (v0.128) ───────────────────
+    {
+      id:'cont_cuello',
+      titulo:'EL CUELLO DE BOTELLA',
+      cliente:'Un perista de la Profundidad',
+      faccion:null,
+      peligro:2, pagaBase:230, progreso:110, rangoMin:1,
+      integridad:16, alertaInicial:5,
+      resumen:'Una caja de óptica robada tiene que cruzar el único pasillo que conecta dos bloques. El problema es quién vigila ese pasillo: un grandullón que cobra peaje a hostias y no entiende de prisas.',
+      cierreOk:'Cruzas la caja al otro lado y el perista la recibe sin mirarte a los ojos. Cuenta los créditos despacio, como si doliera soltarlos. Duele. Te los llevas igual.',
+      cierreFallo:'El pasillo te escupe de vuelta con la caja rota y una costilla que protesta. El peaje, al final, lo pagas tú.',
+      mapa:{ inicio:'entrada', nodos:{
+        entrada:{ tipo:'narrativo',
+          texto:'El pasillo es un tubo de hormigón sudado, sin más salida que el frente. Al fondo, una sombra ancha tapa casi toda la luz. No hace falta que hable: su cuerpo ya es la advertencia.',
+          ir:'cuello' },
+        cuello:{ tipo:'confrontacion',
+          texto:'El grandullón se despega de la pared. Lleva un caño de tubería como quien lleva un paraguas. A su lado, un crío nervioso te tantea por el flanco, buscando el momento. En este pasillo no hay sitio para correr: o lo resuelves, o te resuelve él.',
+          enemigos:[
+            { nombre:'El Tapón', desc:'Llena el pasillo él solo', tipo:'bruto', integridad:4, fuerza:5, umbral:6 },
+            { nombre:'Crío del flanco', desc:'Rápido, busca tu espalda', tipo:'rapido', integridad:2, fuerza:3, umbral:2 }
+          ],
+          ir:'salida' },
+        salida:{ tipo:'narrativo',
+          texto:'El pasillo queda atrás, en silencio salvo por tu respiración. Recoges la caja del suelo y sigues, antes de que a alguien le dé por venir a ver qué ha sido tanto ruido.' }
+      }}
+    },
+    {
+      id:'cont_silencio',
+      titulo:'NO HAGAS RUIDO',
+      cliente:'Una intermediaria del Loto',
+      faccion:'loto',
+      peligro:3, pagaBase:330, progreso:140, rangoMin:2,
+      integridad:18, alertaInicial:25,
+      resumen:'Un paquete que cambia de manos en un patio vigilado por gente del Loto. El trato es limpio si nadie se pone nervioso. Pero hay un cabecilla con ganas, y si esto se llena de ruido, en dos minutos baja medio barrio.',
+      cierreOk:'El paquete cambia de manos y el patio vuelve a su murmullo de siempre, como si nada. Así se hace: que nadie recuerde que estuviste. La intermediaria te paga y desaparece primero.',
+      cierreFallo:'El patio se convierte en una ratonera de gritos y carreras. Sales, pero sin paquete y con el barrio entero sabiendo tu cara.',
+      mapa:{ inicio:'briefing', nodos:{
+        briefing:{ tipo:'narrativo',
+          texto:'El patio interior huele a fritanga y a ropa tendida. Hay ojos en cada balcón. La intermediaria te susurra lo único que importa: "Si esto truena, no vienen dos. Vienen todos. Tú entrégalo y vete fino."',
+          ir:'patio' },
+        patio:{ tipo:'confrontacion',
+          texto:'El que manda escupe en el suelo y te corta el paso con dos a los lados. Quiere quedarse el paquete y la comisión. Puedes resolverlo callado —cuchillo, puños, cubrirte— o liarla a tiros y rezar. Pero el ruido aquí se paga en refuerzos.',
+          enemigos:[
+            { nombre:'El que manda', desc:'Mátalo y el resto duda', tipo:'lider', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Esbirro fiel', desc:'Aguanta a su lado', integridad:2, fuerza:3, umbral:2 },
+            { nombre:'Chaval del Loto', desc:'Más miedo que ganas', tipo:'cobarde', integridad:2, fuerza:2, umbral:2 }
+          ],
+          refuerzoSiRuido:55,
+          refuerzoGrupo:[
+            { nombre:'Vecino del Loto', desc:'El alboroto lo trae', integridad:2, fuerza:3, umbral:2 },
+            { nombre:'Vecino del Loto', desc:'Y otro detrás', tipo:'rapido', integridad:2, fuerza:3, umbral:2 }
+          ],
+          ir:'fin' },
+        fin:{ tipo:'narrativo',
+          texto:'Sales del patio con el paso tranquilo de quien no ha hecho nada. Si lo hiciste bien, nadie te seguirá con la mirada. Si no, ya lo notas en la nuca.' }
+      }}
     }
+
   ],
 
   // ══════════════════════════════════════════════════════════
@@ -930,7 +988,7 @@ const CORRIDAS_DATOS = {
         emboscada:{ tipo:'confrontacion',
           texto:'En la puerta del punto neutral, un grupo del Loto ha montado una emboscada. No vienen por el maletín: vienen por el uniforme de HELIX. Por todo lo que les ha hecho HELIX. Tú eres la cara que tienen delante.',
           enemigos:[
-            { nombre:'Loto enfurecido', desc:'Odio puro', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Loto enfurecido', desc:'Odio puro', tipo:'bruto', integridad:3, fuerza:4, umbral:4 },
             { nombre:'Loto con barra', desc:'Apunta al ejecutivo', integridad:2, fuerza:3, umbral:2 },
             { nombre:'Loto joven', desc:'Más miedo que rabia', tipo:'cobarde', integridad:1, fuerza:2, umbral:2 }
           ],
@@ -1006,7 +1064,7 @@ const CORRIDAS_DATOS = {
           texto:'El Colectivo Sin Nombre protege al portador: para ellos es un profeta, no un fugitivo. Tres encapuchados te bloquean la escalera. "Lo que oye no es una avería. Es lo más cerca que ha estado nadie de la verdad. Y vienes a apagarlo."',
           enemigos:[
             { nombre:'Encapuchado sereno', desc:'Intenta razonar', integridad:2, fuerza:3, umbral:2 },
-            { nombre:'Encapuchado fervoroso', desc:'No teme morir', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Encapuchado fervoroso', desc:'No teme morir', tipo:'rapido', integridad:3, fuerza:4, umbral:4 },
             { nombre:'Encapuchado silencioso', desc:'El que de verdad pelea', tipo:'bruto', integridad:3, fuerza:5, umbral:6 }
           ],
           ir:'puerta' },
@@ -1054,7 +1112,7 @@ const CORRIDAS_DATOS = {
         fantasmas:{ tipo:'confrontacion',
           texto:'El agente no viene solo: los Fantasmas de Marte lo escoltan. Veteranos de una guerra que HELIX dio por ganada. Salen de la oscuridad sin prisa, con la calma de quien ya ha sobrevivido a lo peor. "Otro perro de HELIX", dice uno. "¿Cuántos más vais a mandar?"',
           enemigos:[
-            { nombre:'Fantasma veterano', desc:'Curtido, sin miedo', integridad:3, fuerza:5, umbral:6 },
+            { nombre:'Fantasma veterano', desc:'Curtido, sin miedo', tipo:'bruto', integridad:3, fuerza:5, umbral:6 },
             { nombre:'Fantasma joven', desc:'Tiene algo que demostrar', integridad:3, fuerza:4, umbral:4 },
             { nombre:'Fantasma francotirador', desc:'Cubre desde atrás', tipo:'rapido', integridad:2, fuerza:4, umbral:6 }
           ],
@@ -1220,7 +1278,7 @@ const CORRIDAS_DATOS = {
           enemigos:[
             { nombre:'Vecino atrincherado', desc:'No piensa moverse', integridad:2, fuerza:3, umbral:2 },
             { nombre:'Madre con sus cosas', desc:'Protege la puerta', integridad:2, fuerza:2, umbral:2 },
-            { nombre:'Joven furioso', desc:'Busca pelea', integridad:2, fuerza:4, umbral:4 }
+            { nombre:'Joven furioso', desc:'Busca pelea', tipo:'rapido', integridad:2, fuerza:4, umbral:4 }
           ],
           refuerzoSiRuido:50, refuerzoGrupo:[
             { nombre:'Más vecinos', desc:'El grito los convoca', integridad:2, fuerza:3, umbral:2 },
@@ -1282,7 +1340,7 @@ const CORRIDAS_DATOS = {
         lugarteniente:{ tipo:'confrontacion',
           texto:'Casi en la salida del Arrabal, el lugarteniente del Loto en persona os cierra el paso con dos hombres. Conoce al informante por su nombre. "Cuánto daño en una boca tan pequeña", dice, casi con pena. "Apártate, uniforme. Esto es asunto de familia."',
           enemigos:[
-            { nombre:'Lugarteniente del Loto', desc:'Tranquilo, letal', integridad:3, fuerza:5, umbral:6 },
+            { nombre:'Lugarteniente del Loto', desc:'Tranquilo, letal', tipo:'lider', integridad:3, fuerza:5, umbral:6 },
             { nombre:'Soldado del Loto', desc:'Fiel hasta el final', integridad:3, fuerza:4, umbral:4 }
           ],
           ir:'final' },
@@ -1484,7 +1542,69 @@ const CORRIDAS_DATOS = {
           texto:'El cordón de evacuación está a la vista, con sus luces giratorias y sus mantas térmicas. Detrás de ti, los selladores empiezan a zumbar, avisando de que el nivel se va a cerrar. Empujas al último grupo hacia la luz. Ya casi está.',
           fin:true }
       }}
+    },
+    // ── RUTAS DE COMBATE TÁCTICO (v0.128) ───────────────────
+    {
+      id:'seg_enjambre',
+      titulo:'EL ENJAMBRE',
+      cliente:'HELIX · Control de Distrito',
+      faccion:'helix',
+      peligro:2, pagaBase:250, progreso:120, rangoMin:1,
+      integridad:16, alertaInicial:10,
+      resumen:'Una banda de críos rápidos del Arrabal lleva semanas desvalijando un almacén de HELIX. La orden es limpiar el callejón donde se refugian. Son flacos, son veloces y van con navaja: para cuando ves a uno, ya te ha abierto.',
+      cierreOk:'El callejón queda vacío y HELIX marca la incidencia como "resuelta". No preguntan cómo. Cobras la jornada y te llevas la sensación rara de haber ganado a unos niños.',
+      cierreFallo:'Te sacan del callejón a base de cortes, riéndose desde las cornisas. La incidencia sigue abierta. Tú también, por varios sitios.',
+      mapa:{ inicio:'aviso', nodos:{
+        aviso:{ tipo:'narrativo',
+          texto:'El callejón es estrecho y oscuro, con ropa tendida que tapa la vista. Oyes pasos ligeros por todas partes, corriendo sobre los andamios. No vienen de frente: vienen de todos lados.',
+          ir:'botiquin' },
+        botiquin:{ tipo:'hallazgo',
+          texto:'Junto a un contenedor hay un botiquín de obra reventado. Entre el desorden, un vendaje compresor sin abrir. Algo te dice que hoy lo vas a necesitar.',
+          txtAbrir:'Coger el vendaje', subAbrir:'Por si la cosa sangra',
+          txtDejar:'Seguir sin entretenerte', subDejar:'No hay tiempo',
+          riesgo:0, recompensaItem:'vendaje',
+          msgAbrir:'Te guardas el vendaje en el bolsillo del pecho, a mano. Buena idea.',
+          msgDejar:'Lo dejas. Ojalá no te arrepientas.',
+          ir:'callejon' },
+        callejon:{ tipo:'confrontacion',
+          texto:'Caen de las cornisas tres a la vez, navajas que tiemblan y manos que no. No aguantan un golpe, pero si te despistas te dejan marcado y sangrando. Cúrate a tiempo, cúbrete, y no dejes que el goteo te desangre.',
+          enemigos:[
+            { nombre:'Navajero veloz', desc:'Corta y se aparta', tipo:'rapido', integridad:1, fuerza:3, umbral:2 },
+            { nombre:'Navajera veloz', desc:'Va a por las piernas', tipo:'rapido', integridad:2, fuerza:3, umbral:2 },
+            { nombre:'Crío con punzón', desc:'El más nervioso', tipo:'rapido', integridad:1, fuerza:2, umbral:2 }
+          ],
+          ir:'cierre' },
+        cierre:{ tipo:'narrativo',
+          texto:'El callejón se queda quieto. Recoges el aliento entre la ropa tendida que gotea. En alguna ventana, una madre cierra las cortinas sin decir nada.' }
+      }}
+    },
+    {
+      id:'seg_cabecilla',
+      titulo:'EL QUE DA LAS ÓRDENES',
+      cliente:'HELIX · Operaciones Especiales',
+      faccion:'helix',
+      peligro:3, pagaBase:310, progreso:140, rangoMin:2,
+      integridad:18, alertaInicial:15,
+      resumen:'Un grupo ocupa una nave que HELIX quiere vacía. La mayoría son don nadies asustados; el problema es el que les da cuerda. Quítale la cabeza al grupo y el cuerpo se deshace solo.',
+      cierreOk:'Sin su cabecilla, los demás se evaporan en cuanto ven la primera oportunidad. La nave queda libre. HELIX manda a sus tasadores antes de que el polvo se asiente.',
+      cierreFallo:'El cabecilla los mantiene firmes y a ti te sacan a empujones. La nave sigue ocupada, y tu parte, sin cobrar.',
+      mapa:{ inicio:'parte', nodos:{
+        parte:{ tipo:'narrativo',
+          texto:'La nave es un cascarón de chapa con hogueras dentro. Reconoces el patrón al entrar: todos miran de reojo a uno solo, esperando que diga qué hacer. Ahí está tu trabajo.',
+          ir:'nave' },
+        nave:{ tipo:'confrontacion',
+          texto:'El cabecilla da un paso al frente y los suyos se envalentonan a su sombra: mientras él aguante, pegan más fuerte. Pero los conoces: en cuanto caiga, los demás van a recordar de pronto que tienen casa a la que volver.',
+          enemigos:[
+            { nombre:'El cabecilla', desc:'Mientras viva, el grupo aprieta', tipo:'lider', integridad:4, fuerza:5, umbral:6 },
+            { nombre:'Ocupa asustado', desc:'Huirá si la cosa se tuerce', tipo:'cobarde', integridad:2, fuerza:3, umbral:2 },
+            { nombre:'Ocupa joven', desc:'No quiere estar aquí', tipo:'cobarde', integridad:2, fuerza:2, umbral:2 }
+          ],
+          ir:'acta' },
+        acta:{ tipo:'narrativo',
+          texto:'Cierras el acta apoyado en una columna fría. La nave, vacía, suena a hueco. Te preguntas adónde habrán ido los que huyeron, y decides no preguntártelo mucho.' }
+      }}
     }
+
   ]
 };
 
