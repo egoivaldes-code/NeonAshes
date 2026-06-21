@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.128] - 2026-06-21
+### Added
+- Cuatro corridas nuevas diseñadas en torno al combate: "El cuello de botella" y "No hagas ruido" (contrabando), "El enjambre" y "El que da las órdenes" (seguridad).
+- Tres encuentros nuevos en la deriva libre que estrenan los estados (sangrado, líder con refuerzos por ruido, pareja bruto+cobarde).
+### Changed
+- Muchos enemigos del banco de corridas y de la deriva ahora tienen comportamiento (bruto, rápido, líder, cobarde), de modo que las peleas existentes también usan el sistema nuevo.
+
 ## [0.127] - 2026-06-21
 ### Added
 - Estados de combate nuevos: sangrado (daño por turno), aturdido (pierdes el ataque), cobertura (acción CUBRIRSE que reduce el daño) y supresión (el fuego pesado agacha al grupo y frena refuerzos).
