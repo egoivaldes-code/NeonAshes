@@ -133,6 +133,12 @@ function _egAplicarEfectos(ef){
     if(ef.faccion && typeof ef.rep === 'number' && typeof cambiarRepFaccion === 'function'){
       cambiarRepFaccion(ef.faccion, ef.rep);
     }
+    // Varias facciones a la vez: ef.facciones = [{faccion, rep}, ...]
+    if(Array.isArray(ef.facciones) && typeof cambiarRepFaccion === 'function'){
+      ef.facciones.forEach(fr => {
+        if(fr && fr.faccion && typeof fr.rep === 'number') cambiarRepFaccion(fr.faccion, fr.rep);
+      });
+    }
     // marcaVisto: registra una bandera narrativa (p.ej. 'mano_roja_muerta')
     // para que otras escenas puedan condicionar con visto/noVisto.
     if(ef.marcaVisto){
@@ -265,6 +271,8 @@ function _egResolverOpcion(op, onCerrar){
   // texto de resultado opcional (se muestra antes de continuar)
   const resultado = rama.resultado || op.resultado;
   const destino = rama.lleva || op.lleva;
+  // pelea opcional: { texto, enemigos, integridad, refuerzo..., gana, pierde }
+  const pelea = rama.pelea || op.pelea;
 
   const irAlDestino = ()=>{
     if(destino && typeof ESCENAS_GUION !== 'undefined' && ESCENAS_GUION[destino]){
@@ -273,6 +281,45 @@ function _egResolverOpcion(op, onCerrar){
       if(typeof onCerrar === 'function') onCerrar();   // cierra el momento
     }
   };
+
+  // Si la opción desemboca en una PELEA, la lanzamos (con el equipo que
+  // lleve el jugador) y la historia se reanuda por la rama de ganar/perder.
+  const lanzarPelea = ()=>{
+    if(pelea && typeof iniciarCombateDesdeEscena === 'function'){
+      iniciarCombateDesdeEscena({
+        texto: pelea.texto,
+        enemigos: pelea.enemigos,
+        integridad: pelea.integridad || 10,
+        refuerzoSiRuido: pelea.refuerzoSiRuido,
+        refuerzoGrupo: pelea.refuerzoGrupo,
+        refuerzoTurno: pelea.refuerzoTurno,
+        refuerzoTurnoGrupo: pelea.refuerzoTurnoGrupo,
+        onGana: ()=>{ if(pelea.gana) reproducirEscenaGuion(pelea.gana, onCerrar); else irAlDestino(); },
+        onPierde: ()=>{ if(pelea.pierde) reproducirEscenaGuion(pelea.pierde, onCerrar); else irAlDestino(); }
+      });
+      return true;
+    }
+    return false;
+  };
+
+  if(pelea){
+    // Mostramos el texto de resultado (si lo hay) con un botón que lanza la
+    // pelea; si no hay texto, vamos directos al combate.
+    const cont = document.getElementById(_egCont);
+    if(resultado && cont){
+      cont.innerHTML = `<div class="exp-narracion eg-texto eg-resultado">${resultado}</div>`
+        + `<div class="exp-opciones" id="eg-opciones"></div>`;
+      const caja = document.getElementById('eg-opciones');
+      const btn = document.createElement('button');
+      btn.className = 'exp-opcion';
+      btn.textContent = 'Encararlo.';
+      btn.addEventListener('click', ()=>{ if(!lanzarPelea()) irAlDestino(); }, { once:true });
+      caja.appendChild(btn);
+      return;
+    }
+    if(lanzarPelea()) return;
+    // Si por lo que sea no se pudo lanzar, seguimos el flujo normal.
+  }
 
   if(resultado){
     const cont = document.getElementById(_egCont);

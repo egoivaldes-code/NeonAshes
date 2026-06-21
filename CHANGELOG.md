@@ -2,6 +2,15 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.129] - 2026-06-21
+### Added
+- Las escenas pueden desembocar en un combate real (estados, tipos de enemigo) que ramifica la historia en ganar/perder, sin matarte globalmente.
+- Una cadena con pelea por cada oficio (6) y tres cadenas con pelea abiertas a cualquier partida en la deriva.
+- Ganar una pelea de cadena puede soltar munición o un vendaje al rebuscar.
+### Changed
+- El motor de escenas admite mover varias facciones en un mismo efecto.
+- Pulido visual de las marcas de combate (tipo de enemigo, sangrado, aturdido, grupo suprimido).
+
 ## [0.128] - 2026-06-21
 ### Added
 - Cuatro corridas nuevas diseñadas en torno al combate: "El cuello de botella" y "No hagas ruido" (contrabando), "El enjambre" y "El que da las órdenes" (seguridad).
