@@ -20,6 +20,8 @@ let _ultimoResultadoProfesion = null;
 // Acción de campo cuyo selector de lugares está abierto ahora mismo.
 // {prof, accion} o null. Al elegir lugar o trabajar, se cierra.
 let _lugarAbierto = null;
+// Enfoque cotidiano abierto (contrabandista/seguridad): {prof, accion}.
+let _enfoqueAbierto = null;
 
 // Oficio cuyo submenú de acciones está abierto. null = vista lista de
 // oficios; 'scavenger'/'investigador'/... = dentro de ese oficio (v0.101).
@@ -98,10 +100,16 @@ function renderTrabajosOficio(){
     if(r.herida) costes += `<div style="color:var(--magenta);margin-top:0.3rem;font-size:0.55rem;">LESIÓN · ${r.herida}</div>`;
     if(r.multa > 0) costes += `<div style="color:var(--magenta);margin-top:0.3rem;font-size:0.55rem;">SANCIÓN HELIX · −${r.multa} CR domiciliados</div>`;
     if(r.fatiga >= 12) costes += `<div style="color:rgba(255,160,120,0.8);margin-top:0.3rem;font-size:0.55rem;">El cuerpo acusa el esfuerzo.</div>`;
+    // Reputación movida por el enfoque elegido (solo si hubo cambios).
+    let repLineaHtml = '';
+    if(r.rep){
+      repLineaHtml = `<div style="margin-top:0.3rem;font-size:0.55rem;letter-spacing:0.12em;opacity:0.75;">${r.rep}</div>`;
+    }
     aviso = `
       <div class="trabajo-tarjeta" style="border-color:rgba(0,229,255,0.25);">
         <div class="trabajo-descripcion" style="opacity:0.85;">${r.nota}</div>
         <div class="trabajo-meta"><span></span>${pagaLinea}</div>
+        ${repLineaHtml}
         ${costes}
         ${asc}
       </div>`;
@@ -317,6 +325,16 @@ function _renderAccionesOficio(p){
       botonesAccion += `
         <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
           onclick="if(typeof abrirCorrida==='function'){abrirCorrida('apartamento','${a.bando||'contrabando'}');}">${a.nombre}</button>`;
+    } else if(a.conEnfoques){
+      // Acción cotidiana con enfoques: si está abierto su selector, lo
+      // pintamos en lugar del botón; si no, el botón que lo abre.
+      if(_enfoqueAbierto && _enfoqueAbierto.prof === p.id && _enfoqueAbierto.accion === a.id){
+        botonesAccion += _renderSelectorEnfoques(p, a);
+      } else {
+        botonesAccion += `
+        <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+          onclick="abrirEnfoquesDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
+      }
     } else {
       botonesAccion += `
         <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
@@ -329,11 +347,13 @@ function _renderAccionesOficio(p){
 // Entrar/salir del submenú de un oficio.
 function abrirOficioSubmenu(id){
   _profAbierta = id;
+  _enfoqueAbierto = null;
   if(typeof reproducirFX === 'function') reproducirFX('panel_abrir', 0.4);
   _refrescarSubcuerpoTrabajos();
 }
 function cerrarOficioSubmenu(){
   _profAbierta = null;
+  _enfoqueAbierto = null;
   if(typeof reproducirFX === 'function') reproducirFX('terminal_cerrar', 0.35);
   _refrescarSubcuerpoTrabajos();
 }
@@ -404,6 +424,58 @@ function ejercerLugarDesdePanel(idProf, idAccion, idLugar){
     if(r && !r.bloqueado) _ultimoResultadoProfesion = r;
   }
   _refrescarSubcuerpoTrabajos();
+}
+
+// ── Selector de ENFOQUES (acciones cotidianas de contrabandista/seguridad) ──
+// Una lista de formas de afrontar la jornada, cada una con su sabor moral.
+// El jugador elige cómo se gana el día; el motor resuelve paga, reputación
+// y peso emocional según el enfoque.
+function _renderSelectorEnfoques(prof, accion){
+  let items = '';
+  (accion.enfoques || []).forEach(e => {
+    items += `
+      <div style="margin-top:0.5rem;padding:0.5rem;border:1px solid rgba(0,229,255,0.12);">
+        <div style="font-size:0.6rem;letter-spacing:0.15em;color:var(--cyan);">${e.nombre.toUpperCase()}</div>
+        <div style="font-size:0.55rem;opacity:0.65;margin:0.3rem 0;">${e.sabor}</div>
+        <button class="btn-terminal" style="display:block;width:100%;"
+          onclick="ejercerEnfoqueDesdePanel('${prof.id}','${accion.id}','${e.id}')">${accion.selectorBoton || 'HACERLO →'}</button>
+      </div>`;
+  });
+  return `
+    <div style="margin-top:0.5rem;border:1px solid rgba(0,229,255,0.2);padding:0.5rem;">
+      <div style="font-size:0.5rem;letter-spacing:0.2em;opacity:0.6;margin-bottom:0.2rem;">${accion.selectorTitulo || '¿CÓMO LO HACES?'}</div>
+      ${items}
+      <button class="btn-terminal" style="display:block;width:100%;margin-top:0.6rem;opacity:0.6;"
+        onclick="cerrarEnfoquesDesdePanel()">VOLVER</button>
+    </div>`;
+}
+
+// Abre el selector de enfoques de una acción cotidiana.
+function abrirEnfoquesDesdePanel(idProf, idAccion){
+  _enfoqueAbierto = { prof: idProf, accion: idAccion };
+  if(typeof reproducirFX === 'function') reproducirFX('panel_abrir', 0.35);
+  _refrescarSubcuerpoTrabajos();
+}
+
+// Cierra el selector sin trabajar.
+function cerrarEnfoquesDesdePanel(){
+  _enfoqueAbierto = null;
+  _refrescarSubcuerpoTrabajos();
+}
+
+// El jugador elige un enfoque concreto y trabaja con él.
+function ejercerEnfoqueDesdePanel(idProf, idAccion, idEnfoque){
+  _enfoqueAbierto = null;
+  if(typeof ejercerProfesion === 'function'){
+    const r = ejercerProfesion(idProf, idAccion, idEnfoque);
+    if(r && !r.bloqueado) _ultimoResultadoProfesion = r;
+  }
+  _refrescarSubcuerpoTrabajos();
+}
+if(typeof window !== 'undefined'){
+  window.abrirEnfoquesDesdePanel = abrirEnfoquesDesdePanel;
+  window.cerrarEnfoquesDesdePanel = cerrarEnfoquesDesdePanel;
+  window.ejercerEnfoqueDesdePanel = ejercerEnfoqueDesdePanel;
 }
 
 // El jugador pulsa una acción de TRABAJAR. Ejerce, guarda el resultado

@@ -2,6 +2,12 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.125] - 2026-06-21
+### Added
+- Contrabandista y Seguridad HELIX ganan una acción cotidiana propia ("Pasarte por el punto muerto" y "Hacer una ronda"): eliges cómo te ganas el día entre varios enfoques con peso moral, y cada decisión mueve tu reputación con las facciones (HELIX, Loto, Eco) además de pagarte y dejar huella emocional.
+### Changed
+- El motor de profesiones admite ahora acciones con "enfoques" que afectan a la reputación de facción y al estado de ánimo, no solo a la paga.
+
 ## [0.124] - 2026-06-21
 ### Added
 - Eventos exclusivos de profesión en la deriva: cada oficio (scavenger, investigador, cazarrecompensas, hacker, contrabandista y seguridad HELIX) tiene una cadena corta que solo aparece si lo ejerces, mirando la ciudad con sus ojos y con decisiones y recompensas propias del oficio.

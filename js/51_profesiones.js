@@ -241,6 +241,51 @@ const PROFESIONES = [
         conCorrida: true,
         bando: 'contrabando',
         nota: 'Repasar el tablón de rutas. Aceptar una, recorrerla nodo a nodo y entregar la mercancía.'
+      },
+      {
+        // Trajín diario del contrabandista: no es una ruta completa, es el
+        // rincón de siempre donde se cuece todo. Eliges CÓMO te ganas el día
+        // (enfoque) y eso mueve tu reputación con el hampa y contigo mismo.
+        id: 'punto',
+        nombre: 'Pasarte por el punto muerto',
+        minutos: 60,
+        progreso: 12,
+        cooldownHoras: 3,
+        conEnfoques: true,
+        selectorTitulo: '¿QUÉ HACES EN EL PUNTO?',
+        selectorBoton: 'HACERLO →',
+        nota: 'El rincón de siempre. Lo que muevas aquí no cambia el mundo, pero el barrio toma nota de quién eres.',
+        enfoques: [
+          {
+            id: 'paquete',
+            nombre: 'Mover un paquete pequeño',
+            sabor: 'Una entrega rápida, mano a mano. Poco peso, poco riesgo, poca paga. Pero el barrio recuerda quién cumple.',
+            desenlaces: [
+              { peso: 55, texto: 'La caja cambia de manos en un portal sin nombre. Nadie da las gracias en las Pilas, pero la próxima vez preguntarán por ti.', paga: [40, 70], progExtra: 6, rep: { faccion: 'loto', delta: 2 } },
+              { peso: 25, texto: 'Mercancía buena, cliente nervioso, todo limpio. Cobras bien y alguien arriba apunta tu nombre en la columna de los fiables.', paga: [60, 95], progExtra: 8, rep: { faccion: 'loto', delta: 3 } },
+              { peso: 20, texto: 'El contacto no aparece. Esperas en el frío una hora de más y vuelves con el paquete y la sensación de haber malgastado la tarde.', paga: [20, 35], fatiga: 5, aislamiento: 1 }
+            ]
+          },
+          {
+            id: 'soplo',
+            nombre: 'Vender un soplo',
+            sabor: 'Sabes cosas. Alguien paga por saberlas. El problema es a quién se las jodes al contarlas.',
+            desenlaces: [
+              { peso: 50, texto: 'Cantas lo justo. El que paga sonríe; en algún sitio, alguien que confiaba en ti va a tener una mala noche. No preguntas cuál.', paga: [70, 120], rep: [ { faccion: 'helix', delta: 1 }, { faccion: 'loto', delta: -2 } ], aislamiento: 2 },
+              { peso: 30, texto: 'El dato vale oro y lo sabes. Lo vendes entero. Te pagan como a un traidor de los buenos, que es lo que acabas de ser.', paga: [90, 150], rep: { faccion: 'loto', delta: -3 }, disociacion: 1 },
+              { peso: 20, texto: 'La información ya estaba quemada. Te pagan por costumbre, no por valor. Te queda el mal sabor de boca igual.', paga: [30, 50], rep: { faccion: 'loto', delta: -1 } }
+            ]
+          },
+          {
+            id: 'escuchar',
+            nombre: 'Esperar y escuchar',
+            sabor: 'No mover nada. Sentarte en el rincón de siempre y dejar que el barrio hable solo.',
+            desenlaces: [
+              { peso: 60, texto: 'No cobras nada. Pero entre el ruido de la barra pillas un nombre y una ruta que va a quedar libre. Mañana eso vale más que los créditos de hoy.', paga: [0, 0], progExtra: 14, rep: { faccion: 'loto', delta: 1 } },
+              { peso: 40, texto: 'Horas mirando la lluvia tras el cristal sucio. No te enteras de gran cosa. Solo de lo solo que estás.', paga: [0, 0], progExtra: 8, aislamiento: 1 }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -271,6 +316,52 @@ const PROFESIONES = [
         conCorrida: true,
         bando: 'seguridad',
         nota: 'Repasar el tablón de operaciones de HELIX. Aceptar una, ejecutarla nodo a nodo y cerrar el acta.'
+      },
+      {
+        // Trajín diario con la placa: la ronda. No es un operativo grande, es
+        // el poder pequeño y cotidiano del que lleva la autoridad. Eliges CÓMO
+        // la usas, y cada forma te acerca o te aleja de HELIX, del barrio y de
+        // la persona que eras antes de la placa.
+        id: 'ronda',
+        nombre: 'Hacer una ronda',
+        minutos: 60,
+        progreso: 12,
+        cooldownHoras: 3,
+        conEnfoques: true,
+        selectorTitulo: '¿CÓMO LLEVAS LA RONDA?',
+        selectorBoton: 'HACERLO →',
+        nota: 'La placa pesa distinto según cómo la uses. Hoy decides tú.',
+        enfoques: [
+          {
+            id: 'decomisar',
+            nombre: 'Decomisar al primero que falle',
+            sabor: 'La placa te deja quitarle a cualquiera lo que lleve, si encuentras el papel que falta. Y siempre falta un papel.',
+            desenlaces: [
+              { peso: 55, texto: 'Un viejo sin licencia de puesto. Le requisas el género y la tarde. No protesta; ya conoce el guion. Te llevas la mercancía y una mirada que te va a costar dormir.', paga: [60, 100], rep: [ { faccion: 'helix', delta: 3 }, { faccion: 'loto', delta: -2 } ], aislamiento: 2 },
+              { peso: 25, texto: 'Un dispensario de barrio sin sello. Lo cierras "por procedimiento" y te llevas lo que valga. La cola de enfermos se deshace en silencio a tu espalda.', paga: [90, 140], rep: [ { faccion: 'helix', delta: 3 }, { faccion: 'loto', delta: -3 }, { faccion: 'eco', delta: -1 } ], disociacion: 1 },
+              { peso: 20, texto: 'Esta vez el desgraciado se revuelve. Lo reduces, pero te llevas un golpe. El acta dirá "resistencia a la autoridad". La realidad dirá otra cosa.', paga: [40, 70], rep: { faccion: 'helix', delta: 1 }, herida: 'herida_brazo_d_leve', fatiga: 6 }
+            ]
+          },
+          {
+            id: 'peaje',
+            nombre: 'Cobrar el peaje y mirar a otro lado',
+            sabor: 'No hace falta decomisar nada. Basta con dejar pasar lo que ya pasa, por un precio.',
+            desenlaces: [
+              { peso: 50, texto: 'Un sobre fino cambia de bolsillo. Tú no has visto nada, ellos no han dado nada. HELIX cree que patrullas; en realidad cobras dos veces.', paga: [80, 130], rep: [ { faccion: 'helix', delta: -2 }, { faccion: 'loto', delta: 2 } ], disociacion: 1 },
+              { peso: 30, texto: 'Un cargamento entero pasa bajo tus narices con tu bendición pagada. Esta noche comes bien. El uniforme cuelga del perchero como una broma.', paga: [110, 170], rep: [ { faccion: 'helix', delta: -3 }, { faccion: 'loto', delta: 3 } ] },
+              { peso: 20, texto: 'Un dron de auditoría pasa en el peor momento. Disimulas, pero el registro queda. Una nota interna, una sanción "por procedimiento". Nadie dice soborno en voz alta.', paga: [0, 0], rep: { faccion: 'helix', delta: -1 }, multa: [50, 90], aislamiento: 1 }
+            ]
+          },
+          {
+            id: 'papeleo',
+            nombre: 'Solo el papeleo',
+            sabor: 'Cerrar actas, sellar partes, no mirar a nadie a los ojos. La forma más limpia de no ser nadie.',
+            desenlaces: [
+              { peso: 60, texto: 'Tres horas de formularios bajo un fluorescente que zumba. Cobras tu jornada exacta, ni un crédito de más. Nadie sale herido. Tampoco nadie se acuerda de ti.', paga: [45, 70], progExtra: 10, rep: { faccion: 'helix', delta: 1 } },
+              { peso: 40, texto: 'El sistema rechaza un acta por un campo mal puesto. La rehaces. Por un momento te preguntas qué hacías antes de la placa, y no te acuerdas.', paga: [40, 60], progExtra: 6, aislamiento: 1 }
+            ]
+          }
+        ]
       }
     ]
   }
@@ -483,6 +574,13 @@ function ejercerProfesion(idProf, idAccion, idLugar){
   let herida = null;
   let multa = null;
   let lugarNombre = '';
+  // Efectos extra que pueden traer los desenlaces de enfoque (acciones
+  // cotidianas de contrabandista y seguridad): reputación de facción y
+  // peso emocional. Vacíos para el resto de oficios.
+  let repCambios = [];      // [{faccion, delta}, ...]
+  let aislDelta = 0;        // sube aislamiento (soledad, deshumanización)
+  let disoDelta = 0;        // sube disociación (no reconocerte en lo que haces)
+  let repLinea = '';        // resumen legible para el panel
 
   if(accion.conLugares){
     // Acción de campo: resolver el desenlace del lugar elegido.
@@ -496,6 +594,24 @@ function ejercerProfesion(idProf, idAccion, idLugar){
     fatiga = des.fatiga || 0;
     herida = des.herida || null;
     multa = des.multa || null;
+  } else if(accion.conEnfoques){
+    // Acción cotidiana con ENFOQUE elegido (idLugar = id del enfoque). Cada
+    // enfoque tiene su propia tabla de desenlaces, con reputación y peso
+    // emocional además de la paga.
+    const enfoque = (accion.enfoques || []).find(e => e.id === idLugar);
+    if(!enfoque) return null;
+    lugarNombre = enfoque.nombre;
+    const des = _elegirDesenlace(enfoque.desenlaces || []);
+    nota = des.texto || '';
+    pagaRango = des.paga || [0, 0];
+    progExtra = des.progExtra || 0;
+    fatiga = des.fatiga || 0;
+    herida = des.herida || null;
+    multa = des.multa || null;
+    if(Array.isArray(des.rep)) repCambios = des.rep;
+    else if(des.rep) repCambios = [des.rep];
+    aislDelta = des.aislamiento || 0;
+    disoDelta = des.disociacion || 0;
   } else {
     // Acción simple: paga directa por su rango.
     pagaRango = accion.pagaBase || [0, 0];
@@ -510,6 +626,23 @@ function ejercerProfesion(idProf, idAccion, idLugar){
 
   // 4) Costes en el cuerpo y en la cuenta.
   if(fatiga > 0 && typeof ajustarHumano === 'function') ajustarHumano('fatiga', fatiga);
+  // Peso emocional de los enfoques: soledad y disociación.
+  if(aislDelta && typeof ajustarHumano === 'function') ajustarHumano('aislamiento', aislDelta);
+  if(disoDelta && typeof ajustarHumano === 'function') ajustarHumano('disociacion', disoDelta);
+  // Reputación de facción: lo que haces te acerca o te aleja del hampa, de
+  // HELIX y del resto del barrio. Construye además una línea legible.
+  if(repCambios.length){
+    const _NOM_FAC = { helix: 'HELIX', loto: 'Loto', sindicatos: 'Sindicatos', eco: 'Eco', ia: 'IA' };
+    repCambios.forEach(rc => {
+      if(rc && rc.faccion && typeof cambiarRepFaccion === 'function'){
+        cambiarRepFaccion(rc.faccion, rc.delta || 0);
+      }
+    });
+    repLinea = repCambios
+      .filter(rc => rc && rc.faccion && (rc.delta || 0) !== 0)
+      .map(rc => (_NOM_FAC[rc.faccion] || rc.faccion) + ' ' + ((rc.delta || 0) >= 0 ? '▲' : '▼'))
+      .join('   ');
+  }
   let heridaNombre = null;
   if(herida && typeof aplicarCondicion === 'function'){
     const aplicada = aplicarCondicion(herida);
@@ -557,6 +690,7 @@ function ejercerProfesion(idProf, idAccion, idLugar){
     fatiga: fatiga,
     herida: heridaNombre,
     multa: multaImporte,
+    rep: repLinea,
     ascendio: ascendio,
     rangoNuevo: rangoNuevo
   };
