@@ -2,6 +2,12 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.123] - 2026-06-20
+### Added
+- El apartamento gana dos anclas emocionales integradas en el pool de acciones ambientales (sin botones nuevos): una repisa que muestra los objetos con peso que has traído de la deriva, y mirarla asienta un poco; y un calefactor viejo, lo único que da calor en un piso sin sol, que se enfría con el tiempo si no vuelves a avivarlo y caldea el piso (y a ti) cuando lo atiendes.
+### Changed
+- El apartamento muestra ahora 2 acciones ambientales en pantalla en vez de 3, para aligerar el menú.
+
 ## [0.122] - 2026-06-20
 ### Added
 - NPCs recurrentes con vínculo: cuatro personajes (Doc Varga, el Archivero, Hermana Lía y Tomás) se vuelven a cruzar contigo en la deriva. Conocerlos y tratarlos bien estrecha un vínculo que progresa por escenas; al alcanzar confianza, el personaje sigue apareciendo y te ofrece una pequeña ayuda práctica además del peso emocional.

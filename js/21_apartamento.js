@@ -157,7 +157,9 @@ const AMBIENTALES_APT = [
   { id:'periodico',etiqueta:'Leer el periódico digital', idx:8 },
   { id:'ducha',    etiqueta:'Ducharte',               idx:9 },
   { id:'espejo',   etiqueta:'Mirarte al espejo',      idx:10 },
-  { id:'limpiar',  etiqueta:'Limpiar el apartamento', idx:11 }
+  { id:'limpiar',  etiqueta:'Limpiar el apartamento', idx:11 },
+  { id:'repisa',     etiqueta:'Mirar la repisa',       idx:12 },
+  { id:'calefactor', etiqueta:'Avivar el calefactor',  idx:13 }
 ];
 
 function _ambientalPorId(id){ return AMBIENTALES_APT.find(a => a.id === id) || null; }
@@ -217,8 +219,8 @@ function _normalizarRanuras(raw){
     if(typeof r === 'string') return { id: r, libreEn: 0 };   // formato viejo: id suelto
     return { id: null, libreEn: 0 };                          // null/!=: hueco listo ya
   });
-  while(ranuras.length < 3) ranuras.push({ id: null, libreEn: 0 });
-  if(ranuras.length > 3) ranuras = ranuras.slice(0, 3);
+  while(ranuras.length < 2) ranuras.push({ id: null, libreEn: 0 });
+  if(ranuras.length > 2) ranuras = ranuras.slice(0, 2);
   return ranuras;
 }
 
@@ -284,8 +286,8 @@ function _elegirRanurasIniciales(){
     const j = Math.floor(Math.random() * (i + 1));
     [baraja[i], baraja[j]] = [baraja[j], baraja[i]];
   }
-  const elegidas = baraja.slice(0, 3).map(a => ({ id: a.id, libreEn: 0 }));
-  while(elegidas.length < 3) elegidas.push({ id: null, libreEn: 0 });
+  const elegidas = baraja.slice(0, 2).map(a => ({ id: a.id, libreEn: 0 }));
+  while(elegidas.length < 2) elegidas.push({ id: null, libreEn: 0 });
   return elegidas;
 }
 
@@ -314,9 +316,114 @@ function botonesAmbientales(textoVentana){
     if(_cdAmbiental(acc.id).enCd) continue; // por si acaso, no mostrar en cooldown
     let etiqueta = acc.etiqueta;
     if(acc.id === 'ventana' && textoVentana) etiqueta = textoVentana;
+    if(acc.id === 'calefactor') etiqueta = _calefactorEtiqueta();
     html += `<button class="opcion-btn" onclick="opcionApt(${acc.idx})">${etiqueta}</button>`;
   }
   return html;
+}
+
+// ============================================================
+// BLOQUE JS-21C — ANCLA EMOCIONAL DEL APARTAMENTO (v0.123)
+// ------------------------------------------------------------
+// Dos anclas, integradas en el POOL de acciones ambientales (NO añaden
+// botones fijos): aparecen a veces en una ranura, como fumar o la música.
+//   · La repisa: objetos con peso que traes de la deriva. Mirarla asienta.
+//   · El calefactor viejo: lo unico que da calor en un piso sin sol. Se
+//     enfria con el tiempo si no vuelves a avivarlo; avivarlo caldea el
+//     piso y a ti (alivia aislamiento). No castiga si se enfria: solo es
+//     un sitio calido al que volver, o no.
+// El cooldown y la rotacion los gobierna el sistema ambiental (idx 12/13).
+// ============================================================
+
+const RECUERDOS_REPISA = {
+  foto_quemada:        'Una fotografía a medio quemar. No reconoces las caras, pero alguien sonreía.',
+  chip_datos_corrupto: 'Un chip de datos corrupto. Dentro hay recuerdos de un desconocido que ya no se dejan leer.',
+  reliquia_carne:      'Una reliquia de la Carne Perfecta. Fría al tacto. No crees en ella; la guardas igual.',
+  mapa_sector:         'Un mapa del sector dibujado a mano. Calles que HELIX ya renombró, vivas todavía en la tinta.',
+  nucleo_optico:       'Un núcleo óptico apagado. A veces lo miras esperando que parpadee. Nunca lo hace.',
+  servidor_hundido:    'Un servidor muerto que sacaste del agua. Pesa como pesan las cosas que un día sirvieron.',
+  placa_sindicato:     'Una placa del Ferro. Un recordatorio de a quién le debes seguir vivo.',
+  navaja_ceramica:     'Una navaja de cerámica. La guardas por la noche en que tuviste que sacarla, no por su filo.'
+};
+function _aptItemsRepisa(){
+  return Object.keys(RECUERDOS_REPISA).filter(id => typeof tieneItem === 'function' && tieneItem(id));
+}
+
+// --- Calefactor viejo: calor 0-100 con decaimiento por tiempo de juego. ---
+const CALEFACTOR_DECLIVE_DIA = 16;  // calor perdido por día de juego sin avivarlo
+const CALEFACTOR_BOOST       = 40;  // calor recuperado al avivarlo
+
+function _calefactorEstado(){
+  const m = Estado.memoria || (Estado.memoria = {});
+  const ahora = _ahoraJuegoMsApt();
+  if(!m.calefactor || typeof m.calefactor !== 'object'){
+    m.calefactor = { calorBase: 50, decaeDesde: ahora || 0 };
+  }
+  const c = m.calefactor;
+  if(typeof c.calorBase !== 'number') c.calorBase = 50;
+  if(typeof c.decaeDesde !== 'number') c.decaeDesde = ahora || 0;
+  return c;
+}
+function _calefactorCalor(){
+  const c = _calefactorEstado();
+  const ahora = _ahoraJuegoMsApt();
+  if(!ahora || !c.decaeDesde) return Math.max(0, Math.min(100, c.calorBase));
+  const dias = Math.max(0, (ahora - c.decaeDesde) / (24 * 60 * 60 * 1000));
+  return Math.max(0, Math.round(c.calorBase - dias * CALEFACTOR_DECLIVE_DIA));
+}
+function _calefactorEtiqueta(){
+  const cal = _calefactorCalor();
+  if(cal <= 0)  return 'Encender el calefactor';
+  if(cal <= 30) return 'Avivar el calefactor (frío)';
+  return 'Avivar el calefactor';
+}
+
+// Texto + efectos de mirar la repisa (accion ambiental idx 12).
+function _aptMirarRepisa(narr){
+  const ids = _aptItemsRepisa();
+  let html;
+  if(ids.length === 0){
+    html = 'La repisa junto a la cama sigue vacía, salvo polvo y la marca de algo que estuvo ahí. '
+         + 'Todavía no has traído nada de fuera que quieras conservar. Quizá sea mejor así. Quizá no.';
+  } else {
+    html = 'Te paras un momento ante la repisa. Lo que has ido trayendo de ahí fuera, lo que no vendiste:<br><br>';
+    html += ids.map(id => '· ' + RECUERDOS_REPISA[id]).join('<br>');
+    html += '<br><br>No valen nada. Por eso los guardas: elegirlos fue tuyo, no de HELIX.';
+    if(typeof ajustarHumano === 'function') ajustarHumano('aislamiento', -4);
+  }
+  if(narr) narr.innerHTML = html;
+}
+
+// Texto + efectos de avivar el calefactor (accion ambiental idx 13).
+function _aptCalefactor(narr){
+  const c = _calefactorEstado();
+  const ahora = _ahoraJuegoMsApt();
+  const cal = _calefactorCalor();
+  const frio = cal <= 0;
+  let estado;
+  if(frio)           estado = 'El calefactor lleva apagado quién sabe cuánto. El piso está helado, como las Pilas de fuera, sin esa frontera tibia que lo separaba del mundo.';
+  else if(cal <= 30) estado = 'El calefactor agoniza, más rojo que naranja. El frío se cuela por las juntas y se te mete en los huesos.';
+  else if(cal <= 65) estado = 'El calefactor ronronea bajo y sostiene un calor justo. Suficiente para no verte el aliento.';
+  else               estado = 'El calefactor está al rojo, llenando el cuarto de un calor seco y anaranjado. Lo más cercano a un hogar que tienes.';
+  c.calorBase = Math.min(100, (frio ? 0 : cal) + CALEFACTOR_BOOST);
+  c.decaeDesde = ahora || c.decaeDesde;
+  if(typeof ajustarHumano === 'function') ajustarHumano('aislamiento', -3);
+  const accion = frio
+    ? 'Golpeas el viejo trasto hasta que la resistencia prende, naranja y temblona. Vuelve el calor, y con él la sensación de tener un dentro y un fuera. Te quedas un rato delante, sin más.'
+    : 'Le subes la resistencia y le limpias la rejilla. El cuarto se va caldeando. Acercas las manos y, por un momento, el frío de ahí fuera deja de ser asunto tuyo.';
+  if(narr) narr.innerHTML = estado + '<br><br>' + accion;
+}
+
+// Cierra una accion ambiental especial (idx 12/13): cooldown + rotacion
+// + guardado + regenerar menu, igual que el resto del pool.
+function _cerrarAmbientalEspecial(idx){
+  const acc = (typeof _ambientalPorIdx === 'function') ? _ambientalPorIdx(idx) : null;
+  if(acc){
+    if(typeof _marcarCdAmbiental === 'function') _marcarCdAmbiental(acc.id);
+    if(typeof _rotarRanuraAmbiental === 'function') _rotarRanuraAmbiental(acc.id);
+  }
+  if(typeof guardarPartida === 'function') guardarPartida();
+  ajustarTextosApartamentoSegunMemoria(true);
 }
 
 function botonVentana(texto){
@@ -546,6 +653,12 @@ function opcionApt(idx){
     }
     return;
   }
+
+  // === OPCIONES 12/13: ANCLAS (repisa, calefactor) ===
+  // Acciones del pool ambiental con contenido dinámico; las resolvemos
+  // aquí (texto + efectos) y cerramos con cooldown+rotación como el resto.
+  if(idx === 12){ _aptMirarRepisa(narr); _cerrarAmbientalEspecial(12); return; }
+  if(idx === 13){ _aptCalefactor(narr);  _cerrarAmbientalEspecial(13); return; }
 
   // Contexto para las variantes: franja horaria + día de la semana.
   const franja = franjaHoraria();
