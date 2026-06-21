@@ -377,7 +377,7 @@
       armaduraTxt = '<span class="corrida-hud-armadura" title="Armadura: reduce daño">'
         + 'BLINDAJE ' + restante + '</span>';
     }
-    const nombresEstado = { estimulado:'ESTIMULADO', tembloroso:'TEMBLOROSO', inhibido:'SIN DOLOR' };
+    const nombresEstado = { estimulado:'ESTIMULADO', tembloroso:'TEMBLOROSO', inhibido:'SIN DOLOR', cubierto:'CUBIERTO', sangrando:'SANGRANDO', aturdido:'ATURDIDO' };
     let estadosTxt = '';
     Object.keys(_estados).forEach(k => {
       if(_estados[k] > 0 && nombresEstado[k]){
@@ -584,6 +584,7 @@
       refuerzoTurno: nodo.refuerzoTurno || 0,
       refuerzoTurnoGrupo: nodo.refuerzoTurnoGrupo || null,
       refuerzoTurnoHecho: false,
+      suprimido: 0,    // turnos de supresión sobre el grupo (fuego pesado)
       ultimoMsg: ''
     };
     if(_alerta >= 70){ // alerta alta: todos pegan un poco más fuerte
@@ -592,7 +593,14 @@
   }
 
   function _crearEnemigo(def, idx){
-    const integridad = def.integridad || 1;
+    const tipo = def.tipo || 'normal';
+    let integridad = def.integridad || 1;
+    let fuerza = (def.fuerza || 3);
+    let umbral = def.umbral || 3;
+    // Comportamiento por tipo (ajustes de base; lo dinámico va en la
+    // respuesta enemiga). Bruto: tanque lento. Rápido: frágil pero hostiga.
+    if(tipo === 'bruto'){ integridad += 2; fuerza += 1; umbral += 1; }
+    else if(tipo === 'rapido'){ integridad = Math.max(1, integridad - 1); }
     // Mordida por rango: las corridas de rango alto pegan más fuerte, para
     // que de verdad asusten. Rango 0-1 sin cambios; r2 +1 fuerza; r3 +2.
     const rango = (_corrida && typeof _corrida.rangoMin === 'number') ? _corrida.rangoMin : 0;
@@ -601,11 +609,15 @@
       uid: 'e' + idx + '_' + Math.floor(Math.random() * 100000),
       nombre: def.nombre || 'Enemigo',
       desc: def.desc || '',
+      tipo: tipo,
       integridad: integridad,
       integridadMax: integridad,
-      fuerza: (def.fuerza || 3) + bonusFuerza,  // daño que te hace al responder
-      umbral: def.umbral || 3,     // fuerza tuya para dañarle de forma notable
-      vivo: true
+      fuerza: fuerza + bonusFuerza,  // daño que te hace al responder
+      umbral: umbral,                // fuerza tuya para dañarle de forma notable
+      vivo: true,
+      sangrado: 0,   // turnos de sangrado activo (pierde integridad por turno)
+      aturdido: 0,   // turnos que pierde su ataque
+      huido: false   // marcado true si un cobarde se larga
     };
   }
 
@@ -624,16 +636,28 @@
 
     // Estado del grupo enemigo.
     html += '<div class="corrida-enemigos">';
+    if(cf.suprimido > 0){
+      html += '<div class="corrida-enemigos-sup">GRUPO SUPRIMIDO ·' + cf.suprimido + '</div>';
+    }
     vivos.forEach(e => {
       const barra = '▮'.repeat(Math.max(0, e.integridad)) + '▯'.repeat(Math.max(0, e.integridadMax - e.integridad));
+      let marcas = '';
+      if(e.sangrado > 0) marcas += '<span class="corrida-enemigo-marca corrida-marca-sangra">SANGRA·' + e.sangrado + '</span>';
+      if(e.aturdido > 0) marcas += '<span class="corrida-enemigo-marca corrida-marca-aturde">ATURDIDO·' + e.aturdido + '</span>';
+      const etiqTipo = (e.tipo && e.tipo !== 'normal')
+        ? '<span class="corrida-enemigo-tipo">' + e.tipo + '</span>' : '';
       html += '<div class="corrida-enemigo' + (cf._objetivo === e.uid ? ' corrida-enemigo-sel' : '') + '">'
-        + '<span class="corrida-enemigo-nom">' + e.nombre + '</span>'
-        + '<span class="corrida-enemigo-vida">' + barra + '</span></div>';
+        + '<span class="corrida-enemigo-nom">' + e.nombre + etiqTipo + '</span>'
+        + '<span class="corrida-enemigo-vida">' + barra + '</span>' + marcas + '</div>';
     });
     html += '</div>';
 
+    // Si TÚ estás aturdido pierdes el ataque: aún puedes usar objetos y
+    // cubrirte, pero no atacar ni elegir a quién golpear.
+    const aturdidoJ = !!(_estados.aturdido && _estados.aturdido > 0);
+
     // Si hay más de un enemigo y no hay objetivo elegido, elegir objetivo.
-    if(vivos.length > 1 && !cf._objetivo){
+    if(vivos.length > 1 && !cf._objetivo && !aturdidoJ){
       html += '<div class="corrida-narr corrida-narr-sub">¿A quién vas?</div>';
       html += '<div class="corrida-ops">';
       vivos.forEach(e => {
@@ -650,13 +674,18 @@
     // Objetivo fijado (o solo queda uno): mostrar las vías.
     const objetivo = vivos.length === 1 ? vivos[0] : vivos.find(e => e.uid === cf._objetivo);
     const nomObj = objetivo ? objetivo.nombre : 'el enemigo';
-    if(vivos.length > 1){
+
+    if(aturdidoJ){
+      html += '<div class="corrida-narr corrida-narr-sub">Estás aturdido. No puedes atacar este turno, pero aún puedes cubrirte o echar mano de algo del bolsillo.</div>';
+    } else if(vivos.length > 1){
       html += '<div class="corrida-narr corrida-narr-sub">Atacas a <b>' + nomObj + '</b>. '
         + '<a class="corrida-cambiar-obj" onclick="elegirObjetivoCorrida(\'\')">(cambiar)</a></div>';
     }
 
     html += '<div class="corrida-ops">';
 
+    // ── VÍAS DE ATAQUE (no disponibles si estás aturdido) ──
+    if(!aturdidoJ){
     // ── VÍA DISPAROS ──
     const _idArmaF = _armaFuegoEquipada();
     if(_idArmaF){
@@ -678,14 +707,28 @@
     // ── VÍA ARMA BLANCA ──
     if(_lleva('arma_blanca')){
       html += _op('acuchillar', 'ACUCHILLAR',
-        'Fuerza media · silencioso · de cerca (arriesgas piel)' + _etiquetaEstadoArma('arma_blanca'),
+        'Fuerza media · silencioso · de cerca · hace sangrar' + _etiquetaEstadoArma('arma_blanca'),
         'corrida-op-blanca');
     }
 
-    // ── VÍA PUÑOS (siempre) ──
+    // ── VÍA PUÑOS (siempre que puedas atacar) ──
     html += _op('punos', 'A PUÑOS',
-      'Fuerza baja · sin gasto · silencioso · lento',
+      'Fuerza baja · sin gasto · silencioso · puede aturdir',
       'corrida-op-punos');
+    } // fin vías de ataque
+
+    // ── VÍA CUBRIRSE (siempre): defensa pura ──
+    // No atacas, pero reduces el daño de los próximos golpes un par de turnos.
+    html += _op('cubrir', 'CUBRIRSE',
+      'No atacas · reduces el daño que recibes un par de turnos',
+      'corrida-op-util');
+
+    // ── VENDAJE: corta tu sangrado (si lo llevas y estás sangrando) ──
+    if(_lleva('vendaje') && _estados.sangrando && _estados.sangrando > 0){
+      html += _op('vendaje', 'VENDAJE COMPRESOR',
+        'Corta tu hemorragia y cierra un poco la herida · no atacas',
+        'corrida-op-util');
+    }
 
     // ── VÍA CURARSE (si llevas kit y estás herido) ──
     // No atacas este turno, pero ganas integridad. Los enemigos responden.
@@ -700,7 +743,7 @@
     }
     if(_lleva('adrenalina')){
       html += _op('adrenalina', 'PARCHE DE ADRENALINA',
-        'Curación rápida pequeña · luego pulso tembloroso', 'corrida-op-util');
+        'Curación rápida · te despeja el aturdimiento · luego pulso tembloroso', 'corrida-op-util');
     }
     if(_lleva('inhibidor_dolor')){
       html += _op('inhibidor', 'INHIBIDOR DE DOLOR',
@@ -728,6 +771,11 @@
       html += _op('distraer', 'LANZAR SEÑUELO',
         'Ruido y firma falsa para escabullirte de todos · gasta el señuelo',
         'corrida-op-util');
+    }
+
+    // Aturdido y sin nada que hacer: al menos puedes aguantar el turno.
+    if(aturdidoJ){
+      html += _op('aguantar', 'AGUANTAR', 'Sacudirte el aturdimiento · pierdes el turno', 'corrida-op-punos');
     }
 
     html += '</div>';
@@ -769,7 +817,7 @@
     // Objetivo: el único vivo, o el seleccionado.
     let objetivo = vivos.length === 1 ? vivos[0] : vivos.find(e => e.uid === cf._objetivo);
     // Vías que afectan al grupo entero no necesitan objetivo.
-    const viaGrupal = (via === 'justificar' || via === 'sobornar' || via === 'distraer' || via === 'amenazar' || via === 'curar' || via === 'estimulante' || via === 'adrenalina' || via === 'inhibidor' || via === 'humo');
+    const viaGrupal = (via === 'justificar' || via === 'sobornar' || via === 'distraer' || via === 'amenazar' || via === 'curar' || via === 'estimulante' || via === 'adrenalina' || via === 'inhibidor' || via === 'humo' || via === 'cubrir' || via === 'aguantar' || via === 'vendaje');
     if(!objetivo && !viaGrupal){
       // Falta elegir objetivo; repintar para que elija.
       _pintarNodo();
@@ -799,6 +847,12 @@
         + 'resuelve, pero medio distrito te ha oído.';
       _fx('impacto', 0.6);
       avisoArma = _gastarArma(idArma);
+      // Fuego pesado (2+ balas por disparo) SUPRIME al grupo: pegan menos y
+      // el ruido no llama refuerzos mientras dura.
+      if(af.gastoBala >= 2){
+        cf.suprimido = Math.max(cf.suprimido, 2);
+        mensaje += ' La andanada los obliga a agachar la cabeza.';
+      }
     } else if(via === 'amenazar'){
       ruido = 8;
       if(Math.random() < 0.5){
@@ -827,11 +881,20 @@
     } else if(via === 'adrenalina'){
       if(_lleva('adrenalina') && typeof quitarItem === 'function') quitarItem('adrenalina', 1);
       _integridad = Math.min(_integridadMax, _integridad + 4);
+      if(_estados.aturdido){ delete _estados.aturdido; } // el chute te despeja
       _estados.tembloroso = 2; // -fuerza un par de turnos (resaca)
-      mensaje = 'El parche descarga en tu cuello. Cierras la herida a medias y te '
-        + 'pones recto de golpe, pero el pulso te baila: cuesta apuntar.';
+      mensaje = 'El parche descarga en tu cuello. Cierras la herida a medias, se te '
+        + 'despeja la cabeza de golpe y te pones recto, pero el pulso te baila: cuesta apuntar.';
       saltarRespuesta = false;
       _fx('inv_acierto', 0.5);
+    } else if(via === 'vendaje'){
+      if(_lleva('vendaje') && typeof quitarItem === 'function') quitarItem('vendaje', 1);
+      if(_estados.sangrando){ delete _estados.sangrando; }
+      _integridad = Math.min(_integridadMax, _integridad + 3);
+      mensaje = 'Aprietas el vendaje compresor sobre la herida. La sangre deja de '
+        + 'salir y el mundo recupera algo de nitidez. No es una cura, pero ya no te vacías.';
+      saltarRespuesta = false;
+      _fx('inv_acierto', 0.4);
     } else if(via === 'inhibidor'){
       if(_lleva('inhibidor_dolor') && typeof quitarItem === 'function') quitarItem('inhibidor_dolor', 1);
       _estados.inhibido = 1; // ignora el próximo golpe (este turno)
@@ -846,18 +909,27 @@
       mensaje = 'Tiras del bote y el callejón se traga en humo gris. Aprovechas la '
         + 'ceguera de todos para desaparecer. No has ganado la pelea: la has dejado atrás.';
       _fx('inv_papel', 0.5);
+    } else if(via === 'cubrir'){
+      _estados.cubierto = 2; // este turno y el siguiente: menos daño
+      mensaje = 'Te pegas al muro, encajas los hombros y haces pequeño tu cuerpo. '
+        + 'No atacas, pero lo que venga te va a doler menos.';
+      _fx('click_metal', 0.4);
+    } else if(via === 'aguantar'){
+      mensaje = 'Aprietas los dientes y esperas a que el mundo deje de dar vueltas.';
     } else if(via === 'acuchillar'){
       fuerzaJugador = 4;
       ruido = 6;
       mensaje = 'Te echas sobre ' + objetivo.nombre + ' y resuelves de cerca, en silencio.';
       _fx('click_metal', 0.5);
       avisoArma = _gastarArma('arma_blanca');
+      if(objetivo){ objetivo.sangrado = Math.max(objetivo.sangrado || 0, 3); } // la hoja deja un corte que sangra
     } else if(via === 'punos'){
       fuerzaJugador = 2;
       ruido = 3;
       mensaje = 'Te lías a puñetazos con ' + objetivo.nombre + '. Funciona a medias, '
         + 'y duele en ambos lados.';
       _fx('impacto', 0.45);
+      if(objetivo && Math.random() < 0.3){ objetivo.aturdido = Math.max(objetivo.aturdido || 0, 2); mensaje += ' Un buen derechazo lo deja groggy.'; }
     } else if(via === 'justificar'){
       evitaTodo = true;
       ruido = 0;
@@ -909,20 +981,47 @@
 
     // ── Refuerzos guionizados: en el turno N entran nuevos ──
     let avisoRefuerzo = '';
-    if(cf.refuerzoTurno > 0 && !cf.refuerzoTurnoHecho && cf.turno >= cf.refuerzoTurno && cf.refuerzoTurnoGrupo){
+    // El líder acelera la llegada de refuerzos guionizados (un turno antes).
+    const _hayLider = _enConfrontacion.enemigos.some(e => e.vivo && e.tipo === 'lider');
+    const _turnoRef = _hayLider && cf.refuerzoTurno > 1 ? cf.refuerzoTurno - 1 : cf.refuerzoTurno;
+    if(_turnoRef > 0 && !cf.refuerzoTurnoHecho && cf.turno >= _turnoRef && cf.refuerzoTurnoGrupo){
       cf.refuerzoTurnoHecho = true;
       const base = cf.enemigos.length;
       cf.refuerzoTurnoGrupo.forEach((e, i) => cf.enemigos.push(_crearEnemigo(e, base + i)));
       avisoRefuerzo = 'Llegan refuerzos.';
     }
-    // ── Refuerzos dinámicos por ruido ──
-    if(cf.refuerzoSiRuido > 0 && !cf.refuerzosLlegaron && _alerta >= cf.refuerzoSiRuido && cf.refuerzoGrupo){
+    // ── Refuerzos dinámicos por ruido ── (la SUPRESIÓN los frena)
+    if(cf.refuerzoSiRuido > 0 && !cf.refuerzosLlegaron && _alerta >= cf.refuerzoSiRuido && cf.refuerzoGrupo && cf.suprimido <= 0){
       cf.refuerzosLlegaron = true;
       const base = cf.enemigos.length;
       cf.refuerzoGrupo.forEach((e, i) => cf.enemigos.push(_crearEnemigo(e, base + i)));
       avisoRefuerzo = (avisoRefuerzo ? avisoRefuerzo + ' ' : '')
         + 'El ruido ha traído más. Un coche frena en seco y bajan varios.';
     }
+
+    let avisoEstado = '';
+
+    // ── Sangrado de los enemigos: pierden integridad antes de poder pegar ──
+    cf.enemigos.forEach(e => {
+      if(e.vivo && e.sangrado > 0){
+        e.sangrado--;
+        e.integridad = Math.max(0, e.integridad - 1);
+        if(e.integridad <= 0){
+          e.vivo = false;
+          avisoEstado += ' ' + e.nombre + ' se desangra y cae.';
+          if(cf._objetivo === e.uid) cf._objetivo = null;
+        }
+      }
+    });
+
+    // ── Cobardes: a poca vida, se largan (sin botín) ──
+    cf.enemigos.forEach(e => {
+      if(e.vivo && e.tipo === 'cobarde' && e.integridadMax > 1 && e.integridad <= Math.ceil(e.integridadMax * 0.3)){
+        e.vivo = false; e.huido = true;
+        avisoEstado += ' ' + e.nombre + ' ve cómo acaba esto y se larga corriendo.';
+        if(cf._objetivo === e.uid) cf._objetivo = null;
+      }
+    });
 
     // ── ¿Quedan enemigos? Si no, victoria ──
     const quedan = _enemigosVivos();
@@ -931,26 +1030,51 @@
       return;
     }
 
-    // ── Respuesta enemiga: cada vivo te hace daño según su fuerza ──
-    // (escala suave: no la suma bruta, para que un grupo no te funda de golpe)
-    // Daño enemigo del turno. Modelo: el enemigo "principal" (el primero
-    // vivo) te alcanza de lleno; el resto, que te rodea, pega a media
-    // potencia (te estás cubriendo de ellos). Además, tope por turno para
-    // que un grupo numeroso no te funda de un solo intercambio.
+    // ── Respuesta enemiga ──
+    // Modelo: el primero que ataca te alcanza de lleno; el resto, a media
+    // potencia. El líder vivo sube la pegada de todos. La supresión y tu
+    // cobertura la bajan. Tope por turno para que un grupo no te funda.
+    const buffLider = quedan.some(e => e.tipo === 'lider') ? 1 : 0;
     let heridaTotal = 0;
-    quedan.forEach((e, i) => {
-      const golpe = Math.max(1, Math.round(e.fuerza / 2));
-      heridaTotal += (i === 0) ? golpe : Math.max(1, Math.round(golpe / 2));
+    let atacanteReal = 0;     // índice del que pega "de lleno"
+    let huboSupresion = false;
+    quedan.forEach(e => {
+      // Aturdido: pierde el turno.
+      if(e.aturdido > 0){ e.aturdido--; return; }
+      // Bruto: lento, a veces se le va el turno.
+      if(e.tipo === 'bruto' && Math.random() < 0.25){ return; }
+      let golpe = Math.max(1, Math.round((e.fuerza + buffLider) / 2));
+      if(cf.suprimido > 0){ golpe = Math.max(1, golpe - 1); huboSupresion = true; }
+      const dano = (atacanteReal === 0) ? golpe : Math.max(1, Math.round(golpe / 2));
+      heridaTotal += dano;
+      atacanteReal++;
+      // Efectos al alcanzarte: el rápido te hace sangrar; el bruto te aturde.
+      if(dano > 0){
+        if(e.tipo === 'rapido' && !_estados.sangrando && Math.random() < 0.30){
+          _estados.sangrando = 3;
+          avisoEstado += ' ' + e.nombre + ' te abre un tajo: empiezas a sangrar.';
+        } else if(e.tipo === 'bruto' && !_estados.aturdido && Math.random() < 0.22){
+          _estados.aturdido = 2;
+          avisoEstado += ' El golpazo de ' + e.nombre + ' te deja aturdido.';
+        }
+      }
     });
+    if(huboSupresion) avisoEstado += ' Los tienes con la cabeza agachada: pegan a media fuerza.';
+
     // Tope: nunca más de ~40% de la integridad máxima en un solo turno.
     const topeTurno = Math.max(3, Math.round(_integridadMax * 0.4));
     if(heridaTotal > topeTurno) heridaTotal = topeTurno;
 
     // Inhibidor de dolor: ignoras por completo el golpe de este turno.
-    let avisoEstado = '';
     if(_estados.inhibido && _estados.inhibido > 0 && heridaTotal > 0){
       avisoEstado += ' El inhibidor hace su trabajo: no sientes nada, no te frenan.';
       heridaTotal = 0;
+    }
+    // Cobertura: pegado al muro, encajas mucho menos.
+    if(_estados.cubierto && _estados.cubierto > 0 && heridaTotal > 0){
+      const antesCob = heridaTotal;
+      heridaTotal = Math.max(1, Math.round(heridaTotal / 2));
+      if(heridaTotal < antesCob) avisoEstado += ' La cobertura aguanta lo peor.';
     }
     // Armadura: reduce el daño recibido (mínimo 1 si te alcanzan algo) y
     // se desgasta con cada golpe que para.
@@ -967,6 +1091,15 @@
       }
     }
     _aplicarHerida(heridaTotal);
+
+    // ── Tu propio sangrado: pierdes integridad por turno ──
+    if(_estados.sangrando && _estados.sangrando > 0){
+      _aplicarHerida(1);
+      avisoEstado += ' Tu herida sigue sangrando. −1 integridad.';
+    }
+
+    // La supresión se disipa con el tiempo.
+    if(cf.suprimido > 0) cf.suprimido--;
 
     // Los estados temporales duran turnos: descuenta uno al cerrar el turno.
     _ticEstados();
