@@ -47,6 +47,7 @@ const MERCADO_PRECIOS = {
   // ── CONSUMIBLES DE COMBATE ── de un uso, asequibles salvo lo HELIX.
   estimulante:       { compra: 95,  venta: 38 },
   adrenalina:        { compra: 70,  venta: 28 },
+  vendaje:           { compra: 45,  venta: 18 },
   inhibidor_dolor:   { compra: 140, venta: 58 },
   granada_humo:      { compra: 85,  venta: 34 },
 
@@ -73,7 +74,7 @@ const MERCADO_PRECIOS = {
 const _MERCADO_COMPRABLE = [
   'medkit','kit_trauma','municion','ganzua','carga_analizador',
   'senuelo','racion_deshidratada','licor',
-  'estimulante','adrenalina','inhibidor_dolor','granada_humo',
+  'estimulante','adrenalina','vendaje','inhibidor_dolor','granada_humo',
   'chaqueta_kevlar','abrigo_trapero','placa_helix',
   'mapa_sector','credencial_falsa',
   'bateria_2v','bateria_4v','bateria_8v',

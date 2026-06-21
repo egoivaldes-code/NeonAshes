@@ -189,6 +189,33 @@
   font-size:0.7rem;
   white-space:nowrap;
 }
+/* Etiqueta de tipo de enemigo (bruto/rápido/líder/cobarde). */
+.corrida-enemigo-tipo{
+  margin-left:0.4rem;
+  font-size:0.46rem;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  opacity:0.55;
+  border:1px solid var(--gris);
+  border-radius:3px;
+  padding:0 0.25rem;
+}
+/* Marcas de estado del enemigo (sangra, aturdido). */
+.corrida-enemigo-marca{
+  margin-left:0.4rem;
+  font-size:0.46rem;
+  letter-spacing:0.12em;
+}
+.corrida-marca-sangra{ color:#d8413a; }
+.corrida-marca-aturde{ color:var(--ambar, #d9a441); }
+/* Aviso de grupo suprimido. */
+.corrida-enemigos-sup{
+  font-size:0.5rem;
+  letter-spacing:0.22em;
+  color:var(--cyan);
+  opacity:0.8;
+  text-transform:uppercase;
+}
 
 /* Sub-narración (¿a quién vas?, atacas a X). */
 .corrida-narr-sub{

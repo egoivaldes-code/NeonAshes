@@ -62,8 +62,8 @@ const CORRIDAS_DATOS = {
         crio:{ tipo:'confrontacion',
           texto:'Un crío del Loto, doce años a lo sumo, te corta el paso. No va armado, pero detrás hay un matón que sí. "Peaje", dice, con una voz que aún no le ha cambiado.',
           enemigos:[
-            { nombre:'El crío', desc:'Asustado, hablando de más', integridad:1, fuerza:1, umbral:2 },
-            { nombre:'Matón con barra', desc:'El que importa', integridad:2, fuerza:3, umbral:2 }
+            { nombre:'El crío', desc:'Asustado, hablando de más', tipo:'cobarde', integridad:1, fuerza:1, umbral:2 },
+            { nombre:'Matón con barra', desc:'El que importa', tipo:'bruto', integridad:2, fuerza:3, umbral:2 }
           ],
           ir:'ruta' },
         ruta:{ tipo:'bifurcacion',
@@ -141,7 +141,7 @@ const CORRIDAS_DATOS = {
           texto:'A la salida del cruce, dos del Loto te esperaban. Alguien ha hablado. "El Ferro paga poco por ese chip", dice el de delante, abriendo una navaja. "Nosotros pagamos en seguir vivos."',
           enemigos:[
             { nombre:'Loto de la navaja', desc:'Habla, gana tiempo', integridad:2, fuerza:4, umbral:4 },
-            { nombre:'Loto callado', desc:'Se mueve para flanquearte', integridad:2, fuerza:3, umbral:2 }
+            { nombre:'Loto callado', desc:'Se mueve para flanquearte', tipo:'rapido', integridad:2, fuerza:3, umbral:2 }
           ],
           ir:'patrulla' },
         patrulla:{ tipo:'confrontacion',
@@ -181,9 +181,9 @@ const CORRIDAS_DATOS = {
         banda:{ tipo:'confrontacion',
           texto:'En un cruce, una banda reconoce a la mujer: hay recompensa de HELIX por marcianos sin papeles. Tres siluetas salen de la lluvia. Ella se pone a tu espalda sin que se lo pidas.',
           enemigos:[
-            { nombre:'Cazarrecompensas', desc:'El que dirige', integridad:3, fuerza:4, umbral:4 },
-            { nombre:'Secuaz con tubo', desc:'Fuerza bruta', integridad:2, fuerza:3, umbral:2 },
-            { nombre:'Vigía nervioso', desc:'Vigila la calle', integridad:1, fuerza:2, umbral:2 }
+            { nombre:'Cazarrecompensas', desc:'El que dirige', tipo:'lider', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Secuaz con tubo', desc:'Fuerza bruta', tipo:'bruto', integridad:2, fuerza:3, umbral:2 },
+            { nombre:'Vigía nervioso', desc:'Vigila la calle', tipo:'cobarde', integridad:1, fuerza:2, umbral:2 }
           ],
           refuerzoSiRuido:50, refuerzoGrupo:[{nombre:'Más cazarrecompensas', desc:'El ruido los atrae', integridad:2, fuerza:3, umbral:2}],
           ir:'ruta' },
@@ -241,7 +241,7 @@ const CORRIDAS_DATOS = {
         ferro:{ tipo:'confrontacion',
           texto:'Dos del Ferro montan un peaje improvisado en la única salida. "Todo lo que cruza paga al Ferro", dice uno, dándose golpecitos con una palanca en la palma. Reconocen las cajas. Saben que mientes.',
           enemigos:[
-            { nombre:'Ferro de la palanca', desc:'Grande, lento', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Ferro de la palanca', desc:'Grande, lento', tipo:'bruto', integridad:3, fuerza:4, umbral:4 },
             { nombre:'Ferro con pistola', desc:'Apunta al carro', integridad:2, fuerza:5, umbral:6 }
           ],
           ir:'chaval' },
@@ -256,8 +256,8 @@ const CORRIDAS_DATOS = {
         redada:{ tipo:'confrontacion',
           texto:'La redada de HELIX te alcanza en un cruce, justo como avisó el chaval. Tres agentes con el equipo reglamentado. No te conocen, pero el carro huele a ozono a un metro. "Pare el vehículo. Inspección."',
           enemigos:[
-            { nombre:'Agente al mando', desc:'Da las órdenes', integridad:3, fuerza:4, umbral:4 },
-            { nombre:'Agente de flanco', desc:'Rodea el carro', integridad:2, fuerza:3, umbral:2 }
+            { nombre:'Agente al mando', desc:'Da las órdenes', tipo:'lider', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Agente de flanco', desc:'Rodea el carro', tipo:'rapido', integridad:2, fuerza:3, umbral:2 }
           ],
           refuerzoTurno:3, refuerzoTurnoGrupo:[{nombre:'Furgón de apoyo', desc:'Llega tarde pero llega', integridad:3, fuerza:4, umbral:4}],
           ir:'entrega' },
@@ -293,7 +293,7 @@ const CORRIDAS_DATOS = {
           enemigos:[
             { nombre:'El que habla', desc:'Sereno, casi te convence', integridad:2, fuerza:3, umbral:2 },
             { nombre:'El que reza', desc:'Murmura sin parar', integridad:2, fuerza:3, umbral:2 },
-            { nombre:'El que no habla', desc:'El peligroso', integridad:3, fuerza:5, umbral:6 }
+            { nombre:'El que no habla', desc:'El peligroso', tipo:'bruto', integridad:3, fuerza:5, umbral:6 }
           ],
           ir:'ruta' },
         ruta:{ tipo:'bifurcacion',
@@ -347,9 +347,9 @@ const CORRIDAS_DATOS = {
         sicarios:{ tipo:'confrontacion',
           texto:'En cuanto pisáis la calle, sicarios del Ferro vendidos a HELIX surgen de tres portales. Don Vasek cobra bien por entregar fantasmas. "El viejo viene con nosotros", dice el líder. "Tú decides en qué estado."',
           enemigos:[
-            { nombre:'Sicario líder', desc:'Pistola y galones', integridad:3, fuerza:5, umbral:6 },
-            { nombre:'Sicario veloz', desc:'Va a por el viejo', integridad:2, fuerza:4, umbral:4 },
-            { nombre:'Sicario pesado', desc:'Bloquea la salida', integridad:4, fuerza:4, umbral:4 }
+            { nombre:'Sicario líder', desc:'Pistola y galones', tipo:'lider', integridad:3, fuerza:5, umbral:6 },
+            { nombre:'Sicario veloz', desc:'Va a por el viejo', tipo:'rapido', integridad:2, fuerza:4, umbral:4 },
+            { nombre:'Sicario pesado', desc:'Bloquea la salida', tipo:'bruto', integridad:4, fuerza:4, umbral:4 }
           ],
           refuerzoTurno:4, refuerzoTurnoGrupo:[
             { nombre:'Coche del Ferro', desc:'Frena en seco, baja uno', integridad:2, fuerza:4, umbral:4 }
@@ -546,7 +546,7 @@ const CORRIDAS_DATOS = {
           enemigos:[
             { nombre:'Agente de recuperación', desc:'Habla con calma de oficina', integridad:3, fuerza:4, umbral:4 },
             { nombre:'Agente de recuperación', desc:'Corta la salida', integridad:3, fuerza:4, umbral:4 },
-            { nombre:'Agente novato', desc:'Más nervioso que tú', integridad:2, fuerza:3, umbral:2 }
+            { nombre:'Agente novato', desc:'Más nervioso que tú', tipo:'cobarde', integridad:2, fuerza:3, umbral:2 }
           ],
           ir:'final' },
         final:{ tipo:'narrativo',
@@ -781,7 +781,7 @@ const CORRIDAS_DATOS = {
         chatarreros:{ tipo:'confrontacion',
           texto:'En los desguaces, una banda de chatarreros ve el regulador asomando bajo los sacos y se le iluminan los ojos: una pieza así vale meses de rebusca. Tres salen de entre los hierros oxidados, palancas en mano. "Suéltala y vete andando."',
           enemigos:[
-            { nombre:'Chatarrero jefe', desc:'Tasa la pieza con la mirada', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'Chatarrero jefe', desc:'Tasa la pieza con la mirada', tipo:'lider', integridad:3, fuerza:4, umbral:4 },
             { nombre:'Chatarrero con palanca', desc:'Impaciente', integridad:2, fuerza:3, umbral:2 },
             { nombre:'Chatarrero joven', desc:'Más hambre que oficio', integridad:2, fuerza:3, umbral:2 }
           ],
@@ -932,7 +932,7 @@ const CORRIDAS_DATOS = {
           enemigos:[
             { nombre:'Loto enfurecido', desc:'Odio puro', integridad:3, fuerza:4, umbral:4 },
             { nombre:'Loto con barra', desc:'Apunta al ejecutivo', integridad:2, fuerza:3, umbral:2 },
-            { nombre:'Loto joven', desc:'Más miedo que rabia', integridad:1, fuerza:2, umbral:2 }
+            { nombre:'Loto joven', desc:'Más miedo que rabia', tipo:'cobarde', integridad:1, fuerza:2, umbral:2 }
           ],
           ir:'final' },
         final:{ tipo:'narrativo',
@@ -967,7 +967,7 @@ const CORRIDAS_DATOS = {
           texto:'Un grupo de vecinos jóvenes te cierra el paso a la válvula. No son matones, son hijos y hermanos con tubos y piedras. La desesperación pega más fuerte que el entrenamiento.',
           enemigos:[
             { nombre:'Vecino con tubo', desc:'Defiende la válvula', integridad:2, fuerza:3, umbral:2 },
-            { nombre:'Vecina con piedra', desc:'Rápida, escurridiza', integridad:1, fuerza:2, umbral:2 },
+            { nombre:'Vecina con piedra', desc:'Rápida, escurridiza', tipo:'rapido', integridad:1, fuerza:2, umbral:2 },
             { nombre:'Anciano terco', desc:'No se aparta', integridad:2, fuerza:2, umbral:2 }
           ],
           refuerzoSiRuido:50, refuerzoGrupo:[
@@ -1007,7 +1007,7 @@ const CORRIDAS_DATOS = {
           enemigos:[
             { nombre:'Encapuchado sereno', desc:'Intenta razonar', integridad:2, fuerza:3, umbral:2 },
             { nombre:'Encapuchado fervoroso', desc:'No teme morir', integridad:3, fuerza:4, umbral:4 },
-            { nombre:'Encapuchado silencioso', desc:'El que de verdad pelea', integridad:3, fuerza:5, umbral:6 }
+            { nombre:'Encapuchado silencioso', desc:'El que de verdad pelea', tipo:'bruto', integridad:3, fuerza:5, umbral:6 }
           ],
           ir:'puerta' },
         puerta:{ tipo:'bifurcacion',
@@ -1056,7 +1056,7 @@ const CORRIDAS_DATOS = {
           enemigos:[
             { nombre:'Fantasma veterano', desc:'Curtido, sin miedo', integridad:3, fuerza:5, umbral:6 },
             { nombre:'Fantasma joven', desc:'Tiene algo que demostrar', integridad:3, fuerza:4, umbral:4 },
-            { nombre:'Fantasma francotirador', desc:'Cubre desde atrás', integridad:2, fuerza:4, umbral:6 }
+            { nombre:'Fantasma francotirador', desc:'Cubre desde atrás', tipo:'rapido', integridad:2, fuerza:4, umbral:6 }
           ],
           refuerzoSiRuido:70, refuerzoGrupo:[
             { nombre:'Coche de los Fantasmas', desc:'El tiroteo los llama', integridad:3, fuerza:4, umbral:4 }
@@ -1276,7 +1276,7 @@ const CORRIDAS_DATOS = {
         lugarteniente_solo:{ tipo:'confrontacion',
           texto:'El pasadizo os escupe casi en la salida del Arrabal. Pero el lugarteniente del Loto conocía la grieta mejor que el informante: os espera, solo, sin escolta, con una pistola y una calma que hiela. "Cuánto daño en una boca tan pequeña", dice, casi con pena. "Esto es asunto de familia."',
           enemigos:[
-            { nombre:'Lugarteniente del Loto', desc:'Solo, pero letal', integridad:3, fuerza:5, umbral:6 }
+            { nombre:'Lugarteniente del Loto', desc:'Solo, pero letal', tipo:'lider', integridad:3, fuerza:5, umbral:6 }
           ],
           ir:'final' },
         lugarteniente:{ tipo:'confrontacion',
@@ -1426,7 +1426,7 @@ const CORRIDAS_DATOS = {
         pasillo:{ tipo:'confrontacion',
           texto:'En la planta de Asuntos Internos, el supervisor en persona os espera en el pasillo con un último hombre. No grita: razona, que es peor. "Piénsalo. Lo que cobras por escoltarlo es calderilla. Yo pago de verdad. Solo tienes que mirar a otro lado treinta segundos."',
           enemigos:[
-            { nombre:'El supervisor', desc:'Compra antes de pegar', integridad:3, fuerza:4, umbral:4 },
+            { nombre:'El supervisor', desc:'Compra antes de pegar', tipo:'lider', integridad:3, fuerza:4, umbral:4 },
             { nombre:'Último guardaespaldas', desc:'Fiel al mejor postor', integridad:3, fuerza:4, umbral:4 }
           ],
           ir:'final' },
@@ -1521,7 +1521,7 @@ const EVENTOS_CORRIDA = {
       msgRechazar:'Sigues de largo. El viejo murmura algo que no llegas a oír, y quizá era importante.' },
     { id:'ev_c_rival', tipo:'confrontacion',
       texto:'Un correo de una banda rival te ha estado siguiendo y te corta el paso. No quiere tu mercancía: quiere que no llegues, para que el encargo caiga en los suyos.',
-      enemigos:[ { nombre:'Correo rival', desc:'Rápido y con prisa', integridad:2, fuerza:3, umbral:2 } ] },
+      enemigos:[ { nombre:'Correo rival', desc:'Rápido y con prisa', tipo:'rapido', integridad:2, fuerza:3, umbral:2 } ] },
     { id:'ev_c_gotera', tipo:'narrativo',
       texto:'Un tramo del túnel está inundado por una tubería rota. Vadeas el agua helada hasta la cintura, con la mercancía sobre la cabeza. Sales calado y temblando, pero al otro lado.',
       herida:1 },

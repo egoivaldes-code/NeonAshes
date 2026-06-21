@@ -2,6 +2,14 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.127] - 2026-06-21
+### Added
+- Estados de combate nuevos: sangrado (daño por turno), aturdido (pierdes el ataque), cobertura (acción CUBRIRSE que reduce el daño) y supresión (el fuego pesado agacha al grupo y frena refuerzos).
+- Enemigos con comportamiento (bruto, rápido, líder, cobarde), con su tipo y estados visibles en la ficha.
+- Nuevo objeto Vendaje compresor (corta tu sangrado y cura un poco); la adrenalina ahora también te despeja el aturdimiento.
+### Changed
+- Acuchillar hace sangrar, A puños puede aturdir, y disparar con arma pesada suprime al grupo. Estando aturdido puedes usar objetos o cubrirte, pero no atacar. Ajuste de probabilidades de los estados.
+
 ## [0.126] - 2026-06-21
 ### Added
 - La munición ahora es un objeto suelto del inventario ("Munición"), se compra de una en una en el mercado y disparar la consume directamente.
@@ -292,7 +300,7 @@
 ## [0.89.4] - 2026-06-07
 ### Fixed
 - Refinado en móvil: rehecho el encaje de la pantalla. El tablero ahora cabe entero (se ajusta de tamaño y, si hiciera falta, hace scroll dentro de su marco) y el botón "Terminar desmontaje" vuelve a estar fijo abajo y siempre visible, en vez de quedar en mitad del tablero.
-- Expedición en móvil: el título de la primera zona ya no choca con el reloj de arriba. Durante la expedición el reloj se oculta (como ya pasa al explorar) y vuelve a aparecer al salir.
+- Expedición en móvil: el título de la primera zona ("Conducto de servicio") ya no choca con el reloj de arriba. Durante la expedición el reloj se oculta (como ya pasa al explorar) y vuelve a aparecer al salir.
 
 ## [0.89.3] - 2026-06-07
 ### Fixed
