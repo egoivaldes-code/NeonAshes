@@ -186,6 +186,8 @@ const ITEMS_EXPEDICION = [
   // ── MUNICIÓN ─────────────────────────────────────────────
   { id:'cargador', nombre:'Cargador', tipo:'municion', usos:6, apilable:true,
     desc:'Seis disparos. En las Pilas, seis es mucho y es nada a la vez. Pesa poco hasta que lo necesitas.' },
+  { id:'municion', nombre:'Munición', tipo:'municion', apilable:true,
+    desc:'Un perno metálico con la base de latón reutilizada. Una bala, un disparo. Se cuentan de una en una y nunca sobran.' },
 
   // ── CONSUMIBLES ──────────────────────────────────────────
   { id:'racion_deshidratada', nombre:'Ración deshidratada', tipo:'comida', usos:1, apilable:true,
@@ -210,6 +212,10 @@ const ITEMS_EXPEDICION = [
     desc:'Hoja de un átomo de grosor, mango envuelto en cinta. Resuelve un mal encuentro de cerca y sin ruido. Lo que no perdona es la duda.' },
   { id:'arma_fuego', nombre:'Pistola de raíl casera', tipo:'equipo', apilable:false,
     desc:'Soldada en algún taller del Ferro. Escupe un perno metálico con un chasquido seco que se oye a tres pasillos. Cada disparo gasta munición y atrae miradas.' },
+  { id:'arma_fuego_regl', nombre:'Pistola de raíl reglamentaria', tipo:'equipo', apilable:false,
+    desc:'Material de seguridad corporativa con la hélice lijada. Mejor calibrada que cualquier chapuza de taller: pega más fuerte y traga dos pernos por disparo. La fiabilidad de HELIX, de segunda mano.' },
+  { id:'arma_fuego_canon', nombre:'Cañón de mano del Ferro', tipo:'equipo', apilable:false,
+    desc:'Un bloque de acero del Ferro que escupe tres pernos a la vez con un trueno que vacía el callejón. Lo que le falta en precisión le sobra en daño. Caro de alimentar, imposible de ignorar.' },
   { id:'analizador', nombre:'Analizador portátil', tipo:'equipo', apilable:false,
     desc:'Una caja con pantalla rota que aún lee lo que toca. Identifica hallazgos sobre la marcha y fuerza cerraduras de datos. Se come las cargas como si fueran agua.' },
   { id:'carga_analizador', nombre:'Célula del analizador', tipo:'consumible', usos:1, apilable:true,
@@ -324,6 +330,15 @@ function contarChatarra(){
   const it = Estado.inventario.find(i => i.id === 'chatarra');
   return it ? (it.cantidad || 0) : 0;
 }
+
+// Cuenta cuántas unidades de un item tienes (0 si no lo llevas). Genérico,
+// lo usa el motor de corridas para la munición suelta del inventario.
+function contarItem(id){
+  _asegurarInventario();
+  const it = Estado.inventario.find(i => i.id === id);
+  return it ? (it.cantidad || 0) : 0;
+}
+if(typeof window !== 'undefined') window.contarItem = contarItem;
 
 // ── Chatarra combinada: para el refinado, la chatarra normal ('chatarra')
 // y la "en bruto" de expediciones ('chatarra_cruda') cuentan como una sola
