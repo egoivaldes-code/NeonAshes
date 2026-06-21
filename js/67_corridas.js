@@ -27,18 +27,20 @@
 //      fallida, sin paga, y baja de progreso. (No es muerte real.)
 //
 //  CONFRONTACIÓN — tres vías FÍSICAS según equipo:
-//    DISPARAR   requiere arma_fuego + balas en el cargador. Mucha
-//               fuerza, resuelve rápido, MUY ruidoso (+alerta alta) y
-//               gasta 1 bala. Sin balas: la opción se cae (queda
-//               AMENAZAR, un farol que puede fallar).
+//    DISPARAR   requiere un arma de fuego + munición suelta en el
+//               inventario. Cada pistola tiene su daño y su gasto de
+//               munición por disparo (casera 1, reglamentaria 2, cañón 3).
+//               Muy ruidoso. Sin munición suficiente: la opción se cae
+//               (queda AMENAZAR, un farol que puede fallar).
 //    ACUCHILLAR requiere arma_blanca. Fuerza media, silencioso, pero
 //               cuerpo a cuerpo (más fácil que te hieran).
 //    PUÑOS      siempre disponible. Fuerza baja, sin gasto, silencioso.
 //    + opciones no físicas según item: justificarte (credencial/papel),
 //      sobornar (créditos), distraer (señuelo).
 //
-//  La MUNICIÓN se modela como balas en el estado de la corrida. Un
-//  'cargador' del inventario (canon: 6 usos) recarga +6 balas.
+//  La MUNICIÓN es un item suelto del inventario ('municion'): se compra de
+//  una en una y disparar la consume directamente. No hay cargador ni paso
+//  de recarga. Las armas mejores pegan más pero gastan más balas por tiro.
 //
 //  El contenido (corridas, nodos, textos) vive en js/68_corrida_datos.js
 //  y es hand-authored y propio de cada bando (no espejo mecánico).
@@ -72,9 +74,6 @@
   function _cobrar(n){ if(typeof Estado === 'object' && typeof Estado.creditos === 'number'){ Estado.creditos = Math.max(0, Estado.creditos - n); } }
   function _rango(profId){ return (typeof rangoActualProfesion === 'function') ? rangoActualProfesion(profId) : 0; }
 
-  // Munición del cargador (canon: cada cargador = 6 disparos).
-  const BALAS_POR_CARGADOR = 6;
-
   // ── DESGASTE DE ARMAS ───────────────────────────────────
   // Las armas físicas se gastan con el uso y acaban rompiéndose. El
   // desgaste se guarda como nº de usos en Estado.memoria.armaDesgaste,
@@ -85,8 +84,33 @@
     arma_blanca: { gastada: 3, comprometida: 6, rompe: 8,
       nombreCorto: 'el cuchillo' },
     arma_fuego:  { gastada: 5, comprometida: 9, rompe: 12,
-      nombreCorto: 'la pistola' }
+      nombreCorto: 'la pistola' },
+    // La reglamentaria es material HELIX: más robusta. El cañón del Ferro
+    // pega como una mula pero es una chapuza: se castiga rápido.
+    arma_fuego_regl:  { gastada: 6, comprometida: 11, rompe: 14,
+      nombreCorto: 'la reglamentaria' },
+    arma_fuego_canon: { gastada: 4, comprometida: 7, rompe: 9,
+      nombreCorto: 'el cañón de mano' }
   };
+
+  // ── ARMAS DE FUEGO ──────────────────────────────────────
+  // Cada pistola tiene su pegada (fuerza, para superar el umbral del
+  // enemigo), su daño por impacto sólido, su gasto de munición POR DISPARO
+  // (la munición es item suelto del inventario) y su ruido. Las mejores
+  // pegan más pero se comen más balas de golpe.
+  const ARMAS_FUEGO = {
+    arma_fuego:       { fuerza: 6,  dano: 2, gastoBala: 1, ruido: 35, nombreCorto: 'la pistola' },
+    arma_fuego_regl:  { fuerza: 8,  dano: 3, gastoBala: 2, ruido: 45, nombreCorto: 'la reglamentaria' },
+    arma_fuego_canon: { fuerza: 11, dano: 4, gastoBala: 3, ruido: 60, nombreCorto: 'el cañón de mano' }
+  };
+  // Mejor pistola que lleva ahora mismo (la de más daño), o null.
+  function _armaFuegoEquipada(){
+    const orden = ['arma_fuego_canon', 'arma_fuego_regl', 'arma_fuego'];
+    for(let i = 0; i < orden.length; i++){ if(_lleva(orden[i])) return orden[i]; }
+    return null;
+  }
+  // Munición suelta que llevas en el inventario.
+  function _municion(){ return (typeof contarItem === 'function') ? contarItem('municion') : 0; }
 
   function _desgasteMapa(){
     Estado.memoria = Estado.memoria || {};
@@ -94,10 +118,6 @@
     return Estado.memoria.armaDesgaste;
   }
   function _usosArma(id){ return _desgasteMapa()[id] || 0; }
-  function _sincronizarBalas(){
-    Estado.memoria = Estado.memoria || {};
-    Estado.memoria.balasCargadas = _balas;
-  }
   function _estadoArma(id){
     const cfg = ARMA_DESGASTE[id];
     if(!cfg) return null;
@@ -149,7 +169,6 @@
   let _integridad = 0;     // vida de la corrida
   let _integridadMax = 0;
   let _alerta = 0;         // 0..100, presión creciente del distrito
-  let _balas = 0;          // munición cargada en el arma de fuego
   let _botin = 0;          // créditos acumulados durante la corrida (bonus)
   let _armadura = null;    // { id, reduccion, aguante, golpes } o null
   let _estados = {};       // estados temporales: { nombre: turnosRestantes }
@@ -335,19 +354,9 @@
       destinoPendiente: null, // a dónde ir tras un evento
       eventoActual: null
     };
-    // Munición: las balas ya cargadas en el arma PERSISTEN entre corridas
-    // (se guardan en memoria). Solo metemos un cargador nuevo si arrancas
-    // con el arma vacía y llevas cargadores, para no dejarte sin opción de
-    // disparo nada más empezar. Recargar a voluntad sigue estando en el
-    // botón RECARGAR durante la corrida.
+    // Munición: balas sueltas en el inventario (item 'municion'). No hay
+    // cargador ni recarga: disparar consume munición directamente.
     Estado.memoria = Estado.memoria || {};
-    _balas = (typeof Estado.memoria.balasCargadas === 'number') ? Estado.memoria.balasCargadas : 0;
-    if(_lleva('arma_fuego') && _balas <= 0 && _lleva('cargador')){
-      if(typeof quitarItem === 'function') quitarItem('cargador', 1);
-      _balas = BALAS_POR_CARGADOR;
-    }
-    if(!_lleva('arma_fuego')) _balas = 0;
-    Estado.memoria.balasCargadas = _balas;
     _guardar();
     _pintarNodo();
   }
@@ -358,8 +367,8 @@
     const corazones = '♦'.repeat(Math.max(0, _integridad)) + '·'.repeat(Math.max(0, _integridadMax - _integridad));
     const nivelAlerta = _alerta >= 70 ? 'alerta-alta' : (_alerta >= 35 ? 'alerta-media' : 'alerta-baja');
     let balasTxt = '';
-    if(_lleva('arma_fuego')){
-      balasTxt = '<span class="corrida-hud-balas">BALAS ' + _balas + '</span>';
+    if(_armaFuegoEquipada()){
+      balasTxt = '<span class="corrida-hud-balas">MUNICIÓN ' + _municion() + '</span>';
     }
     // Armadura equipada (con su desgaste) y estados temporales activos.
     let armaduraTxt = '';
@@ -649,20 +658,20 @@
     html += '<div class="corrida-ops">';
 
     // ── VÍA DISPAROS ──
-    if(_lleva('arma_fuego')){
-      if(_balas > 0){
+    const _idArmaF = _armaFuegoEquipada();
+    if(_idArmaF){
+      const _af = ARMAS_FUEGO[_idArmaF];
+      const _muni = _municion();
+      if(_muni >= _af.gastoBala){
+        const _gastoTxt = _af.gastoBala === 1 ? 'gasta 1 munición' : ('gasta ' + _af.gastoBala + ' munición');
         html += _op('disparar', 'DISPARAR',
-          'Fuerza alta · gasta 1 bala · mucho ruido' + _etiquetaEstadoArma('arma_fuego'),
+          'Daño ' + _af.dano + ' · ' + _gastoTxt + ' · mucho ruido' + _etiquetaEstadoArma(_idArmaF),
           'corrida-op-fuego');
       } else {
         html += _op('amenazar', 'AMENAZAR CON EL ARMA',
-          'Sin balas. Un farol: puede que recule, puede que no',
+          (_muni > 0 ? 'No te llega la munición para un disparo. ' : 'Sin munición. ')
+            + 'Un farol: puede que recule, puede que no',
           'corrida-op-farol');
-        if(_lleva('cargador')){
-          html += _op('recargar', 'RECARGAR',
-            'Meter un cargador (+' + BALAS_POR_CARGADOR + ' balas)',
-            'corrida-op-util');
-        }
       }
     }
 
@@ -760,7 +769,7 @@
     // Objetivo: el único vivo, o el seleccionado.
     let objetivo = vivos.length === 1 ? vivos[0] : vivos.find(e => e.uid === cf._objetivo);
     // Vías que afectan al grupo entero no necesitan objetivo.
-    const viaGrupal = (via === 'justificar' || via === 'sobornar' || via === 'distraer' || via === 'amenazar' || via === 'recargar' || via === 'curar' || via === 'estimulante' || via === 'adrenalina' || via === 'inhibidor' || via === 'humo');
+    const viaGrupal = (via === 'justificar' || via === 'sobornar' || via === 'distraer' || via === 'amenazar' || via === 'curar' || via === 'estimulante' || via === 'adrenalina' || via === 'inhibidor' || via === 'humo');
     if(!objetivo && !viaGrupal){
       // Falta elegir objetivo; repintar para que elija.
       _pintarNodo();
@@ -769,21 +778,27 @@
 
     let mensaje = '';
     let fuerzaJugador = 0;
+    let danoSolido = 2;        // daño de un impacto sólido (melee = 2; las armas de fuego lo suben)
     let ruido = 0;
     let evitaTodo = false;     // dispersa a TODO el grupo (social)
     let escapaTodo = false;    // huida (señuelo)
     let avisoArma = '';
-    let saltarRespuesta = false; // recargar: no atacas, pero te responden
+    let saltarRespuesta = false; // (reservado: acción sin atacar pero te responden)
 
     if(via === 'disparar'){
-      if(_balas <= 0){ return; }
-      _balas--; _sincronizarBalas();
-      fuerzaJugador = 6;
-      ruido = 35 + (objetivo ? 0 : 0);
-      mensaje = 'Disparas a ' + objetivo.nombre + '. El perno rebota en todo el pasillo: '
+      const idArma = _armaFuegoEquipada();
+      const af = idArma ? ARMAS_FUEGO[idArma] : null;
+      if(!af || _municion() < af.gastoBala){ return; }
+      if(typeof quitarItem === 'function') quitarItem('municion', af.gastoBala);
+      fuerzaJugador = af.fuerza;
+      danoSolido = af.dano;
+      ruido = af.ruido;
+      const balaTxt = af.gastoBala === 1 ? 'El perno rebota en todo el pasillo'
+        : 'La ráfaga de ' + af.gastoBala + ' pernos truena en el pasillo';
+      mensaje = 'Disparas a ' + objetivo.nombre + '. ' + balaTxt + ': '
         + 'resuelve, pero medio distrito te ha oído.';
       _fx('impacto', 0.6);
-      avisoArma = _gastarArma('arma_fuego');
+      avisoArma = _gastarArma(idArma);
     } else if(via === 'amenazar'){
       ruido = 8;
       if(Math.random() < 0.5){
@@ -831,13 +846,6 @@
       mensaje = 'Tiras del bote y el callejón se traga en humo gris. Aprovechas la '
         + 'ceguera de todos para desaparecer. No has ganado la pelea: la has dejado atrás.';
       _fx('inv_papel', 0.5);
-    } else if(via === 'recargar'){
-      if(_lleva('cargador') && typeof quitarItem === 'function'){
-        quitarItem('cargador', 1);
-        _balas += BALAS_POR_CARGADOR; _sincronizarBalas();
-      }
-      mensaje = 'Metes un cargador con dedos torpes. Ganas balas, pierdes el turno.';
-      saltarRespuesta = false; // te responden mientras recargas
     } else if(via === 'acuchillar'){
       fuerzaJugador = 4;
       ruido = 6;
@@ -885,8 +893,10 @@
       if(_estados.estimulado && _estados.estimulado > 0) fuerzaEfectiva += 2;
       if(_estados.tembloroso && _estados.tembloroso > 0) fuerzaEfectiva -= 1;
       // Daño = 1 base, +1 si superas el umbral del enemigo (golpe sólido).
-      let dano = 1;
-      if(fuerzaEfectiva >= objetivo.umbral) dano = 2;
+      // Daño: un impacto sólido (superas el umbral) hace el daño del arma;
+      // un roce hace uno menos (mínimo 1). Las armas de fuego mejores tienen
+      // más daño sólido, así que pegan de verdad más fuerte.
+      let dano = (fuerzaEfectiva >= objetivo.umbral) ? danoSolido : Math.max(1, danoSolido - 1);
       objetivo.integridad = Math.max(0, objetivo.integridad - dano);
       if(objetivo.integridad <= 0){
         objetivo.vivo = false;
@@ -932,7 +942,6 @@
       const golpe = Math.max(1, Math.round(e.fuerza / 2));
       heridaTotal += (i === 0) ? golpe : Math.max(1, Math.round(golpe / 2));
     });
-    if(via === 'recargar') heridaTotal += 1;
     // Tope: nunca más de ~40% de la integridad máxima en un solo turno.
     const topeTurno = Math.max(3, Math.round(_integridadMax * 0.4));
     if(heridaTotal > topeTurno) heridaTotal = topeTurno;
@@ -1000,11 +1009,31 @@
 
   // Cierra la confrontación y avanza al siguiente nodo.
   function _terminarConfrontacion(resuelta, mensaje, avisoArma){
+    // Botín de MUNICIÓN: si has DERRIBADO a los enemigos (no huida, no
+    // dispersión social ni soborno), hay una posibilidad de rebuscar balas
+    // sueltas en los caídos. Aplica tanto en corrida como en deriva libre.
+    let avisoBotin = '';
+    if(_enConfrontacion && !_enConfrontacion.escapado && !_enConfrontacion._botinHecho){
+      const enemigos = _enConfrontacion.enemigos || [];
+      const caidos = enemigos.filter(e => !e.vivo).length;
+      const todosMuertos = enemigos.length > 0 && caidos === enemigos.length;
+      if(todosMuertos && Math.random() < 0.45){
+        let balas = 0;
+        for(let i = 0; i < caidos; i++){ balas += 1 + (Math.random() < 0.5 ? 1 : 0); }
+        balas = Math.min(balas, 6);
+        if(balas > 0 && typeof darItemPorId === 'function'){
+          for(let i = 0; i < balas; i++) darItemPorId('municion');
+          _enConfrontacion._botinHecho = true;
+          avisoBotin = 'Rebuscas en los caídos: un puñado de pernos sueltos. +' + balas + ' munición.';
+        }
+      }
+    }
     const cont = document.getElementById('corrida-wrap');
     if(cont){
       let html = _hud();
       if(mensaje) html += '<div class="corrida-narr">' + mensaje + '</div>';
       if(avisoArma) html += '<div class="corrida-aviso corrida-aviso-arma">' + avisoArma + '</div>';
+      if(avisoBotin) html += '<div class="corrida-aviso corrida-aviso-botin">' + avisoBotin + '</div>';
       html += '<button class="btn-terminal" onclick="avanzarCorrida()">SEGUIR ADELANTE →</button>';
       cont.innerHTML = html;
     }
@@ -1566,15 +1595,8 @@
     _eventosUsados = [];
     _pasosDados = 0;
     _run = { botin: [], carga: 0, destinoPendiente: null, eventoActual: null };
-    // Munición cargada persiste igual que en las corridas.
+    // Munición: balas sueltas en el inventario (item 'municion').
     Estado.memoria = Estado.memoria || {};
-    _balas = (typeof Estado.memoria.balasCargadas === 'number') ? Estado.memoria.balasCargadas : 0;
-    if(_lleva('arma_fuego') && _balas <= 0 && _lleva('cargador')){
-      if(typeof quitarItem === 'function') quitarItem('cargador', 1);
-      _balas = BALAS_POR_CARGADOR;
-    }
-    if(!_lleva('arma_fuego')) _balas = 0;
-    Estado.memoria.balasCargadas = _balas;
 
     // Montar el panel (mismo cambio de escena que abrirCorrida).
     if(typeof cerrarPanelHub === 'function'){ try { cerrarPanelHub(); } catch(e){} }

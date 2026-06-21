@@ -21,6 +21,7 @@ const MERCADO_PRECIOS = {
   kit_trauma:        { compra: 220, venta: 90 },
   medkit:            { compra: 90,  venta: 38 },
   cargador:          { compra: 60,  venta: 24 },
+  municion:          { compra: 10,  venta: 4 },
   racion_deshidratada:{ compra: 18, venta: 6 },
   licor:             { compra: 35,  venta: 14 },
   bateria_2v:        { compra: 20,  venta: 8 },
@@ -30,6 +31,8 @@ const MERCADO_PRECIOS = {
   senuelo:           { compra: 70,  venta: 28 },
   arma_blanca:       { compra: 150, venta: 65 },
   arma_fuego:        { compra: 320, venta: 130 },
+  arma_fuego_regl:   { compra: 560, venta: 230 },
+  arma_fuego_canon:  { compra: 820, venta: 330 },
   analizador:        { compra: 260, venta: 110 },
   carga_analizador:  { compra: 45,  venta: 18 },
   ganzua:            { compra: 55,  venta: 22 },
@@ -68,13 +71,13 @@ const MERCADO_PRECIOS = {
 // Catálogo de lo COMPRABLE: items con precio de compra > 0, en el orden
 // en que se quieren mostrar en la tienda.
 const _MERCADO_COMPRABLE = [
-  'medkit','kit_trauma','cargador','ganzua','carga_analizador',
+  'medkit','kit_trauma','municion','ganzua','carga_analizador',
   'senuelo','racion_deshidratada','licor',
   'estimulante','adrenalina','inhibidor_dolor','granada_humo',
   'chaqueta_kevlar','abrigo_trapero','placa_helix',
   'mapa_sector','credencial_falsa',
   'bateria_2v','bateria_4v','bateria_8v',
-  'palanca_termica','mascara_filtro','arma_blanca','arma_fuego','analizador',
+  'palanca_termica','mascara_filtro','arma_blanca','arma_fuego','arma_fuego_regl','arma_fuego_canon','analizador',
   'papel_helix','credencial_helix'
 ];
 
@@ -146,6 +149,22 @@ function _renderVender(){
   return html;
 }
 
+// ── STOCK ROTATIVO ──────────────────────────────────────────
+// Ciertos items caros no están SIEMPRE en el mostrador. Su presencia se
+// fija por día de juego de forma determinista: reabrir la tienda el mismo
+// día NO cambia el stock (nada de save-scum), pero al cambiar de día puede
+// rotar. Las mejores pistolas entran aquí: caras Y poco comunes.
+const _MERCADO_RARO = ['arma_fuego_regl', 'arma_fuego_canon'];
+function _esRaro(id){ return _MERCADO_RARO.indexOf(id) !== -1; }
+function _disponibleHoy(id){
+  if(!_esRaro(id)) return true;
+  if(typeof obtenerFechaJuego !== 'function') return true; // sin reloj, no bloqueamos
+  const dia = Math.floor(obtenerFechaJuego().getTime() / 86400000);
+  let h = 0; const s = id + ':' + dia;
+  for(let i = 0; i < s.length; i++){ h = (h * 31 + s.charCodeAt(i)) >>> 0; }
+  return (h % 3) === 0; // aparece ~1 día de cada 3, cada pistola por su lado
+}
+
 // ── COMPRAR: catálogo de equipo con precio de compra ──
 function _renderComprar(){
   let html = '<div class="merc-intro">Material de segunda mano, precios de primera. Aquí abajo nada sale barato.</div>';
@@ -153,10 +172,11 @@ function _renderComprar(){
   _MERCADO_COMPRABLE.forEach(id => {
     const p = MERCADO_PRECIOS[id];
     if(!p || p.compra <= 0) return;
+    if(!_disponibleHoy(id)) return;   // stock rotativo: hoy no toca
     const max = _mercMax('comprar', id);
     html += '<div class="merc-fila merc-fila-col">'
       + '<div class="merc-fila-info"><span class="merc-fila-nombre">'+_mercNombre(id)+'</span>'
-      + '<span class="merc-fila-meta">'+p.compra+' CR c/u</span></div>';
+      + '<span class="merc-fila-meta">'+p.compra+' CR c/u'+(_esRaro(id) ? ' · poco común' : '')+'</span></div>';
     // Equipo único (no apilable) que ya posees: no tiene sentido recomprarlo.
     const itCat = _mercItem(id);
     const yaLoTienes = itCat && itCat.apilable === false

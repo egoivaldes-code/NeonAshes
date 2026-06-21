@@ -2,6 +2,14 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.126] - 2026-06-21
+### Added
+- La munición ahora es un objeto suelto del inventario ("Munición"), se compra de una en una en el mercado y disparar la consume directamente.
+- Dos pistolas nuevas mejores: Pistola de raíl reglamentaria (más daño, gasta 2 de munición por disparo) y Cañón de mano del Ferro (aún más daño, gasta 3), de venta cara y poco común (stock rotativo por día).
+- Al derribar a los enemigos de una pelea puedes rebuscar munición suelta en los caídos.
+### Changed
+- El combate calcula daño y gasto de munición según el arma de fuego que lleves (la mejor que tengas). Se elimina el sistema de cargador y el paso de recargar; el viejo "Cargador" queda solo como objeto vendible.
+
 ## [0.125] - 2026-06-21
 ### Added
 - Contrabandista y Seguridad HELIX ganan una acción cotidiana propia ("Pasarte por el punto muerto" y "Hacer una ronda"): eliges cómo te ganas el día entre varios enfoques con peso moral, y cada decisión mueve tu reputación con las facciones (HELIX, Loto, Eco) además de pagarte y dejar huella emocional.
