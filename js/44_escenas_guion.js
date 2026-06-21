@@ -90,6 +90,16 @@ function _egCumple(cond){
     if(cond.vinculoMin && typeof vinculoNpc==='function'){
       if(vinculoNpc(cond.vinculoMin.id) < (cond.vinculoMin.n || 1)) return false;
     }
+    // Profesión: el evento solo existe para quien ejerce ese oficio.
+    // cond.profesion puede ser un id ('scavenger') o {id, rangoMin}.
+    if(cond.profesion){
+      const _pr = (typeof cond.profesion === 'string') ? { id: cond.profesion } : cond.profesion;
+      if(!(typeof tieneProfesion === 'function' && tieneProfesion(_pr.id))) return false;
+      if(typeof _pr.rangoMin === 'number'){
+        const _ep = (typeof estadoProfesion === 'function') ? estadoProfesion(_pr.id) : null;
+        if(!_ep || (_ep.rango || 0) < _pr.rangoMin) return false;
+      }
+    }
   }catch(e){ return true; }
   return true;
 }
