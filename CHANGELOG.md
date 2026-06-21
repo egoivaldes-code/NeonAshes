@@ -2,6 +2,11 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.124] - 2026-06-21
+### Added
+- Eventos exclusivos de profesión en la deriva: cada oficio (scavenger, investigador, cazarrecompensas, hacker, contrabandista y seguridad HELIX) tiene una cadena corta que solo aparece si lo ejerces, mirando la ciudad con sus ojos y con decisiones y recompensas propias del oficio.
+- Soporte en el motor de escenas para condicionar un evento a la profesión activa (con rango mínimo opcional).
+
 ## [0.123] - 2026-06-20
 ### Added
 - El apartamento gana dos anclas emocionales integradas en el pool de acciones ambientales (sin botones nuevos): una repisa que muestra los objetos con peso que has traído de la deriva, y mirarla asienta un poco; y un calefactor viejo, lo único que da calor en un piso sin sol, que se enfría con el tiempo si no vuelves a avivarlo y caldea el piso (y a ti) cuando lo atiendes.
