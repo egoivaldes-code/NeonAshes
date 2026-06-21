@@ -175,6 +175,10 @@
   let _volverA = 'apartamento';
   let _enConfrontacion = null;  // datos de la amenaza actual, o null
   let _modoLibre = false;       // true = deriva libre (explorar), no corrida
+  // Combate lanzado DESDE una escena/cadena de profesión (motor 44). Cuando
+  // está activo, el combate usa vida LOCAL (no toca tu fatiga real ni te mata
+  // globalmente) y, al terminar, devuelve el control a la escena (ganar/perder).
+  let _combateEscena = null;    // { onGana, onPierde, prev:{...contexto deriva...} }
 
   // Catálogo de armaduras conocido por el motor (espejo de 40_items.js).
   // El motor no depende de que el item exista, pero usa estos valores.
@@ -1129,6 +1133,13 @@
   // Tras pintar el resultado de un turno: si caíste, desenlace; si quedan
   // enemigos, otra ronda; si no, victoria.
   function _continuarConfrontacion(){
+    // Pelea lanzada desde una escena: ganar/perder devuelve a la historia.
+    if(_combateEscena){
+      if(_integridad <= 0){ _finCombateEscena(false); return; }
+      if(!_enemigosVivos().length){ _terminarConfrontacion(true, ''); return; }
+      _repintarConfrontacionDeriva(); // repinta el turno en corrida-wrap
+      return;
+    }
     if(_modoLibre){
       if(_muertoDeVerdad()) return;                  // muerte real: pantalla tomada
       if(!_enemigosVivos().length){ _terminarConfrontacion(true, ''); return; }
@@ -1167,7 +1178,8 @@
       if(mensaje) html += '<div class="corrida-narr">' + mensaje + '</div>';
       if(avisoArma) html += '<div class="corrida-aviso corrida-aviso-arma">' + avisoArma + '</div>';
       if(avisoBotin) html += '<div class="corrida-aviso corrida-aviso-botin">' + avisoBotin + '</div>';
-      html += '<button class="btn-terminal" onclick="avanzarCorrida()">SEGUIR ADELANTE →</button>';
+      const _accionSeguir = _combateEscena ? 'continuarCombateEscena()' : 'avanzarCorrida()';
+      html += '<button class="btn-terminal" onclick="' + _accionSeguir + '">SEGUIR ADELANTE →</button>';
       cont.innerHTML = html;
     }
     _guardar();
@@ -1842,6 +1854,71 @@
     cont.innerHTML = _hud() + _pintarOpcionesConfrontacion();
   }
 
+  // ── PUENTE ESCENA → COMBATE (v0.129) ────────────────────
+  // Lo llama el motor de escenas (44) cuando una opción tiene 'pelea'.
+  // Monta un combate táctico con vida LOCAL (no toca tu cuerpo real) usando
+  // el equipo que lleves, y al terminar devuelve a la escena de ganar/perder.
+  // Las consecuencias reales (fatiga, reputación) las aplican esas escenas.
+  function iniciarCombateDesdeEscena(cfg){
+    cfg = cfg || {};
+    // Guardar el contexto actual (normalmente una deriva en curso).
+    const prev = {
+      modoLibre: _modoLibre, bando: _bando, corrida: _corrida,
+      integridad: _integridad, integridadMax: _integridadMax,
+      alerta: _alerta, estados: _estados, armadura: _armadura,
+      nodoActual: _nodoActual, enConfrontacion: _enConfrontacion
+    };
+    _combateEscena = { onGana: cfg.onGana, onPierde: cfg.onPierde, prev: prev };
+    _modoLibre = false;                 // vida LOCAL: no toca fatiga ni mata global
+    _corrida = { id: '__escena__', libre: true, rangoMin: cfg.rangoMin || 0 };
+    _integridadMax = cfg.integridad || 10;
+    _integridad = _integridadMax;
+    _alerta = 0;
+    _estados = {};
+    // Equipas la mejor armadura que lleves (igual que en corrida/deriva).
+    _armadura = null;
+    Object.keys(ARMADURAS).forEach(aid => {
+      if(_lleva(aid)){
+        const a = ARMADURAS[aid];
+        if(!_armadura || a.reduccion > _armadura.reduccion){
+          _armadura = { id: aid, reduccion: a.reduccion, aguante: a.aguante, golpes: 0, sigilo: !!a.sigilo };
+        }
+      }
+    });
+    _montarConfrontacion({
+      texto: cfg.texto, enemigos: cfg.enemigos,
+      refuerzoSiRuido: cfg.refuerzoSiRuido, refuerzoGrupo: cfg.refuerzoGrupo,
+      refuerzoTurno: cfg.refuerzoTurno, refuerzoTurnoGrupo: cfg.refuerzoTurnoGrupo
+    });
+    const cont = document.getElementById('corrida-wrap');
+    if(cont){
+      let html = _hud();
+      if(cfg.texto) html += '<div class="corrida-narr">' + cfg.texto + '</div>';
+      html += _pintarOpcionesConfrontacion();
+      cont.innerHTML = html;
+    }
+    _fx('panel_abrir', 0.4);
+    _guardar();
+  }
+
+  // Cierra la pelea de escena, restaura el contexto previo y reanuda la
+  // historia por la rama que toque (ganar/perder).
+  function _finCombateEscena(gano){
+    const ce = _combateEscena;
+    _combateEscena = null;
+    if(!ce){ return; }
+    const p = ce.prev || {};
+    _modoLibre = p.modoLibre; _bando = p.bando; _corrida = p.corrida;
+    _integridad = p.integridad; _integridadMax = p.integridadMax;
+    _alerta = p.alerta; _estados = p.estados || {}; _armadura = p.armadura;
+    _nodoActual = p.nodoActual; _enConfrontacion = null;
+    if(typeof egFijarContenedor === 'function') egFijarContenedor('corrida-wrap');
+    _guardar();
+    if(gano){ if(typeof ce.onGana === 'function') ce.onGana(); }
+    else { if(typeof ce.onPierde === 'function') ce.onPierde(); }
+  }
+  function continuarCombateEscena(){ _finCombateEscena(true); }
+
   // Volver al apartamento. Conservas todo lo que encontraste (ya aplicado).
   function retirarDeriva(){
     _modoLibre = false;
@@ -1865,6 +1942,8 @@
   window.resolverConfrontacion = resolverConfrontacion;
   window.elegirObjetivoCorrida = elegirObjetivoCorrida;
   window._continuarConfrontacion = _continuarConfrontacion;
+  window.iniciarCombateDesdeEscena = iniciarCombateDesdeEscena;
+  window.continuarCombateEscena = continuarCombateEscena;
   window.corridaAccionNodo = corridaAccionNodo;
   window._seguirTransicion = _seguirTransicion;
   window._finEvento = _finEvento;

@@ -224,6 +224,393 @@
         resultado:'Le sigues. En una hora aprendes a qué puestos apretar, qué mirar y qué no, cómo convertir la placa en una caja registradora. Sales con los bolsillos llenos y la certeza incómoda de en qué te estás convirtiendo. Era esto lo que el crío vio en ti antes que tú mismo.' }
     ]
   }
+  ,
+
+  // ============================================================
+  // CADENAS QUE DESEMBOCAN EN PELEA (v0.129)
+  // Una por oficio. Una opción lanza un combate real (sistema nuevo:
+  // estados, tipos de enemigo) con vida local; ganar o perder ramifica
+  // la historia. Las consecuencias de cuerpo y reputación van aquí.
+  // ============================================================
+
+  // SCAVENGER — disputa por un pecio. Bruto + cobarde: prioriza objetivo.
+  'prof_scav_p1': {
+    entrada: true,
+    cond: { profesion: 'scavenger' },
+    img: 'EXP_ALMACEN_ZONA',
+    texto: 'El generador volcado es una mina: cobre, células, medio motor recuperable. Pero no eres el único ojo que lo ha visto. '
+         + 'Dos chatarreros de otra cuadrilla aparecen por el otro lado, y por la forma de plantarse no vienen a repartir. El grande coge una llave de tubo. El flaco se queda medio paso atrás, calculando la huida.',
+    opciones: [
+      { texto: 'Es tuyo. Plantarte y disputarlo.',
+        pelea: { texto: 'El grande va de frente, lento pero demoledor; el flaco ronda buscando el momento, pero no le sobra estómago para esto.',
+          integridad: 11,
+          enemigos: [
+            { nombre: 'Chatarrero grande', desc: 'Llave de tubo, sin prisa', tipo: 'bruto', integridad: 4, fuerza: 5, umbral: 6 },
+            { nombre: 'Chatarrero flaco', desc: 'Calcula la huida', tipo: 'cobarde', integridad: 2, fuerza: 2, umbral: 2 }
+          ],
+          gana: 'prof_scav_p_win', pierde: 'prof_scav_p_lose' } },
+      { texto: 'No vale una costilla rota. Cederlo.', efectos:{ aislamiento:+2 },
+        resultado: 'Levantas las manos y retrocedes. El grande asiente, casi con respeto, y se queda con el pecio. Te vas con las manos vacías y esa vieja lección de la chatarra: a veces el mejor hallazgo es seguir entero.' }
+    ]
+  },
+  'prof_scav_p_win': {
+    img: 'EXP_ALMACEN_ZONA',
+    texto: 'El grande se retira cojeando y el flaco ya hace rato que no está. El pecio es tuyo. Lo desguazas con calma, '
+         + 'con el pulso aún alto, y cargas con lo que vale. Una victoria pequeña y sucia, de las que no se cuentan a nadie.',
+    opciones: [
+      { texto: 'Cargar el botín y largarte.', efectos:{ item:'chatarra', creditos:+70, fatiga:+10 },
+        resultado: 'Te llevas cobre, una célula buena y los créditos que sacarás de todo ello. Las costillas te recordarán el precio un par de días.' },
+      { texto: 'Rebuscar también entre lo que soltaron ellos.', azar:{ prob:0.55,
+          exito:{ efectos:{ item:'municion', fatiga:+12 }, resultado:'Entre el barro encuentras un puñado de pernos de munición que se les cayeron en la pelea. En las Pilas, las balas también son moneda.' },
+          fallo:{ efectos:{ fatiga:+12 }, resultado:'Rebuscas un rato, pero solo encuentras basura mojada. No siempre hay premio extra; bastante es haber ganado.' } } }
+    ]
+  },
+  'prof_scav_p_lose': {
+    img: 'EXP_ALMACEN_ZONA',
+    texto: 'La llave de tubo te alcanza el costado y el suelo sube a recibirte. Cuando te incorporas, el pecio ya no está '
+         + 'y ellos tampoco. Te queda el barro, el dolor y una caja vacía donde iba a estar la cena.',
+    opciones: [
+      { texto: 'Arrastrarte hasta levantarte.', efectos:{ fatiga:+22, aislamiento:+3 },
+        resultado: 'Te levantas a trozos. Nada roto, todo magullado. En las Pilas perder no es morir; es solo otro día con menos.' }
+    ]
+  },
+
+  // INVESTIGADOR — te acercaste demasiado. Cuchillo a sueldo: te hace sangrar.
+  'prof_inv_p1': {
+    entrada: true,
+    cond: { profesion: 'investigador' },
+    img: 'SECTOR7_STREETS',
+    texto: 'Llevas días tirando del hilo equivocado para alguien, y alguien se ha cansado. Lo notas tarde: el callejón se '
+         + 'estrecha y un tipo sale de un quicio con una navaja corta y la mirada tranquila del que ya ha hecho esto antes. No habla. No hace falta.',
+    opciones: [
+      { texto: 'No hay sitio para correr. Encararlo.',
+        pelea: { texto: 'Se mueve rápido y busca el corte, no la muerte: quiere dejarte marcado y sangrando para que aprendas a no preguntar.',
+          integridad: 10,
+          enemigos: [
+            { nombre: 'Cuchillo a sueldo', desc: 'Corta y se aparta · te hace sangrar', tipo: 'rapido', integridad: 3, fuerza: 4, umbral: 2 }
+          ],
+          gana: 'prof_inv_p_win', pierde: 'prof_inv_p_lose' } },
+      { texto: 'Tirar la cartera y salir corriendo.', efectos:{ creditos:-50, disociacion:+3 },
+        resultado: 'Le lanzas la cartera a los pies y echas a correr antes de que decida. No te sigue: ha cobrado el aviso. Llegas a casa entero, más pobre y con la certeza de que tu pregunta tocaba hueso.' }
+    ]
+  },
+  'prof_inv_p_win': {
+    img: 'SECTOR7_STREETS',
+    texto: 'El sicario reconoce que no le pagan lo bastante para esto y se retira, apretándose un brazo. Te quedas en el '
+         + 'callejón recuperando el aire. No le has sacado un nombre, pero ahora sabes una cosa: el hilo que tirabas le importa a alguien con dinero.',
+    opciones: [
+      { texto: 'Guardar lo que te ha dejado caer.', efectos:{ item:'arma_blanca', faccion:'loto', rep:+1, fatiga:+8 },
+        resultado: 'En la huida ha soltado su navaja. La recoges: buena hoja, mejor que la tuya. Y en el Arrabal, que se sepa que sigues en pie cuenta como respeto.' },
+      { texto: 'Curarte el rasguño antes de seguir.', azar:{ prob:0.6,
+          exito:{ efectos:{ item:'vendaje', faccion:'loto', rep:+1, fatiga:+8 }, resultado:'En su zurrón caído hay un vendaje compresor sin estrenar. Te lo guardas: el oficio de preguntar deja cicatrices, y conviene ir preparado.' },
+          fallo:{ efectos:{ faccion:'loto', rep:+1, fatiga:+8 }, resultado:'No lleva nada que te sirva. Te aprietas la manga sobre el corte y sigues. La hoja que recogiste tendrá que bastar.' } } }
+    ]
+  },
+  'prof_inv_p_lose': {
+    img: 'SECTOR7_STREETS',
+    texto: 'El corte te cruza el antebrazo y la sangre te nubla la decisión. Cuando consigues taparte, él ya se ha ido, '
+         + 'su trabajo hecho. El mensaje ha quedado claro, escrito en tu piel: deja de preguntar.',
+    opciones: [
+      { texto: 'Apretar la herida y volver a casa.', efectos:{ fatiga:+20, aislamiento:+4 },
+        resultado: 'Te vendas como puedes y caminas pegado a las paredes. La herida cerrará. La pregunta, en cambio, te va a costar más soltarla.' }
+    ]
+  },
+
+  // CAZARRECOMPENSAS — el objetivo se esconde tras un guardaespaldas bruto.
+  'prof_caza_p1': {
+    entrada: true,
+    cond: { profesion: 'cazarrecompensas' },
+    img: 'EXP_MERCADO_SUMERGIDO',
+    texto: 'Lo tienes acorralado en un puesto del mercado sumergido: un moroso de poca monta con una orden de captura barata. '
+         + 'El problema es el armario con patas que ha contratado de niñera, plantado entre tú y él. El moroso ya tiembla; el grandullón ni pestañea.',
+    opciones: [
+      { texto: 'Pasar por encima del guardaespaldas.',
+        pelea: { texto: 'El armario aguanta como un muro y golpea como una grúa; cada porrazo suyo te puede dejar viendo estrellas. El moroso, detrás, busca por dónde escurrirse.',
+          integridad: 12,
+          enemigos: [
+            { nombre: 'Guardaespaldas', desc: 'Un muro que aturde', tipo: 'bruto', integridad: 5, fuerza: 6, umbral: 6 },
+            { nombre: 'El moroso', desc: 'Huirá en cuanto pueda', tipo: 'cobarde', integridad: 2, fuerza: 2, umbral: 2 }
+          ],
+          gana: 'prof_caza_p_win', pierde: 'prof_caza_p_lose' } },
+      { texto: 'Esperar a que se separen.', efectos:{ fatiga:+6, disociacion:+1 },
+        resultado: 'Te tragas las ganas y esperas en la sombra. Tarde o temprano el moroso irá a mear solo. Lo cazas sin ruido, sin gloria y sin un rasguño. El trabajo limpio rara vez es el espectacular.' }
+    ]
+  },
+  'prof_caza_p_win': {
+    img: 'EXP_MERCADO_SUMERGIDO',
+    texto: 'El armario cae de rodillas, resoplando, y decide que su sueldo no cubre esto. El moroso, sin su muro, se '
+         + 'desinfla solo. Lo esposas mientras balbucea excusas que no escuchas. Otro nombre tachado de la lista.',
+    opciones: [
+      { texto: 'Cobrar la captura.', efectos:{ creditos:+140, faccion:'helix', rep:+1, fatiga:+12 },
+        resultado: 'Entregas al moroso y cobras la recompensa. No es una fortuna, pero llena la nevera y mantiene tu nombre en circulación. El guardaespaldas, por cierto, no te guarda rencor: es solo trabajo, para todos.' },
+      { texto: 'Cachear al guardaespaldas antes de irte.', azar:{ prob:0.5,
+          exito:{ efectos:{ item:'municion', creditos:+30, fatiga:+12 }, resultado:'El armario lleva munición de sobra y unos billetes sueltos. No protesta cuando se los quitas: ya ha tenido bastante por hoy.' },
+          fallo:{ efectos:{ fatiga:+12 }, resultado:'Solo lleva encima dolor y orgullo herido. Lo dejas en paz; un profesional reconoce a otro.' } } }
+    ]
+  },
+  'prof_caza_p_lose': {
+    img: 'EXP_MERCADO_SUMERGIDO',
+    texto: 'Un golpe del armario te dobla y el suelo del mercado te recibe entre charcos. Para cuando levantas la cabeza, '
+         + 'el moroso y su niñera ya son dos sombras al fondo del pasillo. La recompensa se va con ellos.',
+    opciones: [
+      { texto: 'Recoger tu orgullo del suelo.', efectos:{ fatiga:+24, aislamiento:+3 },
+        resultado: 'Te incorporas dolorido y sin presa. La orden seguirá abierta, y tú con una lección cara: a algunos no se les entra de frente.' }
+    ]
+  },
+
+  // HACKER — tu intrusión deja rastro y baja un equipo de seguridad físico.
+  'prof_hack_p1': {
+    entrada: true,
+    cond: { profesion: 'hacker' },
+    img: 'EXP_TALLER_NEURAL',
+    texto: 'El trabajo era limpio: entrar, copiar, salir. Pero el sistema te ha mordido al salir y ha cantado tu posición. '
+         + 'Oyes botas en la escalera del taller: un equipo de recuperación, con uno dando las órdenes. Si esto se llena de ruido, bajarán más.',
+    opciones: [
+      { texto: 'Plantar cara en el taller estrecho.',
+        pelea: { texto: 'El que manda los coordina desde atrás: mientras él dirija, los demás aprietan. Y cada disparo que sueltes va a traer compañía por esas escaleras. Calla al jefe o juega callado.',
+          integridad: 11,
+          enemigos: [
+            { nombre: 'Jefe de recuperación', desc: 'Coordina al equipo', tipo: 'lider', integridad: 3, fuerza: 4, umbral: 4 },
+            { nombre: 'Operario de seguridad', desc: 'Cumple órdenes', integridad: 2, fuerza: 3, umbral: 2 }
+          ],
+          refuerzoSiRuido: 55,
+          refuerzoGrupo: [ { nombre: 'Refuerzo de HELIX', desc: 'El ruido lo trajo', tipo:'rapido', integridad: 2, fuerza: 3, umbral: 2 } ],
+          gana: 'prof_hack_p_win', pierde: 'prof_hack_p_lose' } },
+      { texto: 'Borrar el rastro y huir por el conducto.', efectos:{ fatiga:+10, creditos:-30 },
+        resultado: 'Tiras los datos a un servidor muerto, fríes tu firma y te escurres por un conducto de ventilación angosto. Sales sin el botín y con la espalda hecha polvo, pero sin cara que puedan archivar. A veces ganar es no estar.' }
+    ]
+  },
+  'prof_hack_p_win': {
+    img: 'EXP_TALLER_NEURAL',
+    texto: 'Sin su jefe dando órdenes, el equipo se desordena y se repliega escaleras arriba. El taller queda en silencio, '
+         + 'solo el zumbido de las máquinas y tu respiración. Los datos siguen en tu bolsillo, calientes.',
+    opciones: [
+      { texto: 'Salir con lo que viniste a buscar.', efectos:{ creditos:+120, faccion:'ia', rep:+1, fatiga:+10 },
+        resultado: 'Vendes los datos a quien sabes y el Nodo toma nota de que sabes moverte. No te hace rico, pero te hace fiable, que en estos círculos vale más.' },
+      { texto: 'Registrar el equipo de seguridad caído.', azar:{ prob:0.5,
+          exito:{ efectos:{ item:'municion', fatiga:+10 }, resultado:'Uno de los operarios soltó su cargador en la refriega. Recoges la munición suelta: nunca sabes cuándo el siguiente trabajo se tuerce a tiros.' },
+          fallo:{ efectos:{ fatiga:+10 }, resultado:'Equipo estándar, todo rastreado, nada que merezca llevarse. Lo dejas y desapareces antes de que vuelvan.' } } }
+    ]
+  },
+  'prof_hack_p_lose': {
+    img: 'EXP_TALLER_NEURAL',
+    texto: 'Te superan en número antes de que puedas pensar. Te quitan el terminal de las manos, te sacan a empujones y te '
+         + 'dejan tirado en el callejón con una advertencia y un par de costillas resentidas. Los datos se quedan ellos.',
+    opciones: [
+      { texto: 'Levantarte antes de que cambien de idea.', efectos:{ fatiga:+22, disociacion:+4 },
+        resultado: 'Te incorporas y desapareces antes de que decidan rematar el aviso. El trabajo está perdido y tu firma, fichada. Tocará estar bajo tierra una temporada.' }
+    ]
+  },
+
+  // CONTRABANDISTA — emboscada de una banda rival en el puerto de carga.
+  'prof_contra_p1': {
+    entrada: true,
+    cond: { profesion: 'contrabandista' },
+    img: 'EXP_PUERTO_CARGA',
+    texto: 'La entrega iba bien hasta que tres siluetas salen de detrás de los contenedores. Una banda rival que lleva tiempo '
+         + 'queriendo tu ruta, y el que va delante sonríe como quien ya ha ganado. Detrás, el puerto está lleno de oídos: si esto truena, vendrán a mirar.',
+    opciones: [
+      { texto: 'No te quitan la ruta sin pelear.',
+        pelea: { texto: 'El cabecilla envalentona a los suyos con solo estar ahí. Y el puerto es una caja de resonancia: cada tiro va a llamar a más curiosos con ganas. Cállalo, o hazlo en silencio.',
+          integridad: 11,
+          enemigos: [
+            { nombre: 'Cabecilla rival', desc: 'Mátalo y el resto duda', tipo: 'lider', integridad: 3, fuerza: 4, umbral: 4 },
+            { nombre: 'Matón del puerto', desc: 'Grande y terco', tipo: 'bruto', integridad: 4, fuerza: 5, umbral: 6 },
+            { nombre: 'Recadero', desc: 'Más miedo que ganas', tipo: 'cobarde', integridad: 2, fuerza: 2, umbral: 2 }
+          ],
+          refuerzoSiRuido: 60,
+          refuerzoGrupo: [ { nombre: 'Curioso armado', desc: 'El alboroto lo trajo', integridad: 2, fuerza: 3, umbral: 2 } ],
+          gana: 'prof_contra_p_win', pierde: 'prof_contra_p_lose' } },
+      { texto: 'Soltar la carga y desaparecer.', efectos:{ creditos:-80, aislamiento:+3 },
+        resultado: 'Dejas el paquete en el suelo y te fundes entre los contenedores. Pierdes la entrega y la cara ante el cliente, pero conservas la piel y, lo que importa, la ruta sigue siendo un secreto que ellos no controlan del todo.' }
+    ]
+  },
+  'prof_contra_p_win': {
+    img: 'EXP_PUERTO_CARGA',
+    texto: 'En cuanto el cabecilla cae, el recadero pone pies en polvorosa y el matón decide que la ruta no vale tanto. El '
+         + 'puerto vuelve a su rumor de grúas y agua. Recoges tu carga del suelo, intacta, y respiras.',
+    opciones: [
+      { texto: 'Cerrar la entrega como si nada.', efectos:{ creditos:+130, faccion:'loto', rep:+2, fatiga:+12 },
+        resultado: 'Entregas con la mercancía entera y la mano firme. El cliente paga sin saber lo cerca que estuvo de no ver su paquete, y en el Arrabal corre la voz de que tu ruta tiene dientes.' },
+      { texto: 'Recoger lo que dejó la banda rival.', azar:{ prob:0.55,
+          exito:{ efectos:{ item:'municion', creditos:+20, fatiga:+12 }, resultado:'Entre los contenedores quedan pernos de munición y unos créditos sueltos del que dirigía. Botín de guerra: en el puerto, quien gana, recoge.' },
+          fallo:{ efectos:{ fatiga:+12 }, resultado:'Se lo llevaron todo en la huida. Te conformas con haber conservado la ruta, que vale más que cualquier chatarra.' } } }
+    ]
+  },
+  'prof_contra_p_lose': {
+    img: 'EXP_PUERTO_CARGA',
+    texto: 'Te superan entre los tres y, cuando el ruido trae a un cuarto, ya no hay nada que hacer. Te dejan en el suelo, '
+         + 'sin carga y sin la ruta, escuchando cómo se alejan riéndose con lo que era tuyo.',
+    opciones: [
+      { texto: 'Levantarte con lo que queda de orgullo.', efectos:{ fatiga:+24, aislamiento:+4, faccion:'loto', rep:-1 },
+        resultado: 'Te incorporas entre los contenedores, magullado y sin entrega. La ruta ahora es de ellos, y reconstruir tu nombre en el Arrabal va a costar más que cualquier paliza.' }
+    ]
+  },
+
+  // SEGURIDAD — un grupo acorralado se revuelve: enjambre que sangra.
+  'prof_seg_p1': {
+    entrada: true,
+    cond: { profesion: 'seguridad' },
+    img: 'SECTOR7_STREETS',
+    texto: 'La orden era dispersar un corrillo en una esquina. Pero al acercarte, lo que era un grupo de críos hartos se '
+         + 'convierte en una jauría: navajas que salen de los bolsillos, manos rápidas, ojos sin miedo porque ya no tienen nada que perder. Y te tienen rodeado.',
+    opciones: [
+      { texto: 'Imponerte. Abrirte paso a la fuerza.',
+        pelea: { texto: 'Son veloces y van a por los cortes: ninguno aguanta un buen golpe, pero entre todos te pueden dejar goteando antes de que reacciones. Cúbrete, córtales el goteo y no dejes que el número te ahogue.',
+          integridad: 12,
+          enemigos: [
+            { nombre: 'Crío con navaja', desc: 'Corta y se aparta', tipo: 'rapido', integridad: 2, fuerza: 3, umbral: 2 },
+            { nombre: 'Cría veloz', desc: 'Va a por las piernas', tipo: 'rapido', integridad: 2, fuerza: 3, umbral: 2 },
+            { nombre: 'El más furioso', desc: 'No siente los golpes', tipo: 'rapido', integridad: 2, fuerza: 3, umbral: 2 }
+          ],
+          gana: 'prof_seg_p_win', pierde: 'prof_seg_p_lose' } },
+      { texto: 'Bajar la voz y dejarles una salida.', efectos:{ aislamiento:-2, facciones:[ { faccion:'loto', rep:+1 }, { faccion:'helix', rep:-1 } ] },
+        resultado: 'Guardas la porra y hablas bajo, ofreciéndoles irse en lugar de tragar. Funciona: se dispersan entre dientes, sin sangre. HELIX lo llamará blandura; tú sabes que has evitado un funeral, puede que el tuyo.' }
+    ]
+  },
+  'prof_seg_p_win': {
+    img: 'SECTOR7_STREETS',
+    texto: 'Uno a uno se quedan en el suelo o salen corriendo, y la esquina queda vacía salvo por las navajas tiradas y '
+         + 'algún quejido. Has cumplido la orden. No te sientes ganador de nada; solo el adulto que pegó más fuerte.',
+    opciones: [
+      { texto: 'Cerrar el parte y seguir la ronda.', efectos:{ creditos:+90, fatiga:+14, disociacion:+3, facciones:[ { faccion:'helix', rep:+2 }, { faccion:'loto', rep:-2 } ] },
+        resultado: 'HELIX marca la incidencia como resuelta y te abona la jornada con prima. En el barrio, en cambio, unos cuantos críos te han aprendido la cara. Cada bando paga distinto por lo mismo.' },
+      { texto: 'Recoger las navajas tiradas y curarte.', azar:{ prob:0.6,
+          exito:{ efectos:{ item:'vendaje', fatiga:+14, disociacion:+3 }, resultado:'Entre las navajas tiradas hay un botiquín de bolsillo de alguno de los críos. Sacas un vendaje. Te lo guardas mirando hacia otro lado.' },
+          fallo:{ efectos:{ fatiga:+14, disociacion:+3 }, resultado:'Solo hojas baratas y manchas en el suelo. Recoges las navajas para el parte y te vas de la esquina sin mirar atrás.' } } }
+    ]
+  },
+  'prof_seg_p_lose': {
+    img: 'SECTOR7_STREETS',
+    texto: 'Son demasiados y demasiado rápidos. Para cuando reaccionas, te sangran por tres sitios y la esquina te escupe '
+         + 'de vuelta a la calle. Se dispersan solos, sin tu ayuda, dejándote apoyado en una pared y goteando.',
+    opciones: [
+      { texto: 'Apretar las heridas y reportar el fracaso.', efectos:{ fatiga:+24, aislamiento:+3, faccion:'helix', rep:-1 },
+        resultado: 'Te vendas como puedes y mandas un parte que admite lo que no quieres admitir. HELIX no perdona los fracasos, y el cuerpo tardará en olvidar esta esquina.' }
+    ]
+  }
+
+  ,
+
+  // ============================================================
+  // CADENAS GENERALES CON PELEA (v0.129) — abiertas a TODOS
+  // No piden oficio: aparecen en cualquier deriva. Usan el puente
+  // escena→combate. Tono: la calle te busca, decidas tú o no.
+  // ============================================================
+
+  // Un cobrador te reclama una deuda que no es tuya (o sí).
+  'der_p_deuda_1': {
+    entrada: true,
+    img: 'EXP_CALLEJON_NIVELES',
+    texto: 'Un hombre ancho como una puerta te corta el paso y dice un nombre que no es el tuyo, pero da igual: '
+         + '"Tú le debes a quien yo cobro." No discute, no escucha. Para él ya eres una cuenta pendiente, y las cuentas se saldan de una de dos formas.',
+    opciones: [
+      { texto: 'Pagar lo que pide y acabar rápido.', efectos:{ creditos:-70, aislamiento:+2 },
+        resultado: 'Le sueltas los créditos sin rechistar. Los cuenta, gruñe y se aparta. Te has comprado la paz de esta noche con dinero que no te sobraba. Mañana, quién sabe.' },
+      { texto: 'No le debes nada. Plantarte.',
+        pelea: { texto: 'No le gusta que le digan que no. Es grande y pega como un mazo, pero es lento: si encajas y respondes con cabeza, se cansa antes que tú.',
+          integridad: 11,
+          enemigos: [ { nombre: 'Cobrador', desc: 'Un mazo con paciencia', tipo: 'bruto', integridad: 4, fuerza: 5, umbral: 6 } ],
+          gana: 'der_p_deuda_win', pierde: 'der_p_deuda_lose' } }
+    ]
+  },
+  'der_p_deuda_win': {
+    img: 'EXP_CALLEJON_NIVELES',
+    texto: 'El cobrador acaba sentado contra una pared, resoplando, mirándote con algo nuevo en la cara: respeto, o miedo, '
+         + 'que en las Pilas son casi lo mismo. "Me he equivocado de hombre", admite. Tú ya lo sabías.',
+    opciones: [
+      { texto: 'Dejarlo ahí y seguir.', efectos:{ fatiga:+12 },
+        resultado: 'Te alejas sin rematar. No le debías nada y ahora él lo sabe. A veces ganar es solo que te dejen en paz.' }
+    ]
+  },
+  'der_p_deuda_lose': {
+    img: 'EXP_CALLEJON_NIVELES',
+    texto: 'El mazo te alcanza y el callejón da una vuelta de campana. Cuando te incorporas, te faltan los créditos del '
+         + 'bolsillo: se ha cobrado igual, con intereses de dolor.',
+    opciones: [
+      { texto: 'Recoger lo que queda de ti.', efectos:{ fatiga:+22, creditos:-40, aislamiento:+3 },
+        resultado: 'Te ha vaciado los bolsillos y la dignidad. Te levantas despacio. La deuda, fuera tuya o no, queda saldada a su manera.' }
+    ]
+  },
+
+  // Presencias un atraco: intervenir o pasar de largo.
+  'der_p_atraco_1': {
+    entrada: true,
+    img: 'SECTOR7_STREETS',
+    texto: 'En un soportal, dos figuras acorralan a una mujer mayor contra la pared. Una le tira del bolso, la otra vigila. '
+         + 'Nadie en la calle mira; aquí todos han aprendido a no ver. La mujer te encuentra los ojos un segundo, sin pedir nada, porque ya no espera nada.',
+    opciones: [
+      { texto: 'No es asunto tuyo. Seguir.', efectos:{ aislamiento:+4, disociacion:+2 },
+        resultado: 'Bajas la mirada y pasas de largo, como todos. A tu espalda oyes un forcejeo y un golpe seco. No te giras. En las Pilas, mirar a otro lado es un músculo que se entrena, y el tuyo está fuerte.' },
+      { texto: 'Meterte. No así, no hoy.',
+        pelea: { texto: 'Se vuelven contra ti, sorprendidos de que alguien se moleste. Son rápidos y van con filo: te pueden dejar sangrando si te confías. Pero no esperaban resistencia, y eso ya es algo.',
+          integridad: 10,
+          enemigos: [
+            { nombre: 'Atracador', desc: 'Navaja nerviosa · te hace sangrar', tipo: 'rapido', integridad: 2, fuerza: 3, umbral: 2 },
+            { nombre: 'El vigía', desc: 'Se raja si la cosa se tuerce', tipo: 'cobarde', integridad: 2, fuerza: 2, umbral: 2 }
+          ],
+          gana: 'der_p_atraco_win', pierde: 'der_p_atraco_lose' } }
+    ]
+  },
+  'der_p_atraco_win': {
+    img: 'SECTOR7_STREETS',
+    texto: 'Salen corriendo y el soportal queda en silencio. La mujer recoge su bolso del suelo con manos que tiemblan. '
+         + 'No te da las gracias con palabras; te mira largo, asiente una vez, y se va. A veces es todo lo que cabe.',
+    opciones: [
+      { texto: 'Asegurarte de que llega a casa.', efectos:{ aislamiento:-3, fatiga:+10, faccion:'loto', rep:+1 },
+        resultado: 'La acompañas un par de portales, sin hablar, hasta que entra. El barrio lo ha visto. No esperes una medalla, pero esta noche alguien dormirá un poco más tranquilo, y tú también.' }
+    ]
+  },
+  'der_p_atraco_lose': {
+    img: 'SECTOR7_STREETS',
+    texto: 'Te cortan, te empujan y para cuando recuperas el equilibrio ya se han ido con el bolso y con la mujer en el suelo. '
+         + 'La ayudas a levantarse con las pocas fuerzas que te quedan. "No tenías por qué", murmura. Quizá no. Pero alguien tenía.',
+    opciones: [
+      { texto: 'Levantaros los dos como podáis.', efectos:{ fatiga:+22, aislamiento:+2 },
+        resultado: 'Os quedáis un momento apoyados en la pared, dos derrotados cualquiera. Perdiste la pelea, pero hay maneras de perder que pesan menos que algunas formas de ganar.' }
+    ]
+  },
+
+  // Te metes sin querer en territorio de una banda.
+  'der_p_territorio_1': {
+    entrada: true,
+    img: 'EXP_CALLEJON_NIVELES',
+    texto: 'Una marca pintada en la pared te avisa tarde: has entrado en territorio de alguien. Tres siluetas se despegan '
+         + 'de las sombras y una de ellas, la que manda, te mira de arriba abajo. "Esta calle tiene dueño. Y no eres tú."',
+    opciones: [
+      { texto: 'Disculparte y retroceder despacio.', efectos:{ aislamiento:+1 },
+        resultado: 'Levantas las manos, murmuras que te has equivocado de calle y retrocedes sin darles la espalda. El que manda escupe al suelo pero te deja ir. Tragar orgullo es gratis; la otra opción, no.' },
+      { texto: 'No piensas dar media vuelta corriendo.',
+        pelea: { texto: 'El cabecilla sonríe: justo lo que buscaba. Mientras él dé órdenes, los suyos aprietan; y el callejón resuena, así que cada tiro va a traer a más de su gente. Cállalo pronto o hazlo en silencio.',
+          integridad: 11,
+          enemigos: [
+            { nombre: 'El dueño de la calle', desc: 'Mátalo y el resto afloja', tipo: 'lider', integridad: 3, fuerza: 4, umbral: 4 },
+            { nombre: 'Perro de la banda', desc: 'Fiel mientras gane', integridad: 2, fuerza: 3, umbral: 2 }
+          ],
+          refuerzoSiRuido: 60,
+          refuerzoGrupo: [ { nombre: 'Refuerzo de la banda', desc: 'El ruido lo trajo', tipo:'rapido', integridad: 2, fuerza: 3, umbral: 2 } ],
+          gana: 'der_p_territorio_win', pierde: 'der_p_territorio_lose' } }
+    ]
+  },
+  'der_p_territorio_win': {
+    img: 'EXP_CALLEJON_NIVELES',
+    texto: 'Con su cabecilla en el suelo, los demás retroceden hacia las sombras de las que salieron. La calle, por esta '
+         + 'noche, no tiene dueño. Te sacudes el polvo y sigues, sabiendo que mañana volverá a tenerlo.',
+    opciones: [
+      { texto: 'Salir de su territorio antes de que se rehagan.', efectos:{ fatiga:+12, faccion:'loto', rep:-1 },
+        resultado: 'Cruzas la frontera invisible de vuelta a tierra de nadie. Te has hecho un nombre y un enemigo a la vez; en el Arrabal eso suele venir en el mismo paquete.' }
+    ]
+  },
+  'der_p_territorio_lose': {
+    img: 'EXP_CALLEJON_NIVELES',
+    texto: 'Son demasiados y el ruido trajo más. Te sacan a empujones de su calle, magullado, con la lección bien aprendida '
+         + 'a base de golpes: hay fronteras en las Pilas que no se ven, pero se pagan.',
+    opciones: [
+      { texto: 'Arrastrarte hasta tierra de nadie.', efectos:{ fatiga:+22, aislamiento:+3 },
+        resultado: 'Cruzas de vuelta a trompicones. Nadie te persigue: ya han dejado claro lo que querían. La próxima vez mirarás las paredes antes de meterte donde no te llaman.' }
+    ]
+  }
+
 
   };
   Object.assign(ESCENAS_GUION, L);
