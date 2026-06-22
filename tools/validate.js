@@ -98,6 +98,7 @@ function cargarDatos(){
   correr('js/68_corrida_datos.js');
   correr('js/70_deriva_datos.js');
   correr('js/72_profesion_eventos.js');
+  correr('js/51_profesiones.js');
   return ctx;
 }
 const ctx = cargarDatos();
@@ -186,6 +187,27 @@ Object.entries(EG).forEach(([id, e]) => {
   });
 });
 ok(escenas + ' escenas cargadas · ' + peleas + ' con pelea revisadas');
+
+// ── 6) RECETAS DE PROFESIÓN (Mecánico) ──────────────────────
+seccion('6. Recetas de profesión (ingredientes y producto)');
+const PROFS_DATA = ctx.window.PROFESIONES;
+if(!PROFS_DATA){ aviso('PROFESIONES no disponible (se omite chequeo de recetas)'); }
+else {
+  let recetas = 0;
+  PROFS_DATA.forEach(p => {
+    const nRangos = (p.rangos || []).length;
+    (p.acciones || []).forEach(a => {
+      (a.recetas || []).forEach(r => {
+        recetas++;
+        const w = p.id + '/' + a.id + '/' + r.id;
+        (r.ingredientes || []).forEach(ing => { if(!itemIds.has(ing.id)) err('ingrediente inexistente "' + ing.id + '" en receta ' + w); });
+        if(r.produce && !itemIds.has(r.produce.id)) err('producto inexistente "' + r.produce.id + '" en receta ' + w);
+        if(typeof r.rangoMin === 'number' && (r.rangoMin < 0 || r.rangoMin >= nRangos)) err('rangoMin fuera de rango (' + r.rangoMin + ') en receta ' + w);
+      });
+    });
+  });
+  ok(recetas + ' recetas revisadas');
+}
 
 // ── RESUMEN ─────────────────────────────────────────────────
 console.log('\n' + '='.repeat(50));

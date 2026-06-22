@@ -2,6 +2,13 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.131] - 2026-06-22
+### Added
+- Nuevo oficio: Mecánico. Fabrica objetos en el banco a partir de materiales (9 recetas que se desbloquean por rango) y acepta chapuzas como ingreso estable.
+- El validador del proyecto ahora revisa también las recetas de profesión (ingredientes y producto existen, rango válido).
+### Changed
+- El motor de profesiones admite acciones de fabricación (conRecetas) que consumen materiales y entregan un objeto en vez de pagar créditos.
+
 ## [0.130] - 2026-06-22
 ### Added
 - Validador del proyecto (tools/validate.js): comprueba sintaxis, cache-busts uniformes, mojibake, integridad de combate y de cadenas con pelea, e ids de item duplicados.

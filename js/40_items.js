@@ -374,6 +374,18 @@ window.contarChatarraTotal = contarChatarraTotal;
 window.consumirChatarraTotal = consumirChatarraTotal;
 
 window.darItem = darItem;
+
+// Nombre visible de un item por su id (busca en ambos catálogos). Devuelve
+// el propio id si no lo encuentra, para no romper nunca la UI.
+function nombreItem(id){
+  const todos = [].concat(
+    (typeof ITEMS_EXPLORAR !== 'undefined') ? ITEMS_EXPLORAR : [],
+    (typeof ITEMS_EXPEDICION !== 'undefined') ? ITEMS_EXPEDICION : []
+  );
+  const it = todos.find(i => i && i.id === id);
+  return (it && it.nombre) ? it.nombre : id;
+}
+window.nombreItem = nombreItem;
 window.quitarItem = quitarItem;
 window.tieneItem = tieneItem;
 window.describirInventarioParaIA = describirInventarioParaIA;
