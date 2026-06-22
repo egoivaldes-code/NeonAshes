@@ -19,7 +19,6 @@ let _ultimoResultadoProfesion = null;
 
 // Acción de campo cuyo selector de lugares está abierto ahora mismo.
 // {prof, accion} o null. Al elegir lugar o trabajar, se cierra.
-let _lugarAbierto = null;
 // Enfoque cotidiano abierto (contrabandista/seguridad): {prof, accion}.
 let _enfoqueAbierto = null;
 
@@ -378,50 +377,6 @@ function elegirProfesionDesdePanel(id){
   // volver a entrar).
   if(typeof ajustarTextosApartamentoSegunMemoria === 'function'){
     ajustarTextosApartamentoSegunMemoria(true);
-  }
-  _refrescarSubcuerpoTrabajos();
-}
-
-// Render del selector de lugares: una lista de sitios donde rebuscar,
-// cada uno con su sabor y un botón. Más un botón para cancelar.
-function _renderSelectorLugares(prof, accion){
-  let sitios = '';
-  (prof.lugares || []).forEach(l => {
-    sitios += `
-      <div style="margin-top:0.5rem;padding:0.5rem;border:1px solid rgba(0,229,255,0.12);">
-        <div style="font-size:0.6rem;letter-spacing:0.15em;color:var(--cyan);">${l.nombre.toUpperCase()}</div>
-        <div style="font-size:0.55rem;opacity:0.65;margin:0.3rem 0;">${l.sabor}</div>
-        <button class="btn-terminal" style="display:block;width:100%;"
-          onclick="ejercerLugarDesdePanel('${prof.id}','${accion.id}','${l.id}')">REBUSCAR AQUÍ →</button>
-      </div>`;
-  });
-  return `
-    <div style="margin-top:0.5rem;border:1px solid rgba(0,229,255,0.2);padding:0.5rem;">
-      <div style="font-size:0.5rem;letter-spacing:0.2em;opacity:0.6;margin-bottom:0.2rem;">¿DÓNDE REBUSCAS?</div>
-      ${sitios}
-      <button class="btn-terminal" style="display:block;width:100%;margin-top:0.6rem;opacity:0.6;"
-        onclick="cerrarLugaresDesdePanel()">VOLVER</button>
-    </div>`;
-}
-
-// Abre el selector de lugares para una acción de campo.
-function abrirLugaresDesdePanel(idProf, idAccion){
-  _lugarAbierto = { prof: idProf, accion: idAccion };
-  _refrescarSubcuerpoTrabajos();
-}
-
-// Cierra el selector sin trabajar.
-function cerrarLugaresDesdePanel(){
-  _lugarAbierto = null;
-  _refrescarSubcuerpoTrabajos();
-}
-
-// El jugador elige un lugar concreto y trabaja allí.
-function ejercerLugarDesdePanel(idProf, idAccion, idLugar){
-  _lugarAbierto = null;
-  if(typeof ejercerProfesion === 'function'){
-    const r = ejercerProfesion(idProf, idAccion, idLugar);
-    if(r && !r.bloqueado) _ultimoResultadoProfesion = r;
   }
   _refrescarSubcuerpoTrabajos();
 }

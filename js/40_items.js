@@ -129,7 +129,7 @@ const ITEMS_EXPLORAR = [
     desc:'Sello médico oficial. Caducado. Calma el dolor de una herida. Una vez.' },
   { id:'navaja_ceramica', nombre:'Navaja de cerámica', tipo:'arma',
     desc:'No la detectan los escáneres. Filo gastado pero suficiente. Pesa poco.' },
-  { id:'papel_helix', nombre:'Papel mojado con un código', tipo:'dato',
+  { id:'papel_codigo', nombre:'Papel mojado con un código', tipo:'dato',
     desc:'Un código y la hélice de HELIX tachada. Alguien quería que lo tuvieras tú.' },
 
   // ── Cadena de lore "Lo que quedó arriba" (vida fuera de la Tierra) ──
