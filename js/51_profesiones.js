@@ -364,6 +364,74 @@ const PROFESIONES = [
         ]
       }
     ]
+  },
+
+  {
+    id: 'mecanico',
+    nombre: 'Mecánico',
+    desc: 'Hacer que lo roto vuelva a servir. Manos manchadas, mesa llena de piezas, y la paciencia de quien sabe que todo se arregla si se conoce por dentro.',
+    rangos: [
+      { nombre: 'Aprendiz de taller', pagaMin: 0, umbral: 320 },
+      { nombre: 'Remendón',           pagaMin: 0, umbral: 520 },
+      { nombre: 'Mecánico',           pagaMin: 0, umbral: 780 },
+      { nombre: 'Armero de barrio',   pagaMin: 0, umbral: 1100 },
+      { nombre: 'Ingeniero de campo', pagaMin: 0, umbral: 1480 },
+      { nombre: 'Manitas',            pagaMin: 0, umbral: 0    } // último: no asciende
+    ],
+    acciones: [
+      {
+        // Acción de banco: el jugador elige una RECETA. Consume materiales y
+        // entrega el objeto fabricado. No paga créditos: el premio es el item.
+        // Las recetas se desbloquean por rango (recipe.rangoMin).
+        id: 'fabricar',
+        nombre: 'Trabajar en el banco',
+        minutos: 45,
+        progreso: 16,
+        cooldownHoras: 2,
+        conRecetas: true,
+        selectorTitulo: '¿QUÉ FABRICAS?',
+        recetas: [
+          { id: 'r_vendaje',  nombre: 'Vendaje compresor', rangoMin: 0, progExtra: 4,
+            ingredientes: [ { id: 'chatarra', n: 2 } ], produce: { id: 'vendaje', n: 1 },
+            desc: 'Tela técnica y un cierre a presión. Corta una hemorragia a tiempo.' },
+          { id: 'r_senuelo',  nombre: 'Señuelo', rangoMin: 0, progExtra: 5,
+            ingredientes: [ { id: 'chatarra', n: 2 }, { id: 'bateria_2v', n: 1 } ], produce: { id: 'senuelo', n: 1 },
+            desc: 'Un trasto que hace ruido y luces donde tú no estás. Compra segundos.' },
+          { id: 'r_refinada', nombre: 'Chatarra refinada', rangoMin: 1, progExtra: 6,
+            ingredientes: [ { id: 'chatarra', n: 3 } ], produce: { id: 'chatarra_refinada', n: 1 },
+            desc: 'Separar lo útil de la basura. Materia prima para lo bueno.' },
+          { id: 'r_municion', nombre: 'Munición', rangoMin: 1, progExtra: 6,
+            ingredientes: [ { id: 'chatarra', n: 2 }, { id: 'bateria_2v', n: 1 } ], produce: { id: 'municion', n: 2 },
+            desc: 'Pernos de raíl prensados a mano. No preguntes por el control de calidad.' },
+          { id: 'r_humo',     nombre: 'Bote de humo', rangoMin: 1, progExtra: 7,
+            ingredientes: [ { id: 'chatarra', n: 3 } ], produce: { id: 'granada_humo', n: 1 },
+            desc: 'Un bote que vomita humo gris. Para desaparecer de una habitación.' },
+          { id: 'r_navaja',   nombre: 'Navaja de cerámica', rangoMin: 2, progExtra: 8,
+            ingredientes: [ { id: 'chatarra_refinada', n: 1 }, { id: 'chatarra', n: 2 } ], produce: { id: 'navaja_ceramica', n: 1 },
+            desc: 'Filo que no canta en los escáneres. Discreta y fea.' },
+          { id: 'r_kevlar',   nombre: 'Chaqueta de kevlar', rangoMin: 3, progExtra: 12,
+            ingredientes: [ { id: 'chatarra_refinada', n: 3 }, { id: 'chatarra', n: 3 } ], produce: { id: 'chaqueta_kevlar', n: 1 },
+            desc: 'Capas de fibra cosidas en una chaqueta vieja. Para un día, basta.' },
+          { id: 'r_arma_fuego', nombre: 'Pistola de raíl casera', rangoMin: 4, progExtra: 16,
+            ingredientes: [ { id: 'chatarra_refinada', n: 3 }, { id: 'bateria_4v', n: 1 }, { id: 'nucleo_optico', n: 1 } ], produce: { id: 'arma_fuego', n: 1 },
+            desc: 'Un raíl montado sobre una culata impresa. Pega, y a veces hasta apunta.' },
+          { id: 'r_arma_canon', nombre: 'Cañón de mano', rangoMin: 5, progExtra: 22,
+            ingredientes: [ { id: 'chatarra_refinada', n: 4 }, { id: 'bateria_8v', n: 1 }, { id: 'servidor_hundido', n: 1 } ], produce: { id: 'arma_fuego_canon', n: 1 },
+            desc: 'Una bestia que escupe hierro. Pesada, ruidosa, definitiva.' }
+        ]
+      },
+      {
+        // Acción de ingresos estable: chapuzas en el taller. Sin riesgo,
+        // paga modesta. El contrapeso económico de fabricar (que no paga).
+        id: 'chapuzas',
+        nombre: 'Aceptar chapuzas del taller',
+        minutos: 90,
+        pagaBase: [40, 65],
+        progreso: 14,
+        cooldownHoras: 4,
+        nota: 'Reparar lo que la gente trae: un calentador, un dron de reparto, una prótesis barata. Manos ocupadas, mente en blanco, unos créditos al bolsillo.'
+      }
+    ]
   }
 ];
 
@@ -553,6 +621,24 @@ function ejercerProfesion(idProf, idAccion, idLugar){
     }
   }
 
+  // Receta del Mecánico: comprobar rango e ingredientes ANTES de gastar
+  // tiempo. Si falta rango o materiales, devolver un bloqueo informativo.
+  let _recetaSel = null;
+  if(accion.conRecetas){
+    _recetaSel = (accion.recetas || []).find(r => r.id === idLugar);
+    if(!_recetaSel) return null;
+    if((est.rango || 0) < (_recetaSel.rangoMin || 0)){
+      return { bloqueadoReceta: true, motivo: 'rango', receta: _recetaSel.nombre };
+    }
+    const faltan = (_recetaSel.ingredientes || []).filter(ing => {
+      const tengo = (typeof contarItem === 'function') ? contarItem(ing.id) : 0;
+      return tengo < ing.n;
+    });
+    if(faltan.length){
+      return { bloqueadoReceta: true, motivo: 'materiales', receta: _recetaSel.nombre, faltan: faltan };
+    }
+  }
+
   // 1) Tiempo de juego (puede cruzar medianoche y cobrar alquiler).
   //    El implante Sincronizador Neural reduce el tiempo gastado.
   const _multT1 = (typeof implanteMultTiempoAccion === 'function') ? implanteMultTiempoAccion() : 1;
@@ -581,6 +667,7 @@ function ejercerProfesion(idProf, idAccion, idLugar){
   let aislDelta = 0;        // sube aislamiento (soledad, deshumanización)
   let disoDelta = 0;        // sube disociación (no reconocerte en lo que haces)
   let repLinea = '';        // resumen legible para el panel
+  let fabricado = null;     // nombre del objeto fabricado (acción 'conRecetas')
 
   if(accion.conLugares){
     // Acción de campo: resolver el desenlace del lugar elegido.
@@ -612,6 +699,19 @@ function ejercerProfesion(idProf, idAccion, idLugar){
     else if(des.rep) repCambios = [des.rep];
     aislDelta = des.aislamiento || 0;
     disoDelta = des.disociacion || 0;
+  } else if(accion.conRecetas){
+    // Fabricar: consumir ingredientes y entregar el objeto. No paga créditos;
+    // el premio es el item. (rango/materiales ya comprobados arriba.)
+    const rec = _recetaSel;
+    (rec.ingredientes || []).forEach(ing => {
+      if(typeof quitarItem === 'function') quitarItem(ing.id, ing.n);
+    });
+    const prod = rec.produce || {};
+    const cuantos = prod.n || 1;
+    for(let i = 0; i < cuantos; i++){ if(typeof darItemPorId === 'function') darItemPorId(prod.id); }
+    progExtra = rec.progExtra || 0;
+    fabricado = (cuantos > 1 ? (cuantos + '× ') : '') + (rec.nombre || prod.id);
+    nota = 'En el banco, pieza a pieza, sale algo que sirve: ' + (rec.nombre || prod.id).toLowerCase() + '.';
   } else {
     // Acción simple: paga directa por su rango.
     pagaRango = accion.pagaBase || [0, 0];
@@ -691,6 +791,7 @@ function ejercerProfesion(idProf, idAccion, idLugar){
     herida: heridaNombre,
     multa: multaImporte,
     rep: repLinea,
+    fabricado: fabricado,
     ascendio: ascendio,
     rangoNuevo: rangoNuevo
   };
@@ -863,3 +964,5 @@ function diasParaDespido(idProf){
   return Math.ceil(restanteMs / (24 * 60 * 60 * 1000));
 }
 window.diasParaDespido = diasParaDespido;
+
+if(typeof window !== "undefined"){ window.PROFESIONES = PROFESIONES; }

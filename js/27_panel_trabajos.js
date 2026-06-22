@@ -90,10 +90,12 @@ function renderTrabajosOficio(){
   if(_ultimoResultadoProfesion){
     const r = _ultimoResultadoProfesion;
     const asc = r.ascendio ? `<div style="color:var(--cyan);margin-top:0.4rem;">ASCENSO · ahora eres ${r.rangoNuevo}</div>` : '';
-    // Línea de paga (solo si cobró algo).
+    // Línea de paga (solo si cobró algo) o de objeto fabricado.
     const pagaLinea = (r.paga > 0)
       ? `<span class="creditos">+${r.paga} CR</span>`
-      : `<span style="opacity:0.5;">SIN BOTÍN</span>`;
+      : (r.fabricado
+          ? `<span style="color:var(--cyan);letter-spacing:0.1em;">FABRICADO · ${r.fabricado}</span>`
+          : `<span style="opacity:0.5;">SIN BOTÍN</span>`);
     // Costes: herida, multa, fatiga. En magenta para que pesen.
     let costes = '';
     if(r.herida) costes += `<div style="color:var(--magenta);margin-top:0.3rem;font-size:0.55rem;">LESIÓN · ${r.herida}</div>`;
@@ -334,6 +336,16 @@ function _renderAccionesOficio(p){
         <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
           onclick="abrirEnfoquesDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
       }
+    } else if(a.conRecetas){
+      // Acción de banco (Mecánico): si su selector de recetas está abierto,
+      // lo pintamos; si no, el botón que lo abre.
+      if(_enfoqueAbierto && _enfoqueAbierto.prof === p.id && _enfoqueAbierto.accion === a.id){
+        botonesAccion += _renderSelectorRecetas(p, a);
+      } else {
+        botonesAccion += `
+        <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+          onclick="abrirRecetasDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
+      }
     } else {
       botonesAccion += `
         <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
@@ -431,6 +443,84 @@ if(typeof window !== 'undefined'){
   window.abrirEnfoquesDesdePanel = abrirEnfoquesDesdePanel;
   window.cerrarEnfoquesDesdePanel = cerrarEnfoquesDesdePanel;
   window.ejercerEnfoqueDesdePanel = ejercerEnfoqueDesdePanel;
+}
+
+// ── Selector de RECETAS (banco del Mecánico) ────────────────────
+// Lista de cosas fabricables. Cada receta muestra lo que produce, sus
+// ingredientes (en rojo lo que falta) y un botón. Las recetas de rango
+// superior al actual se ven, pero bloqueadas: dan algo a lo que aspirar.
+function _renderSelectorRecetas(prof, accion){
+  const est = (typeof estadoProfesion === 'function') ? estadoProfesion(prof.id) : null;
+  const rango = est ? (est.rango || 0) : 0;
+  const nom = (id) => (typeof nombreItem === 'function') ? nombreItem(id) : id;
+  const cuento = (id) => (typeof contarItem === 'function') ? contarItem(id) : 0;
+  let items = '';
+  (accion.recetas || []).forEach(r => {
+    const rangoOk = rango >= (r.rangoMin || 0);
+    const ings = (r.ingredientes || []).map(ing => {
+      const tengo = cuento(ing.id);
+      const ok = tengo >= ing.n;
+      const col = ok ? 'opacity:0.8;' : 'color:var(--magenta);opacity:0.9;';
+      return `<span style="${col}">${ing.n}× ${nom(ing.id)} (${tengo})</span>`;
+    }).join(' · ');
+    const faltaMat = (r.ingredientes || []).some(ing => cuento(ing.id) < ing.n);
+    const cuantos = (r.produce && r.produce.n > 1) ? (r.produce.n + '× ') : '';
+    let btn;
+    if(!rangoOk){
+      btn = `<button class="btn-terminal" style="display:block;width:100%;opacity:0.4;" disabled>REQUIERE MÁS RANGO</button>`;
+    } else if(faltaMat){
+      btn = `<button class="btn-terminal" style="display:block;width:100%;opacity:0.4;" disabled>FALTAN MATERIALES</button>`;
+    } else {
+      btn = `<button class="btn-terminal" style="display:block;width:100%;"
+        onclick="ejercerRecetaDesdePanel('${prof.id}','${accion.id}','${r.id}')">FABRICAR →</button>`;
+    }
+    items += `
+      <div style="margin-top:0.5rem;padding:0.5rem;border:1px solid rgba(0,229,255,${rangoOk ? 0.12 : 0.05});opacity:${rangoOk ? 1 : 0.6};">
+        <div style="font-size:0.6rem;letter-spacing:0.12em;color:var(--cyan);">${cuantos}${r.nombre.toUpperCase()}</div>
+        <div style="font-size:0.52rem;opacity:0.6;margin:0.3rem 0;">${r.desc || ''}</div>
+        <div style="font-size:0.5rem;margin-bottom:0.4rem;">${ings}</div>
+        ${btn}
+      </div>`;
+  });
+  return `
+    <div style="margin-top:0.5rem;border:1px solid rgba(0,229,255,0.2);padding:0.5rem;">
+      <div style="font-size:0.5rem;letter-spacing:0.2em;opacity:0.6;margin-bottom:0.2rem;">${accion.selectorTitulo || '¿QUÉ FABRICAS?'}</div>
+      ${items}
+      <button class="btn-terminal" style="display:block;width:100%;margin-top:0.6rem;opacity:0.6;"
+        onclick="cerrarRecetasDesdePanel()">VOLVER</button>
+    </div>`;
+}
+
+function abrirRecetasDesdePanel(idProf, idAccion){
+  _enfoqueAbierto = { prof: idProf, accion: idAccion };
+  if(typeof reproducirFX === 'function') reproducirFX('panel_abrir', 0.35);
+  _refrescarSubcuerpoTrabajos();
+}
+function cerrarRecetasDesdePanel(){
+  _enfoqueAbierto = null;
+  _refrescarSubcuerpoTrabajos();
+}
+function ejercerRecetaDesdePanel(idProf, idAccion, idReceta){
+  if(typeof ejercerProfesion === 'function'){
+    const r = ejercerProfesion(idProf, idAccion, idReceta);
+    if(r && r.bloqueadoReceta){
+      const msg = (r.motivo === 'rango')
+        ? `Aún no tienes rango para fabricar ${r.receta}`
+        : `Te faltan materiales para ${r.receta}`;
+      if(typeof notificarCambio === 'function') notificarCambio(msg, 'aviso');
+    } else if(r && r.bloqueado){
+      // en cooldown: dejamos el selector abierto
+    } else if(r){
+      _enfoqueAbierto = null;
+      _ultimoResultadoProfesion = r;
+    }
+  }
+  _refrescarSubcuerpoTrabajos();
+}
+if(typeof window !== 'undefined'){
+  window.abrirRecetasDesdePanel = abrirRecetasDesdePanel;
+  window.cerrarRecetasDesdePanel = cerrarRecetasDesdePanel;
+  window.ejercerRecetaDesdePanel = ejercerRecetaDesdePanel;
 }
 
 // El jugador pulsa una acción de TRABAJAR. Ejerce, guarda el resultado
