@@ -417,8 +417,27 @@ const PROFESIONES = [
             desc: 'Un raíl montado sobre una culata impresa. Pega, y a veces hasta apunta.' },
           { id: 'r_arma_canon', nombre: 'Cañón de mano', rangoMin: 5, progExtra: 22,
             ingredientes: [ { id: 'chatarra_refinada', n: 4 }, { id: 'bateria_8v', n: 1 }, { id: 'servidor_hundido', n: 1 } ], produce: { id: 'arma_fuego_canon', n: 1 },
-            desc: 'Una bestia que escupe hierro. Pesada, ruidosa, definitiva.' }
+            desc: 'Una bestia que escupe hierro. Pesada, ruidosa, definitiva.' },
+          // Mods de arma: se montan luego con "Montar mejora".
+          { id: 'r_mod_frag', nombre: 'Munición fragmentada', rangoMin: 2, progExtra: 10,
+            ingredientes: [ { id: 'chatarra_refinada', n: 2 }, { id: 'bateria_2v', n: 1 } ], produce: { id: 'mod_fragmentada', n: 1 },
+            desc: 'Mod: al disparar, chance de dejar sangrando. La chance sube con tu rango.' },
+          { id: 'r_mod_culata', nombre: 'Culata de impacto', rangoMin: 3, progExtra: 12,
+            ingredientes: [ { id: 'chatarra_refinada', n: 2 }, { id: 'chatarra', n: 2 } ], produce: { id: 'mod_culata', n: 1 },
+            desc: 'Mod: al disparar de cerca, chance de aturdir. La chance sube con tu rango.' },
+          { id: 'r_mod_sobre', nombre: 'Sobrecarga de raíl', rangoMin: 4, progExtra: 14,
+            ingredientes: [ { id: 'chatarra_refinada', n: 3 }, { id: 'nucleo_optico', n: 1 } ], produce: { id: 'mod_sobrecarga', n: 1 },
+            desc: 'Mod: al disparar, chance de un golpe de daño extra. La chance sube con tu rango.' }
         ]
+      },
+      {
+        // Montar el mod activo en el arma. UI-only (no gasta tiempo): elige
+        // cuál de los mods que tienes va montado, o ninguno.
+        id: 'montar',
+        nombre: 'Montar mejora en el arma',
+        conMods: true,
+        selectorTitulo: '¿QUÉ MEJORA MONTAS?',
+        mods: ['mod_fragmentada', 'mod_culata', 'mod_sobrecarga']
       },
       {
         // Acción de ingresos estable: chapuzas en el taller. Sin riesgo,
