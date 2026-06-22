@@ -285,7 +285,7 @@ const ITEMS_EXPEDICION = [
   { id:'nucleo_optico', nombre:'Núcleo óptico', tipo:'raro', apilable:false,
     desc:'Una esfera de cristal lechoso que guarda luz dentro mucho después de apagarse. Los compradores no preguntan de dónde sale. Pagan, y miran a otro lado.' },
   { id:'servidor_hundido', nombre:'Servidor hundido', tipo:'raro', apilable:false,
-    desc:'Bloque de memoria rescatado del fango de un pozo. Pesa, gotea y huele a moho, pero si todavía arranca, lo que tiene dentro vale más que el peso en créditos.' }
+    desc:'Bloque de memoria rescatado del fango de un pozo. Pesa, gotea y huele a moho, pero si todavía arranca, lo que tiene dentro vale más que el peso en créditos.' },
 
   // ── IMPLANTES (estructura reservada, sin items aún) ───────
   // Los implantes serán botín raro de expedición: mejoran stats (fatiga
@@ -293,6 +293,17 @@ const ITEMS_EXPEDICION = [
   // en cuatro grados: 1, 2, 3 y ESPECIAL. Todavía no se define ninguno
   // concreto: solo dejamos anotada la categoría para clonarlos luego.
   // Tipo previsto: 'implante'. Grado previsto en un campo 'grado'.
+
+  // ── MODS DE ARMA (v0.132) ──────────────────────────────────
+  // Mejoras que el Mecánico fabrica y monta en el arma de fuego. En combate,
+  // al disparar, tienen una probabilidad de "saltar" que sube con el rango
+  // de Mecánico. Solo uno puede estar montado a la vez (Estado.modArma).
+  { id:'mod_fragmentada', nombre:'Munición fragmentada', tipo:'mod', apilable:false,
+    desc:'Pernos que se abren al impactar. Al disparar, a veces dejan al objetivo sangrando.' },
+  { id:'mod_culata', nombre:'Culata de impacto', tipo:'mod', apilable:false,
+    desc:'Una culata pesada y reforzada. Al disparar de cerca, a veces deja al objetivo aturdido.' },
+  { id:'mod_sobrecarga', nombre:'Sobrecarga de raíl', tipo:'mod', apilable:false,
+    desc:'Fuerza el raíl por encima de lo seguro. Al disparar, a veces mete un golpe extra de daño.' }
 ];
 
 // GRADOS DE IMPLANTE previstos (etiqueta, sin items asociados todavía).

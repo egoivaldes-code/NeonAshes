@@ -346,6 +346,15 @@ function _renderAccionesOficio(p){
         <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
           onclick="abrirRecetasDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
       }
+    } else if(a.conMods){
+      // Montar mejora en el arma (Mecánico): selector de mods.
+      if(_enfoqueAbierto && _enfoqueAbierto.prof === p.id && _enfoqueAbierto.accion === a.id){
+        botonesAccion += _renderSelectorMods(p, a);
+      } else {
+        botonesAccion += `
+        <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
+          onclick="abrirModsDesdePanel('${p.id}','${a.id}')">${a.nombre}</button>`;
+      }
     } else {
       botonesAccion += `
         <button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;"
@@ -521,6 +530,82 @@ if(typeof window !== 'undefined'){
   window.abrirRecetasDesdePanel = abrirRecetasDesdePanel;
   window.cerrarRecetasDesdePanel = cerrarRecetasDesdePanel;
   window.ejercerRecetaDesdePanel = ejercerRecetaDesdePanel;
+}
+
+// ── Selector de MODS de arma (Mecánico) ─────────────────────
+// Montas UNO de los mods que hayas fabricado. La probabilidad de que salte
+// en combate sube con tu rango de Mecánico (se muestra aquí para que se vea
+// el porqué de subir de rango). No gasta tiempo: es solo montar/desmontar.
+function _renderSelectorMods(prof, accion){
+  const est = (typeof estadoProfesion === 'function') ? estadoProfesion(prof.id) : null;
+  const rango = est ? (est.rango || 0) : 0;
+  const chance = Math.min(65, 15 + 9 * rango);
+  const nom = (id) => (typeof nombreItem === 'function') ? nombreItem(id) : id;
+  const cuento = (id) => (typeof contarItem === 'function') ? contarItem(id) : 0;
+  const activo = (typeof Estado !== 'undefined') ? Estado.modArma : null;
+  const DESC = {
+    mod_fragmentada: 'Al disparar: chance de dejar SANGRANDO.',
+    mod_culata: 'Al disparar de cerca: chance de ATURDIR.',
+    mod_sobrecarga: 'Al disparar: chance de un golpe de DAÑO EXTRA.'
+  };
+  let items = '';
+  (accion.mods || []).forEach(id => {
+    const tiene = cuento(id) > 0;
+    const esActivo = (activo === id);
+    let btn;
+    if(esActivo){
+      btn = `<button class="btn-terminal" style="display:block;width:100%;opacity:0.7;color:var(--cyan);" disabled>MONTADO ✓</button>`;
+    } else if(tiene){
+      btn = `<button class="btn-terminal" style="display:block;width:100%;"
+        onclick="montarModDesdePanel('${prof.id}','${id}')">MONTAR →</button>`;
+    } else {
+      btn = `<button class="btn-terminal" style="display:block;width:100%;opacity:0.4;" disabled>FABRÍCALO PRIMERO</button>`;
+    }
+    items += `
+      <div style="margin-top:0.5rem;padding:0.5rem;border:1px solid rgba(0,229,255,${tiene ? 0.12 : 0.05});opacity:${tiene ? 1 : 0.6};">
+        <div style="font-size:0.6rem;letter-spacing:0.12em;color:var(--cyan);">${nom(id).toUpperCase()}${esActivo ? ' · MONTADO' : ''}</div>
+        <div style="font-size:0.52rem;opacity:0.6;margin:0.3rem 0;">${DESC[id] || ''}</div>
+        ${btn}
+      </div>`;
+  });
+  const quitar = activo
+    ? `<button class="btn-terminal" style="display:block;width:100%;margin-top:0.5rem;opacity:0.7;"
+        onclick="montarModDesdePanel('${prof.id}','ninguno')">DESMONTAR EL ACTUAL</button>`
+    : '';
+  return `
+    <div style="margin-top:0.5rem;border:1px solid rgba(0,229,255,0.2);padding:0.5rem;">
+      <div style="font-size:0.5rem;letter-spacing:0.2em;opacity:0.6;margin-bottom:0.2rem;">${accion.selectorTitulo || '¿QUÉ MEJORA MONTAS?'}</div>
+      <div style="font-size:0.5rem;opacity:0.7;margin-bottom:0.3rem;">Probabilidad de salto actual: <span style="color:var(--cyan);">${chance}%</span> (sube con tu rango de Mecánico)</div>
+      ${items}
+      ${quitar}
+      <button class="btn-terminal" style="display:block;width:100%;margin-top:0.6rem;opacity:0.6;"
+        onclick="cerrarModsDesdePanel()">VOLVER</button>
+    </div>`;
+}
+function abrirModsDesdePanel(idProf, idAccion){
+  _enfoqueAbierto = { prof: idProf, accion: idAccion };
+  if(typeof reproducirFX === 'function') reproducirFX('panel_abrir', 0.35);
+  _refrescarSubcuerpoTrabajos();
+}
+function cerrarModsDesdePanel(){
+  _enfoqueAbierto = null;
+  _refrescarSubcuerpoTrabajos();
+}
+function montarModDesdePanel(idProf, idMod){
+  if(typeof Estado !== 'undefined'){
+    Estado.modArma = (idMod === 'ninguno') ? null : idMod;
+    if(typeof guardarPartida === 'function') guardarPartida();
+    if(typeof notificarCambio === 'function'){
+      notificarCambio(idMod === 'ninguno' ? 'Desmontas la mejora del arma' : ('Montas: ' + ((typeof nombreItem === 'function') ? nombreItem(idMod) : idMod)), 'ok');
+    }
+  }
+  if(typeof reproducirFX === 'function') reproducirFX('click_metal', 0.4);
+  _refrescarSubcuerpoTrabajos();
+}
+if(typeof window !== 'undefined'){
+  window.abrirModsDesdePanel = abrirModsDesdePanel;
+  window.cerrarModsDesdePanel = cerrarModsDesdePanel;
+  window.montarModDesdePanel = montarModDesdePanel;
 }
 
 // El jugador pulsa una acción de TRABAJAR. Ejerce, guarda el resultado

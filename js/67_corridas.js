@@ -103,6 +103,27 @@
     arma_fuego_regl:  { fuerza: 8,  dano: 3, gastoBala: 2, ruido: 45, nombreCorto: 'la reglamentaria' },
     arma_fuego_canon: { fuerza: 11, dano: 4, gastoBala: 3, ruido: 60, nombreCorto: 'el cañón de mano' }
   };
+  // Mods de arma (v0.132). El Mecánico monta UNO (Estado.modArma). Al disparar,
+  // tiene una probabilidad de "saltar" que sube con el rango de Mecánico.
+  const MODS_ARMA = {
+    mod_fragmentada: { efecto: 'sangrado', nombre: 'munición fragmentada' },
+    mod_culata:      { efecto: 'aturdir',  nombre: 'culata de impacto' },
+    mod_sobrecarga:  { efecto: 'dano',     nombre: 'sobrecarga de raíl' }
+  };
+  function _rangoMecanico(){
+    try {
+      const p = Estado.profesiones && Estado.profesiones.mecanico;
+      return (p && typeof p.rango === 'number') ? p.rango : 0;
+    } catch(e){ return 0; }
+  }
+  // Mod montado y válido (debe existir en el registro). null si ninguno.
+  function _modArmaActivo(){
+    const id = (typeof Estado !== 'undefined') ? Estado.modArma : null;
+    return (id && MODS_ARMA[id]) ? id : null;
+  }
+  // Probabilidad de que el mod salte: 15% base + 9% por rango de Mecánico,
+  // con tope del 65%. Un novato lo ve de vez en cuando; un manitas, a menudo.
+  function _chanceMod(){ return Math.min(0.65, 0.15 + 0.09 * _rangoMecanico()); }
   // Mejor pistola que lleva ahora mismo (la de más daño), o null.
   function _armaFuegoEquipada(){
     const orden = ['arma_fuego_canon', 'arma_fuego_regl', 'arma_fuego'];
@@ -851,6 +872,21 @@
         + 'resuelve, pero medio distrito te ha oído.';
       _fx('impacto', 0.6);
       avisoArma = _gastarArma(idArma);
+      // Mod de arma montado: probabilidad de "saltar" (sube con rango Mecánico).
+      const _mid = _modArmaActivo();
+      if(_mid && Math.random() < _chanceMod()){
+        const ef = MODS_ARMA[_mid].efecto;
+        if(ef === 'dano'){
+          danoSolido += 2;
+          mensaje += ' La sobrecarga del raíl descarga de más: el impacto entra hondo.';
+        } else if(ef === 'sangrado' && objetivo){
+          objetivo.sangrado = Math.max(objetivo.sangrado || 0, 3);
+          mensaje += ' El perno se fragmenta dentro: ' + objetivo.nombre + ' empieza a sangrar.';
+        } else if(ef === 'aturdir' && objetivo){
+          objetivo.aturdido = Math.max(objetivo.aturdido || 0, 2);
+          mensaje += ' El culatazo lo pilla de lleno: ' + objetivo.nombre + ' se tambalea, aturdido.';
+        }
+      }
       // Fuego pesado (2+ balas por disparo) SUPRIME al grupo: pegan menos y
       // el ruido no llama refuerzos mientras dura.
       if(af.gastoBala >= 2){

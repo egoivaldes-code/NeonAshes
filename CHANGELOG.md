@@ -1,3 +1,9 @@
+## [0.132] - 2026-06-22
+### Added
+- Mods de arma: el Mecánico fabrica y monta munición fragmentada (sangrado), culata de impacto (aturdir) o sobrecarga de raíl (daño extra). Al disparar tienen una probabilidad de activarse que sube con el rango de Mecánico (15% a 65%).
+### Changed
+- El combate aplica el efecto del mod montado al disparar; el panel del Mecánico permite montar, cambiar o desmontar la mejora y muestra la probabilidad actual.
+
 # NEON ASHES — Historial de versiones
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
