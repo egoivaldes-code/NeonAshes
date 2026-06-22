@@ -53,7 +53,7 @@ const ESCENAS_GUION = {
   'callejon_voz': {
     entrada: true,
     // solo aparece si aún no llevas el papel y tu disociación no es alta
-    cond: { noItem: 'papel_helix', disociacionMin: 0 },
+    cond: { noItem: 'papel_codigo', disociacionMin: 0 },
     img: 'EXP_CALLEJON_NIVELES',
     texto: 'Una mujer empapada te corta el paso entre dos andamios. No pide créditos. '
          + 'Solo mira el implante de tu muñeca, el viejo, el que ya nadie repara. '
@@ -98,7 +98,7 @@ const ESCENAS_GUION = {
     opciones: [
       {
         texto: 'Guardar el papel.',
-        efectos: { item: 'papel_helix' },
+        efectos: { item: 'papel_codigo' },
         resultado: 'Te lo metes en el bolsillo interior. Pesa más de lo que debería un papel.',
         lleva: 'callejon_voz_3'
       },
@@ -212,7 +212,7 @@ const ESCENAS_GUION = {
   // Demuestra: condición de aparición por OBJETO + encadenado + ramas con facción.
   'helice_tachada': {
     entrada: true,
-    cond: { item: 'papel_helix' },     // solo aparece si llevas el papel del callejón
+    cond: { item: 'papel_codigo' },     // solo aparece si llevas el papel del callejón
     img: 'EXP_PLAZA_OLVIDADOS',
     texto: 'Un hombre alto con sobretodo gris te corta el paso en la plaza. No mira tu cara: '
          + 'mira el bolsillo donde guardas el papel. "Tú eres quien lo lleva ahora", dice, '
@@ -238,7 +238,7 @@ const ESCENAS_GUION = {
     opciones: [
       {
         texto: 'Vendérselo y olvidarlo. (+120 créditos)',
-        efectos: { creditos: +120, quitaItem: 'papel_helix', aislamiento: +3 },
+        efectos: { creditos: +120, quitaItem: 'papel_codigo', aislamiento: +3 },
         resultado: 'Coge el papel con dos dedos, como quien recoge algo muerto. Te paga sin mirarte. '
                  + 'Te quedas más rico y más solo de lo que entraste.'
       },

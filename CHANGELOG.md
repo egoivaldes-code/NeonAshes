@@ -2,6 +2,16 @@
 
 > Este archivo es solo para consulta. NO se pega en chats nuevos.
 
+## [0.130] - 2026-06-22
+### Added
+- Validador del proyecto (tools/validate.js): comprueba sintaxis, cache-busts uniformes, mojibake, integridad de combate y de cadenas con pelea, e ids de item duplicados.
+### Fixed
+- El id "papel_helix" se usaba para dos objetos distintos (papel de lore y credencial falsa), que se pisaban entre sí; el de lore pasa a "papel_codigo".
+### Changed
+- Todos los cache-busts (?v=) de index.html unificados a un único valor por versión.
+### Removed
+- Código muerto del antiguo selector de "lugares" del panel de trabajos.
+
 ## [0.129] - 2026-06-21
 ### Added
 - Las escenas pueden desembocar en un combate real (estados, tipos de enemigo) que ramifica la historia en ganar/perder, sin matarte globalmente.
