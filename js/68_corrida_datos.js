@@ -144,11 +144,15 @@ const CORRIDAS_DATOS = {
             { nombre:'Loto callado', desc:'Se mueve para flanquearte', tipo:'rapido', integridad:2, fuerza:3, umbral:2 }
           ],
           ir:'patrulla' },
-        patrulla:{ tipo:'confrontacion',
+        patrulla:{ tipo:'confrontacion', puente:true,
           texto:'Casi en el punto de entrega, una patrulla de HELIX peina la calle con linternas que cortan la lluvia. Uno te ve dudar. "Identificación. Y enséñame las manos."',
-          fuerza:5, umbral:4, ruidoExtra:15,
+          integridad:10,
+          enemigos:[ { nombre:'Agente de HELIX', desc:'Si cae, el otro duda', tipo:'lider', integridad:3, fuerza:4, umbral:4 } ],
           refuerzoSiRuido:60, refuerzoGrupo:[{nombre:'Refuerzo HELIX', desc:'Llamado por radio', integridad:2, fuerza:4, umbral:4}],
-          ir:'final' },
+          ir:'final',
+          gana:{ texto:'Para cuando llega el refuerzo por radio, ya no hay a quién refuerzar. Te pierdes entre la lluvia y los contenedores con el corazón en la garganta y el paquete intacto. La calle vuelve a su ruido de siempre, como si nada.' },
+          pierde:{ texto:'Te tienen contra el suelo mojado antes de que entiendas qué ha fallado. No forcejean más de lo necesario: te esposan, te leen un número y te suben a un furgón. La entrega no va a llegar. Tú, con suerte, sí volverás. La corrida ha terminado mal.',
+            fallaCorrida:true, herida:8, alerta:20 } },
         final:{ tipo:'narrativo',
           texto:'El portal del Ferro es una puerta sin número en una calle sin nombre. Está abierta una rendija. Te esperaban.',
           fin:true }

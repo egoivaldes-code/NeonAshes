@@ -514,7 +514,10 @@
 
     // Si el nodo es una confrontación y aún no la hemos montado, montarla.
     const confronYaActiva = nodo.tipo === 'confrontacion' && _enConfrontacion;
-    if(nodo.tipo === 'confrontacion' && !_enConfrontacion){
+    if(nodo.tipo === 'confrontacion' && !_enConfrontacion && !_combateEscena){
+      // Con puente:true, combate completo con ramas gana/pierde y vida local
+      // (perder no te mata: avanza o falla la corrida según lo escrito). (v0.133)
+      if(nodo.puente){ _confrontacionConPuente(nodo, 'corrida'); return; }
       _montarConfrontacion(nodo);
     }
 
@@ -1441,6 +1444,9 @@
     if(!cont) return;
     // La confrontación de evento se monta y delega en el sistema táctico.
     if(ev.tipo === 'confrontacion'){
+      // Con puente:true, va por el combate completo con ramas gana/pierde y
+      // vida local (perder no te mata: dispara el desenlace escrito). (v0.133)
+      if(ev.puente){ _confrontacionConPuente(ev, 'deriva'); return; }
       _montarConfrontacion(ev);
       let html = _hud();
       html += '<div class="corrida-narr corrida-evento-tag">IMPREVISTO</div>';
@@ -1462,6 +1468,12 @@
       if(typeof ev.herida === 'number'){ _aplicarHerida(ev.herida); }
       if(typeof ev.botin === 'number'){ _ganarBotin(ev.botin); }
       if(ev.item && typeof darItemPorId === 'function'){ darItemPorId(ev.item); }
+      // Condición médica (accidentes): opcionalmente con probabilidad. Si no
+      // se declara condicionProb, se aplica siempre. (v0.133)
+      if(ev.condicion && typeof aplicarCondicion === 'function'){
+        const _pc = (typeof ev.condicionProb === 'number') ? ev.condicionProb : 1;
+        if(Math.random() < _pc) aplicarCondicion(ev.condicion);
+      }
       // En deriva, si el daño te ha matado, la muerte global ya tomó la
       // pantalla: no pintamos botón de seguir.
       if(_modoLibre && _muertoDeVerdad()){ return; }
@@ -1499,6 +1511,10 @@
       if(_muertoDeVerdad()) return;       // la muerte global manda
       _pintarInterludioDeriva();           // volver al respiro entre eventos
       return;
+    }
+    // Rama de pierde de un puente que decretó el fracaso de la corrida.
+    if(_run && _run.eventoActual && _run.eventoActual.finCorridaFallo){
+      _resolverDesenlace(false); return;
     }
     if(_integridad <= 0){ _resolverDesenlace(false); return; }
     _irANodo(_run ? _run.destinoPendiente : null, true); // saltarEvento: no encadenar dos
@@ -1935,6 +1951,44 @@
     }
     _fx('panel_abrir', 0.4);
     _guardar();
+  }
+
+  // Lanza una confrontación de DERIVA o CORRIDA a través del puente de
+  // combate completo (vida LOCAL, estados, tipos de enemigo) y ramifica en
+  // gana/pierde con efectos autorales, SIN tocar la salud global ni matarte.
+  // La diferencia con una confrontación normal: aquí perder la pelea no te
+  // hiere de verdad ni te mata; dispara un desenlace escrito (te despiertas
+  // robado, la corrida fracasa, etc.). (v0.133)
+  //   nodo.gana / nodo.pierde: { texto?, alerta?, herida?, botin?, item?,
+  //                              condicion?, condicionProb?, fallaCorrida? }
+  function _confrontacionConPuente(nodo, contexto){
+    const g  = nodo.gana   || {};
+    const pl = nodo.pierde || {};
+    const synth = (b, extra) => Object.assign({
+      tipo: 'narrativo', texto: b.texto || '',
+      alerta: b.alerta, herida: b.herida, botin: b.botin,
+      item: b.item, condicion: b.condicion, condicionProb: b.condicionProb
+    }, extra || {});
+    const continuar = (b, esFallo) => {
+      if(contexto === 'deriva'){
+        _pintarEvento(synth(b));                 // SEGUIR → _finEvento → interludio
+      } else {
+        _run = _run || {};
+        _run.destinoPendiente = nodo.ir || null;
+        _nodoActual = '__evento__';
+        _run.eventoActual = synth(b, (esFallo && b.fallaCorrida) ? { finCorridaFallo: true } : null);
+        _pintarEvento(_run.eventoActual);        // SEGUIR → _finEvento → siguiente nodo / fracaso
+      }
+    };
+    iniciarCombateDesdeEscena({
+      texto: nodo.texto, enemigos: nodo.enemigos,
+      integridad: nodo.integridad || 10,
+      refuerzoSiRuido: nodo.refuerzoSiRuido, refuerzoGrupo: nodo.refuerzoGrupo,
+      refuerzoTurno: nodo.refuerzoTurno, refuerzoTurnoGrupo: nodo.refuerzoTurnoGrupo,
+      rangoMin: nodo.rangoMin || 0,
+      onGana:  function(){ continuar(g, false); },
+      onPierde: function(){ continuar(pl, true); }
+    });
   }
 
   // Cierra la pelea de escena, restaura el contexto previo y reanuda la
