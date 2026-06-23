@@ -13,14 +13,22 @@
 //   se reconecta con el "puente" en la versión siguiente.
 //
 // FORMATO (mismo que los eventos sueltos de corrida):
-//   narrativo:    { id, tipo:'narrativo', texto, alerta?, herida?, botin?, item? }
+//   narrativo:    { id, tipo:'narrativo', texto, alerta?, herida?, botin?, item?,
+//                   condicion?, condicionProb? }
 //                 · herida → sube tu FATIGA real (te la llevas a casa).
 //                 · botin  → créditos, se te pagan en el acto.
 //                 · item   → objeto que se te da al inventario.
 //                 · alerta → presión del distrito (empeora el ambiente).
+//                 · condicion → id de condición médica (js/39) que se te aplica.
+//                 · condicionProb → 0..1, prob. de que la condición prenda
+//                   (si no se pone, siempre). Para accidentes (cajón, caída...).
 //   confrontacion:{ id, tipo:'confrontacion', texto,
 //                   enemigos:[ { nombre, desc, integridad, fuerza, umbral } ] }
 //                 · se resuelve con el equipo que lleves encima.
+//                 · puente:true → combate completo con VIDA LOCAL y ramas
+//                   gana/pierde (perder NO te mata: dispara el desenlace
+//                   escrito). gana/pierde llevan { texto?, alerta?, herida?,
+//                   botin?, item?, condicion?, condicionProb? }.
 //
 // Cada evento se marca como visto y no se repite hasta agotar el saco.
 // ============================================================
@@ -94,7 +102,71 @@ const EVENTOS_DERIVA = [
       { nombre:'Secuaz', desc:'Fiel mientras gane', integridad:2, fuerza:3, umbral:2 }
     ],
     refuerzoSiRuido:60,
-    refuerzoGrupo:[ { nombre:'Curioso con ganas', desc:'El ruido lo trajo', tipo:'rapido', integridad:2, fuerza:3, umbral:2 } ] }
+    refuerzoGrupo:[ { nombre:'Curioso con ganas', desc:'El ruido lo trajo', tipo:'rapido', integridad:2, fuerza:3, umbral:2 } ] },
+
+  // ── Accidentes: la ciudad se cae a pedazos y a veces te lleva por delante.
+  //    Siempre cuestan fatiga; la condición médica prende solo a veces.
+  { id:'der_cajon', tipo:'narrativo',
+    texto:'Un archivador metálico abandonado en un rellano. El cajón de abajo está hinchado por la humedad y promete '
+        + 'algo dentro. Tiras con ganas, cede de golpe, y el filo oxidado te muerde el antebrazo antes de que apartes '
+        + 'la mano. Dentro no había nada. Nunca hay nada.',
+    herida:5, condicion:'herida_brazo_d_leve', condicionProb:0.7 },
+
+  { id:'der_escalera_incendios', tipo:'narrativo',
+    texto:'Bajas por una escalera de incendios para acortar. A media altura un peldaño cede con un crujido seco y caes '
+        + 'el resto del tramo, rebotando en el metal. Te quedas un momento tirado en el descansillo, mirando el cielo '
+        + 'naranja entre las rejas, hasta que el cuerpo te deja levantarte.',
+    herida:9, condicion:'pierna_herida_grave', condicionProb:0.45, alerta:2 },
+
+  { id:'der_puerta_auto', tipo:'narrativo',
+    texto:'Una puerta automática de un acceso de servicio se traba a medio cerrar. Calculas que pasas, y casi. Te pilla '
+        + 'el costado con la fuerza tonta de un motor barato que no sabe que estás ahí. Te sueltas a tirones, sin aire, '
+        + 'y la puerta sigue intentando cerrarse sobre el vacío.',
+    herida:6, condicion:'costillas', condicionProb:0.55 },
+
+  { id:'der_cable', tipo:'narrativo',
+    texto:'Te apoyas en una barandilla para no resbalar y notas tarde el cable pelado que serpentea por ella, brillante '
+        + 'de lluvia ácida. El chispazo te sube por el brazo y te deja la mandíbula apretada y el mundo girando un par '
+        + 'de segundos. Sueltas la barandilla como si quemara. Quemaba.',
+    herida:6, condicion:'mareado', condicionProb:0.7 },
+
+  { id:'der_fuga_sotano', tipo:'narrativo',
+    texto:'Cruzas un sótano de mantenimiento buscando un atajo. El aire sabe dulce y raro, y para cuando tu cabeza '
+        + 'entiende que eso es una fuga, ya llevas un rato respirándola. Sales tosiendo a la calle, con un dolor sordo '
+        + 'detrás de los ojos y las manos que no terminan de obedecer.',
+    herida:7, condicion:'envenenado', condicionProb:0.6 },
+
+  { id:'der_chapa', tipo:'narrativo',
+    texto:'Rebuscas entre los contenedores y una chapa oxidada cede bajo tu peso. El borde te abre la palma de un tajo '
+        + 'limpio que tarda un segundo en empezar a sangrar y luego no para. Te aprietas la mano contra la ropa y sigues, '
+        + 'dejando un reguero pequeño que la lluvia borra detrás de ti.',
+    herida:4, condicion:'hemorragia', condicionProb:0.7 },
+
+  { id:'der_apagon', tipo:'narrativo',
+    texto:'Un apagón se traga el bloque entero de golpe. En la oscuridad total pisas un charco que no veías, el pie se '
+        + 'va, y la nuca encuentra el suelo antes que las manos. Cuando vuelven las luces de emergencia, parpadeando en '
+        + 'rojo, sigues sentado en el agua, esperando a que el techo deje de moverse.',
+    herida:6, condicion:'conmocion', condicionProb:0.5, alerta:3 },
+
+  // ── Confrontación CON PUENTE: una pelea que puedes perder sin morir.
+  //    Vida local; perder dispara un desenlace escrito (te despiertas robado).
+  { id:'der_emboscada_puente', tipo:'confrontacion', puente:true,
+    texto:'Dos sombras salen de un portal a la vez, una por delante y otra por detrás. No dicen nada: ya lo han hecho '
+        + 'otras veces y saben que las palabras solo dan tiempo a la víctima. Te ves la espalda contra una persiana '
+        + 'metálica y entiendes que esto se decide en los próximos diez segundos.',
+    integridad:9,
+    enemigos:[
+      { nombre:'El que entra de frente', desc:'Te ocupa, no te mata', tipo:'bruto', integridad:3, fuerza:3, umbral:4 },
+      { nombre:'El de la espalda', desc:'Rápido, busca el descuido', tipo:'rapido', integridad:2, fuerza:3, umbral:2 }
+    ],
+    gana:{ texto:'Cuando el segundo entiende que no sales gratis, los dos se evaporan por donde vinieron. Te quedas '
+        + 'jadeando contra la persiana, entero, con las manos temblando por la adrenalina más que por el miedo. En el '
+        + 'suelo, lo que se les cayó en la prisa: unas monedas y poco más. Te lo guardas.',
+      botin:35, herida:5 },
+    pierde:{ texto:'Te despiertas tirado en el portal sin saber cuánto tiempo ha pasado. La cabeza te martillea y la '
+        + 'ropa está revuelta: te han vaciado los bolsillos sueltos con la calma de quien lo hace a diario. No te han '
+        + 'matado. Tampoco hacía falta. En las Pilas, a veces basta con recordarte que no eres nada.',
+      herida:10, condicion:'conmocion', condicionProb:0.7, alerta:6 } }
 
 ];
 

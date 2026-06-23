@@ -499,7 +499,13 @@ function elegirProfesion(id){
     rango: 0,
     progreso: 0,
     ultimoDiaISO: (typeof diaJuegoActual === 'function') ? diaJuegoActual() : null,
-    ultimoTrabajoMs: (typeof obtenerFechaJuego === 'function') ? obtenerFechaJuego().getTime() : null
+    // ultimoTrabajoMs sirve SOLO al reloj de despido por inactividad: se sella
+    // al tomar el oficio para arrancar el contador de 7 días.
+    ultimoTrabajoMs: (typeof obtenerFechaJuego === 'function') ? obtenerFechaJuego().getTime() : null,
+    // Registro de cooldown POR ACCIÓN desde el minuto cero. Al existir ya este
+    // objeto (aunque vacío), ninguna acción hereda el sello global: la primera
+    // acción de cada oficio está disponible al instante (fix v0.133).
+    cooldownAcciones: {}
   };
   if(typeof guardarPartida === 'function') guardarPartida();
   if(typeof reproducirFX === 'function') reproducirFX('profesion', 0.7);
@@ -515,6 +521,25 @@ function _multiplicadorRango(idxRango){
 // Cooldown por defecto entre acciones de trabajar, si una acción no
 // declara el suyo: 8 horas de juego.
 const COOLDOWN_TRABAJO_MS = 8 * 60 * 60 * 1000;
+
+// ── Recuperación de material por rango de Mecánico (v0.133, modelo C) ──
+// Un buen mecánico aprovecha mejor: pagas el coste completo, pero al
+// terminar hay una probabilidad de RECUPERAR 1 unidad del material
+// principal. Sube con el rango. NO infla: nunca devuelve más de lo que
+// gastaste, así que el balance neto es break-even o un pelín más barato.
+// Probabilidad por rango (0 a 5):
+const _PROB_RECUPERA_MECANICO = [0.00, 0.08, 0.14, 0.20, 0.26, 0.32];
+function probRecuperaMaterialMecanico(rango){
+  const i = Math.max(0, Math.min(rango | 0, _PROB_RECUPERA_MECANICO.length - 1));
+  return _PROB_RECUPERA_MECANICO[i] || 0;
+}
+function recuperaMaterialPorcentaje(rango){
+  return Math.round(probRecuperaMaterialMecanico(rango) * 100);
+}
+if(typeof window !== 'undefined'){
+  window.probRecuperaMaterialMecanico = probRecuperaMaterialMecanico;
+  window.recuperaMaterialPorcentaje = recuperaMaterialPorcentaje;
+}
 
 // Hora de juego actual en milisegundos (o null si no hay reloj).
 function _ahoraJuegoMs(){
@@ -551,12 +576,16 @@ function cooldownProfesion(idProf, idAccion){
   // Sello por acción (nuevo). Compatibilidad: si una partida vieja solo
   // tiene est.ultimoTrabajoMs, se respeta como sello de cualquier acción
   // hasta que se vuelva a trabajar y se cree el registro por acción.
+  // Solo las partidas VIEJAS (que no tienen el objeto cooldownAcciones) heredan
+  // el sello global como compatibilidad. En cuanto ese registro existe, la falta
+  // de sello de una acción significa "nunca hecha" → disponible (fix v0.133).
+  const tieneRegistroAccion = est.cooldownAcciones && typeof est.cooldownAcciones === 'object';
   const sellos = est.cooldownAcciones || {};
 
   // Si piden una acción concreta:
   if(idAccion){
     let sello = sellos[idAccion];
-    if(sello == null && est.ultimoTrabajoMs) sello = est.ultimoTrabajoMs; // compat
+    if(sello == null && !tieneRegistroAccion && est.ultimoTrabajoMs) sello = est.ultimoTrabajoMs; // compat partidas viejas
     if(sello == null) return { puede: true, minutosRestantes: 0 };
     const dur = _cooldownMsAccion(prof, idAccion);
     const transcurrido = ahora - sello;
@@ -571,7 +600,7 @@ function cooldownProfesion(idProf, idAccion){
   let minRestante = Infinity;
   prof.acciones.forEach(a => {
     let sello = sellos[a.id];
-    if(sello == null && est.ultimoTrabajoMs) sello = est.ultimoTrabajoMs;
+    if(sello == null && !tieneRegistroAccion && est.ultimoTrabajoMs) sello = est.ultimoTrabajoMs;
     if(sello == null){ algunaDisponible = true; return; }
     const dur = _cooldownMsAccion(prof, a.id);
     const transcurrido = ahora - sello;
@@ -687,6 +716,7 @@ function ejercerProfesion(idProf, idAccion, idLugar){
   let disoDelta = 0;        // sube disociación (no reconocerte en lo que haces)
   let repLinea = '';        // resumen legible para el panel
   let fabricado = null;     // nombre del objeto fabricado (acción 'conRecetas')
+  let recuperado = null;    // id de material recuperado al fabricar (modelo C), o null
 
   if(accion.conLugares){
     // Acción de campo: resolver el desenlace del lugar elegido.
@@ -725,6 +755,18 @@ function ejercerProfesion(idProf, idAccion, idLugar){
     (rec.ingredientes || []).forEach(ing => {
       if(typeof quitarItem === 'function') quitarItem(ing.id, ing.n);
     });
+    // Modelo C: chance de recuperar 1 unidad del material principal (el de
+    // mayor cantidad de la receta), creciente con el rango del Mecánico.
+    if(prof.id === 'mecanico'){
+      const p = probRecuperaMaterialMecanico(est ? (est.rango || 0) : 0);
+      if(p > 0 && Math.random() < p){
+        const ingMax = (rec.ingredientes || []).slice().sort((a, b) => (b.n || 0) - (a.n || 0))[0];
+        if(ingMax){
+          if(typeof darItemPorId === 'function') darItemPorId(ingMax.id);
+          recuperado = ingMax.id;
+        }
+      }
+    }
     const prod = rec.produce || {};
     const cuantos = prod.n || 1;
     for(let i = 0; i < cuantos; i++){ if(typeof darItemPorId === 'function') darItemPorId(prod.id); }
@@ -811,6 +853,7 @@ function ejercerProfesion(idProf, idAccion, idLugar){
     multa: multaImporte,
     rep: repLinea,
     fabricado: fabricado,
+    recuperado: recuperado,
     ascendio: ascendio,
     rangoNuevo: rangoNuevo
   };

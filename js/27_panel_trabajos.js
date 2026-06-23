@@ -106,11 +106,18 @@ function renderTrabajosOficio(){
     if(r.rep){
       repLineaHtml = `<div style="margin-top:0.3rem;font-size:0.55rem;letter-spacing:0.12em;opacity:0.75;">${r.rep}</div>`;
     }
+    // Material recuperado al fabricar (modelo C del Mecánico).
+    let recupLinea = '';
+    if(r.recuperado){
+      const nomRec = (typeof nombreItem === 'function') ? nombreItem(r.recuperado) : r.recuperado;
+      recupLinea = `<div style="color:var(--cyan);margin-top:0.3rem;font-size:0.55rem;opacity:0.85;">APROVECHAS LOS RESTOS · recuperas 1× ${nomRec}</div>`;
+    }
     aviso = `
       <div class="trabajo-tarjeta" style="border-color:rgba(0,229,255,0.25);">
         <div class="trabajo-descripcion" style="opacity:0.85;">${r.nota}</div>
         <div class="trabajo-meta"><span></span>${pagaLinea}</div>
         ${repLineaHtml}
+        ${recupLinea}
         ${costes}
         ${asc}
       </div>`;
@@ -491,9 +498,14 @@ function _renderSelectorRecetas(prof, accion){
         ${btn}
       </div>`;
   });
+  const _probRec = (prof.id === 'mecanico' && typeof recuperaMaterialPorcentaje === 'function') ? recuperaMaterialPorcentaje(rango) : 0;
+  const _notaAhorro = _probRec > 0
+    ? `<div style="font-size:0.46rem;letter-spacing:0.1em;color:var(--cyan);opacity:0.7;margin-bottom:0.3rem;">MANOS VETERANAS · ${_probRec}% DE RECUPERAR MATERIAL</div>`
+    : '';
   return `
     <div style="margin-top:0.5rem;border:1px solid rgba(0,229,255,0.2);padding:0.5rem;">
       <div style="font-size:0.5rem;letter-spacing:0.2em;opacity:0.6;margin-bottom:0.2rem;">${accion.selectorTitulo || '¿QUÉ FABRICAS?'}</div>
+      ${_notaAhorro}
       ${items}
       <button class="btn-terminal" style="display:block;width:100%;margin-top:0.6rem;opacity:0.6;"
         onclick="cerrarRecetasDesdePanel()">VOLVER</button>

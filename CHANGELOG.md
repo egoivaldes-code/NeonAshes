@@ -1,3 +1,13 @@
+## [0.133] - 2026-06-23
+### Fixed
+- Al elegir un oficio, su primera acción ya no aparece bloqueada por error; cada oficio tiene su propio temporizador por acción desde el principio.
+### Added
+- Mecánico: a más rango, probabilidad de recuperar 1 material al fabricar (de 0% a 32%).
+- Accidentes en la deriva (Explorar la ciudad): cajones, caídas, puertas, cables, fugas y apagones que cuestan fatiga y a veces dejan una lesión.
+- Las confrontaciones de deriva y corrida pueden lanzar el combate completo con vida local y desenlaces de ganar/perder; perder ya no te mata.
+### Changed
+- El control de HELIX al final de la corrida del chip se pelea ahora con el combate completo: perder hace fracasar la entrega sin matarte.
+
 ## [0.132] - 2026-06-22
 ### Added
 - Mods de arma: el Mecánico fabrica y monta munición fragmentada (sangrado), culata de impacto (aturdir) o sobrecarga de raíl (daño extra). Al disparar tienen una probabilidad de activarse que sube con el rango de Mecánico (15% a 65%).
