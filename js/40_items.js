@@ -260,6 +260,12 @@ const ITEMS_EXPEDICION = [
   { id:'credencial_falsa', nombre:'Credencial clonada', tipo:'avance', usos:2, apilable:false,
     desc:'Una placa con un número que casi cuadra. Pasa un control si nadie mira dos veces. Dura poco antes de que el sistema la escupa: un par de usos y a tirarla.' },
 
+  // ── PASE DEL MERCADO (abre los Niveles Bajos / mercado clandestino) ──
+  // Una ficha sin marcas que reconoce quien debe reconocerla. No se compra
+  // en ningún puesto: se consigue, se hereda o se cobra como favor. (v0.135)
+  { id:'pase_mercado', nombre:'Ficha sin marcas', tipo:'avance', apilable:false,
+    desc:'Un disco de metal gastado, sin número ni logo, con una muesca en el canto. No vale nada para quien no sepa qué es. Para quien lo sabe, abre la puerta de abajo sin preguntas.' },
+
   // ── CREDENCIAL HELIX (desbloquea la profesión Seguridad) ──────
   // No tiene por qué ser legítima: una placa robada, clonada o heredada
   // sirve igual. Quien la lleve puede ejercer de Seguridad de HELIX.
