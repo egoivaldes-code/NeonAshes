@@ -149,6 +149,12 @@ function _egAplicarEfectos(ef){
     // NPCs recurrentes: conocer a alguien y/o estrechar el vínculo.
     if(ef.conocer && typeof marcarNpcVisto === 'function') marcarNpcVisto(ef.conocer);
     if(ef.vinculo && typeof subirVinculo === 'function') subirVinculo(ef.vinculo.id, ef.vinculo.mas);
+    // Progreso de oficio: recompensa por ganar peleas de cadena de profesión.
+    // ef.progresoOficio = { id:'<oficio>', n:<progreso> }. Suma progreso (y
+    // asciende si toca) sin pagar créditos. (v0.134)
+    if(ef.progresoOficio && ef.progresoOficio.id && typeof otorgarRecompensaProfesion === 'function'){
+      otorgarRecompensaProfesion(ef.progresoOficio.id, 0, ef.progresoOficio.n || 0);
+    }
     if(typeof actualizarHUD === 'function') actualizarHUD();
   }catch(e){}
 }
@@ -294,7 +300,11 @@ function _egResolverOpcion(op, onCerrar){
         refuerzoGrupo: pelea.refuerzoGrupo,
         refuerzoTurno: pelea.refuerzoTurno,
         refuerzoTurnoGrupo: pelea.refuerzoTurnoGrupo,
-        onGana: ()=>{ if(pelea.gana) reproducirEscenaGuion(pelea.gana, onCerrar); else irAlDestino(); },
+        onGana: ()=>{
+          // Recompensa de progreso por ganar la pelea (cadenas de oficio).
+          if(pelea.progresoOficio) _egAplicarEfectos({ progresoOficio: pelea.progresoOficio });
+          if(pelea.gana) reproducirEscenaGuion(pelea.gana, onCerrar); else irAlDestino();
+        },
         onPierde: ()=>{ if(pelea.pierde) reproducirEscenaGuion(pelea.pierde, onCerrar); else irAlDestino(); }
       });
       return true;

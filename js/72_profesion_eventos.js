@@ -248,6 +248,7 @@
             { nombre: 'Chatarrero grande', desc: 'Llave de tubo, sin prisa', tipo: 'bruto', integridad: 4, fuerza: 5, umbral: 6 },
             { nombre: 'Chatarrero flaco', desc: 'Calcula la huida', tipo: 'cobarde', integridad: 2, fuerza: 2, umbral: 2 }
           ],
+          progresoOficio:{ id:'scavenger', n:80 },
           gana: 'prof_scav_p_win', pierde: 'prof_scav_p_lose' } },
       { texto: 'No vale una costilla rota. Cederlo.', efectos:{ aislamiento:+2 },
         resultado: 'Levantas las manos y retrocedes. El grande asiente, casi con respeto, y se queda con el pecio. Te vas con las manos vacías y esa vieja lección de la chatarra: a veces el mejor hallazgo es seguir entero.' }
@@ -289,6 +290,7 @@
           enemigos: [
             { nombre: 'Cuchillo a sueldo', desc: 'Corta y se aparta · te hace sangrar', tipo: 'rapido', integridad: 3, fuerza: 4, umbral: 2 }
           ],
+          progresoOficio:{ id:'investigador', n:80 },
           gana: 'prof_inv_p_win', pierde: 'prof_inv_p_lose' } },
       { texto: 'Tirar la cartera y salir corriendo.', efectos:{ creditos:-50, disociacion:+3 },
         resultado: 'Le lanzas la cartera a los pies y echas a correr antes de que decida. No te sigue: ha cobrado el aviso. Llegas a casa entero, más pobre y con la certeza de que tu pregunta tocaba hueso.' }
@@ -331,6 +333,7 @@
             { nombre: 'Guardaespaldas', desc: 'Un muro que aturde', tipo: 'bruto', integridad: 5, fuerza: 6, umbral: 6 },
             { nombre: 'El moroso', desc: 'Huirá en cuanto pueda', tipo: 'cobarde', integridad: 2, fuerza: 2, umbral: 2 }
           ],
+          progresoOficio:{ id:'cazarrecompensas', n:80 },
           gana: 'prof_caza_p_win', pierde: 'prof_caza_p_lose' } },
       { texto: 'Esperar a que se separen.', efectos:{ fatiga:+6, disociacion:+1 },
         resultado: 'Te tragas las ganas y esperas en la sombra. Tarde o temprano el moroso irá a mear solo. Lo cazas sin ruido, sin gloria y sin un rasguño. El trabajo limpio rara vez es el espectacular.' }
@@ -375,6 +378,7 @@
           ],
           refuerzoSiRuido: 55,
           refuerzoGrupo: [ { nombre: 'Refuerzo de HELIX', desc: 'El ruido lo trajo', tipo:'rapido', integridad: 2, fuerza: 3, umbral: 2 } ],
+          progresoOficio:{ id:'hacker', n:80 },
           gana: 'prof_hack_p_win', pierde: 'prof_hack_p_lose' } },
       { texto: 'Borrar el rastro y huir por el conducto.', efectos:{ fatiga:+10, creditos:-30 },
         resultado: 'Tiras los datos a un servidor muerto, fríes tu firma y te escurres por un conducto de ventilación angosto. Sales sin el botín y con la espalda hecha polvo, pero sin cara que puedan archivar. A veces ganar es no estar.' }
@@ -420,6 +424,7 @@
           ],
           refuerzoSiRuido: 60,
           refuerzoGrupo: [ { nombre: 'Curioso armado', desc: 'El alboroto lo trajo', integridad: 2, fuerza: 3, umbral: 2 } ],
+          progresoOficio:{ id:'contrabandista', n:80 },
           gana: 'prof_contra_p_win', pierde: 'prof_contra_p_lose' } },
       { texto: 'Soltar la carga y desaparecer.', efectos:{ creditos:-80, aislamiento:+3 },
         resultado: 'Dejas el paquete en el suelo y te fundes entre los contenedores. Pierdes la entrega y la cara ante el cliente, pero conservas la piel y, lo que importa, la ruta sigue siendo un secreto que ellos no controlan del todo.' }
@@ -463,6 +468,7 @@
             { nombre: 'Cría veloz', desc: 'Va a por las piernas', tipo: 'rapido', integridad: 2, fuerza: 3, umbral: 2 },
             { nombre: 'El más furioso', desc: 'No siente los golpes', tipo: 'rapido', integridad: 2, fuerza: 3, umbral: 2 }
           ],
+          progresoOficio:{ id:'seguridad', n:80 },
           gana: 'prof_seg_p_win', pierde: 'prof_seg_p_lose' } },
       { texto: 'Bajar la voz y dejarles una salida.', efectos:{ aislamiento:-2, facciones:[ { faccion:'loto', rep:+1 }, { faccion:'helix', rep:-1 } ] },
         resultado: 'Guardas la porra y hablas bajo, ofreciéndoles irse en lugar de tragar. Funciona: se dispersan entre dientes, sin sangre. HELIX lo llamará blandura; tú sabes que has evitado un funeral, puede que el tuyo.' }

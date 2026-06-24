@@ -1,3 +1,7 @@
+## [0.134] - 2026-06-23
+### Added
+- Ganar una pelea dentro de una cadena de oficio ahora da progreso de ese oficio (80 puntos), por una sola vez. Las cadenas generales no dan progreso.
+
 ## [0.133] - 2026-06-23
 ### Fixed
 - Al elegir un oficio, su primera acción ya no aparece bloqueada por error; cada oficio tiene su propio temporizador por acción desde el principio.
