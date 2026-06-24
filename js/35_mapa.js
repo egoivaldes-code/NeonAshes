@@ -376,6 +376,48 @@ const ZONAS_MUNDO = [
       { txt:'Preguntar por implantes básicos', accion:'hospital_implantes' },
       { txt:'← Volver al centro de la ciudad', accion:'volver_mapa_ciudad' }
     ]
+  },
+  {
+    id: 'mercado',
+    nombre: 'MERCADO DE LOWER STACKS',
+    nombreCorto: 'MERCADO',
+    faccion: 'MERCADO LIBRE — PLAZA DEL ÓXIDO',
+    colorFaccion: '#d9a441',
+    desc: 'Nadie lo construyó: creció. Empezó con cuatro trabajadores cambiando piezas robadas junto a un nodo logístico muerto de HELIX, y hoy es lo más parecido a un corazón que tiene Lower Stacks. Puestos de chapa y contenedor apilados en varios niveles, kilómetros de cable ilegal por los techos, lluvia ácida colándose por las grietas. Aquí se consigue casi cualquier cosa. Si sabes a quién preguntar.',
+    peligro: '⚠ ZONA TOLERADA · TODO SE VENDE · DRONES HELIX QUE MIRAN Y RARA VEZ BAJAN',
+    posX: 180, posY: 120,
+    imgBg: 'MERCADO_ZONA',
+    eventos: [
+      { titulo:'LA CALLE DE LOS IMPLANTES', narr:'Un corredor estrecho iluminado por luces quirúrgicas que zumban. Clínicas improvisadas una junto a otra, cortinas de plástico manchado, carteles en cuatro idiomas prometiendo manos firmes. De una sale un hombre con el brazo recién soldado, sonriendo. De la de al lado sacan algo tapado con una sábana. Las dos cobran parecido.',
+        opciones:[
+          { txt:'Pasar de largo, deprisa', cambios:{humano:{disociacion:4}}, msg:'Aprietas el paso. No miras la sábana. Aquí la diferencia entre un buen cirujano y un carnicero es a veces solo suerte, y aprender a no mirar es la primera lección del Mercado.' },
+          { txt:'Preguntar precios por curiosidad', cambios:{humano:{fatiga:1,disociacion:2}}, msg:'Un técnico con gafas de aumento te suelta una tarifa por cambiarte un ojo "por uno mejor, de verdad". Es barato. Demasiado. Te vas dándole vueltas a por qué será tan barato, y prefieres no saberlo.' }
+        ]
+      },
+      { titulo:'EL PASILLO AZUL', narr:'Una galería lateral más limpia que el resto, iluminada en azul frío. Los puestos tienen vitrina de verdad y los vendedores visten bien. Todo parece legal. Un hombre de traje gris te sigue con la mirada sin disimular, calculando si vales el saludo. Aquí mandan, sin mando aparente, intermediarios que nunca dicen para quién trabajan.',
+        opciones:[
+          { txt:'Sostenerle la mirada y seguir', cambios:{humano:{aislamiento:2,disociacion:2}}, msg:'No aparta los ojos hasta que pasas. No es amenaza: es inventario. Te han tasado y archivado en un segundo. En el Pasillo Azul nada se compra de frente, y eso lo hace más inquietante que los Niveles Bajos.' },
+          { txt:'Mirar una vitrina como si nada', cambios:{humano:{disociacion:3}}, msg:'Tras el cristal hay cosas sin etiqueta: un cilindro con líquido, un disco de datos sellado, algo orgánico en hielo. "¿Le interesa?", pregunta el de gris sin acercarse. Dices que solo miras. "Aquí todo el mundo solo mira. Hasta que paga." Te alejas.' }
+        ]
+      },
+      { titulo:'EL RUIDO QUE NO PARA', narr:'Te detienes un momento en mitad de la Plaza del Óxido y, por primera vez, escuchas el Mercado entero: miles de conversaciones, generadores, ventiladores, un dron lejano, música de un puesto, el goteo de la lluvia en las lonas. No es fuerte. Es constante. No para nunca, ni de madrugada. Después de un rato, deja de oírse. Y eso asusta un poco más.',
+        opciones:[
+          { txt:'Dejarte llevar por el murmullo', cambios:{humano:{aislamiento:-4,fatiga:1}}, msg:'Cierras los ojos un segundo. Entre tanta gente que no te conoce, hay una clase rara de compañía: nadie te necesita, pero tampoco estás solo del todo. Te quedas ahí más de lo previsto, dejando que el ruido te llene los huecos.' }
+        ]
+      },
+      { titulo:'LA CORREDORA DE DATOS', narr:'Una mujer joven con un terminal plegable en la rodilla te hace un gesto mínimo desde un puesto de comida. No vende comida. "Compro y vendo lo que la gente sabe y no debería. Rumores, ubicaciones, nombres. ¿Traes algo? ¿O solo cargas con tus propios secretos como todos?"',
+        opciones:[
+          { txt:'Decir que solo pasabas', cambios:{humano:{disociacion:2}}, msg:'"Claro." Vuelve a su terminal sin insistir. "Cuando lo que sabes empiece a pesarte, ya sabes dónde estoy. Aquí la información es la única moneda que no se devalúa." No la miras al irte, pero te quedas con el puesto memorizado.' },
+          { txt:'Preguntarle qué se cuece últimamente', cambios:{humano:{fatiga:1,disociacion:3}}, msg:'"¿Gratis? Nada se cuece gratis." Pero te suelta una migaja: redadas que suben y bajan sin patrón, gente que pregunta por viejos archivos de HELIX, un nombre que se repite y que no te dice nada todavía. Te vas con más preguntas que respuestas. Justo lo que ella quería.' }
+        ]
+      }
+    ],
+    descripcionLlegada: 'El Mercado te traga en cuanto cruzas el ACCESO 07. Olor a fritanga sintética, ozono de soldador y ropa mojada. La Plaza del Óxido se abre bajo pilares enormes que se pierden en la oscuridad de arriba, y todo el mundo se mueve, regatea, pasa. Nadie pertenece a este sitio. Pero todos terminan cruzándolo, antes o después.',
+    opciones: [
+      { txt:'Hablar con la Tasadora', accion:'contacto_mercado' },
+      { txt:'Recorrer los puestos y observar', accion:'observar_mercado' },
+      { txt:'← Volver al centro de la ciudad', accion:'volver_mapa_ciudad' }
+    ]
   }
 ];
 
@@ -765,9 +807,9 @@ function generarParadasViaje(zona){
     descLlegada = poolAprox ? _aleatorio(poolAprox) : 'El sector cambia de tono a medida que te acercas. Diferente tipo de ruido. Diferente tipo de mirada.';
   }
 
-  const imgT1 = { distrito_ferro:'FERRO_TRANSITO_1', arrabal_carmesi:'CARMESI_TRANSITO_1', santuario_ix:'SANTUARIO_TRANSITO_1', nodo_cero:'NODO_TRANSITO_1', hospital_helix:'TRANSITO_HOSPITAL_1' }[zona.id] || 'PASILLO';
-  const imgT2 = { distrito_ferro:'FERRO_TRANSITO_2', arrabal_carmesi:'CARMESI_TRANSITO_2', santuario_ix:'SANTUARIO_TRANSITO_2', nodo_cero:'NODO_TRANSITO_2', hospital_helix:'TRANSITO_HOSPITAL_2' }[zona.id] || 'TREN';
-  const imgT3 = { distrito_ferro:'FERRO_TRANSITO_3', arrabal_carmesi:'CARMESI_TRANSITO_3', santuario_ix:'SANTUARIO_TRANSITO_3', nodo_cero:'NODO_TRANSITO_3', hospital_helix:'TRANSITO_HOSPITAL_3' }[zona.id] || zona.imgBg;
+  const imgT1 = { distrito_ferro:'FERRO_TRANSITO_1', arrabal_carmesi:'CARMESI_TRANSITO_1', santuario_ix:'SANTUARIO_TRANSITO_1', nodo_cero:'NODO_TRANSITO_1', hospital_helix:'TRANSITO_HOSPITAL_1', mercado:'MERCADO_TRANSITO_1' }[zona.id] || 'PASILLO';
+  const imgT2 = { distrito_ferro:'FERRO_TRANSITO_2', arrabal_carmesi:'CARMESI_TRANSITO_2', santuario_ix:'SANTUARIO_TRANSITO_2', nodo_cero:'NODO_TRANSITO_2', hospital_helix:'TRANSITO_HOSPITAL_2', mercado:'MERCADO_TRANSITO_2' }[zona.id] || 'TREN';
+  const imgT3 = { distrito_ferro:'FERRO_TRANSITO_3', arrabal_carmesi:'CARMESI_TRANSITO_3', santuario_ix:'SANTUARIO_TRANSITO_3', nodo_cero:'NODO_TRANSITO_3', hospital_helix:'TRANSITO_HOSPITAL_3', mercado:'MERCADO_TRANSITO_3' }[zona.id] || zona.imgBg;
 
   return [
     { nombre:'SALIENDO DE UNIDAD 273-19A', desc:_aleatorio(_POOL_CORREDOR), color:'#00e5ff', img:imgT1 },
@@ -956,7 +998,7 @@ function llegarAZona(){
     if(hechasHoy[zona.id + ':' + op.accion] === hoy) continue; // ya hecha hoy
     const txtZona = op.txt.replace(/\{NOMBRE_ZONA\}/g, zona.nombreCorto || zona.nombre);
     // Si la facción no te ayuda / te ataca, solo dejamos salir (observar y volver).
-    const esSalida = op.accion === 'volver_mapa_ciudad' || op.accion === 'observar';
+    const esSalida = op.accion === 'volver_mapa_ciudad' || op.accion === 'observar' || op.accion === 'observar_mercado' || op.accion === 'contacto_mercado';
     if(_zonaBloqueada && !esSalida){
       html += '<button class="opcion-btn" disabled style="opacity:0.4;cursor:not-allowed;">'+txtZona+' · CERRADO</button>';
     } else {
@@ -995,6 +1037,19 @@ function _diaDeJuegoActual(){
   return 'dia-unico';
 }
 
+// ¿Tiene el jugador acceso a los Niveles Bajos (mercado clandestino)?
+// Se abre con CUALQUIERA de: rep alta con el Loto, llevar el ítem-pase, o
+// una bandera de misión marcada. Los dos últimos son ganchos para trama
+// futura (hoy solo la rep está activa). (v0.135)
+function _mercadoClandestinoDesbloqueado(){
+  const repLoto = (typeof getRepFaccion === 'function') ? getRepFaccion('loto') : 0;
+  if(repLoto >= 40) return true;
+  if(typeof tieneItem === 'function' && tieneItem('pase_mercado')) return true;
+  const m = (typeof Estado !== 'undefined' && Estado.memoria) ? Estado.memoria : {};
+  if(m.banderas && m.banderas.mercado_clandestino) return true;
+  return false;
+}
+
 function accionZona(accion){
   const zona = _zonaActual;
   if(!zona) return;
@@ -1031,7 +1086,49 @@ function accionZona(accion){
     return;
   }
 
+  // ── MERCADO DE LOWER STACKS (v0.135) ────────────────────────
+  // La Tasadora (contacto) y los dos mercados: el de la luz (en persona,
+  // −15% al comprar) y los Niveles Bajos (clandestino, bajo llave). Tienen
+  // lógica propia: abren paneles, no son acciones narrativas del mapa.
+  if(accion === 'contacto_mercado'){
+    Estado.memoria = Estado.memoria || {};
+    Estado.memoria.jefesConocidos = Estado.memoria.jefesConocidos || {};
+    if(!Estado.memoria.jefesConocidos.tasadora){
+      Estado.memoria.jefesConocidos.tasadora = true;
+      if(typeof notificarCambio === 'function') notificarCambio('NUEVO CONTACTO', 'rep');
+      if(typeof guardarPartida === 'function') guardarPartida();
+    }
+    narr.innerHTML = 'Quel, la Tasadora, ocupa una esquina de la Plaza del Óxido con una báscula vieja y una silla. No vende: tasa. Le pones algo delante y te dice qué vale y quién lo querría. "¿Vienes a comprar a la luz o a buscar lo que no se enseña? Las dos cosas pasan por mí. Una te cuesta créditos. La otra, confianza."';
+    opcEl.innerHTML =
+        '<button class="opcion-btn" onclick="accionZona(\'mercado_ver\')">Comprar en el Mercado (−15%)</button>'
+      + '<button class="opcion-btn" onclick="accionZona(\'mercado_clandestino\')">Bajar a los Niveles Bajos</button>'
+      + '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a la Plaza</button>';
+    return;
+  }
+  if(accion === 'mercado_ver'){
+    narr.innerHTML = (typeof renderMercado === 'function')
+      ? renderMercado('comprar', { descuento:0.15, contenedor:'zona-llegada-desc' }) : '';
+    opcEl.innerHTML = '<button class="opcion-btn" onclick="accionZona(\'contacto_mercado\')">← Volver con la Tasadora</button>';
+    return;
+  }
+  if(accion === 'mercado_clandestino'){
+    if(!_mercadoClandestinoDesbloqueado()){
+      narr.innerHTML = 'La Tasadora ni señala la escalera. "Los Bajos no son para cualquiera, y ahora mismo tú eres cualquiera. Gánate al Loto, o tráeme una ficha que reconozca, o cierra algo gordo que corra de boca en boca. Entonces hablamos de bajar." Lo dice sin desprecio. Es solo cómo funciona.';
+      opcEl.innerHTML = '<button class="opcion-btn" onclick="accionZona(\'contacto_mercado\')">← Volver con la Tasadora</button>';
+      return;
+    }
+    narr.innerHTML = (typeof renderMercado === 'function')
+      ? renderMercado('comprar', { modo:'clandestino', contenedor:'zona-llegada-desc' }) : '';
+    opcEl.innerHTML = '<button class="opcion-btn" onclick="accionZona(\'contacto_mercado\')">← Subir y volver con la Tasadora</button>';
+    return;
+  }
+
   const RESPUESTAS = {
+    observar_mercado: {
+      narr: 'Te apoyas en un pilar oxidado y dejas pasar el Mercado por delante. Un chatarrero discute un precio sin ganas. Una madre tira de dos críos entre los puestos. Un exmilitar mira las armas sin tocarlas, calculando. Nadie repara en ti, y por una vez eso no duele: aquí ser uno más es casi un descanso. Tu cabeza, sin pedir permiso, archiva caras, rutas y precios.',
+      cambios: { humano: { disociacion: 3, aislamiento: -2 } },
+      botones: '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a {NOMBRE_ZONA}</button>'
+    },
     contacto_mano_roja: {
       narr: 'A Mano Roja la encuentras en un reservado del Teatro Sin Nombre, tras una cortina granate. El brazo derecho, mecánico hasta el hombro, descansa sobre la mesa cargado de anillos. No trafica con piezas: trafica con lo que la gente confiesa entre las sábanas. "¿Qué me traes? ¿Créditos o secretos? Porque sin una de las dos, esta cortina se cierra y tú no has estado nunca aquí."',
       rep: 5,

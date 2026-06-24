@@ -1,3 +1,11 @@
+## [0.135] - 2026-06-24
+### Added
+- Nueva zona MERCADO DE LOWER STACKS (Plaza del Óxido) en el mapa, con su tránsito, eventos de ambiente y la Tasadora como contacto.
+- Comprar en persona en el Mercado da −15% (solo al comprar; nunca permite revender con beneficio).
+- Mercado clandestino en los Niveles Bajos: bloqueado salvo reputación alta con el Loto, llevar la ficha de acceso, o una bandera de misión. Vende material restringido (placa HELIX, inhibidor de dolor, credencial clonada).
+### Changed
+- El material restringido sale del mercado normal y pasa al clandestino.
+
 ## [0.134] - 2026-06-23
 ### Added
 - Ganar una pelea dentro de una cadena de oficio ahora da progreso de ese oficio (80 puntos), por una sola vez. Las cadenas generales no dan progreso.

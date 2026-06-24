@@ -8,7 +8,7 @@
 
 // Versión actual del juego. ACTUALIZAR EN CADA ENTREGA.
 // Se muestra en el panel de depuración (Ctrl+D / tap arriba-izquierda).
-const JUEGO_VERSION = "0.134";
+const JUEGO_VERSION = "0.135";
 window.JUEGO_VERSION = JUEGO_VERSION;
 
 // ------------------------------------------------------------
@@ -85,6 +85,10 @@ const ASSETS = {
   CARMESI_TRANSITO_2: "assets/images/carmesi_transito_2.webp",
   CARMESI_TRANSITO_3: "assets/images/carmesi_transito_3.webp",
   CARMESI_ZONA: "assets/images/carmesi_zona.webp",
+  MERCADO_TRANSITO_1: "assets/images/mercado_transito_1.webp",
+  MERCADO_TRANSITO_2: "assets/images/mercado_transito_2.webp",
+  MERCADO_TRANSITO_3: "assets/images/mercado_transito_3.webp",
+  MERCADO_ZONA: "assets/images/mercado_zona.webp",
   SANTUARIO_TRANSITO_1: "assets/images/santuario_transito_1.webp",
   SANTUARIO_TRANSITO_2: "assets/images/santuario_transito_2.webp",
   SANTUARIO_TRANSITO_3: "assets/images/santuario_transito_3.webp",

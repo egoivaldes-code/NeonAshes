@@ -74,12 +74,19 @@ const MERCADO_PRECIOS = {
 const _MERCADO_COMPRABLE = [
   'medkit','kit_trauma','municion','ganzua','carga_analizador',
   'senuelo','racion_deshidratada','licor',
-  'estimulante','adrenalina','vendaje','inhibidor_dolor','granada_humo',
-  'chaqueta_kevlar','abrigo_trapero','placa_helix',
-  'mapa_sector','credencial_falsa',
+  'estimulante','adrenalina','vendaje','granada_humo',
+  'chaqueta_kevlar','abrigo_trapero',
+  'mapa_sector',
   'bateria_2v','bateria_4v','bateria_8v',
   'palanca_termica','mascara_filtro','arma_blanca','arma_fuego','arma_fuego_regl','arma_fuego_canon','analizador',
   'papel_helix','credencial_helix'
+];
+
+// Catálogo CLANDESTINO (Niveles Bajos del Mercado): material restringido
+// que ya no se vende en el mercado a la luz. Solo accesible si el contacto
+// te abre los bajos. (v0.135)
+const _MERCADO_CLANDESTINO = [
+  'placa_helix','inhibidor_dolor','credencial_falsa'
 ];
 
 function _mercItem(id){
@@ -100,32 +107,75 @@ function _mercCreditos(){ return (Estado && typeof Estado.creditos === 'number')
 let _mercTab = 'vender';
 let _mercConfirmando = null;   // fila pidiendo confirmación: { modo, id }
 let _mercCantidades = {};      // cantidad elegida por fila, clave 'modo:id'
+// ── Estado de sesión del mercado (v0.135) ───────────────────
+// Permiten abrir el mercado fuera del hub (p. ej. en persona en la zona
+// MERCADO) con descuento y/o en modo clandestino, y refrescar en el
+// contenedor correcto. renderMercado() los fija al abrir; los repintados
+// internos (cambiarTab / refrescar) los CONSERVAN.
+let _mercDescuento = 0;                      // 0 o 0.15 (−15% al comprar)
+let _mercModo = 'normal';                    // 'normal' | 'clandestino'
+let _mercContenedorId = 'hub-panel-cuerpo';  // dónde se repinta
 
-function renderMercado(tab){
+function _mercCatalogo(){
+  return (_mercModo === 'clandestino') ? _MERCADO_CLANDESTINO : _MERCADO_COMPRABLE;
+}
+// Precio de compra REAL de un item, con descuento si toca. Suelo duro
+// anti-exploit: nunca baja de venta+1, así jamás se puede comprar con
+// descuento y revender con beneficio. El clandestino no lleva descuento.
+function _precioCompra(id){
+  const p = MERCADO_PRECIOS[id] || {};
+  let pr = p.compra || 0;
+  if(pr <= 0) return 0;
+  if(_mercDescuento > 0 && _mercModo !== 'clandestino'){
+    pr = Math.round(pr * (1 - _mercDescuento));
+    const piso = (p.venta || 0) + 1;
+    if(pr < piso) pr = piso;
+  }
+  return pr;
+}
+
+function renderMercado(tab, opts){
+  opts = opts || {};
+  // Fijar estado de sesión SOLO al abrir (no en repintados internos).
+  _mercDescuento   = (typeof opts.descuento === 'number') ? opts.descuento : 0;
+  _mercModo        = (opts.modo === 'clandestino') ? 'clandestino' : 'normal';
+  _mercContenedorId = opts.contenedor || 'hub-panel-cuerpo';
+  // En clandestino solo se compra material restringido.
+  if(_mercModo === 'clandestino') tab = 'comprar';
   _mercTab = (tab === 'comprar') ? 'comprar' : 'vender';
+  return _mercHtml();
+}
+
+// Construye el HTML del mercado a partir del estado actual (sin tocar
+// los flags de sesión). Lo usan renderMercado y los repintados.
+function _mercHtml(){
   const cls = (t) => _mercTab === t ? 'cp-tab activa' : 'cp-tab';
-  let html = ''
+  let tabs = '';
+  if(_mercModo !== 'clandestino'){
+    tabs = '<div class="cp-tabs">'
+      +   '<button class="'+cls('vender')+'" onclick="cambiarTabMercado(\'vender\')">VENDER</button>'
+      +   '<button class="'+cls('comprar')+'" onclick="cambiarTabMercado(\'comprar\')">COMPRAR</button>'
+      + '</div>';
+  }
+  return ''
     + '<div class="merc-saldo">Saldo: <span class="merc-saldo-cifra">'+_mercCreditos()+' CR</span></div>'
-    + '<div class="cp-tabs">'
-    +   '<button class="'+cls('vender')+'" onclick="cambiarTabMercado(\'vender\')">VENDER</button>'
-    +   '<button class="'+cls('comprar')+'" onclick="cambiarTabMercado(\'comprar\')">COMPRAR</button>'
-    + '</div>'
+    + tabs
     + '<div id="merc-cuerpo">' + (_mercTab === 'comprar' ? _renderComprar() : _renderVender()) + '</div>';
-  return html;
 }
 
 function cambiarTabMercado(tab){
   _mercConfirmando = null;
   _mercCantidades = {};
+  if(_mercModo === 'clandestino') tab = 'comprar';
   _mercTab = (tab === 'comprar') ? 'comprar' : 'vender';
-  const cuerpo = document.getElementById('hub-panel-cuerpo');
-  if(cuerpo) cuerpo.innerHTML = renderMercado(_mercTab);
+  const cuerpo = document.getElementById(_mercContenedorId);
+  if(cuerpo) cuerpo.innerHTML = _mercHtml();
 }
 
 // Repinta solo el cuerpo (tras una operación), conservando la pestaña.
 function _mercRefrescar(){
-  const cuerpo = document.getElementById('hub-panel-cuerpo');
-  if(cuerpo) cuerpo.innerHTML = renderMercado(_mercTab);
+  const cuerpo = document.getElementById(_mercContenedorId);
+  if(cuerpo) cuerpo.innerHTML = _mercHtml();
 }
 
 // ── VENDER: recorre el inventario, muestra lo que tiene precio de venta ──
@@ -168,16 +218,27 @@ function _disponibleHoy(id){
 
 // ── COMPRAR: catálogo de equipo con precio de compra ──
 function _renderComprar(){
-  let html = '<div class="merc-intro">Material de segunda mano, precios de primera. Aquí abajo nada sale barato.</div>';
+  let intro;
+  if(_mercModo === 'clandestino'){
+    intro = '<div class="merc-intro" style="border-left:2px solid var(--magenta);padding-left:0.5rem;">Los Niveles Bajos. Aquí no hay carteles ni recibos. Material restringido, precio sin negociar, y ni una palabra cuando salgas.</div>';
+  } else if(_mercDescuento > 0){
+    const pct = Math.round(_mercDescuento * 100);
+    intro = '<div class="merc-intro" style="color:var(--cyan);">Has venido en persona hasta el Mercado. Los puestos te hacen precio: −'+pct+'% en todo lo que compres aquí.</div>';
+  } else {
+    intro = '<div class="merc-intro">Material de segunda mano, precios de primera. Aquí abajo nada sale barato.</div>';
+  }
+  let html = intro;
   const saldo = _mercCreditos();
-  _MERCADO_COMPRABLE.forEach(id => {
+  _mercCatalogo().forEach(id => {
     const p = MERCADO_PRECIOS[id];
     if(!p || p.compra <= 0) return;
-    if(!_disponibleHoy(id)) return;   // stock rotativo: hoy no toca
+    if(_mercModo !== 'clandestino' && !_disponibleHoy(id)) return;   // stock rotativo (no en clandestino)
+    const precio = _precioCompra(id);
+    const rebaja = (precio < p.compra) ? ' <span style="opacity:0.45;text-decoration:line-through;">'+p.compra+'</span>' : '';
     const max = _mercMax('comprar', id);
     html += '<div class="merc-fila merc-fila-col">'
       + '<div class="merc-fila-info"><span class="merc-fila-nombre">'+_mercNombre(id)+'</span>'
-      + '<span class="merc-fila-meta">'+p.compra+' CR c/u'+(_esRaro(id) ? ' · poco común' : '')+'</span></div>';
+      + '<span class="merc-fila-meta">'+precio+rebaja+' CR c/u'+(_esRaro(id) ? ' · poco común' : '')+'</span></div>';
     // Equipo único (no apilable) que ya posees: no tiene sentido recomprarlo.
     const itCat = _mercItem(id);
     const yaLoTienes = itCat && itCat.apilable === false
@@ -201,9 +262,10 @@ function _mercMax(modo, id){
     const it = (Estado.inventario || []).find(i => i.id === id);
     return it ? (it.cantidad || 0) : 0;
   }
-  // comprar: lo que permita el saldo
-  if(!p.compra || p.compra <= 0) return 0;
-  return Math.floor(_mercCreditos() / p.compra);
+  // comprar: lo que permita el saldo (al precio real, con descuento si toca)
+  const precio = _precioCompra(id);
+  if(!precio || precio <= 0) return 0;
+  return Math.floor(_mercCreditos() / precio);
 }
 
 // Cantidad elegida ahora para una fila (entre 1 y su máximo).
@@ -235,7 +297,7 @@ function ajustarCantMercado(modo, id, delta){
 function _mercControles(modo, id, max){
   const p = MERCADO_PRECIOS[id] || {};
   const cant = _mercCant(modo, id);
-  const precioUnit = (modo === 'vender') ? p.venta : p.compra;
+  const precioUnit = (modo === 'vender') ? p.venta : _precioCompra(id);
   const total = precioUnit * cant;
   const confirmando = _mercConfirmando && _mercConfirmando.modo === modo && _mercConfirmando.id === id;
 
@@ -315,7 +377,8 @@ function comprarItemMercado(id){
   let n = _mercCant('comprar', id);
   n = Math.min(n, _mercMax('comprar', id));
   if(n < 1) return;
-  const total = p.compra * n;
+  const precio = _precioCompra(id);
+  const total = precio * n;
   if(_mercCreditos() < total) return;
   if(typeof ajustarCreditos === 'function') ajustarCreditos(-total);
   else Estado.creditos = (Estado.creditos || 0) - total;
