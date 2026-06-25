@@ -1,3 +1,9 @@
+## [0.135.1] - 2026-06-25
+### Fixed
+- En los combates de varios enemigos durante Explorar la ciudad, elegir objetivo ya no salta por error a la pantalla de continuar/curar ni al tablón de encargos: ahora repinta el combate como debe.
+### Removed
+- Artefactos de depuración sueltos en la raíz (capturas debug_*, scripts verify_mercado_*, server.log).
+
 ## [0.135] - 2026-06-24
 ### Added
 - Nueva zona MERCADO DE LOWER STACKS (Plaza del Óxido) en el mapa, con su tránsito, eventos de ambiente y la Tasadora como contacto.
