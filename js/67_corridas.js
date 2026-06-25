@@ -827,10 +827,20 @@
   }
 
   // Elegir (o cambiar) el objetivo del próximo ataque.
+  // Repinta el turno de combate con el pintor correcto: el grafo de corrida
+  // SOLO cuando estamos de verdad en una corrida; en deriva o en un combate
+  // de escena/puente no hay grafo, así que se repinta el combate suelto.
+  // (fix v0.135.1: antes se llamaba siempre a _pintarNodo y un combate de
+  // varios enemigos en deriva saltaba al desenlace de corrida.)
+  function _repintarTurnoConfront(){
+    if(_combateEscena || _modoLibre) _repintarConfrontacionDeriva();
+    else _pintarNodo();
+  }
+
   function elegirObjetivoCorrida(uid){
     if(!_enConfrontacion) return;
     _enConfrontacion._objetivo = uid || null;
-    _pintarNodo();
+    _repintarTurnoConfront();
   }
 
   // Resuelve la vía elegida sobre el objetivo actual. Tras el ataque del
@@ -847,8 +857,8 @@
     // Vías que afectan al grupo entero no necesitan objetivo.
     const viaGrupal = (via === 'justificar' || via === 'sobornar' || via === 'distraer' || via === 'amenazar' || via === 'curar' || via === 'estimulante' || via === 'adrenalina' || via === 'inhibidor' || via === 'humo' || via === 'cubrir' || via === 'aguantar' || via === 'vendaje');
     if(!objetivo && !viaGrupal){
-      // Falta elegir objetivo; repintar para que elija.
-      _pintarNodo();
+      // Falta elegir objetivo; repintar para que elija (según contexto).
+      _repintarTurnoConfront();
       return;
     }
 
