@@ -119,19 +119,40 @@ let _mercContenedorId = 'hub-panel-cuerpo';  // dónde se repinta
 function _mercCatalogo(){
   return (_mercModo === 'clandestino') ? _MERCADO_CLANDESTINO : _MERCADO_COMPRABLE;
 }
-// Precio de compra REAL de un item, con descuento si toca. Suelo duro
-// anti-exploit: nunca baja de venta+1, así jamás se puede comprar con
-// descuento y revender con beneficio. El clandestino no lleva descuento.
+// Multiplicadores de precio según el estado de ciudad (apagón, etc.). (v0.136)
+function _multCiudad(){
+  if(typeof modificadoresCiudad !== 'function') return { c:1, v:1 };
+  const m = modificadoresCiudad();
+  return { c: m.precioCompra || 1, v: m.precioVenta || 1 };
+}
+// Precio de VENTA real (lo que te pagan), con el ajuste de ciudad.
+function _precioVenta(id){
+  const p = MERCADO_PRECIOS[id] || {};
+  if(!p.venta || p.venta <= 0) return 0;
+  return Math.max(1, Math.round(p.venta * _multCiudad().v));
+}
+// Precio de compra REAL: base × ciudad × (descuento si en persona), con
+// suelo duro anti-exploit (nunca por debajo de la venta real + 1). El
+// clandestino no lleva ni descuento ni vaivén de precios de ciudad.
 function _precioCompra(id){
   const p = MERCADO_PRECIOS[id] || {};
   let pr = p.compra || 0;
   if(pr <= 0) return 0;
-  if(_mercDescuento > 0 && _mercModo !== 'clandestino'){
-    pr = Math.round(pr * (1 - _mercDescuento));
-    const piso = (p.venta || 0) + 1;
-    if(pr < piso) pr = piso;
+  if(_mercModo !== 'clandestino'){
+    pr = Math.round(pr * _multCiudad().c);
+    if(_mercDescuento > 0) pr = Math.round(pr * (1 - _mercDescuento));
   }
+  const piso = _precioVenta(id) + 1;
+  if(pr < piso) pr = piso;
   return pr;
+}
+// Precio de compra "de catálogo" para esta sesión (ciudad, sin el −15%),
+// para mostrar tachado el original cuando hay descuento en persona.
+function _precioCompraBase(id){
+  const p = MERCADO_PRECIOS[id] || {};
+  if(!p.compra || p.compra <= 0) return 0;
+  if(_mercModo === 'clandestino') return p.compra;
+  return Math.round(p.compra * _multCiudad().c);
 }
 
 function renderMercado(tab, opts){
@@ -193,7 +214,7 @@ function _renderVender(){
     const cant = it.cantidad || 1;
     html += '<div class="merc-fila merc-fila-col">'
       + '<div class="merc-fila-info"><span class="merc-fila-nombre">'+it.nombre+'</span>'
-      + '<span class="merc-fila-meta">tienes '+cant+' · te dan '+p.venta+' CR c/u</span></div>'
+      + '<span class="merc-fila-meta">tienes '+cant+' · te dan '+_precioVenta(id)+' CR c/u</span></div>'
       + _mercControles('vender', it.id, _mercMax('vender', it.id))
       + '</div>';
   });
@@ -234,7 +255,8 @@ function _renderComprar(){
     if(!p || p.compra <= 0) return;
     if(_mercModo !== 'clandestino' && !_disponibleHoy(id)) return;   // stock rotativo (no en clandestino)
     const precio = _precioCompra(id);
-    const rebaja = (precio < p.compra) ? ' <span style="opacity:0.45;text-decoration:line-through;">'+p.compra+'</span>' : '';
+    const base = _precioCompraBase(id);
+    const rebaja = (precio < base) ? ' <span style="opacity:0.45;text-decoration:line-through;">'+base+'</span>' : '';
     const max = _mercMax('comprar', id);
     html += '<div class="merc-fila merc-fila-col">'
       + '<div class="merc-fila-info"><span class="merc-fila-nombre">'+_mercNombre(id)+'</span>'
@@ -297,7 +319,7 @@ function ajustarCantMercado(modo, id, delta){
 function _mercControles(modo, id, max){
   const p = MERCADO_PRECIOS[id] || {};
   const cant = _mercCant(modo, id);
-  const precioUnit = (modo === 'vender') ? p.venta : _precioCompra(id);
+  const precioUnit = (modo === 'vender') ? _precioVenta(id) : _precioCompra(id);
   const total = precioUnit * cant;
   const confirmando = _mercConfirmando && _mercConfirmando.modo === modo && _mercConfirmando.id === id;
 
@@ -359,7 +381,7 @@ function venderItemMercado(id){
   n = Math.min(n, it.cantidad || 1);
   if(n < 1) return;
   if(typeof quitarItem === 'function') quitarItem(id, n);
-  const total = p.venta * n;
+  const total = _precioVenta(id) * n;
   if(typeof ajustarCreditos === 'function') ajustarCreditos(total);
   else Estado.creditos = (Estado.creditos || 0) + total;
   delete _mercCantidades['vender:' + id];

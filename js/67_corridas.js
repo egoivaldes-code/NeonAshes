@@ -1540,6 +1540,13 @@
     Estado.memoria = Estado.memoria || {};
     Estado.memoria._ultimoDesenlaceCorrida = exito ? 'ok' : 'fallo';
 
+    // Estado de ciudad (v0.136): una corrida ruidosa deja calor en la calle.
+    // Cuanta más alerta arrastres al cierre, más sube tu notoriedad global,
+    // que inclina los próximos días hacia redadas y toques de queda.
+    if(typeof subirNotoriedad === 'function' && _alerta > 0){
+      subirNotoriedad(Math.round(_alerta / 8));
+    }
+
     if(exito){
       // La paga baja si terminaste con mucha alerta (chapucero).
       const factorAlerta = _alerta >= 70 ? 0.7 : (_alerta >= 35 ? 0.85 : 1.0);
@@ -1829,6 +1836,18 @@
     if(!saco || !saco.length) return null;
     let libres = saco.filter(e => _eventosUsados.indexOf(e.id) < 0);
     if(!libres.length){ _eventosUsados = []; libres = saco.slice(); }
+    // Estado de ciudad (v0.136): cuando Las Pilas está caliente (redada,
+    // disturbios, toque...), sube la probabilidad de que toque una
+    // confrontación en lugar de un evento tranquilo.
+    if(typeof modificadoresCiudad === 'function'){
+      const mc = modificadoresCiudad();
+      if(mc && mc.peligroDeriva > 1){
+        const confr = libres.filter(e => e.tipo === 'confrontacion');
+        if(confr.length && Math.random() < Math.min(0.5, mc.peligroDeriva - 1)){
+          return confr[Math.floor(Math.random() * confr.length)];
+        }
+      }
+    }
     return libres[Math.floor(Math.random() * libres.length)];
   }
 
@@ -2021,6 +2040,11 @@
 
   // Volver al apartamento. Conservas todo lo que encontraste (ya aplicado).
   function retirarDeriva(){
+    // Estado de ciudad (v0.136): si la deriva fue ruidosa (peleas, alarmas),
+    // dejas calor en el distrito al volver.
+    if(typeof subirNotoriedad === 'function' && _alerta > 0){
+      subirNotoriedad(Math.round(_alerta / 8));
+    }
     _modoLibre = false;
     _corrida = null;
     _enConfrontacion = null;

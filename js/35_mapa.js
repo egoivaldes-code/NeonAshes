@@ -601,7 +601,18 @@ function abrirMapa(){
   })();
   renderizarMapa();
   const sub = document.getElementById('mapa-subtitulo');
-  if(sub && Estado.jugador) sub.textContent = Estado.jugador.nombre + ' · ELIGE UN DESTINO';
+  if(sub && Estado.jugador){
+    let html = Estado.jugador.nombre + ' · ELIGE UN DESTINO';
+    // Estado de ciudad reactivo (v0.136): rótulo diegético del "humor" de
+    // Las Pilas. Solo informativo de momento; los efectos llegan después.
+    if(typeof infoEstadoCiudad === 'function'){
+      const ec = infoEstadoCiudad();
+      html += '<div class="mapa-estado-ciudad" style="margin-top:0.35rem;font-size:0.5rem;'
+        + 'letter-spacing:0.18em;color:' + ec.color + ';opacity:0.95;">LAS PILAS · ' + ec.nombre + '</div>'
+        + '<div style="margin-top:0.15rem;font-size:0.5rem;line-height:1.4;opacity:0.6;">' + ec.linea + '</div>';
+    }
+    sub.innerHTML = html;
+  }
 }
 
 function volverApartamentoDesMapa(){
@@ -1106,12 +1117,24 @@ function accionZona(accion){
     return;
   }
   if(accion === 'mercado_ver'){
+    const mc = (typeof modificadoresCiudad === 'function') ? modificadoresCiudad() : null;
+    if(mc && mc.mercadoCerrado){
+      narr.innerHTML = 'Los puestos han echado las persianas y atado las lonas. Con lo que está cayendo en la calle, hoy no comercia nadie en la Plaza del Óxido. "Vuelve cuando se calme", te dice la Tasadora sin levantar la vista.';
+      opcEl.innerHTML = '<button class="opcion-btn" onclick="accionZona(\'contacto_mercado\')">← Volver con la Tasadora</button>';
+      return;
+    }
     narr.innerHTML = (typeof renderMercado === 'function')
       ? renderMercado('comprar', { descuento:0.15, contenedor:'zona-llegada-desc' }) : '';
     opcEl.innerHTML = '<button class="opcion-btn" onclick="accionZona(\'contacto_mercado\')">← Volver con la Tasadora</button>';
     return;
   }
   if(accion === 'mercado_clandestino'){
+    const mc2 = (typeof modificadoresCiudad === 'function') ? modificadoresCiudad() : null;
+    if(mc2 && mc2.clandestinoCerrado){
+      narr.innerHTML = 'La Tasadora niega despacio. "Hoy los Bajos están cerrados a cal y canto. Con HELIX peinando el distrito, nadie en su sano juicio abre esa puerta. Vuelve cuando se larguen."';
+      opcEl.innerHTML = '<button class="opcion-btn" onclick="accionZona(\'contacto_mercado\')">← Volver con la Tasadora</button>';
+      return;
+    }
     if(!_mercadoClandestinoDesbloqueado()){
       narr.innerHTML = 'La Tasadora ni señala la escalera. "Los Bajos no son para cualquiera, y ahora mismo tú eres cualquiera. Gánate al Loto, o tráeme una ficha que reconozca, o cierra algo gordo que corra de boca en boca. Entonces hablamos de bajar." Lo dice sin desprecio. Es solo cómo funciona.';
       opcEl.innerHTML = '<button class="opcion-btn" onclick="accionZona(\'contacto_mercado\')">← Volver con la Tasadora</button>';
