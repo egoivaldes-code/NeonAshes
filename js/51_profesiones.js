@@ -782,7 +782,12 @@ function ejercerProfesion(idProf, idAccion, idLugar){
   const [lo, hi] = pagaRango;
   const base = lo + Math.floor(Math.random() * Math.max(1, (hi - lo + 1)));
   const mult = _multiplicadorRango(est.rango || 0);
-  const paga = Math.round(base * mult);
+  let paga = Math.round(base * mult);
+  // Estado de ciudad (v0.136): toque de queda / redada / disturbios recortan
+  // lo que se gana en la calle (menos clientes, menos movimiento).
+  if(typeof modificadoresCiudad === 'function'){
+    paga = Math.round(paga * (modificadoresCiudad().ingresoOficio || 1));
+  }
   if(paga > 0 && typeof ajustarCreditos === 'function') ajustarCreditos(paga);
 
   // 4) Costes en el cuerpo y en la cuenta.
@@ -920,9 +925,15 @@ function otorgarRecompensaProfesion(idProf, creditos, progreso){
   if(!prof || !est || !est.activa) return { ok: false };
 
   if(creditos && creditos !== 0){
-    if(typeof ajustarCreditos === 'function') ajustarCreditos(creditos);
+    let cr = creditos;
+    // Estado de ciudad (v0.136): los pagos por contratos/casos también
+    // bailan con el "humor" del distrito (solo si son ingresos positivos).
+    if(cr > 0 && typeof modificadoresCiudad === 'function'){
+      cr = Math.round(cr * (modificadoresCiudad().ingresoOficio || 1));
+    }
+    if(typeof ajustarCreditos === 'function') ajustarCreditos(cr);
     if(typeof notificarCambio === 'function'){
-      notificarCambio(`+${creditos} CR · ${prof.nombre.toUpperCase()}`, 'creditos');
+      notificarCambio(`+${cr} CR · ${prof.nombre.toUpperCase()}`, 'creditos');
     }
   }
 

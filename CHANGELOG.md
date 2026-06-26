@@ -1,3 +1,7 @@
+## [0.136] - 2026-06-26
+### Added
+- Estado de ciudad reactivo: Las Pilas alterna entre Calma, Toque de queda, Redada de HELIX, Apagón y Disturbios. El estado cambia con los días y con tu notoriedad (las corridas y derivas ruidosas atraen a HELIX), y afecta al peligro de la deriva, los precios del mercado, el cierre de puestos (mercado y clandestino) y los ingresos por trabajar. Indicador diegético del estado en el mapa.
+
 ## [0.135.1] - 2026-06-25
 ### Fixed
 - En los combates de varios enemigos durante Explorar la ciudad, elegir objetivo ya no salta por error a la pantalla de continuar/curar ni al tablón de encargos: ahora repinta el combate como debe.
