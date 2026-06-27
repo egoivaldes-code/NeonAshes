@@ -153,6 +153,14 @@ function reiniciarTrasMuerte(){
   const identidad = document.getElementById('nombre-escena');
   if(identidad) identidad.classList.add('activa');
 
+  // Multi-personaje (v0.138): el muerto libera su hueco. Su muerte ya
+  // quedó registrada en el archivo del mundo (global), así que el contador
+  // de "anteriores en esta unidad" lo sigue recordando. El hueco vuelve a
+  // quedar libre para otra vida.
+  if(typeof borrarPersonajeSlot === 'function' && typeof slotActivo === 'function'){
+    borrarPersonajeSlot(slotActivo());
+  }
+
   // Refrescar la pantalla de identidad: el contador de anteriores
   // ahora debe incluir al recién muerto. El banner de continuar
   // debe estar oculto (no hay partida que continuar).

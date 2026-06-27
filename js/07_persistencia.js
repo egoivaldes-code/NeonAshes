@@ -46,7 +46,8 @@ function guardarPartida(){
       implantes: Estado.implantes || { instalados:{}, especial:null },
       guardadoEn: Date.now()
     };
-    localStorage.setItem(CLAVE_PARTIDA, JSON.stringify(datos));
+    localStorage.setItem((typeof claveSlot==='function'?claveSlot(CLAVE_PARTIDA):CLAVE_PARTIDA), JSON.stringify(datos));
+    if(typeof registrarResumenPersonaje==='function') registrarResumenPersonaje();
   } catch(e){
     // Si localStorage falla (modo incógnito, cuota llena, etc.),
     // el juego sigue funcionando — simplemente no recordará.
@@ -57,7 +58,7 @@ function guardarPartida(){
 // Carga la partida previa, si existe. Devuelve los datos o null.
 function cargarPartida(){
   try {
-    const raw = localStorage.getItem(CLAVE_PARTIDA);
+    const raw = localStorage.getItem((typeof claveSlot==='function'?claveSlot(CLAVE_PARTIDA):CLAVE_PARTIDA));
     if(!raw) return null;
     const datos = JSON.parse(raw);
     // Aceptamos v1 y v2 (compatibilidad hacia atrás).
@@ -70,7 +71,7 @@ function cargarPartida(){
 
 // Borra la partida guardada. Para el botón de "empezar de nuevo".
 function borrarPartida(){
-  try { localStorage.removeItem(CLAVE_PARTIDA); } catch(e){}
+  try { localStorage.removeItem((typeof claveSlot==='function'?claveSlot(CLAVE_PARTIDA):CLAVE_PARTIDA)); } catch(e){}
 }
 
 
