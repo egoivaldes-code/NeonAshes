@@ -321,4 +321,7 @@ function _resetEstadoNuevo(){
   Estado.condiciones = [];
   Estado.profesiones = {};
   Estado.implantes = { instalados:{}, especial:null };
+  // v0.138.1: el personaje nuevo arranca con la ciudad/notoriedad frescas
+  // (el módulo de ciudad la re-inicializa a calma, notoriedad 0).
+  Estado.ciudad = null;
 }

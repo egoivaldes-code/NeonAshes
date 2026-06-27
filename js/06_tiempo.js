@@ -93,8 +93,17 @@ function inicializarTiempoJuego(){
     // Recargamos desde una partida previa. Re-anclamos el reloj real.
     Estado.tiempoJuego.timestampReal = Date.now();
   } else {
+    // v0.139: el mundo avanza entre partidas. Un personaje nuevo no arranca
+    // en la fecha base, sino en la fecha más avanzada que haya alcanzado el
+    // mundo + 1 día (el siguiente inquilino llega al día siguiente). El
+    // primero de todos arranca en la fecha base.
+    let inicio = FECHA_INICIO_JUEGO.getTime();
+    if(typeof obtenerFechaMundo === 'function'){
+      const fm = obtenerFechaMundo();
+      if(fm && fm > inicio) inicio = fm + 24 * 60 * 60 * 1000; // +1 día de juego
+    }
     Estado.tiempoJuego = {
-      timestampJuego: FECHA_INICIO_JUEGO.getTime(),
+      timestampJuego: inicio,
       timestampReal: Date.now()
     };
   }
