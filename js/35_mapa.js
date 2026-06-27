@@ -12,12 +12,12 @@ const CLAVE_ZONAS = LAUNCHER.CLAVE_ZONAS;
 
 function cargarEstadoZonas(){
   try {
-    const r = localStorage.getItem(CLAVE_ZONAS);
+    const r = localStorage.getItem((typeof claveSlot==='function'?claveSlot(CLAVE_ZONAS):CLAVE_ZONAS));
     return r ? JSON.parse(r) : {};
   } catch(e){ return {}; }
 }
 function guardarEstadoZonas(data){
-  try { localStorage.setItem(CLAVE_ZONAS, JSON.stringify(data)); } catch(e){}
+  try { localStorage.setItem((typeof claveSlot==='function'?claveSlot(CLAVE_ZONAS):CLAVE_ZONAS), JSON.stringify(data)); } catch(e){}
 }
 function getRepZona(id){
   // La reputación de zona ahora es la de su facción dominante (un único

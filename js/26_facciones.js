@@ -86,8 +86,8 @@ if(typeof window !== 'undefined'){
 }
 
 const CLAVE_FACCIONES = LAUNCHER.CLAVE_FACCIONES;
-function cargarRepFacciones(){ try{ const r=localStorage.getItem(CLAVE_FACCIONES); return r?JSON.parse(r):{}; }catch(e){return{};} }
-function guardarRepFacciones(d){ try{ localStorage.setItem(CLAVE_FACCIONES, JSON.stringify(d)); }catch(e){} }
+function cargarRepFacciones(){ try{ const r=localStorage.getItem((typeof claveSlot==='function'?claveSlot(CLAVE_FACCIONES):CLAVE_FACCIONES)); return r?JSON.parse(r):{}; }catch(e){return{};} }
+function guardarRepFacciones(d){ try{ localStorage.setItem((typeof claveSlot==='function'?claveSlot(CLAVE_FACCIONES):CLAVE_FACCIONES), JSON.stringify(d)); }catch(e){} }
 function getRepFaccion(id){ const d=cargarRepFacciones(); return typeof d[id]==='number'?d[id]:0; }
 function cambiarRepFaccion(id, delta){
   const d=cargarRepFacciones();

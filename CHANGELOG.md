@@ -1,3 +1,10 @@
+## [0.138] - 2026-06-27
+### Added
+- Selección de personaje: el juego permite hasta 3 personajes, cada uno con su propia partida. Al arrancar se muestra una lista con nombre, día, créditos y las 4 stats de cada uno, con botones de jugar, crear y borrar (con confirmación).
+### Changed
+- El guardado pasa a "huecos" independientes por personaje (partida, facciones y zonas). El archivo del mundo (anteriores en la unidad, herencia) sigue siendo global y compartido. El personaje existente se migra automáticamente al hueco 1 sin pérdida de datos.
+- Al morir, el personaje libera su hueco; su muerte y su herencia quedan registradas en el archivo del mundo.
+
 ## [0.137] - 2026-06-27
 ### Added
 - El pase del mercado clandestino ("Ficha sin marcas") ahora se puede conseguir por cuatro vías: comprárselo a la Tasadora (800 CR), reputación con los sindicatos (≥50), encontrarlo al cerrar una corrida sonada, o hallarlo durante la deriva. Las vías de hallazgo se desactivan solas en cuanto ya tienes acceso.

@@ -8,6 +8,13 @@ function prepararPantallaIdentidad(){
   // Lo primero: refrescamos el contador silencioso de anteriores.
   // Funciona aunque no haya partida previa.
   actualizarContadorAnteriores();
+  // Multi-personaje (v0.138): si hay personajes guardados, se muestra la
+  // lista de selección; si no, se va directo a la creación limpia.
+  if(typeof listaPersonajes === 'function' && listaPersonajes().length > 0){
+    mostrarListaPersonajes();
+    return;
+  }
+  if(typeof mostrarCreacionPersonaje === 'function'){ mostrarCreacionPersonaje(false); return; }
   const datos = cargarPartida();
   const banner = document.getElementById('retorno-banner');
   const pregunta = document.getElementById('nombre-pregunta-txt');
@@ -199,3 +206,119 @@ function decidirHerencia(aceptar){
 }
 
 // ============================================================
+
+// ============================================================
+// SELECCIÓN DE PERSONAJE (multi-slot, v0.138)
+// ============================================================
+function _idEl(id){ return document.getElementById(id); }
+
+// Muestra el bloque de creación limpio. conVuelta=true añade un botón para
+// regresar a la lista (cuando se crea un personaje adicional).
+function mostrarCreacionPersonaje(conVuelta){
+  const lista = _idEl('lista-personajes'); if(lista){ lista.style.display = 'none'; lista.innerHTML = ''; }
+  const banner = _idEl('retorno-banner'); if(banner) banner.style.display = 'none';
+  const bloque = _idEl('bloque-creacion'); if(bloque) bloque.style.display = '';
+  const preg = _idEl('nombre-pregunta-txt'); if(preg) preg.textContent = '¿Quién eres?';
+  const sub = _idEl('nombre-sub-txt'); if(sub) sub.textContent = 'IDENTIFÍCATE';
+  const inN = _idEl('input-nombre'); if(inN) inN.value = '';
+  const inA = _idEl('input-apellido1'); if(inA) inA.value = '';
+  const btnV = _idEl('btn-volver-lista'); if(btnV) btnV.style.display = conVuelta ? '' : 'none';
+}
+
+// Pinta la lista de personajes guardados con su resumen.
+function mostrarListaPersonajes(){
+  const bloque = _idEl('bloque-creacion'); if(bloque) bloque.style.display = 'none';
+  const banner = _idEl('retorno-banner'); if(banner) banner.style.display = 'none';
+  const cont = _idEl('lista-personajes'); if(!cont) return;
+  const chars = (typeof listaPersonajes === 'function') ? listaPersonajes() : [];
+  const st = function(v){ return (typeof v === 'number') ? Math.round(v) : '—'; };
+  let html = '<div style="font-size:0.6rem;letter-spacing:0.22em;color:#00e5ff;opacity:0.8;margin-bottom:0.9rem;text-align:center;">ELIGE QUIÉN SOBREVIVE HOY</div>';
+  chars.forEach(function(p){
+    const r = p.resumen || {};
+    const nombre = ((r.nombre || 'Sin nombre') + ' ' + (r.apellido1 || '')).trim();
+    const dia = r.dia ? r.dia : '—';
+    const cr = (typeof r.creditos === 'number') ? r.creditos : 0;
+    const h = r.humano || {};
+    html += '<div style="border:1px solid rgba(0,229,255,0.18);background:rgba(8,12,18,0.6);'
+      + 'border-radius:6px;padding:0.8rem 0.9rem;margin-bottom:0.7rem;">'
+      + '<div style="font-size:0.95rem;color:#e8eef5;letter-spacing:0.04em;">' + nombre + '</div>'
+      + '<div style="font-size:0.62rem;color:#d9a441;opacity:0.85;margin-top:0.2rem;">' + dia + ' · ' + cr + ' CR</div>'
+      + '<div style="font-size:0.58rem;color:#8aa;opacity:0.7;margin-top:0.25rem;letter-spacing:0.05em;">'
+      + 'FATIGA ' + st(h.fatiga) + ' · HAMBRE ' + st(h.hambre) + ' · DISOC ' + st(h.disociacion) + ' · AISL ' + st(h.aislamiento) + '</div>'
+      + '<div style="display:flex;gap:0.5rem;margin-top:0.7rem;">'
+      + '<button class="btn-terminal" style="flex:1;" onclick="jugarPersonaje(\'' + p.id + '\')">JUGAR</button>'
+      + '<button class="btn-terminal" style="flex:0 0 auto;color:#ff5470;border-color:rgba(255,84,112,0.4);" onclick="pedirBorrarPersonaje(\'' + p.id + '\')">BORRAR</button>'
+      + '</div></div>';
+  });
+  if(typeof hayHuecoLibre === 'function' && hayHuecoLibre()){
+    html += '<button class="btn-confirmar" style="margin-top:0.4rem;" onclick="nuevoPersonajeDesdeLista()">+ CREAR PERSONAJE</button>';
+  } else {
+    html += '<div style="font-size:0.6rem;color:#8aa;opacity:0.6;text-align:center;margin-top:0.6rem;">Tres vidas son todas las que caben en esta unidad. Borra una para empezar otra.</div>';
+  }
+  cont.innerHTML = html;
+  cont.style.display = '';
+}
+
+// "JUGAR": fija el hueco activo y carga ese personaje.
+function jugarPersonaje(id){
+  if(typeof cambiarPersonajeSlot === 'function'){ if(!cambiarPersonajeSlot(id)) return; }
+  continuarPartida();
+}
+
+// "+ CREAR PERSONAJE": reserva un hueco nuevo y abre la creación limpia.
+function nuevoPersonajeDesdeLista(){
+  if(typeof crearPersonajeSlot === 'function'){
+    const id = crearPersonajeSlot();
+    if(!id) return; // no hay hueco libre
+  }
+  _resetEstadoNuevo();
+  mostrarCreacionPersonaje(true);
+}
+
+// Pantalla de confirmación antes de borrar.
+function pedirBorrarPersonaje(id){
+  const cont = _idEl('lista-personajes'); if(!cont) return;
+  const chars = (typeof listaPersonajes === 'function') ? listaPersonajes() : [];
+  const p = chars.filter(function(c){ return c.id === id; })[0];
+  const nombre = p ? ((p.resumen.nombre || '') + ' ' + (p.resumen.apellido1 || '')).trim() : 'este personaje';
+  cont.innerHTML = '<div style="border:1px solid rgba(255,84,112,0.35);background:rgba(18,8,10,0.6);border-radius:6px;padding:1rem;">'
+    + '<div style="font-size:0.72rem;color:#e8eef5;line-height:1.5;">Vas a borrar a <b style="color:#ff7a8f;">' + (nombre || 'este personaje') + '</b>.<br>'
+    + 'Todo lo que vivió —su dinero, sus cicatrices, su sitio en las Pilas— se pierde. No hay vuelta atrás.</div>'
+    + '<div style="display:flex;gap:0.5rem;margin-top:0.9rem;">'
+    + '<button class="btn-terminal" style="flex:1;color:#ff5470;border-color:rgba(255,84,112,0.5);" onclick="confirmarBorrarPersonaje(\'' + id + '\')">SÍ, BORRARLO</button>'
+    + '<button class="btn-terminal" style="flex:1;" onclick="mostrarListaPersonajes()">CANCELAR</button>'
+    + '</div></div>';
+}
+
+function confirmarBorrarPersonaje(id){
+  if(typeof borrarPersonajeSlot === 'function') borrarPersonajeSlot(id);
+  if(typeof listaPersonajes === 'function' && listaPersonajes().length > 0){
+    mostrarListaPersonajes();
+  } else {
+    mostrarCreacionPersonaje(false);
+  }
+}
+
+// Resetea el Estado en memoria para un personaje nuevo (sin tocar otros
+// huecos en disco). El hueco nuevo ya está activo y vacío.
+function _resetEstadoNuevo(){
+  Estado.jugador = { nombre:'', apellido1:'' };
+  Estado.memoria = {
+    aceptoEncargo: null, pidioMasInfo: false, guardoSilencio: false,
+    vecesPidioInfo: 0, vioFragmentoCero: false, confianzaMara: 0, tonoJugador: null,
+    noticiasVistas: true, trabajosVistos: true, profesionesVistas: false
+  };
+  Estado.humano = { fatiga: 8, aislamiento: 12, hambre: 5, disociacion: 0 };
+  Estado.partidasCompletadas = 0;
+  Estado.tiempoJuego = null;
+  Estado.recibos = [];
+  Estado.ultimoDiaCobrado = null;
+  Estado.terminalPendientes = [];
+  Estado.helixAmenazaEnviada = false;
+  Estado.mision = null;
+  Estado.creditos = 0;
+  Estado.inventario = [];
+  Estado.condiciones = [];
+  Estado.profesiones = {};
+  Estado.implantes = { instalados:{}, especial:null };
+}
