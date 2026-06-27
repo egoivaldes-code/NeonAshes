@@ -1,3 +1,9 @@
+## [0.137] - 2026-06-27
+### Added
+- El pase del mercado clandestino ("Ficha sin marcas") ahora se puede conseguir por cuatro vías: comprárselo a la Tasadora (800 CR), reputación con los sindicatos (≥50), encontrarlo al cerrar una corrida sonada, o hallarlo durante la deriva. Las vías de hallazgo se desactivan solas en cuanto ya tienes acceso.
+### Changed
+- Los eventos de deriva admiten condiciones (cond) para aparecer solo cuando corresponde.
+
 ## [0.136] - 2026-06-26
 ### Added
 - Estado de ciudad reactivo: Las Pilas alterna entre Calma, Toque de queda, Redada de HELIX, Apagón y Disturbios. El estado cambia con los días y con tu notoriedad (las corridas y derivas ruidosas atraen a HELIX), y afecta al peligro de la deriva, los precios del mercado, el cierre de puestos (mercado y clandestino) y los ingresos por trabajar. Indicador diegético del estado en el mapa.

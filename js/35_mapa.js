@@ -1055,6 +1055,9 @@ function _diaDeJuegoActual(){
 function _mercadoClandestinoDesbloqueado(){
   const repLoto = (typeof getRepFaccion === 'function') ? getRepFaccion('loto') : 0;
   if(repLoto >= 40) return true;
+  // Los sindicatos también mueven los Bajos: otra vía de acceso. (v0.137)
+  const repSind = (typeof getRepFaccion === 'function') ? getRepFaccion('sindicatos') : 0;
+  if(repSind >= 50) return true;
   if(typeof tieneItem === 'function' && tieneItem('pase_mercado')) return true;
   const m = (typeof Estado !== 'undefined' && Estado.memoria) ? Estado.memoria : {};
   if(m.banderas && m.banderas.mercado_clandestino) return true;
@@ -1113,7 +1116,24 @@ function accionZona(accion){
     opcEl.innerHTML =
         '<button class="opcion-btn" onclick="accionZona(\'mercado_ver\')">Comprar en el Mercado (−15%)</button>'
       + '<button class="opcion-btn" onclick="accionZona(\'mercado_clandestino\')">Bajar a los Niveles Bajos</button>'
+      + (_mercadoClandestinoDesbloqueado() ? ''
+          : '<button class="opcion-btn" onclick="accionZona(\'comprar_pase\')">Preguntar por una ficha sin marcas (800 CR)</button>')
       + '<button class="opcion-btn" onclick="accionZona(\'volver_mapa\')">← Volver a la Plaza</button>';
+    return;
+  }
+  if(accion === 'comprar_pase'){
+    const PRECIO = 800;
+    if(_mercadoClandestinoDesbloqueado()){
+      narr.innerHTML = 'La Tasadora arquea una ceja. "Ya tienes con qué bajar. No malgastes créditos en otra ficha."';
+    } else if((Estado.creditos || 0) < PRECIO){
+      narr.innerHTML = 'La Tasadora chasquea la lengua. "Una ficha limpia no es barata, y tú no la llevas encima. Vuelve con ' + PRECIO + ' créditos y hablamos."';
+    } else {
+      if(typeof ajustarCreditos === 'function') ajustarCreditos(-PRECIO);
+      if(typeof darItemPorId === 'function') darItemPorId('pase_mercado');
+      if(typeof guardarPartida === 'function') guardarPartida();
+      narr.innerHTML = 'La Tasadora hace desaparecer los créditos y desliza sobre la báscula una ficha gris, sin marcas, sin números. "No preguntes de quién era. Ahora es tuya. Enséñala abajo y nadie te parará. Piérdela y no me conoces."';
+    }
+    opcEl.innerHTML = '<button class="opcion-btn" onclick="accionZona(\'contacto_mercado\')">← Volver con la Tasadora</button>';
     return;
   }
   if(accion === 'mercado_ver'){

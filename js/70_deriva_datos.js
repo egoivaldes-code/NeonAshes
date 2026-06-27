@@ -53,6 +53,16 @@ const EVENTOS_DERIVA = [
         + 'Para ti no lo es. Te la guardas: en las Pilas, todo lo que pesa, vale.',
     item:'chatarra' },
 
+  // Hallazgo raro: una ficha sin marcas, llave de los Niveles Bajos. Solo
+  // entra en el saco si aún no tienes cómo bajar al clandestino. (v0.137)
+  { id:'der_ficha_sin_marcas', tipo:'narrativo',
+    texto:'En un callejón sin salida, junto a un cuerpo que lleva ahí el tiempo justo para que nadie pregunte, '
+        + 'algo gris asoma del agua sucia. Una ficha sin marcas: sin números, sin logo, sin nada. La limpias con '
+        + 'el pulgar y entiendes lo que tienes entre los dedos. Una llave para los Niveles Bajos. La guardas antes '
+        + 'de que alguien te vea guardarla.',
+    item:'pase_mercado',
+    cond:function(){ return typeof _mercadoClandestinoDesbloqueado === 'function' && !_mercadoClandestinoDesbloqueado(); } },
+
   { id:'der_creditos', tipo:'narrativo',
     texto:'Un crío te para y te ofrece un dato: dónde hay una cola corta para el agua racionada. No te interesa, '
         + 'pero le sigues el juego, y al irse se le cae un fajo pequeño que él no echa en falta. Lo recoges sin ruido.',
