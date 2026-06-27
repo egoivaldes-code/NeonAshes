@@ -1536,7 +1536,7 @@
   function _resolverDesenlace(exito){
     const cfg = BANDOS[_bando];
     const c = _corrida;
-    let paga = 0, progreso = 0, ascenso = null;
+    let paga = 0, progreso = 0, ascenso = null, paseEncontrado = false;
     Estado.memoria = Estado.memoria || {};
     Estado.memoria._ultimoDesenlaceCorrida = exito ? 'ok' : 'fallo';
 
@@ -1553,6 +1553,14 @@
       paga = Math.round(((c.pagaBase || 0) + _botin) * factorAlerta);
       progreso = c.progreso || 80;
       _fx('inv_acierto', 0.6);
+      // "Cierra algo gordo y que corra de boca en boca": una corrida sonada
+      // puede dejarte en las manos una ficha sin marcas para los Bajos, si
+      // aún no tienes cómo bajar. (v0.137)
+      if(typeof _mercadoClandestinoDesbloqueado === 'function' && !_mercadoClandestinoDesbloqueado()
+         && Math.random() < 0.12 && typeof darItemPorId === 'function'){
+        darItemPorId('pase_mercado');
+        paseEncontrado = true;
+      }
     } else {
       // Fracaso: nada de paga, algo de progreso por la experiencia, y pierdes
       // parte del botín acumulado (te lo confiscan).
@@ -1588,7 +1596,11 @@
     const cierre = exito
       ? (c.cierreOk || 'Llegas. Entregas. Cobras. Otra más que sobrevives.')
       : (c.cierreFallo || 'No llegaste. En las Pilas, no llegar tiene un precio, y lo pagas tú.');
-    html += '<div class="corrida-narr">' + cierre + '</div>';
+    let cierreTxt = cierre;
+    if(paseEncontrado){
+      cierreTxt += ' Entre lo que recoges hay una ficha gris, sin marcas ni números. Sabes lo que es: una llave para los Niveles Bajos. No preguntes de quién era.';
+    }
+    html += '<div class="corrida-narr">' + cierreTxt + '</div>';
     html += '<div class="caso-recompensa"><div>PAGA: ' + paga + ' CR</div>';
     if(ascenso) html += '<div class="caso-ascenso">ASCENSO · ' + ascenso + '</div>';
     html += '</div>';
@@ -1834,8 +1846,13 @@
   function _elegirEventoDeriva(){
     const saco = (typeof EVENTOS_DERIVA !== 'undefined' && Array.isArray(EVENTOS_DERIVA)) ? EVENTOS_DERIVA : null;
     if(!saco || !saco.length) return null;
-    let libres = saco.filter(e => _eventosUsados.indexOf(e.id) < 0);
-    if(!libres.length){ _eventosUsados = []; libres = saco.slice(); }
+    // Un evento puede llevar cond(): solo entra en el saco si la cumple
+    // (p. ej., el hallazgo del pase solo aparece si aún no tienes acceso).
+    // (v0.137; útil también para la siembra futura del hilo Centauri.)
+    const pasaCond = e => { if(!e.cond) return true; try { return !!e.cond(); } catch(_){ return true; } };
+    let libres = saco.filter(e => _eventosUsados.indexOf(e.id) < 0 && pasaCond(e));
+    if(!libres.length){ _eventosUsados = []; libres = saco.filter(pasaCond); }
+    if(!libres.length) libres = saco.slice();
     // Estado de ciudad (v0.136): cuando Las Pilas está caliente (redada,
     // disturbios, toque...), sube la probabilidad de que toque una
     // confrontación en lugar de un evento tranquilo.
