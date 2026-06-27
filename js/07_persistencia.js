@@ -44,10 +44,18 @@ function guardarPartida(){
       // obligaba a volver a elegir profesión.
       profesiones: Estado.profesiones || {},
       implantes: Estado.implantes || { instalados:{}, especial:null },
+      // v0.138.1: persistir el estado de ciudad y la notoriedad, para que
+      // sobrevivan a recargas (antes se reiniciaban a 0 en cada arranque).
+      ciudad: Estado.ciudad || null,
       guardadoEn: Date.now()
     };
     localStorage.setItem((typeof claveSlot==='function'?claveSlot(CLAVE_PARTIDA):CLAVE_PARTIDA), JSON.stringify(datos));
     if(typeof registrarResumenPersonaje==='function') registrarResumenPersonaje();
+    // v0.139: empujar el reloj del mundo hacia delante con la fecha actual,
+    // para que el mundo siga avanzando de un personaje al siguiente.
+    if(typeof avanzarFechaMundo === 'function' && typeof obtenerFechaJuego === 'function' && Estado.tiempoJuego){
+      try { avanzarFechaMundo(obtenerFechaJuego().getTime()); } catch(e){}
+    }
   } catch(e){
     // Si localStorage falla (modo incógnito, cuota llena, etc.),
     // el juego sigue funcionando — simplemente no recordará.

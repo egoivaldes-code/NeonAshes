@@ -1,3 +1,9 @@
+## [0.139] - 2026-06-27
+### Added
+- El mundo avanza entre partidas: la fecha (días, meses, años) ya no se reinicia con cada personaje. Hay un reloj del mundo compartido que solo va hacia delante; un personaje nuevo arranca en la fecha más avanzada alcanzada + 1 día. Así herencia, calendario y "anteriores en la unidad" envejecen juntos.
+### Fixed
+- El estado de ciudad y la notoriedad ahora se guardan y se restauran al recargar (antes se reiniciaban a cero en cada arranque). Un personaje nuevo arranca con la ciudad en calma y notoriedad cero.
+
 ## [0.138] - 2026-06-27
 ### Added
 - Selección de personaje: el juego permite hasta 3 personajes, cada uno con su propia partida. Al arrancar se muestra una lista con nombre, día, créditos y las 4 stats de cada uno, con botones de jugar, crear y borrar (con confirmación).

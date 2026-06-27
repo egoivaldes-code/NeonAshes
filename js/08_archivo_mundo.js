@@ -46,6 +46,25 @@ function guardarArchivoMundo(archivo){
 
 // Añade un personaje muerto al archivo. Si superamos el límite,
 // los más antiguos caen. Esto reproduce el olvido de la ciudad.
+// ── RELOJ DEL MUNDO (v0.139) ────────────────────────────────
+// El mundo avanza hacia delante a través de las partidas. La fecha más
+// avanzada alcanzada vive en el archivo global (compartida entre todos los
+// personajes). Un personaje nuevo arranca en esa fecha + 1 día (ver
+// inicializarTiempoJuego). Solo avanza: nunca retrocede.
+function obtenerFechaMundo(){
+  const a = cargarArchivoMundo();
+  return (a && typeof a.fechaMundo === 'number') ? a.fechaMundo : null;
+}
+function avanzarFechaMundo(timestampJuego){
+  if(typeof timestampJuego !== 'number' || isNaN(timestampJuego)) return;
+  const a = cargarArchivoMundo();
+  if(!a) return;
+  if(!a.fechaMundo || timestampJuego > a.fechaMundo){
+    a.fechaMundo = timestampJuego;
+    guardarArchivoMundo(a);
+  }
+}
+
 function registrarMuerto(causa){
   const archivo = cargarArchivoMundo();
   const m = Estado.memoria || {};
@@ -311,6 +330,15 @@ function aplicarPartidaCargada(datos){
   if(datos.profesiones && typeof datos.profesiones === 'object') Estado.profesiones = datos.profesiones;
   // v3+: restaurar implantes instalados (slots normales + especial).
   if(datos.implantes && typeof datos.implantes === 'object') Estado.implantes = datos.implantes;
+  // v0.138.1: restaurar el estado de ciudad / notoriedad si la partida lo
+  // guarda. Las partidas antiguas sin este campo dejan que el módulo de
+  // ciudad lo inicialice fresco (calma, notoriedad 0).
+  if(datos.ciudad && typeof datos.ciudad === 'object') Estado.ciudad = datos.ciudad;
+  // v0.139: sembrar/empujar el reloj del mundo con la fecha de este
+  // personaje (nunca retrocede), por si se crea uno nuevo a continuación.
+  if(typeof avanzarFechaMundo === 'function' && typeof obtenerFechaJuego === 'function' && Estado.tiempoJuego){
+    try { avanzarFechaMundo(obtenerFechaJuego().getTime()); } catch(e){}
+  }
 }
 
 
