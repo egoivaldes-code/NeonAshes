@@ -213,6 +213,38 @@ function renderContactos(){
     htmlContactos += '<div class="contacto-tarjeta"><div class="contacto-avatar">'+j.inicial+'</div><div class="contacto-info"><span class="contacto-nombre">'+j.nombre+'</span><span class="contacto-rol">'+j.rol+'</span><span class="contacto-relacion '+rClase+'">RELACIÓN: '+rTxt+'</span><div class="contacto-meta">'+j.desc+'</div></div></div>';
   });
 
+  // === VÍNCULOS (v0.141) ===
+  // Personas que has conocido por el mundo (deriva/noche) y con las que has
+  // estrechado un vínculo. Sale su nivel y qué te aportan. Datos de display;
+  // el vínculo real vive en Estado.npcVinculos (42_npcs.js).
+  const _VINC_INFO = {
+    doc_varga:     { nombre:'DOC VARGA',     rol:'MÉDICO SIN LICENCIA · TRASTIENDA',     inicial:'V', beneficio:'Te cura barato.', desc:'Cínico, cobra siempre. Bajo la queja, alguien que no ha dejado de curar a quien no puede pagar.' },
+    el_archivero:  { nombre:'EL ARCHIVERO',  rol:'TRATANTE DE DATOS · RED MUERTA',        inicial:'A', beneficio:'Trafica información.', desc:'Cambia un dato por otro. Sabe cosas que más valdría no saber, y lo sabe.' },
+    hermana_lia:   { nombre:'HERMANA LIA',   rol:'EL ECO · REFUGIO',                      inicial:'L', beneficio:'Refugio y calma.', desc:'Te ofrece techo y escucha sin pedir fe a cambio. O eso parece.' },
+    tomas_el_chico:{ nombre:'TOMÁS',         rol:'CHICO DE LOS RECADOS · CALLE',          inicial:'T', beneficio:'Rumores y recados.', desc:'Demasiado joven para esta ciudad. Listo, hambriento, leal a quien lo trata como persona.' },
+    lena:          { nombre:'LENA',          rol:'TURNOS DE NOCHE · CUATRO CALLES',       inicial:'L', beneficio:'Compañía. Baja el aislamiento.', desc:'Lengua afilada, sola por elección. Contigo baja la guardia que no baja con nadie.' },
+    rei:           { nombre:'REI',           rol:'CORREO Y MÚSICO · CUARTO CON ECO',      inicial:'R', beneficio:'Compañía cálida.', desc:'De paso, sin frialdad. Toca canciones tristes para quien se queda hasta el final.' },
+    kestrel:       { nombre:'KESTREL',       rol:'EX-SEGURIDAD · REFUGIO',                inicial:'K', beneficio:'Te abastece: munición, aplomo.', desc:'Desertora de HELIX. Cuenta salidas hasta dormida. Te cubre la espalda en vez de clavártela.' },
+    sora:          { nombre:'SORA',          rol:'MÉDICA DE CAMPO · CLÍNICA DE MADRUGADA', inicial:'S', beneficio:'Te cura de verdad, gratis.', desc:'Coraza de cansancio, manos de oro. Abre de noche porque de noche llega la gente rota de verdad.' },
+    tov:           { nombre:'TOV',           rol:'ESTIBADOR MARCIANO · PUERTO ORBITAL',   inicial:'T', beneficio:'Suministros: comida, baterías.', desc:'Del Arrabal, de Marte antes. Le reza a las lanzaderas. No deja a nadie con hambre teniendo de sobra.' }
+  };
+  const _vinc = (Estado.npcVinculos && typeof Estado.npcVinculos === 'object') ? Estado.npcVinculos : {};
+  const _vincIds = Object.keys(_vinc).filter(id => (_vinc[id] || 0) > 0);
+  if(_vincIds.length){
+    htmlContactos += '<div class="contactos-titulo-seccion" style="margin-top:1rem;">VÍNCULOS</div>';
+    _vincIds.forEach(id => {
+      const nivel = _vinc[id] || 0;
+      const info = _VINC_INFO[id] || { nombre:(id||'').toUpperCase().replace(/_/g,' '), rol:'CONOCIDO · LAS PILAS', inicial:(id||'?').charAt(0).toUpperCase(), beneficio:'', desc:'Alguien con quien te has cruzado más de una vez.' };
+      let rClase, rTxt;
+      if(nivel >= 4){ rClase='confianza'; rTxt='íntima'; }
+      else if(nivel >= 2){ rClase='confianza'; rTxt='cercana'; }
+      else { rClase='fria'; rTxt='reciente'; }
+      const puntos = '●'.repeat(Math.min(5, nivel)) + '○'.repeat(Math.max(0, 5 - nivel));
+      const benef = info.beneficio ? '<div style="font-size:0.55rem;color:rgba(120,255,160,0.7);letter-spacing:0.12em;margin-top:0.4rem;">▸ '+info.beneficio+'</div>' : '';
+      htmlContactos += '<div class="contacto-tarjeta"><div class="contacto-avatar">'+info.inicial+'</div><div class="contacto-info"><span class="contacto-nombre">'+info.nombre+'</span><span class="contacto-rol">'+info.rol+'</span><span class="contacto-relacion '+rClase+'">VÍNCULO: '+rTxt+' <span style="letter-spacing:0.1em;opacity:0.7;">'+puntos+'</span></span><div class="contacto-meta">'+info.desc+'</div>'+benef+'</div></div>';
+    });
+  }
+
   // SECCIÓN: REPUTACIÓN POR ZONA — eliminada. La reputación de cada zona
   // es ahora la misma que la de su facción dominante, así que se muestra
   // una sola vez, abajo, en la sección FACCIONES (sin duplicar cifras).
