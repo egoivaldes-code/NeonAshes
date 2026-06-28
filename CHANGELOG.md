@@ -1,3 +1,12 @@
+## [0.141] - 2026-06-28
+### Added
+- La hora del día afecta a los eventos: de noche más combate, de día más calma, compuesto con el estado de ciudad. Nuevas condiciones de escena por franja horaria.
+- Sistema de conversación con NPCs (chat de burbujas generalizado de Mara), con nodo de IA opcional y degradación elegante.
+- Relaciones por encuentros nocturnos: cinco contactos (Lena, Rei, Kestrel, Sora, Tov) con entradas en sitios distintos, charla, intimidad sugerida y beneficios propios (compañía, munición, curación, suministros). Reaparecen otras noches para quedar.
+- Sección VÍNCULOS en el panel de Contactos, con nivel de vínculo y beneficio de cada persona.
+### Changed
+- Las corridas se complican algo más de noche y algo menos de día.
+
 ## [0.140] - 2026-06-28
 ### Added
 - Tres arcos largos de misión por actos (marciano, prestamistas y censo de desaparecidos), dosificados por el sandbox, con combate épico con refuerzos y vía alternativa sin pelea.

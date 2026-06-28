@@ -459,7 +459,13 @@
     if(!reserva || !reserva.length) return null;
     // Probabilidad base 35%, sube con la alerta (hasta ~60%). No en el 1er paso.
     if(_pasosDados < 1) return null;
-    const prob = 0.35 + Math.min(0.25, _alerta / 400);
+    let prob = 0.35 + Math.min(0.25, _alerta / 400);
+    // La hora también pesa (v0.141): de noche/madrugada las corridas se
+    // complican más (más controles, más encontronazos); de día, algo menos.
+    if(typeof peligroFranja === 'function'){
+      prob *= peligroFranja();
+      prob = Math.max(0.15, Math.min(0.8, prob));
+    }
     if(Math.random() > prob) return null;
     // Elegir uno no usado.
     const libres = reserva.filter(e => _eventosUsados.indexOf(e.id) < 0);
@@ -1853,17 +1859,23 @@
     let libres = saco.filter(e => _eventosUsados.indexOf(e.id) < 0 && pasaCond(e));
     if(!libres.length){ _eventosUsados = []; libres = saco.filter(pasaCond); }
     if(!libres.length) libres = saco.slice();
-    // Estado de ciudad (v0.136): cuando Las Pilas está caliente (redada,
-    // disturbios, toque...), sube la probabilidad de que toque una
-    // confrontación en lugar de un evento tranquilo.
+    // PELIGRO COMPUESTO (v0.141): el estado de ciudad (peligroDeriva) y la
+    // franja horaria (peligroFranja) se multiplican. De noche o en toque de
+    // queda/disturbios sube el combate; de día y en calma, baja hacia el
+    // ambiente tranquilo.
+    let pel = 1.0;
     if(typeof modificadoresCiudad === 'function'){
       const mc = modificadoresCiudad();
-      if(mc && mc.peligroDeriva > 1){
-        const confr = libres.filter(e => e.tipo === 'confrontacion');
-        if(confr.length && Math.random() < Math.min(0.5, mc.peligroDeriva - 1)){
-          return confr[Math.floor(Math.random() * confr.length)];
-        }
-      }
+      if(mc && typeof mc.peligroDeriva === 'number') pel *= mc.peligroDeriva;
+    }
+    if(typeof peligroFranja === 'function') pel *= peligroFranja();
+    const confr = libres.filter(e => e.tipo === 'confrontacion');
+    const tranq = libres.filter(e => e.tipo !== 'confrontacion');
+    if(pel > 1 && confr.length && Math.random() < Math.min(0.6, pel - 1)){
+      return confr[Math.floor(Math.random() * confr.length)];
+    }
+    if(pel < 1 && tranq.length && Math.random() < Math.min(0.6, 1 - pel)){
+      return tranq[Math.floor(Math.random() * tranq.length)];
     }
     return libres[Math.floor(Math.random() * libres.length)];
   }

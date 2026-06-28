@@ -28,6 +28,30 @@ function franjaHoraria(){
   return 'noche';
 }
 
+// Multiplicador de PELIGRO según la franja horaria (v0.141).
+// De día la calle está más viva y vigilada: menos enfrentamientos.
+// De noche y de madrugada, lo contrario. Se compone (se multiplica) con
+// el peligro del estado de ciudad (modificadoresCiudad().peligroDeriva),
+// de modo que "noche + toque de queda" dispara el combate, y
+// "mediodía + calma" lo deja casi en ambiente puro.
+function peligroFranja(){
+  switch(franjaHoraria()){
+    case 'madrugada': return 1.45;
+    case 'noche':     return 1.40;
+    case 'anochecer': return 1.20;
+    case 'amanecer':  return 0.90;
+    case 'manana':    return 0.70;
+    case 'tarde':     return 0.85;
+    default:          return 1.0;
+  }
+}
+
+// ¿Es de noche? (anochecer/noche/madrugada). Útil para condiciones rápidas.
+function esDeNoche(){
+  const f = franjaHoraria();
+  return f === 'anochecer' || f === 'noche' || f === 'madrugada';
+}
+
 // Tipo de día: fin de semana (sábado/domingo) o entre semana.
 // getDay(): 0 = domingo, 6 = sábado.
 function tipoDia(){

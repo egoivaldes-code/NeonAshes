@@ -85,6 +85,17 @@ function _egCumple(cond){
     const vistos = _egAsegurarVistos();
     if(cond.visto && vistos.indexOf(cond.visto) === -1) return false;
     if(cond.noVisto && vistos.indexOf(cond.noVisto) !== -1) return false;
+    // Franja horaria (v0.141): cond.franja puede ser 'noche' o ['noche','anochecer'].
+    if(cond.franja && typeof franjaHoraria === 'function'){
+      const f = franjaHoraria();
+      const lista = Array.isArray(cond.franja) ? cond.franja : [cond.franja];
+      if(lista.indexOf(f) === -1) return false;
+    }
+    if(cond.noFranja && typeof franjaHoraria === 'function'){
+      const f = franjaHoraria();
+      const lista = Array.isArray(cond.noFranja) ? cond.noFranja : [cond.noFranja];
+      if(lista.indexOf(f) !== -1) return false;
+    }
     if(cond.npcConocido && !(typeof haVistoNpc==='function' && haVistoNpc(cond.npcConocido))) return false;
     if(cond.npcNoConocido && (typeof haVistoNpc==='function' && haVistoNpc(cond.npcNoConocido))) return false;
     if(cond.vinculoMin && typeof vinculoNpc==='function'){
@@ -130,6 +141,11 @@ function _egAplicarEfectos(ef){
     if(ef.quitaItem && typeof quitarItem === 'function') quitarItem(ef.quitaItem, 1);
     if(ef.condicion && typeof aplicarCondicion === 'function') aplicarCondicion(ef.condicion);
     if(ef.quitaCondicion && typeof quitarCondicion === 'function') quitarCondicion(ef.quitaCondicion);
+    // quitaCondiciones: ['hemorragia','conmocion',...] — cura varias de golpe
+    // (p.ej. una médica de confianza que te deja como nuevo).
+    if(Array.isArray(ef.quitaCondiciones) && typeof quitarCondicion === 'function'){
+      ef.quitaCondiciones.forEach(c => { if(c) quitarCondicion(c); });
+    }
     if(ef.faccion && typeof ef.rep === 'number' && typeof cambiarRepFaccion === 'function'){
       cambiarRepFaccion(ef.faccion, ef.rep);
     }
@@ -287,6 +303,31 @@ function _egResolverOpcion(op, onCerrar){
       if(typeof onCerrar === 'function') onCerrar();   // cierra el momento
     }
   };
+
+  // CONVERSACIÓN (v0.141): la opción puede abrir un chat de burbujas con un
+  // NPC (sistema generalizado de Mara). Tras la charla, mostramos el
+  // 'resultado' (si lo hay) y seguimos por 'lleva'/cierre como siempre.
+  const conversa = rama.conversa || op.conversa;
+  if(conversa && window.Conversacion && typeof Conversacion.abrir === 'function'){
+    Conversacion.abrir(conversa, _egCont, ()=>{
+      if(resultado){
+        const cont = document.getElementById(_egCont);
+        if(cont){
+          cont.innerHTML = `<div class="exp-narracion eg-texto eg-resultado">${resultado}</div>`
+            + `<div class="exp-opciones" id="eg-opciones"></div>`;
+          const caja = document.getElementById('eg-opciones');
+          const btn = document.createElement('button');
+          btn.className = 'exp-opcion';
+          btn.textContent = destino ? 'Continuar.' : 'Seguir caminando.';
+          btn.addEventListener('click', irAlDestino, { once:true });
+          caja.appendChild(btn);
+          return;
+        }
+      }
+      irAlDestino();
+    });
+    return;
+  }
 
   // Si la opción desemboca en una PELEA, la lanzamos (con el equipo que
   // lleve el jugador) y la historia se reanuda por la rama de ganar/perder.
