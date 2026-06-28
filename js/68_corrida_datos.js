@@ -852,6 +852,93 @@ const CORRIDAS_DATOS = {
         fin:{ tipo:'narrativo',
           texto:'Sales del patio con el paso tranquilo de quien no ha hecho nada. Si lo hiciste bien, nadie te seguirá con la mirada. Si no, ya lo notas en la nuca.' }
       }}
+    },
+
+    // ── RANGO 2 ──────────────────────────────────────────────
+    {
+      id:'cont_ruta_ajena',
+      titulo:'LA ÚLTIMA RUTA DE OTRO',
+      cliente:'La viuda de un correo, sin facción',
+      faccion:null,
+      peligro:3, pagaBase:430, progreso:125, rangoMin:2,
+      integridad:14, alertaInicial:0,
+      resumen:'Un correo del barrio murió con una entrega a medias y una deuda que su mujer no puede pagar. Si terminas su ruta, cobra ella. Si no, cobra otro. Llevas un paquete cuyo contenido nadie te quiere decir, por una ciudad que ya se lo llevó a él.',
+      cierreOk:'La destinataria recibe el paquete sin abrirlo delante de ti. Solo asiente, como quien firma un duelo. Cuando le dices de parte de quién viene, cierra los ojos un segundo. "Lo sabía. Llegó tarde, pero llegó." Te paga lo acordado y un poco más, lo que el muerto no llegó a cobrar. No es tuyo. Lo aceptas igual: alguien tiene que cerrarle la cuenta.',
+      cierreFallo:'El paquete se queda en una calle que no era su destino. La ruta de otro muere contigo dentro de ella, y la viuda seguirá debiendo lo que ya no se puede pagar. En las Pilas, las deudas no mueren con la gente. Solo cambian de nombre.',
+      mapa:{ inicio:'encargo', nodos:{
+        encargo:{ tipo:'narrativo',
+          texto:'La mujer te entrega el paquete envuelto en tela encerada, atado con el nudo exacto que usaba él. "No preguntes qué hay dentro —dice—. Él tampoco preguntaba. Por eso aguantó tanto." Te da una dirección de memoria, sin escribirla en ninguna parte. Sales a la ruta de un muerto.',
+          ir:'cruce' },
+        cruce:{ tipo:'bifurcacion',
+          texto:'La dirección está al otro lado del sector. Dos formas de cruzar, y la calle no perdona la equivocada.',
+          ramas:[
+            { txt:'POR LAS AZOTEAS', sub:'Solo, alto, resbaladizo', ir:'azotea' },
+            { txt:'POR EL PASAJE INFERIOR', sub:'Gente, ruido, ojos', ir:'pasaje' }
+          ] },
+        azotea:{ tipo:'hallazgo',
+          texto:'Cruzas por arriba, entre antenas y depósitos de agua. En una azotea, el campamento abandonado de alguien que vivió aquí: una lona, latas vacías y una caja de herramientas que el viento no se ha llevado.',
+          txtAbrir:'Registrar la caja', subAbrir:'Quien vivía aquí ya no vuelve',
+          txtDejar:'Respetar el sitio', subDejar:'No es tuyo, y arriba se cae fácil',
+          riesgo:0.3, trampaHerida:3, trampaAlerta:4,
+          recompensaItem:'chatarra', recompensaCreditos:35,
+          msgAbrir:'Dentro, piezas sueltas que valen y unos créditos olvidados en un bolsillo de lona. Te lo guardas y murmuras lo de siempre: que él ya no lo necesita.',
+          msgTrampa:'Al mover la caja resbalas en la chapa mojada y casi te vas por el borde. Te salvas agarrándote a una antena que cede a medias. El corazón tarda calles en bajar.',
+          msgDejar:'Dejas el campamento como estaba. Arriba, en las Pilas, hasta los muertos tienen derecho a que no les registren la lona.',
+          ir:'guardia' },
+        pasaje:{ tipo:'encuentro',
+          texto:'Bajas al pasaje, entre puestos y vapor. Un hombre con el chaleco de los correos —el gremio del muerto— te reconoce el nudo del paquete. "Esa ruta era de Dren. Dren está muerto." No es una pregunta. Es una factura pendiente buscando a quién cobrar.',
+          txtAceptar:'Decirle la verdad y darle algo por dejarte pasar', subAceptar:'30 CR · respeto entre correos',
+          txtRechazar:'Negar que conoces a Dren', subRechazar:'Más rápido, más feo',
+          creditos:-30, alertaAceptar:-6, alertaRechazar:12,
+          msgAceptar:'Le cuentas que terminas la ruta para que cobre la viuda. El hombre te mira distinto, te suelta unos créditos de vuelta "para el nudo" y te abre paso. Entre los que cargan paquetes por la calle hay un código que HELIX nunca consiguió comprar.',
+          msgRechazar:'Niegas y sigues. El hombre escupe al suelo a tu espalda. No te detiene, pero ahora alguien sabe que mientes, y eso en el pasaje viaja rápido.',
+          irAceptar:'guardia', irRechazar:'guardia' },
+        guardia:{ tipo:'confrontacion',
+          texto:'A dos portales del destino, dos figuras te esperan apoyadas en una pared, demasiado quietas. Sabían la ruta. Sabían que alguien la terminaría. Lo que llevas vale más muerto el correo que vivo, y a ellos les da igual cuál de los dos seas.',
+          enemigos:[
+            { nombre:'El que habla', desc:'Tranquilo, lo ha hecho antes', tipo:'normal', integridad:3, fuerza:3, umbral:4 },
+            { nombre:'El callado', desc:'Espera tu descuido', tipo:'rapido', integridad:2, fuerza:3, umbral:2 }
+          ],
+          ir:'entrega' },
+        entrega:{ tipo:'narrativo',
+          texto:'El portal correcto huele a desinfectante y a flores baratas. Una mujer abre con la cadena puesta, ve el paquete y el nudo, y la cadena cae sola. No te invita a pasar. No hace falta. Le tiendes lo que llevaba un muerto y esperas a que diga lo que tenga que decir.',
+          fin:true }
+      }}
+    },
+
+    // ── RANGO 0 ──────────────────────────────────────────────
+    {
+      id:'cont_carta',
+      titulo:'UNA CARTA QUE NO VIAJA POR LA RED',
+      cliente:'Una vecina del bloque, sin facción',
+      faccion:null,
+      peligro:1, pagaBase:140, progreso:80, rangoMin:0,
+      integridad:14, alertaInicial:0,
+      resumen:'Una carta de papel —papel de verdad, escrito a mano— que una mujer no se atreve a mandar por la red de HELIX porque "ahí lo leen todo antes que el destinatario". De su mano a la de su hermano, dos bloques más allá. Parece fácil. El papel siempre parece fácil.',
+      cierreOk:'El hermano abre el sobre delante de ti, lee de pie, y se le ablanda algo en la cara que llevaba años duro. No te cuenta qué dice; no es asunto tuyo y lo sabes. Te paga lo poco acordado y te aprieta el antebrazo un segundo, ese gesto de las Pilas que vale más que las palabras que aquí no se gastan.',
+      cierreFallo:'La carta acaba mojada, perdida o en malas manos. Dos hermanos seguirán sin decirse lo que el papel llevaba, separados por dos bloques y por todo lo demás. Algunas distancias no se miden en calles.',
+      mapa:{ inicio:'recoge', nodos:{
+        recoge:{ tipo:'narrativo',
+          texto:'La mujer te entrega el sobre con las dos manos, como si pesara. "No lo leas. Y no lo mojes, por lo que más quieras." El papel es un lujo y un riesgo a la vez: en las Pilas, escribir a mano es casi una confesión. Te lo guardas pegado al pecho y sales.',
+          ir:'control' },
+        control:{ tipo:'obstaculo',
+          texto:'Un retén informal de chavales del Loto controla el paso al otro bloque, cacheando "por seguridad" a cambio de algo. Si encuentran el sobre, lo abrirán por curiosidad o por vender lo que diga.',
+          coste:15,
+          txtPagar:'Pagar el peaje sin discutir', subPagar:'Rápido y sin registro',
+          msgPagar:'Les pones el peaje en la mano y te dejan pasar sin tocarte. La carta sigue cerrada, contra tu pecho. Quince créditos por una intimidad ajena: barato, para lo que cuestan las cosas aquí.',
+          txtForzar:'Colarte por el tendedero de atrás', subForzar:'Sin pagar, pero a la vista',
+          msgForzar:'Trepas por una maraña de cuerdas de tender y pasas por encima del retén. Te ven, te gritan, pero ya estás del otro lado. La carta, intacta. La nuca, caliente.', ruidoForzar:10,
+          ir:'lluvia' },
+        lluvia:{ tipo:'bifurcacion',
+          texto:'Empieza a diluviar de golpe. El sobre, contra tu pecho, es lo único que no puede mojarse. Dos formas de llegar antes de que el agua lo deshaga.',
+          ramas:[
+            { txt:'CORRER A CUBIERTO', sub:'Más rápido, más expuesto', ir:'final' },
+            { txt:'IR PEGADO A LOS ALEROS', sub:'Más lento, más seco', ir:'final' }
+          ] },
+        final:{ tipo:'narrativo',
+          texto:'Llegas al portal del hermano con el sobre seco a duras penas, abrazado bajo la chaqueta. La puerta tiene el mismo número repintado a mano que el de la mujer que te lo dio: dos casas hermanadas por la misma letra torcida. Llamas.',
+          fin:true }
+      }}
     }
 
   ],
@@ -1607,6 +1694,50 @@ const CORRIDAS_DATOS = {
         acta:{ tipo:'narrativo',
           texto:'Cierras el acta apoyado en una columna fría. La nave, vacía, suena a hueco. Te preguntas adónde habrán ido los que huyeron, y decides no preguntártelo mucho.' }
       }}
+    },
+
+    // ── RANGO 1 ──────────────────────────────────────────────
+    {
+      id:'seg_censo',
+      titulo:'EL CENSO',
+      cliente:'HELIX · Oficina de Ocupación',
+      faccion:'helix',
+      peligro:2, pagaBase:300, progreso:100, rangoMin:1,
+      integridad:14, alertaInicial:0,
+      resumen:'Una ronda de censo en un bloque de las Pilas: llamar a cada puerta, anotar quién vive y quién no figura. La orden dice "actualizar el registro". Lo que actualiza el registro es a quién se desaloja después. Tú solo llevas la tablilla. Eso te dices.',
+      cierreOk:'Entregas la tablilla con el censo cerrado. El funcionario la pasa por el lector sin mirarte y sin mirarla: para él son filas, no caras. "Buen trabajo. Limpio." Cobras. Esa noche, en algún despacho, alguien decidirá cosas sobre puertas a las que tú llamaste. No estarás delante. Para eso está el censo: para que nadie esté delante.',
+      cierreFallo:'El censo queda a medias y mal. Tu supervisor lo nota, lo apunta, y te recuerda sin levantar la voz que en HELIX el papel incompleto también es un dato sobre ti. Cobras menos y te llevas la sensación de que el siguiente que llame a tu puerta llevará una tablilla parecida.',
+      mapa:{ inicio:'briefing', nodos:{
+        briefing:{ tipo:'narrativo',
+          texto:'Te dan la tablilla y una ruta: planta por planta, puerta por puerta. "Solo censo —dice el supervisor—. No es un desalojo." Lo dice antes de que preguntes, que es como sabes que sí lo es. Subes al primer rellano, donde alguien ha tapado el número con cinta para no figurar.',
+          ir:'puerta1' },
+        puerta1:{ tipo:'encuentro',
+          texto:'Abre una anciana que no entiende la mitad de lo que le preguntas y la otra mitad la entiende demasiado bien. Vive con tres más que no constan. Si los anotas, el bloque pasa de "subocupado" a "irregular", y eso tiene consecuencias que ella conoce mejor que tú.',
+          txtAceptar:'Anotarlos a todos, como manda la orden', subAceptar:'Limpio para HELIX · sucio para ti',
+          txtRechazar:'Anotar solo a ella. "Aquí vive una."', subRechazar:'Falsear el censo · riesgo',
+          alertaAceptar:-8, alertaRechazar:10,
+          msgAceptar:'Anotas los cuatro nombres. La anciana ve cómo lo haces y no protesta; hace tiempo que dejó de servir. Cierras la puerta y el número tapado con cinta sigue ahí, como una mentira que ya no engaña a nadie.',
+          msgRechazar:'Anotas a una. Los otros tres dejan de existir para el registro esta noche. Es un riesgo: si revisan, el dato falso lleva tu nombre. La anciana no da las gracias. Solo cierra despacio, como quien no quiere gastar la bisagra.',
+          irAceptar:'puerta2', irRechazar:'puerta2' },
+        puerta2:{ tipo:'obstaculo',
+          texto:'Una puerta no abre. Dentro se oye movimiento que se queda quieto de golpe. La orden dice que una puerta que no abre se marca como "acceso denegado", y un acceso denegado es media firma de desalojo.',
+          coste:0,
+          txtPagar:'Marcar "vivienda vacía" y seguir', subPagar:'Mentira piadosa · les das tiempo',
+          msgPagar:'Escribes "vacía" en una puerta que claramente no lo está. Por dentro, alguien contiene la respiración hasta que oye que te alejas. Les has comprado unas semanas. Es lo único que está en tu mano comprar.',
+          txtForzar:'Llamar a viva voz y exigir que abran', subForzar:'Por el reglamento',
+          msgForzar:'Golpeas y te identificas. La puerta se abre a regañadientes y anotas a quien hay dentro con la cara que pone alguien al que acaban de fichar. Cumples. El reglamento abriga poco.', ruidoForzar:12,
+          ir:'patio' },
+        patio:{ tipo:'confrontacion',
+          texto:'En el patio interior, un par de vecinos te cortan el paso. Han visto la tablilla y saben para qué sirve. "Tú no eres de HELIX —dice uno—. Eres uno de nosotros con su uniforme. Eso es peor." No quieren matarte. Quieren la tablilla, y lo que hay escrito en ella.',
+          enemigos:[
+            { nombre:'Vecino con razón', desc:'No es tu enemigo, y aun así pega', tipo:'normal', integridad:3, fuerza:3, umbral:4 },
+            { nombre:'El joven', desc:'Más miedo que furia', tipo:'cobarde', integridad:2, fuerza:2, umbral:2 }
+          ],
+          ir:'cierre' },
+        cierre:{ tipo:'narrativo',
+          texto:'Llegas a la última planta con la tablilla intacta o magullada, según cómo haya ido. Desde la galería se ve todo el bloque: cientos de ventanas, cientos de vidas reducidas a filas en una pantalla que llevas bajo el brazo. Cierras el censo. Te pesa más de lo que pesa.',
+          fin:true }
+      }}
     }
 
   ]
@@ -1668,7 +1799,41 @@ const EVENTOS_CORRIDA = {
       riesgo:0,
       recompensaItem:'abrigo_trapero',
       msgAbrir:'Te pones el abrigo de trapero, pesado de lona y forros robados. Aún conserva el calor de la calle. Abriga, y esconde. Murmuras una disculpa que nadie oye.',
-      msgDejar:'Lo dejas con su dueño. No todo en las Pilas está en venta, ni siquiera cuando nadie mira.' }
+      msgDejar:'Lo dejas con su dueño. No todo en las Pilas está en venta, ni siquiera cuando nadie mira.' },
+    { id:'ev_c_funeral', tipo:'narrativo',
+      texto:'Un cortejo improvisado te corta el paso: media docena de personas llevando a hombros a alguien envuelto en una lona, sin cura, sin papeles, sin prisa. Te quedas quieto y dejas que pasen. En las Pilas, ceder el paso a un muerto es de las pocas cortesías que aún se cumplen.',
+      alerta:-4 },
+    { id:'ev_c_chaval', tipo:'encuentro',
+      texto:'Un chaval flaco aparece a tu lado y camina a tu ritmo. "Llevas algo. Lo noto en cómo andas. Yo conozco una salida que ni HELIX tiene mapeada... barata." Tiene la mirada despierta de quien aprendió la ciudad a base de huir por ella.',
+      txtAceptar:'Fiarte y pagarle el atajo', subAceptar:'15 CR · baja la presión',
+      txtRechazar:'Despacharlo y seguir solo', subRechazar:'No te fías de un crío',
+      creditos:-15, alertaAceptar:-10,
+      msgAceptar:'Le pagas. El chaval te mete por un hueco entre dos bloques que no parece llevar a ningún sitio, y de pronto estás dos calles más allá, lejos de todo ojo. " Depende de la gente como tú que coma", dice, y se esfuma.',
+      msgRechazar:'Lo despachas. El chaval se encoge de hombros, sin rencor, y se pega al siguiente que pase con cara de cargar algo. La ciudad le enseñó a no insistir.' },
+    { id:'ev_c_perro', tipo:'narrativo',
+      texto:'Un perro guardián suelto te corta el callejón, gruñendo bajo, más hambre que rabia. No ladra: ladrar gasta energía que no le sobra. Le tiras lo poco que llevas de comer y lo rodeas mientras devora. A veces se negocia hasta con los perros.',
+      alerta:2 },
+    { id:'ev_c_viejo_mapa', tipo:'hallazgo',
+      texto:'En el quicio de un local tapiado, un buhonero medio dormido despliega trastos sobre una tela. Entre ellos, un plano de servicio del sector, de los que HELIX ya no imprime. Te mira la cara y le pone precio a tu prisa.',
+      txtAbrir:'Comprarle el plano', subAbrir:'Conocer el terreno nunca sobra',
+      txtDejar:'No malgastar en papel viejo', subDejar:'Te fías de tus pies',
+      riesgo:0,
+      recompensaItem:'mapa_sector',
+      msgAbrir:'Le compras el plano por cuatro monedas. Las calles de servicio, los huecos, las salidas que ya no figuran: todo ahí, dibujado a mano por alguien que se las recorrió. En la calle, saber por dónde no van vale más que un arma.',
+      msgDejar:'Lo dejas. El buhonero ni se inmuta; vuelve a su duermevela sobre la tela, esperando a otro con más miedo y menos memoria que tú.' },
+    { id:'ev_c_nina_ventana', tipo:'narrativo',
+      texto:'Una niña te ve pasar desde una ventana baja y te saluda con la mano, sin más motivo que el de saludar. Le devuelves el gesto casi sin pensarlo. Durante media calle, llevar mercancía prohibida por un mundo roto pesa un poco menos. Los niños todavía no saben que no deberían sonreírle a un desconocido. Esperas que tarden en aprenderlo.',
+      alerta:-4 },
+    { id:'ev_c_tuberia', tipo:'narrativo',
+      texto:'Avanzas por una galería de servicio cuando una junta revienta y un chorro de vapor te corta el paso. Esperas, pegado a la pared, a que la presión baje, perdiendo un tiempo que no tienes mientras la mercancía te suda encima. Cuando por fin pasas, vas más tarde y más harto, pero entero.',
+      herida:1, alerta:2 },
+    { id:'ev_c_estibador', tipo:'encuentro',
+      texto:'Un estibador de los muelles te reconoce el bulto y te hace una oferta: "Eso que llevas, si lo metes en mi contenedor, sube a los muelles orbitales esta noche y nadie lo vuelve a ver por aquí. Limpio." Señala una lanzadera de carga rumbo a Selene. La salida más definitiva que hay: hacia arriba.',
+      txtAceptar:'Confiarle parte de la carga', subAceptar:'Baja la presión · pierdes algo de paga',
+      txtRechazar:'Llevarlo todo tú, como acordaste', subRechazar:'Más riesgo, paga íntegra',
+      creditos:-25, alertaAceptar:-14,
+      msgAceptar:'Le pasas parte de la carga. Desaparece dentro de un contenedor con destino Kilómetro Cero, donde se pierde entre los millones de cajas que cruzan la Luna a diario. Cobras algo menos, pero respiras mejor: parte de tu problema ya va camino del espacio.',
+      msgRechazar:'Declinas. La carga es tuya hasta el final, como acordaste, y el orgullo de cumplir pesa tanto como el riesgo. El estibador se encoge de hombros y vuelve a sus cajas rumbo a las estrellas.' }
   ],
 
   seguridad: [
@@ -1719,7 +1884,46 @@ const EVENTOS_CORRIDA = {
       riesgo:0.1,
       recompensaItem:'estimulante',
       msgAbrir:'Te guardas un autoinyector de estimulante de combate. Para el día en que pegar más fuerte sea la diferencia entre volver o no.',
-      msgDejar:'Lo dejas donde está. No te fías de lo que HELIX mete en esas ampollas, y haces bien.' }
+      msgDejar:'Lo dejas donde está. No te fías de lo que HELIX mete en esas ampollas, y haces bien.' },
+    { id:'ev_s_chaval_placa', tipo:'encuentro',
+      texto:'Un niño se te planta delante, mirando tu placa con una mezcla de miedo y fascinación. "¿Tú metes a la gente en los camiones?" Lo pregunta sin reproche, como quien pregunta a qué se dedica un adulto cualquiera. Detrás, su madre lo llama, tensa.',
+      txtAceptar:'Agacharte y decirle que no a todo', subAceptar:'Una mentira amable · te suaviza el día',
+      txtRechazar:'Seguir sin contestar', subRechazar:'No es tu trabajo consolar',
+      alertaAceptar:-6,
+      msgAceptar:'Te agachas a su altura. "No. Yo solo me aseguro de que nadie te haga daño." Es mentira y los dos tipos de persona que hay en esa frase lo saben a medias. El niño asiente, satisfecho. La madre te mira un segundo, sin gratitud pero sin odio, y se lo lleva.',
+      msgRechazar:'Sigues de largo sin contestar. A tu espalda, oyes a la madre susurrarle algo al niño que termina en la palabra "ellos". Ahora eres un "ellos". Te acostumbras o no duermes.' },
+    { id:'ev_s_companero', tipo:'narrativo',
+      texto:'Te cruzas con otro operativo de HELIX, sentado en un escalón fuera de servicio, fumando con la mirada perdida. No dice nada; solo te hace un gesto mínimo con la barbilla, el saludo de los que llevan el mismo uniforme y la misma duda. Sigues. Hay soledades que solo se reconocen entre iguales.',
+      alerta:-3 },
+    { id:'ev_s_perro_k9', tipo:'hallazgo',
+      texto:'Un perro de unidad canina de HELIX, abandonado tras una redada, te sigue reconociendo el uniforme como propio. Lleva el arnés táctico aún puesto, con un bolsillo de servicio sin vaciar. El animal te deja acercarte, leal a una placa, no a una persona.',
+      txtAbrir:'Revisar el bolsillo del arnés', subAbrir:'Material de servicio · el perro confía',
+      txtDejar:'Dejar al animal en paz', subDejar:'Ya lo han usado bastante',
+      riesgo:0.1, trampaAlerta:6,
+      recompensaItem:'vendaje', recompensaCreditos:25,
+      msgAbrir:'En el bolsillo, un vendaje de combate y unos créditos de fondo de unidad. Te lo guardas. El perro te mira como esperando una orden que ya nadie le va a dar. No tienes ninguna. Le rascas la cabeza y sigues, sintiéndote peor de lo que esperabas.',
+      msgDejar:'Lo dejas con su arnés y su lealtad inútil. El perro se sienta a esperar a un amo que no vuelve. Le entiendes más de lo que te gustaría.' },
+    { id:'ev_s_grafiti', tipo:'narrativo',
+      texto:'En una pared, fresca todavía, una pintada contra HELIX con tu mismo logo tachado por una equis. Debajo, en letra pequeña y rabiosa, una lista de nombres: desaparecidos, dicen. Lees por encima y te obligas a no buscar si conoces alguno. El uniforme te pesa un poco más al alejarte.',
+      alerta:4, disociacion:2 },
+    { id:'ev_s_radio_companeros', tipo:'narrativo',
+      texto:'Por el auricular de servicio entra, entre interferencias, la voz de otro operativo pidiendo refuerzos en un sector que no es el tuyo. Luego, silencio. Luego, nada. El protocolo dice que sigas con lo tuyo, y el protocolo, por una vez, te conviene. Apagas el canal. El silencio que queda dentro del casco es tuyo y es peor.',
+      alerta:2, disociacion:2 },
+    { id:'ev_s_anciano_papeles', tipo:'encuentro',
+      texto:'Un anciano te corta el paso agitando un fajo de documentos plastificados. "¡Está todo en regla, mírelo! ¡Tengo el permiso!" Tiembla. Le han parado tantas veces que ahora se adelanta, enseñando papeles a cualquier uniforme antes de que se los pidan. Nadie se los ha pedido.',
+      txtAceptar:'Mirarlos por encima y devolvérselos con calma', subAceptar:'Le devuelves algo de dignidad',
+      txtRechazar:'"No hace falta, abuelo. Siga."', subRechazar:'Cortar rápido y seguir',
+      alertaAceptar:-6,
+      msgAceptar:'Coges los papeles, finges revisarlos con cuidado y se los devuelves: "Todo correcto. Gracias por colaborar." Es teatro, pero al anciano se le destensan los hombros como si le quitaras un peso de años. A veces el uniforme sirve para eso, si uno quiere. Si uno se acuerda de querer.',
+      msgRechazar:'"No hace falta, siga." Lo dices por ahorrarle el trámite, pero él lo oye como un rechazo y se aleja guardando sus papeles con dedos temblorosos, murmurando que los tiene, que los tiene. Sigues, vagamente peor, sin saber bien por qué.' },
+    { id:'ev_s_carga_marte', tipo:'hallazgo',
+      texto:'Te toca inspeccionar un palé de carga retenido en un puesto de control: lingotes con el sello del yunque marciano y, escondido entre ellos, un cajón sin manifiesto. La orden de HELIX es clara: todo lo que venga marcado de Marte se requisa "por seguridad". El cajón podría ser contrabando. O podrían ser las pertenencias de alguien.',
+      txtAbrir:'Requisar el cajón, como manda la orden', subAbrir:'Limpio para HELIX · puede subir tu paga',
+      txtDejar:'Sellarlo como "inspeccionado" y dejarlo pasar', subDejar:'Mirar a otro lado · riesgo',
+      riesgo:0.2, trampaAlerta:8,
+      recompensaCreditos:50,
+      msgAbrir:'Requisas el cajón. Dentro no hay armas: hay fotos, una bandera marciana doblada, cartas. Las pertenencias de un exiliado, camino de un familiar. Lo precintas igual y rellenas el acta. La orden no distingue entre un arma y un recuerdo: ambos vienen de Marte, y eso basta. Cobras el extra. Te sienta raro.',
+      msgDejar:'Estampas "INSPECCIONADO · CONFORME" sobre un cajón que no has abierto y lo dejas seguir su camino hacia algún hijo o alguna madre del Arrabal. Es un riesgo: si lo revisan, el sello falso lleva tu número. Pero hay cargas que pesan más en el acta que en la espalda, y has decidido no cargar con esta.' }
   ]
 };
 

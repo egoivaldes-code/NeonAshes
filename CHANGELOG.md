@@ -1,3 +1,12 @@
+## [0.140] - 2026-06-28
+### Added
+- Tres arcos largos de misión por actos (marciano, prestamistas y censo de desaparecidos), dosificados por el sandbox, con combate épico con refuerzos y vía alternativa sin pelea.
+- Lore del Sistema Solar (Marte, Selene/Luna, Cinturón, estaciones) sembrado en deriva, escenas y corridas, sin viajes.
+- Muchas escenas nuevas de mapa/deriva, capa de viñetas de ambiente repetibles, dos corridas completas y eventos sueltos.
+- Deriva ampliada de 20 a 82 eventos.
+### Fixed
+- La tarjeta de personaje migrado ya muestra el día real en vez de "—".
+
 ## [0.139] - 2026-06-27
 ### Added
 - El mundo avanza entre partidas: la fecha (días, meses, años) ya no se reinicia con cada personaje. Hay un reloj del mundo compartido que solo va hacia delante; un personaje nuevo arranca en la fecha más avanzada alcanzada + 1 día. Así herencia, calendario y "anteriores en la unidad" envejecen juntos.
@@ -384,7 +393,7 @@
 ### Changed
 - Refinado en móvil: el tablero ahora cabe entero en pantalla sin scroll. Las fichas se ajustan de tamaño para que las ocho filas siempre quepan entre la cabecera y el botón.
 ### Fixed
-- El scroll con el dedo en la lista del inventario y en la exploración/expedición ya funciona (había un bloqueo de scroll táctil que solo lo permitía en algunas pantallas).
+- El scroll con el dedo en la lista del inventario and in the exploración/expedición ya funciona (había un bloqueo de scroll táctil que solo lo permitía en algunas pantallas).
 - Expedición en móvil: la pantalla de elegir zona ya no queda tan pegada al borde de arriba.
 
 ## [0.89.4] - 2026-06-07
@@ -537,7 +546,7 @@
 - Acciones del apartamento subidas para aprovechar el hueco que sobraba bajo la foto.
 
 ## [0.78.5] - 2026-06-03
-### Added
+### Fixed
 - Nuevo objeto apilable "Chatarra": se acumula en el inventario y será la materia prima para refinar en la profesión Scavenger.
 - Al explorar la ciudad ahora aparece chatarra como pequeño botín de consuelo en registros que no dan nada de valor, con su propia narración.
 ### Changed

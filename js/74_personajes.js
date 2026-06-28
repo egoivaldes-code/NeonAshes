@@ -54,12 +54,25 @@ function _resumenDesdeBlob(blobStr){
   try { d = (typeof blobStr === 'string') ? JSON.parse(blobStr) : blobStr; } catch(e){ d = null; }
   d = d || {};
   var j = d.jugador || {};
+  // El día para la tarjeta: si el guardado no trae _diaResumen (p.ej. un
+  // personaje migrado que aún no se ha jugado), lo deducimos del reloj de
+  // juego almacenado en el propio blob. Así no sale "—" hasta jugarlo.
+  var dia = d._diaResumen || null;
+  if(!dia && d.tiempoJuego && typeof d.tiempoJuego.timestampJuego === 'number'){
+    try {
+      var f = new Date(d.tiempoJuego.timestampJuego);
+      var y = f.getFullYear();
+      var mo = String(f.getMonth() + 1).padStart(2, '0');
+      var dd = String(f.getDate()).padStart(2, '0');
+      dia = y + '-' + mo + '-' + dd;
+    } catch(e){ dia = null; }
+  }
   return {
     nombre: j.nombre || 'Sin nombre',
     apellido1: j.apellido1 || '',
     creditos: (typeof d.creditos === 'number') ? d.creditos : 0,
     humano: d.humano || null,
-    dia: d._diaResumen || null,
+    dia: dia,
     guardadoEn: d.guardadoEn || Date.now()
   };
 }
