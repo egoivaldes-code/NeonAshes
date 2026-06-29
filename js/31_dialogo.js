@@ -186,6 +186,31 @@ async function respuestaIA(){
   p.innerHTML=`<span style="color:var(--magenta-dim)">MARA VEX</span><span class="dots-pensando"><span>·</span><span>·</span><span>·</span></span>`;
   zona.appendChild(p);
   document.getElementById('mercado-inner').scrollTop=document.getElementById('mercado-inner').scrollHeight;
+
+  // RUTA GUIONIZADA (por defecto). Con IA_ACTIVA en false no se llama a
+  // ninguna red: Mara responde con una línea escrita a mano, calibrada
+  // según cómo le ha hablado el jugador (libreta de memoria). La pausa
+  // de 650ms es solo para que la respuesta "respire" y no salga seca.
+  if(!window.LAUNCHER || LAUNCHER.IA_ACTIVA === false){
+    const m = Estado.memoria || {};
+    let linea = 'Treinta créditos por un paquete. Eso es todo lo que vas a saber esta noche.';
+    if(m.tonoJugador === 'cauto' || m.vecesPidioInfo >= 2){
+      linea = 'Has preguntado lo suficiente. O aceptas, o vuelves a tu apartamento.';
+    } else if(m.tonoJugador === 'frio'){
+      linea = 'Treinta créditos. El paquete pesa poco. Tú decides.';
+    } else if(m.tonoJugador === 'directo'){
+      linea = 'Treinta créditos. Recoges. Entregas. Sin preguntas extra.';
+    }
+    await new Promise(r=>setTimeout(r,650));
+    if(p.parentNode) zona.removeChild(p);
+    Estado.historialDialogo.push({rol:'mara',texto:linea});
+    await agregarBurbuja('MARA VEX', linea, false);
+    setTimeout(()=>mostrarOpciones([{txt:'Acepto el encargo.',sig:8},{txt:'Demasiado riesgo. Me voy.',sig:11}],zona,zonaOpc),600);
+    return;
+  }
+
+  // RUTA IA EN VIVO (legacy, dormida). Solo se llega aquí si IA_ACTIVA
+  // se pone en true. Se conserva intacta por si se reactiva algún día.
   try{
     const hist=Estado.historialDialogo.map(h=>({role:h.rol==='jugador'?'user':'assistant',content:h.texto}));
     // El prompt ahora incluye la lectura de la libreta de memoria.

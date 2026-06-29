@@ -117,7 +117,7 @@ window.Conversacion = (function(){
     }
     let linea = null;
     try{
-      if(window.IA && typeof IA.llamar === 'function'){
+      if(window.IA && typeof IA.llamar === 'function' && !(window.LAUNCHER && LAUNCHER.IA_ACTIVA === false)){
         const base = (typeof _perfil.sysIA === 'function') ? _perfil.sysIA() : (_perfil.sysIA || '');
         const sys = base + '\nResponde SOLO con un objeto JSON {"linea":"..."} de 1 a 2 frases cortas, '
           + 'en español, en personaje, con subtexto noir y sin exposición. Nada fuera del JSON.';

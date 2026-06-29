@@ -1,3 +1,7 @@
+## [0.142] - 2026-06-29
+### Changed
+- Las conversaciones de Mara y los momentos de ambiente ahora son 100% texto escrito a mano. Se añade un interruptor maestro para apagar toda la IA en vivo (apagada por defecto). No se hace ninguna llamada a internet para generar diálogo.
+
 ## [0.141] - 2026-06-28
 ### Added
 - La hora del día afecta a los eventos: de noche más combate, de día más calma, compuesto con el estado de ciudad. Nuevas condiciones de escena por franja horaria.

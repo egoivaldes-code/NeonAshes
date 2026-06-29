@@ -68,6 +68,13 @@ const LAUNCHER = {
   CLAVE_FACCIONES: 'neon_ashes_facciones_v1',
   CLAVE_ZONAS:     'neon_ashes_zonas_v1',
 
+  // ─── INTERRUPTOR MAESTRO DE IA ─────────────────────────────────
+  // false = TODO el juego funciona con texto escrito a mano. No se
+  // hace NINGUNA llamada a internet para generar diálogo ni escenas.
+  // Es lo recomendado: las conversaciones son 100% guionizadas.
+  // Ponlo en true solo si algún día quieres reactivar la IA en vivo.
+  IA_ACTIVA: false,
+
   // ─── SISTEMA IA NARRATIVO (casos de detective, BLOQUES JS-50+) ──
   //
   // Arquitectura v0.67: GROQ a través de un PORTERO (Netlify Function).

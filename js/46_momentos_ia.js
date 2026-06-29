@@ -70,6 +70,7 @@ function _iaPromptEscena(){
 // Pide a la IA un momento de 1 escena. Devuelve un objeto-escena válido
 // para el motor (44), o null si no se pudo.
 async function generarMomentoIA(){
+  if(window.LAUNCHER && LAUNCHER.IA_ACTIVA === false) return null;
   if(typeof IA === 'undefined' || typeof IA.llamar !== 'function') return null;
   try{
     const r = await IA.llamar(_iaPromptEscena(), 'Genera el momento ahora.');
