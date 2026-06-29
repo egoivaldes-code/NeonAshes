@@ -1,3 +1,9 @@
+## [0.144] - 2026-06-29
+### Added
+- Ambiente de la Expedición Centauri por la ciudad (placa conmemorativa, anuncio caducado, una canción a medias, una fuente seca): textura de fondo, sin mecánica.
+### Changed
+- El año del mundo pasa de 2247 a 3247, para dar coherencia a la historia profunda (terraformación de Marte, colonización interestelar). Reloj, intro y fechas actualizados.
+
 ## [0.143] - 2026-06-29
 ### Added
 - Primer cimiento de la trama principal (hilo rojo Centauri): bandera de progreso interna y sistema de Fragmentos de Memoria. El primer fragmento aparece solo durante el juego normal una vez completado el encargo de Mara, y puede releerse en la repisa del apartamento.

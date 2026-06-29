@@ -374,6 +374,51 @@ const eventos = [
         msg:'«Ya, claro. Nadie ayuda a nadie aquí.» Lo dice sin rencor, como quien constata el tiempo. Sigues caminando bajo esa verdad.'},
     ]
   },
+  // === SIEMBRA DE AMBIENTE (HILO ROJO, NIVEL 0-1) ===============
+  // Textura pura: la Expedición Centauri como leyenda urbana olvidada.
+  // NO se conecta con CERO ni con nada de la trama. Es historia vieja,
+  // monumentos oxidados, un nombre que ya casi nadie recuerda. El
+  // jugador pasa por delante sin saber que importa.
+  {
+    titulo: 'PLACA CONMEMORATIVA',
+    narr: 'Empotrada en un muro que nadie mira hay una placa de metal oxidado. Bajo la suciedad se lee, a medias: «EXPEDICIÓN CENTAURI — A QUIENES PARTIERON HACIA LAS ESTRELLAS». Debajo, una lista de nombres demasiado larga, comida por la herrumbre. La fecha es de hace décadas.',
+    opciones: [
+      {txt:'Limpiar la placa con la manga para leer los nombres.', cambios:{humano:{aislamiento:-2}},
+        msg:'Sacas algunos del óxido. Gente que se fue a un sitio del que no volvió noticia. Nadie ha vuelto a pulir esta placa en años. Tú tampoco volverás.'},
+      {txt:'Seguir. Es solo un monumento más.', cambios:{},
+        msg:'La placa queda atrás, tragada otra vez por la penumbra. Centauri. Un nombre de los de antes.'},
+    ]
+  },
+  {
+    titulo: 'ANUNCIO QUE YA NADIE ATIENDE',
+    narr: 'Un holograma viejo parpadea sobre un local cerrado, con la mitad de los píxeles muertos. Una mujer sonríe hacia un cielo estrellado: «¿SUEÑAS CON ALGO MÁS? CENTAURI TE ESPERA. PLAZAS ABIERTAS — HELIX EXOCOLONIZACIÓN.» La oferta caducó hace una vida. El holograma no se ha enterado.',
+    opciones: [
+      {txt:'Quedarte mirando el cielo falso del anuncio.', cambios:{humano:{aislamiento:-1, disociacion:+1}},
+        msg:'Las estrellas del holograma tiemblan y se repiten en bucle. Por un segundo casi te apetece. Luego recuerdas dónde estás.'},
+      {txt:'Pasar de largo.', cambios:{},
+        msg:'A tu espalda, la mujer sigue sonriéndole a nadie hacia un viaje que ya no existe.'},
+    ]
+  },
+  {
+    titulo: 'LA CANCIÓN A MEDIAS',
+    narr: 'Un viejo sentado en un cajón tararea algo lento, de otra época. Llega a una parte y se calla, como si la letra se le acabara siempre en el mismo punto. «...los que se fueron a Centauri...», murmura, y ahí se queda. No sabe seguir.',
+    opciones: [
+      {txt:'«¿Cómo sigue esa canción?»', cambios:{humano:{aislamiento:-2}},
+        msg:'Se encoge de hombros. «Nadie se la sabe entera ya, chaval. Se fue con ellos.» Vuelve a tararear el mismo trozo, y a callarse en el mismo sitio.'},
+      {txt:'Dejarlo con su melodía.', cambios:{},
+        msg:'El tarareo te sigue media calle, siempre cortándose donde la memoria se acaba.'},
+    ]
+  },
+  {
+    titulo: 'FUENTE SECA',
+    narr: 'En una placita olvidada hay una fuente apagada, sin agua desde hace años. En el centro, un emblema metálico: una nave estilizada apuntando hacia arriba, y la palabra CENTAURI medio borrada. Alguien ha dejado, no se sabe cuándo, una flor de plástico descolorida en el borde.',
+    opciones: [
+      {txt:'Enderezar la flor de plástico.', cambios:{humano:{aislamiento:-3}},
+        msg:'La colocas mejor, sin saber muy bien por qué. Alguien la dejó por alguien. Es lo único vivo en toda la plaza, y ni siquiera está vivo.'},
+      {txt:'Cruzar la plaza sin pararte.', cambios:{},
+        msg:'Tus pasos resuenan en la piedra seca. Detrás, la nave del emblema sigue apuntando a un cielo que no se ve desde aquí.'},
+    ]
+  },
 ];
 
 function intentarEventoAleatorio(callback){

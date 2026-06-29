@@ -16,7 +16,7 @@ const INTRO_RANDOM_DUR = 6;   // segundos por imagen en el pase aleatorio
 
 // 16 frames narrativos repartidos hasta el segundo 84 (≈5,25s cada uno).
 const INTRO_FRAMES = [
-  { key:"INTRO_01", at:0,     kb:"kb-zoomin",   text:"Año 2247. La humanidad sobrevivió a sí misma." },
+  { key:"INTRO_01", at:0,     kb:"kb-zoomin",   text:"Año 3247. La humanidad sobrevivió a sí misma." },
   { key:"INTRO_02", at:5.25,  kb:"kb-panright", text:"Colonizamos el Sistema Solar. Marte. Europa. Titán. Las órbitas se llenaron de acero… y deuda." },
   { key:"INTRO_03", at:10.5,  kb:"kb-zoomout",  text:"Las naciones desaparecieron. Las corporaciones ocuparon su lugar." },
   { key:"INTRO_04", at:15.75, kb:"kb-panup",    text:"Con el tiempo… HELIX se volvió indispensable. Medicina. Infraestructura. Seguridad." },

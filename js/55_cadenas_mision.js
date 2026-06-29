@@ -244,7 +244,7 @@
     cond: { visto: 'lista_p1', noVisto: 'lista_p2' },
     img: 'EXP_MERCADO_OLVIDADOS',
     texto: 'Sigues el contacto hasta una trastienda del Sindicato Ferro. Una mujer de mirada dura revisa tu '
-         + 'caso en un archivo de papel —papel, en pleno 2247— porque "lo que no está en red no lo pueden '
+         + 'caso en un archivo de papel —papel, en pleno 3247— porque "lo que no está en red no lo pueden '
          + 'borrar". Pasa páginas. Frunce el ceño. "Tu unidad lleva marcada tres semanas. Y no eres el único '
          + 'del bloque 273. Alguien quiere vaciar la planta entera."',
     opciones: [
