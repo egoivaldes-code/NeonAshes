@@ -1,3 +1,7 @@
+## [0.145] - 2026-06-29
+### Added
+- Segunda misión de Mara ("El maletín"), primer eslabón de la columna principal: se desbloquea al completar el primer encargo y, al salir, Mara te pasa un trabajo que acaba en pelea, con dos desenlaces según cómo salga el combate.
+
 ## [0.144] - 2026-06-29
 ### Added
 - Ambiente de la Expedición Centauri por la ciudad (placa conmemorativa, anuncio caducado, una canción a medias, una fuente seca): textura de fondo, sin mecánica.
