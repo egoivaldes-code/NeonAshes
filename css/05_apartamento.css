@@ -22,7 +22,7 @@
    según qué pantalla, porque la foto es 'contain' y su borde inferior
    cambia con cada móvil, así que ningún % acierta en todas. La hora YA
    se muestra arriba, en la barra diegética (#reloj-diegetico: "25 DIC
-   2247 // 22:17"), de modo que este reloj central era redundante.
+   3247 // 22:17"), de modo que este reloj central era redundante.
    Se oculta por completo. El JS que actualiza #reloj-apt sigue
    funcionando; simplemente no se ve. */
 #apartamento .reloj-apt,

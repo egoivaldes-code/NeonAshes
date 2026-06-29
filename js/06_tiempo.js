@@ -74,14 +74,14 @@ function elegirAlAzar(arr){
 
 // ============================================================
 // BLOQUE JS-11 — FECHA Y HORA DEL UNIVERSO DEL JUEGO
-// La fecha de inicio del juego (25 dic 2247, 03:14) y el factor
+// La fecha de inicio del juego (25 dic 3247, 03:14) y el factor
 //   de tiempo (cuántos segundos de juego pasan por segundo real).
 // ============================================================
 
 // ============================================================
 // TIEMPO DIEGÉTICO — fecha y hora del universo del juego
 // ============================================================
-// El tiempo arranca el 25 de diciembre de 2247 a las 03:14 AM,
+// El tiempo arranca el 25 de diciembre de 3247 a las 03:14 AM,
 // la hora exacta a la que el jugador despierta con el mensaje de Mara.
 // Avanza al ritmo real (1 segundo real = 1 segundo en el juego).
 // Se persiste entre sesiones: si el jugador vuelve, el tiempo
@@ -189,7 +189,7 @@ function saltoDeEscena(){
 }
 
 // Formatea la fecha para el reloj de la esquina.
-// Formato: "25 DIC 2247 // 03:14:42"
+// Formato: "25 DIC 3247 // 03:14:42"
 const MESES_CORTOS = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
 function formatearFechaJuego(fecha){
   const d = String(fecha.getDate()).padStart(2,'0');

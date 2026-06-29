@@ -250,7 +250,7 @@ async function mostrarContenidoPaquete(){
   cuerpo.innerHTML = `
     <div class="item" id="paq-1">
       <div class="item-titulo">▸ FOTOGRAFÍA</div>
-      <div class="item-cuerpo">Eres tú. Niño. No tendrás más de cinco años.<br>No la recuerdas, pero eres tú.<br>Detrás, una fecha escrita a lápiz:<br><em>14 / 03 / 2222</em>.<br>No encaja con la que tú creías.</div>
+      <div class="item-cuerpo">Eres tú. Niño. No tendrás más de cinco años.<br>No la recuerdas, pero eres tú.<br>Detrás, una fecha escrita a lápiz:<br><em>14 / 03 / 3222</em>.<br>No encaja con la que tú creías.</div>
     </div>
     <div class="item" id="paq-2">
       <div class="item-titulo">▸ DOCUMENTO HELIX</div>

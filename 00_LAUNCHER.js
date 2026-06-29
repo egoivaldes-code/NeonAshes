@@ -32,7 +32,7 @@ const LAUNCHER = {
   // ─── TIEMPO DEL UNIVERSO ───────────────────────────────────────
   // Fecha en la que arranca el juego. Formato: año, mes-1, día, hora, min, seg
   // (En JavaScript los meses van de 0 a 11, así que diciembre = 11)
-  FECHA_INICIO_AÑO:   2247,
+  FECHA_INICIO_AÑO:   3247,
   FECHA_INICIO_MES:   11,     // 11 = diciembre
   FECHA_INICIO_DIA:   25,
   FECHA_INICIO_HORA:  3,
