@@ -381,14 +381,20 @@ function _calefactorEtiqueta(){
 // Texto + efectos de mirar la repisa (accion ambiental idx 12).
 function _aptMirarRepisa(narr){
   const ids = _aptItemsRepisa();
+  const fragHtml = (window.Trama && typeof Trama.verFragmentosHTML === 'function')
+    ? Trama.verFragmentosHTML() : '';
   let html;
-  if(ids.length === 0){
+  if(ids.length === 0 && !fragHtml){
     html = 'La repisa junto a la cama sigue vacía, salvo polvo y la marca de algo que estuvo ahí. '
          + 'Todavía no has traído nada de fuera que quieras conservar. Quizá sea mejor así. Quizá no.';
+  } else if(ids.length === 0 && fragHtml){
+    html = 'La repisa junto a la cama sigue vacía de cosas.' + fragHtml;
+    if(typeof ajustarHumano === 'function') ajustarHumano('aislamiento', -2);
   } else {
     html = 'Te paras un momento ante la repisa. Lo que has ido trayendo de ahí fuera, lo que no vendiste:<br><br>';
     html += ids.map(id => '· ' + RECUERDOS_REPISA[id]).join('<br>');
     html += '<br><br>No valen nada. Por eso los guardas: elegirlos fue tuyo, no de HELIX.';
+    html += fragHtml;
     if(typeof ajustarHumano === 'function') ajustarHumano('aislamiento', -4);
   }
   if(narr) narr.innerHTML = html;

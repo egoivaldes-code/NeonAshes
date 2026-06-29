@@ -1,3 +1,7 @@
+## [0.143] - 2026-06-29
+### Added
+- Primer cimiento de la trama principal (hilo rojo Centauri): bandera de progreso interna y sistema de Fragmentos de Memoria. El primer fragmento aparece solo durante el juego normal una vez completado el encargo de Mara, y puede releerse en la repisa del apartamento.
+
 ## [0.142] - 2026-06-29
 ### Changed
 - Las conversaciones de Mara y los momentos de ambiente ahora son 100% texto escrito a mano. Se añade un interruptor maestro para apagar toda la IA en vivo (apagada por defecto). No se hace ninguna llamada a internet para generar diálogo.

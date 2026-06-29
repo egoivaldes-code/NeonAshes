@@ -290,6 +290,14 @@ function _egResolverOpcion(op, onCerrar){
   _egAplicarEfectos(op.efectos);
   if(rama !== op) _egAplicarEfectos(rama.efectos);
 
+  // HILO ROJO (Centauri): tras cualquier acción del sandbox, hay una
+  // probabilidad baja de que "suba" el primer Fragmento de Memoria —
+  // pero solo si el jugador ya completó el encargo de Mara y la trama
+  // sigue dormida. Es de un solo uso; el módulo se encarga del resto.
+  if(window.Trama && typeof Trama.intentarPrimerFragmento === 'function'){
+    try{ Trama.intentarPrimerFragmento(0.10); }catch(e){}
+  }
+
   // texto de resultado opcional (se muestra antes de continuar)
   const resultado = rama.resultado || op.resultado;
   const destino = rama.lleva || op.lleva;

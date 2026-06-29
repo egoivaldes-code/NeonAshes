@@ -21,6 +21,10 @@ Estado.memoria = {
   vecesPidioInfo: 0,         // cuántas veces preguntó cosas sin comprometerse
   // CERO
   vioFragmentoCero: false,   // ¿llegó a aparecer CERO ante él?
+  // TRAMA CENTAURI (hilo rojo). Empieza dormida: nivel 0, sin fragmentos.
+  // El módulo Trama (BLOQUE JS-79) los gestiona y se autocura si faltan.
+  tramaNivel: 0,             // 0-6: acto de la trama principal alcanzado
+  fragmentos: [],            // Fragmentos de Memoria reunidos (ids)
   // Confianza percibida de Mara hacia el jugador (sutil, no se muestra)
   // Empieza neutra. Sube si el jugador es directo, baja si parece dubitativo o frío.
   confianzaMara: 0,
