@@ -551,6 +551,11 @@ function avanzarUbicVuelta(){
 // Tras la tercera parada, entra al apartamento y muestra texto de llegada.
 function llegarAlApartamentoTrasMision(){
   Estado.mision = 'volvioApartamento';
+  // COLUMNA PRINCIPAL: al cerrar el primer encargo, se desbloquea el
+  // segundo (BLOQUE JS-80). Marcamos el "visto" interno que habilita su
+  // escena de entrada; aparecerá la próxima vez que el jugador salga.
+  if(!Estado.momentosVistos || !Array.isArray(Estado.momentosVistos)) Estado.momentosVistos = [];
+  if(Estado.momentosVistos.indexOf('mara2_ofrecida') === -1) Estado.momentosVistos.push('mara2_ofrecida');
   // Limpiamos cualquier rastro de la PRIMERA misión que podría reaparecer:
   //   - el mensaje cifrado de Mara en el terminal (misionMara)
   //   - el botón "SALIR DEL APARTAMENTO" del terminal viejo
