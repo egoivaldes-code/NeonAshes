@@ -171,6 +171,14 @@ function _egAplicarEfectos(ef){
     if(ef.progresoOficio && ef.progresoOficio.id && typeof otorgarRecompensaProfesion === 'function'){
       otorgarRecompensaProfesion(ef.progresoOficio.id, 0, ef.progresoOficio.n || 0);
     }
+    // Fragmento de Memoria entregado por una escena/misión (hilo rojo Centauri).
+    // ef.fragmento = '<id>'. Lo otorga vía Trama (idempotente): registra el
+    // fragmento, sube la bandera de trama al acto del fragmento y muestra el
+    // overlay diegético. Es la vía para los fragmentos DADOS por misión, frente
+    // a los que caen solos por el sandbox (intentarPrimerFragmento).
+    if(ef.fragmento && window.Trama && typeof Trama.ganar === 'function'){
+      try{ Trama.ganar(ef.fragmento); }catch(e){}
+    }
     if(typeof actualizarHUD === 'function') actualizarHUD();
   }catch(e){}
 }

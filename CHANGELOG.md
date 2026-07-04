@@ -1,3 +1,7 @@
+## [0.146] - 2026-07-04
+### Added
+- Nuevo encargo de Mara ("El módulo"), continuación de "El maletín": abres a mano un módulo cerrado que venía dentro del maletín. Aparece la primera pista de fondo —un sello viejo de HELIX y unas fechas que no cuadran— sin explicar nada todavía, y ganas un nuevo recuerdo. Si tu personaje es hacker, rescatas algo más.
+
 ## [0.145] - 2026-06-29
 ### Added
 - Segunda misión de Mara ("El maletín"), primer eslabón de la columna principal: se desbloquea al completar el primer encargo y, al salir, Mara te pasa un trabajo que acaba en pelea, con dos desenlaces según cómo salga el combate.

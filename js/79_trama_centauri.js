@@ -57,6 +57,21 @@ window.Trama = (function(){
            + 'Las Pilas nunca tuvo mar. Nadie en este mundo lo tuvo. '
            + 'El recuerdo se deshace antes de que puedas sujetarlo, '
            + 'y te quedas con la mano cerrada sobre nada.'
+    },
+    // Acto 2 — entregado a mano por el eslabón "El módulo" (js/81), no por
+    // el azar del sandbox. Sube la trama a nivel 2 al ganarse.
+    eco_nieve: {
+      titulo: 'nieve',
+      acto: 2,
+      texto: 'Hay nieve. No la de las pantallas: nieve de verdad, que se cuela por '
+           + 'el cuello del abrigo y en los guantes y duele un poco.<br><br>'
+           + 'Alguien ríe cerca. No recuerdas su cara, pero sabes —con una certeza '
+           + 'que no es tuya— que la querías.<br><br>'
+           + 'Y una voz, tranquila, prometiendo algo:<br>'
+           + '<span style="opacity:.85;font-style:italic">«Será poco tiempo.»</span><br><br>'
+           + 'Nunca has visto la nieve. Nadie a quien conoces la ha visto. '
+           + 'El resto del recuerdo llega roto, en trozos que no encajan, '
+           + 'como si alguien lo hubiera intentado guardar y no lo hubiera conseguido del todo.'
     }
   };
 
