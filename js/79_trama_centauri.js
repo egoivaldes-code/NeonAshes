@@ -72,6 +72,21 @@ window.Trama = (function(){
            + 'Nunca has visto la nieve. Nadie a quien conoces la ha visto. '
            + 'El resto del recuerdo llega roto, en trozos que no encajan, '
            + 'como si alguien lo hubiera intentado guardar y no lo hubiera conseguido del todo.'
+    },
+    // Acto 2 — cae en el capítulo "La archivista" (js/82), al alcanzar lo que
+    // Coll guardaba en el depósito.
+    eco_lista: {
+      titulo: 'la lista',
+      acto: 2,
+      texto: 'Una sala fría, llena de gente que no se mira entre sí. Cada uno lleva '
+           + 'un número prendido en el abrigo.<br><br>'
+           + 'Una voz lee nombres. Despacio, sin prisa, como si tuviera todo el tiempo '
+           + 'del mundo.<br><br>'
+           + 'Y esperas el tuyo con un miedo raro, sin saber si es peor oírlo o no oírlo.<br>'
+           + '<span style="opacity:.85;font-style:italic">«…y los que queden, que se preparen.»</span><br><br>'
+           + 'Dejas algo atrás al salir. No recuerdas qué. Solo que pesaba, '
+           + 'y que ya no está.<br>'
+           + '<span style="opacity:.7;font-style:italic">[…el resto no está…]</span>'
     }
   };
 

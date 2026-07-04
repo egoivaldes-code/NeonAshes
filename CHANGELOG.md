@@ -1,3 +1,7 @@
+## [0.147] - 2026-07-04
+### Added
+- Nuevo capítulo de la misión principal, "La archivista": subes a Midbelt tras la persona que catalogaba los archivos viejos e investigas su desaparición. Puedes entrar de varias formas, tratar al testigo como quieras (vive o desaparece según lo que hagas), y colarte en el depósito por lo callado, con labia, por oficio o a la fuerza. Hay un combate duro y evitable, y cuatro finales que te dejan heridas, deudas o un contacto según cómo salga. Consigues el recuerdo "la lista" y queda tendido el hilo hacia lo que viene.
+
 ## [0.146] - 2026-07-04
 ### Added
 - Nuevo encargo de Mara ("El módulo"), continuación de "El maletín": abres a mano un módulo cerrado que venía dentro del maletín. Aparece la primera pista de fondo —un sello viejo de HELIX y unas fechas que no cuadran— sin explicar nada todavía, y ganas un nuevo recuerdo. Si tu personaje es hacker, rescatas algo más.
