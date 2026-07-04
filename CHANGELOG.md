@@ -1,3 +1,7 @@
+## [0.148] - 2026-07-04
+### Added
+- Nuevo capítulo de la misión principal (el giro): sigues el hilo de Coll hasta un archivo muerto de HELIX y descubres que los recuerdos imposibles no se están alterando, sino recuperando; y que todo cuelga de la vieja Expedición Centauri. Puedes entrar de tres formas (una te deja debiendo un favor a Mara), hay un combate evitable, y consigues el recuerdo "el otro cielo" además de asegurarte "el mar". Algo muy antiguo, ahí abajo, todavía recuerda en voz alta.
+
 ## [0.147] - 2026-07-04
 ### Added
 - Nuevo capítulo de la misión principal, "La archivista": subes a Midbelt tras la persona que catalogaba los archivos viejos e investigas su desaparición. Puedes entrar de varias formas, tratar al testigo como quieras (vive o desaparece según lo que hagas), y colarte en el depósito por lo callado, con labia, por oficio o a la fuerza. Hay un combate duro y evitable, y cuatro finales que te dejan heridas, deudas o un contacto según cómo salga. Consigues el recuerdo "la lista" y queda tendido el hilo hacia lo que viene.

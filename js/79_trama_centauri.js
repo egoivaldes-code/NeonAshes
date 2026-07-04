@@ -87,6 +87,22 @@ window.Trama = (function(){
            + 'Dejas algo atrás al salir. No recuerdas qué. Solo que pesaba, '
            + 'y que ya no está.<br>'
            + '<span style="opacity:.7;font-style:italic">[…el resto no está…]</span>'
+    },
+    // Acto 3 — cae en el capítulo del giro (js/83). Es el recuerdo que
+    // encarna la idea central: no te lo están ALTERANDO; lo estás
+    // RECUPERANDO. Sube la trama a nivel 3.
+    eco_otro_cielo: {
+      titulo: 'el otro cielo',
+      acto: 3,
+      texto: 'Estás de pie en algún sitio alto, mirando un cielo que no es este. '
+           + 'Demasiadas estrellas, y mal puestas, como si alguien las hubiera '
+           + 'colocado de memoria y se hubiera equivocado en casi todas.<br><br>'
+           + 'No es un sueño. Los sueños se olvidan al despertar. Esto es lo '
+           + 'contrario: es algo que llevabas olvidado sin saberlo y que, de golpe, '
+           + 'vuelve. No lo imaginas. Lo <i>reconoces</i>.<br><br>'
+           + 'No estabas tú allí. No pudiste estar. Y aun así lo recuerdas, con el '
+           + 'cuerpo, como se recuerda un sitio donde fuiste feliz.<br>'
+           + '<span style="opacity:.7;font-style:italic">[…viene de mucho antes que tú…]</span>'
     }
   };
 
