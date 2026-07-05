@@ -397,7 +397,44 @@ function _aptMirarRepisa(narr){
     html += fragHtml;
     if(typeof ajustarHumano === 'function') ajustarHumano('aislamiento', -4);
   }
-  if(narr) narr.innerHTML = html;
+  // v0.151: la repisa se muestra en una ventana propia que PERMANECE hasta
+  // que el jugador la cierra (con scroll si hay mucho), para que su texto
+  // nunca se corte ni desaparezca antes de darte tiempo a leerlo.
+  _mostrarRepisaOverlay(html);
+  if(narr) narr.innerHTML = 'Te paras un momento ante la repisa junto a la cama.';
+}
+
+// Ventana diegética de la repisa: se queda hasta que la cierras. Misma
+// sensación contenida y melancólica que el visor de recuerdos.
+function _mostrarRepisaOverlay(html){
+  if(typeof document === 'undefined') return;
+  const previo = document.querySelector('.repisa-overlay');
+  if(previo && previo.parentNode) previo.parentNode.removeChild(previo);
+  const ov = document.createElement('div');
+  ov.className = 'repisa-overlay';
+  ov.style.cssText = 'position:fixed;inset:0;z-index:9000;display:flex;'
+    + 'align-items:center;justify-content:center;padding:1.4rem;'
+    + 'background:rgba(4,6,10,0.92);opacity:0;transition:opacity .5s ease;'
+    + 'backdrop-filter:blur(2px);';
+  const caja = document.createElement('div');
+  caja.style.cssText = 'max-width:540px;width:100%;max-height:80vh;overflow:auto;'
+    + 'color:#cfd6df;font-size:0.98rem;line-height:1.62;text-align:left;'
+    + 'border-left:2px solid var(--magenta-dim,#7a3b5d);padding:0 0 0 1.1rem;';
+  caja.innerHTML = '<div style="font-size:.68rem;letter-spacing:.22em;'
+    + 'text-transform:uppercase;color:var(--magenta-dim,#7a3b5d);'
+    + 'margin-bottom:1rem;opacity:.9">la repisa</div>'
+    + '<div>' + html + '</div>'
+    + '<div style="margin-top:1.6rem;text-align:right">'
+    + '<button class="repisa-cerrar" style="background:none;border:1px solid '
+    + 'var(--magenta-dim,#7a3b5d);color:#cfd6df;padding:.45rem 1.1rem;'
+    + 'font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;'
+    + 'cursor:pointer;border-radius:2px">cerrar</button></div>';
+  ov.appendChild(caja);
+  document.body.appendChild(ov);
+  requestAnimationFrame(()=>{ ov.style.opacity = '1'; });
+  const cerrar = ()=>{ ov.style.opacity='0'; setTimeout(()=>{ if(ov.parentNode) ov.parentNode.removeChild(ov); }, 500); };
+  caja.querySelector('.repisa-cerrar').onclick = cerrar;
+  ov.onclick = (e)=>{ if(e.target === ov) cerrar(); };
 }
 
 // Texto + efectos de avivar el calefactor (accion ambiental idx 13).
