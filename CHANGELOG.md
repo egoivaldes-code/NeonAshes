@@ -1,3 +1,9 @@
+## [0.150] - 2026-07-05
+### Added
+- Más vida en la Fase Tierra: 7 sucesos nuevos de barrio al moverte por la ciudad (desde un desahucio o un velatorio hasta cosas más duras, como un cobro a golpes o a alguien al que le arrancan un implante por impago), casi todos con recompensa o consecuencia.
+- 3 trabajos nuevos según tu oficio (cazarrecompensas, hacker y chatarrero), con sus decisiones y su parte fea.
+- Un caso suelto completo, "El carnicero": alguien cosecha implantes de los desesperados. Lo investigas, entras en su clínica clandestina (de farol, a escondidas o por la fuerza) y decides su destino y el de sus víctimas, con combate duro evitable y varios finales.
+
 ## [0.149] - 2026-07-05
 ### Added
 - Nuevo capítulo de personaje, "La factura": si en el capítulo anterior pediste a Mara que te abriera una puerta, ahora te cobra el favor. Recuperas una caja sellada (con maña o a las malas, con un combate pequeño y evitable) y decides si se la entregas sin mirar o husmeas dentro y descubres algo de su pasado. Las dos opciones saldan la deuda, pero cambian tu relación con ella de cara a lo que venga.

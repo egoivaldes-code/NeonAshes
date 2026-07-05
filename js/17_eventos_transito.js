@@ -419,6 +419,75 @@ const eventos = [
         msg:'Tus pasos resuenan en la piedra seca. Detrás, la nave del emblema sigue apuntando a un cielo que no se ve desde aquí.'},
     ]
   },
+
+  // ============================================================
+  // === SUCESOS DE BARRIO AÑADIDOS (v0.150) ====================
+  // Vida de Lower Stacks. Algunos duros y explícitos, otros
+  // íntimos. Casi todos dejan recompensa o desventaja.
+  // ============================================================
+  {
+    titulo: 'DESAHUCIO EN EL NIVEL 3',
+    narr: 'Dos drones de HELIX sacan los muebles de una vivienda y los amontonan bajo la lluvia filtrada. Una mujer aprieta contra el pecho una caja de fotos empapadas; un crío pequeño llora agarrado a su pierna sin entender nada. Un dron recita, cortés: «IMPAGO CONFIRMADO. DESALOJO EN CURSO. GRACIAS POR SU COLABORACIÓN.»',
+    opciones: [
+      {txt:'Ayudarla a poner sus cosas a cubierto.', cambios:{reputacion:+3, humano:{fatiga:+6}}, msg:'Cargas cajas empapadas hasta un soportal seco mientras los drones os ignoran. No dais las gracias ninguno de los dos. No hacen falta.'},
+      {txt:'Darle algo para una cama esta noche (40 cr).', cambios:{creditos:-40, reputacion:+2}, msg:'Coge los créditos sin mirarte, con la vergüenza de quien nunca pidió nada. El crío deja de llorar un momento.'},
+      {txt:'No es asunto tuyo. Seguir.', cambios:{humano:{aislamiento:+3}}, msg:'Los muebles siguen saliendo cuando doblas la esquina. Ese sonido de cajas contra el suelo mojado tarda en irse.'},
+    ]
+  },
+  {
+    titulo: 'CARNE EN EL DESAGÜE',
+    narr: 'Un cuerpo encajado en una reja de drenaje, hinchado por el agua. Le han abierto el antebrazo y el pecho con cortes limpios, quirúrgicos, para sacar lo que llevaba dentro: el puerto neural, un regulador cardíaco, hasta la placa dental. Quien lo hizo sabía exactamente dónde cortar. El agua ha lavado la sangre y ha dejado la carne de un blanco de pescado.',
+    opciones: [
+      {txt:'Registrarlo por si queda algo.', cambios:{creditos:+25, humano:{disociacion:+5}}, msg:'Le encuentras unas monedas en la bota, lo único que no consideraron comida. Te las guardas y esa noche te lavas las manos tres veces. No sirve de nada.'},
+      {txt:'Avisar a alguien que se ocupe.', cambios:{reputacion:+2, humano:{aislamiento:+2}}, msg:'Le pasas el aviso a un viejo Fantasma que conoces. «Otro para el carnicero», gruñe, sin sorpresa. Que ya tenga nombre es lo que peor te sienta.'},
+      {txt:'No has visto nada. Irte rápido.', cambios:{humano:{fatiga:+4, disociacion:+3}}, msg:'Te vas sin correr, para no llamar la atención. Es lo que hace todo el mundo aquí. Por eso el desagüe nunca está del todo vacío.'},
+    ]
+  },
+  {
+    titulo: 'DEUDA EN EL CALLEJÓN',
+    narr: 'Dos tipos tienen a un tercero contra el suelo. Uno le pisa la cabeza mientras el otro le muele las costillas con una barra, metódico, sin rabia, como quien ficha un turno. La cara del hombre ya casi no es una cara. Entre golpe y golpe, uno recita una cifra: lo que debe, más intereses.',
+    opciones: [
+      {txt:'Meterte y pararlo.', cambios:{reputacion:+3, humano:{fatiga:+9, disociacion:+3}}, msg:'Gritas, empujas, te llevas un barrazo en el hombro que te va a durar días. Pero eran cobradores, no asesinos: recogen la barra y se van jurando volver. El hombre respira. Apenas.'},
+      {txt:'Pagar tú la deuda para que paren (60 cr).', cambios:{creditos:-60, reputacion:+2}, msg:'Tiras los créditos al suelo del callejón. Los cuentan, gruñen y se largan. El hombre te mira desde el charco sin poder ni darte las gracias.'},
+      {txt:'No es tu pelea. Pasar de largo.', cambios:{humano:{disociacion:+4, aislamiento:+2}}, msg:'El sonido húmedo de la barra te acompaña calle abajo. Te dices que no podías hacer nada. Casi te lo crees.'},
+    ]
+  },
+  {
+    titulo: 'EL CHAVAL DE LOS REPUESTOS',
+    narr: 'Un crío de doce años ha montado un puesto sobre una caja: cables, sensores, un par de baterías que aún dan. Te ve mirar y suelta, con más morro que miedo: «Todo probado, jefe. Aquí no vendo mierda muerta como los de arriba. ¿Miras o compras?»',
+    opciones: [
+      {txt:'Comprarle una batería (15 cr).', cambios:{creditos:-15, item:'Batería reacondicionada'}, msg:'Te la envuelve en un trapo como si fuera un huevo. «Si peta, no me conoces.» Sonríe. Sabe que no petará.'},
+      {txt:'Regatearle, medio en broma.', cambios:{reputacion:+1}, msg:'Se defiende como un adulto y te saca un descuento ridículo del que os reís los dos. Le compras igual. Ese crío va a sobrevivir a las Pilas.'},
+      {txt:'Nada hoy. Seguir.', cambios:{}, msg:'«Tú te lo pierdes, jefe.» Ya busca al siguiente con la mirada antes de que te des la vuelta.'},
+    ]
+  },
+  {
+    titulo: 'VELATORIO EN EL PASILLO',
+    narr: 'En un recodo del pasillo residencial alguien ha montado un altar pobre: una pantalla vieja con la foto de un hombre, un vaso de agua, una vela química. Tres vecinos sentados en silencio. No hay cura, ni registro, ni nada oficial. El sistema no anota a los que se van así.',
+    opciones: [
+      {txt:'Sentarte un momento con ellos.', cambios:{humano:{aislamiento:-4}}, msg:'Nadie te pregunta quién eres. Te hacen sitio. Pasas un rato en ese silencio compartido y, al levantarte, algo pesa un poco menos.'},
+      {txt:'Dejar unos créditos para la vela (10 cr).', cambios:{creditos:-10, reputacion:+2}, msg:'Una anciana asiente despacio. «Que aguante encendida hasta mañana», dice. En las Pilas, eso es todo el funeral que hay.'},
+      {txt:'No es tu duelo. Seguir.', cambios:{humano:{aislamiento:+2}}, msg:'Pasas de largo con la vista al frente. La luz de la vela tiembla en la pared mucho después de que dejes de verla.'},
+    ]
+  },
+  {
+    titulo: 'RECOBRO DE ACTIVO',
+    narr: 'Un dron recolector de HELIX tiene inmovilizado a un hombre contra la pared y le está desacoplando el brazo cibernético en plena calle. Suelta pinzas, corta anclajes, y el brazo se separa entre chispas y un hilo de sangre mientras el hombre aúlla. La voz del dron no cambia de tono: «ACTIVO FINANCIADO. IMPAGO. RECUPERACIÓN AUTORIZADA. DISCULPE LAS MOLESTIAS.»',
+    opciones: [
+      {txt:'Saldar su deuda en el acto (120 cr).', cambios:{creditos:-120, reputacion:+4}, msg:'Autorizas el pago desde tu cuenta antes de pensarlo. El dron se detiene a mitad del corte, vuelve a atornillar el brazo con la misma indiferencia y se va. El hombre llora. Tú te preguntas por qué lo has hecho.'},
+      {txt:'Apartar el dron a la fuerza.', cambios:{reputacion:-2, humano:{fatiga:+7}}, msg:'Un empujón a un dron no hace nada, pero le confundes el procedimiento lo justo para que suelte al hombre y te registre la cara. Él conserva el brazo, medio suelto. Tú, un problema nuevo con HELIX.'},
+      {txt:'Nadie paga por otro aquí. Seguir.', cambios:{humano:{disociacion:+4, aislamiento:+2}}, msg:'El grito se corta de golpe a tu espalda: o terminó, o se desmayó. No miras para saber cuál. Ese es el sonido de deber dinero en las Pilas.'},
+    ]
+  },
+  {
+    titulo: 'MENSAJERO CAÍDO',
+    narr: 'Un repartidor humano se ha desplomado en mitad de la pasarela, gris, con los paquetes desparramados a su alrededor. Lleva tres turnos encadenados marcados en la muñequera. La gente lo esquiva sin bajar el ritmo; un par ya le miran los paquetes con demasiado interés.',
+    opciones: [
+      {txt:'Levantarlo, darle agua, esperar a que vuelva.', cambios:{reputacion:+2, humano:{fatiga:+5}, item:'Paquete que insistió en darte'}, msg:'Tarda en volver en sí. Cuando lo hace, te aparta un paquete pequeño de los suyos y te lo mete en las manos sin dejar que se lo devuelvas. «Este no lo reclama nadie. Cógelo.» Y se levanta a seguir, porque el turno no espera.'},
+      {txt:'Coger un paquete del suelo y desaparecer.', cambios:{creditos:+35, reputacion:-3, humano:{disociacion:+3}}, msg:'Eliges uno al azar y te lo llevas antes de que lo hagan otros. Dentro hay algo que revendes por unos créditos. El repartidor cargará con la falta como si la hubiera perdido él. En las Pilas, el que cae, paga.'},
+      {txt:'No es tu problema. Esquivarlo como los demás.', cambios:{humano:{aislamiento:+2}}, msg:'Pasas por encima de sus piernas como todo el mundo. Un día podrías ser tú el del suelo, y lo sabes, y aun así sigues. Todos lo sabemos. Por eso duele.'},
+    ]
+  },
 ];
 
 function intentarEventoAleatorio(callback){
