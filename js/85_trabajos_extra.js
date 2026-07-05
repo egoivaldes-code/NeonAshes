@@ -147,6 +147,109 @@
         resultado: 'Vendes el módulo igual, pero te guardas la carta y, con el nombre y algo de paciencia, das con la mujer en otro nivel. '
                  + 'No preguntas quién era él. Le entregas el papel y te vas antes de verla abrirlo. No cobras por eso. Se cobra solo.' }
     ]
+  },
+
+  // ============================================================
+  // CONTRABANDISTA — "Carga que no se declara"
+  // Un tubo sellado, una ruta, y la mala idea de mirar dentro.
+  // ============================================================
+  'prof_contra_b1': {
+    entrada: true,
+    cond: { profesion: 'contrabandista' },
+    img: 'EXP_CANAL_PILAS',
+    texto: 'Un intermediario te pasa un tubo sellado del tamaño de un antebrazo y una ruta: del canal al nivel medio, esquivando el control '
+         + 'de HELIX del ascensor. «No preguntes, no lo abras, no llegues tarde. La mitad ahora, la mitad al entregar.» Pesa poco. Los paquetes '
+         + 'que pesan poco son los que dan miedo.',
+    opciones: [
+      { texto: 'Llevarlo por la ruta acordada, sin abrirlo.', efectos:{ creditos:+80, humano:{ fatiga:+5 } },
+        resultado: 'Cruzas los tres controles con la cara de aburrimiento del que hace esto cada día. Entregas el tubo cerrado, cobras la otra '
+                 + 'mitad y te vas sin saber qué has movido. En tu oficio, no saber es parte del precio, y a veces lo que te salva.' },
+      { texto: 'Buscar una esquina oscura y abrirlo un dedo, solo para saber.', efectos:{ humano:{ disociacion:+3 } },
+        resultado: 'La curiosidad es mal negocio en esto, y aun así rajas el sello con cuidado de poder recerrarlo. Dentro, en frío seco, hay '
+                 + 'algo que no querías ver.', lleva:'prof_contra_b2' }
+    ]
+  },
+  'prof_contra_b2': {
+    img: 'EXP_CANAL_PILAS',
+    texto: 'Frío seco, envoltorio médico y una etiqueta con un código de HELIX y una sola palabra: «compatible». No es droga. No es un arma. '
+         + 'Es un trozo de alguien, empaquetado para meterse en otro alguien que pueda pagarlo. Vuelves a sellar el tubo con las manos algo torpes.',
+    opciones: [
+      { texto: 'Entregarlo igual. Un trato es un trato.', efectos:{ creditos:+80, humano:{ disociacion:+4 } },
+        resultado: 'Cumples, cobras, y no duermes bien. Ahora sabes en qué cadena eres un eslabón. Podrías dejarlo. Los dos sabéis que no lo '
+                 + 'harás: comer también es un trato.' },
+      { texto: 'Quedártelo y colocarlo tú a quien lo necesite de verdad.', efectos:{ creditos:+220, reputacion:-2, humano:{ disociacion:+5 } },
+        resultado: 'Rompes el trato y vendes la pieza por tu cuenta, al triple, a la familia desesperada de un enfermo. Ganas mucho más y un '
+                 + 'enemigo: el intermediario no perdona, y tu nombre queda marcado en según qué puertas. Comer sale caro de todas formas.' }
+    ]
+  },
+
+  // ============================================================
+  // SEGURIDAD — "El turno de noche"
+  // Vigilar un almacén de HELIX y encontrarte cara a cara con lo que el
+  // sistema llama "pérdida" y tú sabes que es un padre sin salida.
+  // ============================================================
+  'prof_segu_b1': {
+    entrada: true,
+    cond: { profesion: 'seguridad' },
+    img: 'EXP_ALMACEN_ZONA',
+    texto: 'Turno de noche vigilando un almacén de repuestos médicos de una subcontrata de HELIX. Ocho horas, buen dinero, aburrimiento '
+         + 'garantizado. A las tres, un ruido. En la cámara: alguien ha forzado una rejilla y llena una mochila con cajas de analgésicos y '
+         + 'antibióticos. No es un profesional. Se mueve como quien roba por primera vez, con las manos temblando.',
+    opciones: [
+      { texto: 'Reducirlo, como te pagan por hacer.', lleva:'prof_segu_reduce' },
+      { texto: 'Encender la linterna y hablar antes de actuar.', efectos:{ humano:{ disociacion:+2 } },
+        resultado: 'Le das el alto sin gritar. Se queda helado, y no saca un arma: saca una foto de un crío enfermo. «Es para mi hija. No llego. '
+                 + 'Sabes que no llego.» No miente. Lo sabes porque tú tampoco llegas.', lleva:'prof_segu_decide' }
+    ]
+  },
+  'prof_segu_reduce': {
+    img: 'EXP_ALMACEN_ZONA',
+    texto: 'Vas directo. Pero el miedo de un padre pega fuerte, y lo que iba a ser un trámite se tuerce: forcejeáis entre las estanterías, '
+         + 'caen cajas, y el tipo pelea como quien no tiene nada que perder.',
+    opciones: [
+      { texto: 'Terminar el trabajo.',
+        pelea: {
+          texto: 'No es un luchador. Es un desesperado, y eso a veces es peor: no busca ganarte, busca escapar, y se lleva por delante lo que haga falta.',
+          integridad: 10,
+          enemigos: [ { nombre:'El ladrón', desc:'Un padre sin nada que perder', tipo:'normal', integridad:4, fuerza:3, umbral:4 } ],
+          gana:'prof_segu_gana', pierde:'prof_segu_pierde'
+        } }
+    ]
+  },
+  'prof_segu_gana': {
+    img: 'EXP_ALMACEN_ZONA',
+    texto: 'Lo inmovilizas contra el suelo, jadeando los dos. La subcontrata te felicitará y a él le hará pagar con años que no le quedan lo '
+         + 'que no tiene. Tienes su muñeca en tu mano y su vida en tu decisión.',
+    opciones: [
+      { texto: 'Entregarlo. Es tu trabajo.', efectos:{ creditos:+120, reputacion:-1, humano:{ disociacion:+5 } },
+        resultado: 'Cobras el turno completo y una prima por «evitar pérdidas». Al hombre se lo lleva HELIX. No vuelves a saber de él, y esa es '
+                 + 'la parte que se te queda: que no volver a saber de alguien, aquí, casi nunca es buena señal.' },
+      { texto: 'Dejarlo ir con la mochila y borrar la grabación.', efectos:{ creditos:+60, reputacion:+3, humano:{ aislamiento:-2 } },
+        resultado: 'Le dices que no vuelva por aquí y limpias los diez minutos de cámara. Cobras solo el turno, sin prima, y anotas un «falso '
+                 + 'positivo del sensor». Arriesgas tu puesto por un desconocido. En las Pilas, eso también es un tipo de sueldo.' }
+    ]
+  },
+  'prof_segu_pierde': {
+    img: 'EXP_ALMACEN_ZONA',
+    texto: 'El desesperado te estrella contra una estantería con un empujón de los que solo da quien no tiene salida, y sale por la rejilla con '
+         + 'su mochila. Cuando te levantas, dolorido, ya no está. Solo quedan cajas por el suelo y un turno que explicar.',
+    opciones: [
+      { texto: 'Recomponerte y cerrar el parte.', efectos:{ condicion:'costillas', fatiga:+10, creditos:+40 },
+        resultado: 'Cobras el turno a medias y pones en el parte que fueron dos, encapuchados, profesionales. Nadie va a buscar a un padre con '
+                 + 'antibióticos. Te duele el costado al respirar. Podría dolerte más la conciencia; decides que no.' }
+    ]
+  },
+  'prof_segu_decide': {
+    img: 'EXP_ALMACEN_ZONA',
+    texto: 'El hombre no se mueve. Espera tu decisión con la foto todavía en alto, como un escudo que sabe que no protege de nada.',
+    opciones: [
+      { texto: 'Dejarle llenar la mochila y desaparecer.', efectos:{ creditos:+60, reputacion:+3, humano:{ aislamiento:-2 } },
+        resultado: 'Apagas la linterna. «No te he visto. No vuelvas.» Coge lo justo, no más —eso también dice quién es— y se va por la rejilla. '
+                 + 'Cobras el turno limpio, sin prima, y anotas un fallo del sensor. Nadie se muere porque a HELIX le falten unos antibióticos.' },
+      { texto: 'Entregarlo igual. Necesitas este trabajo.', efectos:{ creditos:+120, reputacion:-2, humano:{ disociacion:+6 } },
+        resultado: 'Pulsas el aviso. Vienen a por él en cuatro minutos. No se resiste; casi parece aliviado de que se acabe. Cobras el turno y la '
+                 + 'prima. La foto del crío se queda en el suelo del almacén, y tú te la llevas puesta detrás de los ojos, gratis.' }
+    ]
   }
 
   };

@@ -488,6 +488,15 @@ const eventos = [
       {txt:'No es tu problema. Esquivarlo como los demás.', cambios:{humano:{aislamiento:+2}}, msg:'Pasas por encima de sus piernas como todo el mundo. Un día podrías ser tú el del suelo, y lo sabes, y aun así sigues. Todos lo sabemos. Por eso duele.'},
     ]
   },
+  {
+    titulo: 'LA CABINA DE LLAMADAS',
+    narr: 'Una vieja cabina de comunicaciones que aún cobra por minuto para llamar fuera del planeta. Una anciana habla con alguien en Marte, un nieto quizá, con la mano pegada al cristal. El contador baja, se queda sin crédito a mitad de frase, y la pantalla se apaga con la boca de ella todavía moviéndose. Se queda mirando el cristal negro sin moverse.',
+    opciones: [
+      {txt:'Cargarle unos minutos más (20 cr).', cambios:{creditos:-20, reputacion:+2, humano:{aislamiento:-2}}, msg:'Metes veinte créditos sin decir nada. La pantalla revive y ella retoma la frase donde se cortó, como si no hubiera pasado. No te da las gracias porque no te ve. Habla con Marte. Es lo justo.'},
+      {txt:'Esperar por si necesita ayuda con la máquina.', cambios:{humano:{aislamiento:-1}}, msg:'Te quedas cerca, por si acaso. Ella suspira, se recompone y se va con paso corto. «Ya le llamaré mañana», te dice sin que le preguntes. Los dos sabéis que mañana también costará por minuto.'},
+      {txt:'No es asunto tuyo. Seguir.', cambios:{humano:{aislamiento:+2}}, msg:'La dejas ahí, con la mano en el cristal apagado. En el Sistema Solar las voces cruzan mundos al instante, pero los abrazos siguen costando lo que no tienes. Sigues caminando.'},
+    ]
+  },
 ];
 
 function intentarEventoAleatorio(callback){

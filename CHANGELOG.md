@@ -1,3 +1,11 @@
+## [0.151] - 2026-07-05
+### Fixed
+- Al mirar la repisa, su texto se abre ahora en una ventana que permanece hasta que la cierras (con desplazamiento si hay mucho), para que nunca se corte ni desaparezca antes de darte tiempo a leerlo.
+### Added
+- Dos trabajos nuevos según tu oficio: contrabandista ("Carga que no se declara") y seguridad ("El turno de noche", con decisión moral y combate evitable).
+- Un caso suelto de intriga fría en Midbelt, "La que se fue sin avisar": una desaparición donde todos mienten con educación; investigas, cruzas versiones y decides el destino de dos hermanas, con varios finales y un combate evitable.
+- Un suceso de barrio más (una cabina de llamadas al espacio).
+
 ## [0.150] - 2026-07-05
 ### Added
 - Más vida en la Fase Tierra: 7 sucesos nuevos de barrio al moverte por la ciudad (desde un desahucio o un velatorio hasta cosas más duras, como un cobro a golpes o a alguien al que le arrancan un implante por impago), casi todos con recompensa o consecuencia.
