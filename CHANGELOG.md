@@ -1,3 +1,7 @@
+## [0.149] - 2026-07-05
+### Added
+- Nuevo capítulo de personaje, "La factura": si en el capítulo anterior pediste a Mara que te abriera una puerta, ahora te cobra el favor. Recuperas una caja sellada (con maña o a las malas, con un combate pequeño y evitable) y decides si se la entregas sin mirar o husmeas dentro y descubres algo de su pasado. Las dos opciones saldan la deuda, pero cambian tu relación con ella de cara a lo que venga.
+
 ## [0.148] - 2026-07-04
 ### Added
 - Nuevo capítulo de la misión principal (el giro): sigues el hilo de Coll hasta un archivo muerto de HELIX y descubres que los recuerdos imposibles no se están alterando, sino recuperando; y que todo cuelga de la vieja Expedición Centauri. Puedes entrar de tres formas (una te deja debiendo un favor a Mara), hay un combate evitable, y consigues el recuerdo "el otro cielo" además de asegurarte "el mar". Algo muy antiguo, ahí abajo, todavía recuerda en voz alta.
