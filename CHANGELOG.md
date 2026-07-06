@@ -1,3 +1,7 @@
+## [0.152] - 2026-07-06
+### Added
+- El mundo ahora recuerda lo que hiciste: seis sucesos que solo aparecen según tus decisiones pasadas y te tratan distinto. Si mataste al carnicero, te temen y te agradecen a la vez; si se lo dejaste a Dvora, el barrio te da techo; si vendiste a la hermana en Midbelt, se te cierran puertas y pierdes contactos; y Mara se abre contigo o te trata con frialdad según respetaras o no su caja. Además, un recordatorio de que le debes un favor, antes de que lo cobre.
+
 ## [0.151] - 2026-07-05
 ### Fixed
 - Al mirar la repisa, su texto se abre ahora en una ventana que permanece hasta que la cierras (con desplazamiento si hay mucho), para que nunca se corte ni desaparezca antes de darte tiempo a leerlo.
@@ -338,7 +342,7 @@
 
 ## [0.100] - 2026-06-13
 ### Added
-- Cinco eventos nuevos en el Hospital HELIX (huelga, brote, médico corrupto, ala de extracción de órganos, confusión de identidad), hasta un total de ocho.
+- Cinco eventos nuevos en el Hospital HELIX (huelga, proceso, médico corrupto, ala de extracción de órganos, confusión de identidad), hasta un total de ocho.
 - Dieciséis eventos nuevos de zona (cuatro por cada barrio: Arrabal, Santuario, Nodo y Ferro).
 - Doce rumores nuevos con ganchos al resto del mundo del juego.
 - El clímax de la cadena del Sindicato Ferro ahora se ramifica: matar o perdonar a Mano Roja lleva a desenlaces distintos, y matarla cierra la cadena del Loto.
@@ -738,7 +742,7 @@
 - El botón del apartamento ahora dice "Abrir el terminal" y entra al escritorio HELIX en lugar de saltar directo al mensaje.
 ### Fixed
 - El escritorio HELIX ya tiene un botón "Cerrar terminal" para salir, colocado por encima de la barra inferior en móvil.
-- Quitados los solapamientos de la parte superior: el reloj y la cabecera vieja se ocultan en el escritorio HELIX, y el reloj también se oculta durante la deriva para no pisar el texto en móvil.
+- Quitados los solapamientos de la parte superior: el reloj y la cabecera vieja se oculta en el escritorio HELIX, y el reloj también se oculta durante la deriva para no pisar el texto en móvil.
 - La cabecera del escritorio respeta el área segura del notch en móviles.
 
 ## [0.76] - 2026-06-01
