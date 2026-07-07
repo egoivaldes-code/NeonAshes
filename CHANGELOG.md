@@ -1,3 +1,7 @@
+## [0.154] - 2026-07-07
+### Added
+- Un trabajo nuevo para cada oficio (siete en total, doble ración para cazarrecompensas): el investigador destapa una identidad usurpada, el chatarrero se juega un pozo con otro carroñero, el cazarrecompensas se topa con una fugitiva que no es lo que dice el cartel y con un objetivo que suplica que lo encierren, el hacker decide si dejar una puerta trasera en el filtrado de un bloque, el contrabandista si desviar una dosis para un crío enfermo, y el de seguridad si saca a un borracho con implante por las buenas o por las malas. Decisiones con recompensa o consecuencia, y combate evitable donde encaja.
+
 ## [0.153] - 2026-07-06
 ### Added
 - Nuevo caso-capítulo, "El Aguador": un crío te pide ayuda para su abuela, a la que cortaron el agua y la medicina, y el hilo te lleva hasta el hombre que controla el agua de varios bloques. Puedes entrar de cuatro formas (rogando, a escondidas, por oficio de hacker o de seguridad, o a la fuerza), hay un combate duro y evitable, y decides su destino: pactar con él, obligarle a abrir el agua o matarlo, cada final con sus consecuencias. Semanas después, el crío reaparece y te trata según lo que hiciste.
