@@ -1,3 +1,7 @@
+## [0.153] - 2026-07-06
+### Added
+- Nuevo caso-capítulo, "El Aguador": un crío te pide ayuda para su abuela, a la que cortaron el agua y la medicina, y el hilo te lleva hasta el hombre que controla el agua de varios bloques. Puedes entrar de cuatro formas (rogando, a escondidas, por oficio de hacker o de seguridad, o a la fuerza), hay un combate duro y evitable, y decides su destino: pactar con él, obligarle a abrir el agua o matarlo, cada final con sus consecuencias. Semanas después, el crío reaparece y te trata según lo que hiciste.
+
 ## [0.152] - 2026-07-06
 ### Added
 - El mundo ahora recuerda lo que hiciste: seis sucesos que solo aparecen según tus decisiones pasadas y te tratan distinto. Si mataste al carnicero, te temen y te agradecen a la vez; si se lo dejaste a Dvora, el barrio te da techo; si vendiste a la hermana en Midbelt, se te cierran puertas y pierdes contactos; y Mara se abre contigo o te trata con frialdad según respetaras o no su caja. Además, un recordatorio de que le debes un favor, antes de que lo cobre.
