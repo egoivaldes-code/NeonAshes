@@ -47,7 +47,8 @@
   // ============================================================
   'cap_arch_p1': {
     entrada: true,
-    cond: { visto: 'mara3_hecha', noVisto: 'cap_arch_p1' },
+    repetible: true, // si se interrumpe a medias, vuelve a ofrecerse
+    cond: { visto: 'mara3_hecha', noVisto: 'cap_arch_hecho' },
     img: 'APT',
     texto: 'Otro parpadeo cifrado en la lente. Mara, seca, como si continuara una conversación de hace días.<br><br>'
          + '<span style="color:var(--magenta)">«El nombre que salió del módulo. Coll. Catalogaba arriba, en Midbelt, lo que HELIX prefería perder. '

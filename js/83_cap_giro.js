@@ -39,7 +39,8 @@
   // ============================================================
   'cg_p1': {
     entrada: true,
-    cond: { visto: 'cap_arch_hecho', noVisto: 'cg_p1' },
+    repetible: true, // si se interrumpe a medias, vuelve a ofrecerse
+    cond: { visto: 'cap_arch_hecho', noVisto: 'cg_hecho' },
     img: 'APT',
     texto: 'La caja de Coll no te deja dormir. Sus nombres, sus fechas imposibles, esa palabra tachada mil veces. Y la frase de Mara dándote '
          + 'vueltas: <i>esto empieza mucho más atrás, en los archivos viejos de HELIX, los que nadie abre.</i><br><br>'

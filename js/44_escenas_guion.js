@@ -162,6 +162,13 @@ function _egAplicarEfectos(ef){
       if(v.indexOf(ef.marcaVisto) === -1) v.push(ef.marcaVisto);
       if(typeof guardarEstado === 'function') guardarEstado();
     }
+    // marcas: varias banderas de una vez (p.ej. una semilla + "capítulo hecho"),
+    // porque un bloque de efectos solo lleva un marcaVisto.
+    if(Array.isArray(ef.marcas)){
+      const v = _egAsegurarVistos();
+      ef.marcas.forEach(m=>{ if(m && v.indexOf(m) === -1) v.push(m); });
+      if(typeof guardarEstado === 'function') guardarEstado();
+    }
     // NPCs recurrentes: conocer a alguien y/o estrechar el vínculo.
     if(ef.conocer && typeof marcarNpcVisto === 'function') marcarNpcVisto(ef.conocer);
     if(ef.vinculo && typeof subirVinculo === 'function') subirVinculo(ef.vinculo.id, ef.vinculo.mas);

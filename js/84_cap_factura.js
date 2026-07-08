@@ -33,7 +33,8 @@
   // ---- ENTRADA: Mara cobra la deuda ----
   'fac_p1': {
     entrada: true,
-    cond: { visto: 'cg_deuda_mara', noVisto: 'fac_p1' },
+    repetible: true, // si se interrumpe a medias, vuelve a ofrecerse
+    cond: { visto: 'cg_deuda_mara', noVisto: 'fac_hecho' },
     img: 'APT',
     texto: 'El mensaje de Mara llega de noche, sin preámbulo. No pregunta si puedes. Da por hecho que vas.<br><br>'
          + '<span style="color:var(--magenta)">«El favor que me debes. Toca. Hay una caja pequeña, sellada, en un guardamuebles del sector viejo. '

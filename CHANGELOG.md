@@ -1,3 +1,7 @@
+## [0.154.1] - 2026-07-08
+### Fixed
+- Corregido un fallo que podía dejar la misión principal bloqueada: si cerrabas el juego (o se recargaba la página) a mitad de un capítulo, ese capítulo se perdía para siempre y la historia se quedaba atascada. Ahora, si interrumpes un capítulo, vuelve a ofrecerse desde el principio la próxima vez que salgas, y solo desaparece cuando lo terminas de verdad. Mismo arreglo para los tres casos sueltos (el carnicero, la desaparición de Midbelt y el Aguador). Los recuerdos y las decisiones no se duplican.
+
 ## [0.154] - 2026-07-07
 ### Added
 - Un trabajo nuevo para cada oficio (siete en total, doble ración para cazarrecompensas): el investigador destapa una identidad usurpada, el chatarrero se juega un pozo con otro carroñero, el cazarrecompensas se topa con una fugitiva que no es lo que dice el cartel y con un objetivo que suplica que lo encierren, el hacker decide si dejar una puerta trasera en el filtrado de un bloque, el contrabandista si desviar una dosis para un crío enfermo, y el de seguridad si saca a un borracho con implante por las buenas o por las malas. Decisiones con recompensa o consecuencia, y combate evitable donde encaja.
