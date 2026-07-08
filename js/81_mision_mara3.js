@@ -40,7 +40,8 @@
     // ---- ENTRADA: Mara te pasa el módulo del maletín ----
     'mara3_p1': {
       entrada: true,
-      cond: { visto: 'mara2_hecha', noVisto: 'mara3_p1' },
+      repetible: true, // si se interrumpe a medias, vuelve a ofrecerse
+      cond: { visto: 'mara2_hecha', noVisto: 'mara3_hecha' },
       img: 'APT',
       texto: 'Un parpadeo cifrado te cruza la lente cuando ya volvías a casa. Es ella. Sin saludo, como siempre.<br><br>'
            + '<span style="color:var(--magenta)">«El maletín llevaba algo dentro. Un módulo. Cerrado con basura vieja, de la que ya nadie usa. '

@@ -34,7 +34,7 @@
   // ============================================================
   'ag_p1': {
     entrada: true,
-    cond: { noVisto: 'ag_p1' },
+    repetible: true, cond: { noVisto: 'ag_hecho' },
     img: 'EXP_CALLEJON_NIVELES',
     texto: 'Un crío de no más de diez años te tira de la manga. Se llama Tobi. «Dicen que tú arreglas cosas.» Le tiembla la voz de aguantar '
          + 'el llanto como un adulto. «A mi abuela le cortaron el agua y la medicina. No pudimos pagar este mes. Y tose sangre.» Señala hacia '
@@ -45,7 +45,7 @@
         resultado: 'Le dices a Tobi que vas a ver qué se puede hacer. Se agarra a esa frase como a un salvavidas, y tú ya sabes que acabas de '
                  + 'meterte en algo más grande de lo que parece. Empiezas por el grifo seco.', lleva:'ag_indaga' },
       { texto: 'Darle agua y unos créditos, y seguir tu camino.',
-        efectos:{ creditos:-30, humano:{ aislamiento:+2 } },
+        efectos:{ creditos:-30, marcaVisto:'ag_hecho', humano:{ aislamiento:+2 } },
         resultado: 'Le das tu cantimplora y lo que llevas suelto. Es algo, para hoy. Mañana el grifo seguirá seco y la abuela seguirá tosiendo, '
                  + 'y tú lo sabes mientras te alejas. No puedes con todo. Te lo repites hasta que casi funciona.' }
     ]
@@ -152,7 +152,7 @@
       { texto: 'Ir a por él aquí y ahora.',
         resultado: 'No hay más que hablar. Kessler ni se inmuta; solo levanta una mano, y sus hombres entran por detrás de ti.', lleva:'ag_combate' },
       { texto: 'No es tu guerra. Marcharte.',
-        efectos:{ humano:{ aislamiento:+3, disociacion:+2 } },
+        efectos:{ marcaVisto:'ag_hecho', humano:{ aislamiento:+3, disociacion:+2 } },
         resultado: 'Le das la espalda y sales de la estación. Kessler no te detiene; ya ha visto marcharse a mucha gente. Vuelves donde Tobi sin '
                  + 'nada que darle salvo la verdad: que no supiste, o no quisiste, decidir por él. A veces marcharse también es una decisión, y '
                  + 'de las que más pesan.', lleva:null }
@@ -215,7 +215,7 @@
          + 'los depósitos, intacto.',
     opciones: [
       { texto: 'Arrastrarte de vuelta con Tobi.',
-        efectos:{ condicion:'hemorragia', fatiga:+15, disociacion:+8 },
+        efectos:{ condicion:'hemorragia', fatiga:+15, disociacion:+8, marcaVisto:'ag_hecho' },
         resultado: 'Vuelves al bloque siete molido y con las manos vacías. El grifo sigue seco. La abuela de Tobi sigue tosiendo. El crío no te '
                  + 'reprocha nada, y eso es lo peor. Aprendes, a golpes, que querer ayudar no basta, y que en las Pilas los que ponen precio a la '
                  + 'sed no caen a la primera.' }
@@ -232,7 +232,7 @@
          + 'pagando tú, a plazos, en la moneda que menos querías gastar.',
     opciones: [
       { texto: 'Aceptar en lo que te has convertido.',
-        efectos:{ creditos:+180, reputacion:+2, marcaVisto:'cap_agua_pacto', humano:{ disociacion:+6 } },
+        efectos:{ creditos:+180, reputacion:+2, marcas:['cap_agua_pacto','ag_hecho'], humano:{ disociacion:+6 } },
         resultado: 'Cobras bien y bebes seguro. Media zona te respeta ahora, porque respeta al Aguador, y tú eres suyo. La otra media te mira como '
                  + 'miraba la mujer de la foto. Has salvado a una abuela y te has vendido a la máquina que la tenía sedienta. Así se sobrevive aquí, '
                  + 'te dices. Así se sobrevive.'
@@ -250,7 +250,7 @@
          + 'enemigo peligroso.',
     opciones: [
       { texto: 'Dejarlo ahí, por ahora.',
-        efectos:{ reputacion:+5, marcaVisto:'cap_agua_forzado', humano:{ aislamiento:-2 } },
+        efectos:{ reputacion:+5, marcas:['cap_agua_forzado','ag_hecho'], humano:{ aislamiento:-2 } },
         resultado: 'El barrio no sabe tu nombre, pero sabe que alguien obligó al Aguador a abrir la mano, y eso corre como el agua. Te has ganado '
                  + 'el respeto callado de mucha gente y la ojeriza fría de un hombre que decide quién bebe. Habrá que vigilarle la espalda. Pero '
                  + 'hoy, en el bloque siete, un crío ha visto salir agua de un grifo que llevaba seco toda su vida.'
@@ -267,7 +267,7 @@
          + 'Mataste al que ponía precio a la sed. No mataste la sed. Esa sigue ahí, esperando al siguiente que quiera cobrarla.',
     opciones: [
       { texto: 'Cargar con lo que has hecho, bueno y malo.',
-        efectos:{ reputacion:+3, marcaVisto:'cap_agua_muerto', humano:{ disociacion:+9 } },
+        efectos:{ reputacion:+3, marcas:['cap_agua_muerto','ag_hecho'], humano:{ disociacion:+9 } },
         resultado: 'La abuela de Tobi alcanzó a beber limpia sus últimos días; eso te lo llevas. Y te llevas también la duda de si liberaste a la '
                  + 'zona o solo la dejaste a merced del siguiente. Los que odiaban a Kessler te deben una. Los que dependían de él te miran como se '
                  + 'mira a quien apagó la única luz que había, por mala que fuera. Nunca sabrás del todo cuál de los dos tenía razón.'

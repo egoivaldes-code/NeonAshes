@@ -22,7 +22,7 @@
   // ---- ENTRADA: Dvora te para en la calle ----
   'caso_p1': {
     entrada: true,
-    cond: { noVisto: 'caso_p1' },
+    repetible: true, cond: { noVisto: 'caso_carnicero_hecho' },
     img: 'EXP_CALLEJON_NIVELES',
     texto: 'Una mujer te corta el paso. Se llama Dvora, tiene las manos rojas de fregar y los ojos de no dormir. «Mi hermano fue a vender '
          + 'un implante a una clínica de las baratas, de las que pagan en el día. No volvió. Ni él ni otros tres del bloque.» Baja la voz. '
@@ -37,7 +37,7 @@
         resultado: 'Junta treinta créditos de un tarro escondido, arrugados, y te los pone en la mano sin regatear. Que pague por adelantado a '
                  + 'un desconocido dice todo lo desesperada que está. Te da la pista: la lavandería del nivel bajo.', lleva:'caso_rastro' },
       { texto: 'No es tu problema. Ya hay bastantes en las Pilas.',
-        efectos:{ humano:{ aislamiento:+3 } },
+        efectos:{ marcaVisto:'caso_carnicero_hecho', humano:{ aislamiento:+3 } },
         resultado: 'Le sueltas la muñeca con cuidado y sigues tu camino. Ella no insiste; ya contaba con el no. En las Pilas, pedir ayuda es, '
                  + 'casi siempre, aprender otra vez que no viene.' }
     ]
@@ -153,17 +153,17 @@
          + 'Queda decidir qué haces con el hombre de la bata.',
     opciones: [
       { texto: 'Entregárselo a los Fantasmas de Marte, que responda por los suyos.',
-        efectos:{ creditos:+160, reputacion:+5 },
+        efectos:{ creditos:+160, reputacion:+5, marcaVisto:'caso_carnicero_hecho' },
         resultado: 'Avisas a los Fantasmas. Vienen sin prisa, lo miran como se mira a una cucaracha grande y se lo llevan a un sitio del que no '
                  + 'vuelve. Te pagan por el aviso y por el material que liberas, y el barrio entero aprende tu nombre esta semana. Dvora recupera a '
                  + 'su hermano vivo. No todos los días de las Pilas terminan así.' },
       { texto: 'Matarlo tú. Aquí. Ahora.',
-        efectos:{ item:'Maletín quirúrgico', creditos:+90, marcaVisto:'caso_carnicero_muerto', humano:{ disociacion:+8 } },
+        efectos:{ item:'Maletín quirúrgico', creditos:+90, marcas:['caso_carnicero_muerto','caso_carnicero_hecho'], humano:{ disociacion:+8 } },
         resultado: 'No dice nada mientras lo haces, y eso es lo que no vas a poder olvidar. Te llevas su maletín quirúrgico, que vale una fortuna '
                  + 'en el mercado gris, y sacas al chico. Has hecho justicia, o algo con esa forma. Pero salir de esa cámara con las manos así '
                  + 'no se paga con créditos, y algo dentro de ti se queda en el suelo, con lo demás.' },
       { texto: 'Que decida Dvora qué se hace con él.',
-        efectos:{ reputacion:+3, marcaVisto:'caso_carnicero_dvora', humano:{ disociacion:+5 } },
+        efectos:{ reputacion:+3, marcas:['caso_carnicero_dvora','caso_carnicero_hecho'], humano:{ disociacion:+5 } },
         resultado: 'Traes a Dvora. Ve a su hermano vivo, y luego ve al hombre de la bata. Te pide que la dejes a solas con él «solo un momento». '
                  + 'Le haces caso. Lo que pasa en ese momento no lo ves, pero lo oyes, y no dura poco. Cuando sale, tiene las manos como las tenía '
                  + 'de fregar, pero por otra cosa. No te da las gracias con palabras. Hay barrios enteros que ahora te las deben.' }
@@ -177,7 +177,7 @@
          + 'y cuando ella llega y lo ve respirar, se rompe de una manera que no habías visto romperse a nadie: de alivio.',
     opciones: [
       { texto: 'Aceptar su agradecimiento y marcharte.',
-        efectos:{ creditos:+60, reputacion:+4, humano:{ aislamiento:-2 } },
+        efectos:{ creditos:+60, reputacion:+4, marcaVisto:'caso_carnicero_hecho', humano:{ aislamiento:-2 } },
         resultado: 'Dvora te da lo poco que tiene y te promete lo que no tiene. Te ganas su lealtad y la del bloque entero. Pero al irte lo sabes, '
                  + 'y ella también: el carnicero sigue ahí, con su bata y su calma, y mañana habrá otra cola de desesperados y otra mesa de acero. '
                  + 'Salvaste a uno. No al siguiente.' }
@@ -192,7 +192,7 @@
          + 'una bolsa. Lo último que ves dentro es al carnicero volviendo, tranquilo, a la mesa donde el chico ya no se mueve.',
     opciones: [
       { texto: 'Arrastrarte a que te curen.',
-        efectos:{ condicion:'hemorragia', fatiga:+16, disociacion:+10 },
+        efectos:{ condicion:'hemorragia', fatiga:+16, disociacion:+10, marcaVisto:'caso_carnicero_hecho' },
         resultado: 'Un médico clandestino te recompone por lo que no llevas encima, deuda apuntada. Vives. El chico no. La clínica del vapor '
                  + 'sigue abierta, y tú vas a tener que mirar a Dvora a la cara y contarle que llegaste, y que no bastó.' }
     ]
@@ -205,7 +205,7 @@
          + 'pasa detrás de las lavadoras.',
     opciones: [
       { texto: 'Recuperar el aliento y decidir qué le dices a Dvora.',
-        efectos:{ humano:{ aislamiento:+3, disociacion:+4 } },
+        efectos:{ marcaVisto:'caso_carnicero_hecho', humano:{ aislamiento:+3, disociacion:+4 } },
         resultado: 'No tienes al carnicero, no tienes a su hermano, no tienes nada salvo la certeza de dónde ocurre y de que no pudiste. '
                  + 'A veces, en las Pilas, encontrar el sitio es lo único que consigues, y no vale para nada.' }
     ]

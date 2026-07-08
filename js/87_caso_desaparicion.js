@@ -23,7 +23,7 @@
   // ---- ENTRADA: Renna te contrata ----
   'cd_p1': {
     entrada: true,
-    cond: { noVisto: 'cd_p1' },
+    repetible: true, cond: { noVisto: 'cd_hecho' },
     img: 'EXP_CALLEJON_NIVELES',
     texto: 'Una mujer bien vestida para este nivel te busca a ti, que no lo estás. Se llama Renna. Su hermana, Sar Nevin, vivía en una torre '
          + 'de Midbelt y hace tres semanas dejó de responder. «La administración dice que pidió un traslado voluntario. Sar no se iría sin '
@@ -38,7 +38,7 @@
         resultado: 'Te paga sin regatear, con billetes que le han costado. «Es todo lo que tengo líquido sin que Aldous lo vea.» Ese detalle ya '
                  + 'te dice por dónde puede ir esto. Te da el pase de visitante y la dirección.', lleva:'cd_hub' },
       { texto: 'No es tu clase de trabajo. Declinar.',
-        efectos:{ humano:{ aislamiento:+2 } },
+        efectos:{ marcaVisto:'cd_hecho', humano:{ aislamiento:+2 } },
         resultado: 'Le dices que no subes bien a Midbelt y que hay quien lo hace mejor. No insiste. Se aleja con la espalda muy recta, de las '
                  + 'que aguantan cosas peores que un no. Te queda la sensación de haber cerrado una puerta que igual no debías.' }
     ]
@@ -186,17 +186,17 @@
          + 'la pones en el mapa a ella también. Aldous la vigila. Por favor.»',
     opciones: [
       { texto: 'Contarle a Renna toda la verdad y dónde está su hermana.',
-        efectos:{ creditos:+120, reputacion:+2, humano:{ disociacion:+3 } },
+        efectos:{ creditos:+120, reputacion:+2, marcaVisto:'cd_hecho', humano:{ disociacion:+3 } },
         resultado: 'Se lo cuentas todo a Renna. Las hermanas se reencuentran, y por un momento es lo más parecido a un final feliz que ofrece '
                  + 'este sitio. Renna te paga agradecida. Pero al irte piensas en lo que dijo Sar sobre quién vigila a quién, y no las tienes todas '
                  + 'contigo. Has dado la verdad. Rezas por que la verdad no cueste cara.', lleva:null },
       { texto: 'Decirle a Renna que Sar se fue de verdad, y proteger su escondite.',
-        efectos:{ creditos:+120, reputacion:+1, humano:{ aislamiento:+3, disociacion:+4 } },
+        efectos:{ creditos:+120, reputacion:+1, marcaVisto:'cd_hecho', humano:{ aislamiento:+3, disociacion:+4 } },
         resultado: 'Le dices a Renna que su hermana pidió un traslado real y que no quiere ser encontrada. Es mentira, y le rompe algo por dentro '
                  + 'que no vas a poder recomponer. Cobras igual. Sar queda a salvo, escondida, sola. Cargas con el luto de Renna sabiendo que es '
                  + 'falso. Salvar a alguien a veces se paga con la pena de otro.', lleva:null },
       { texto: 'Volver a Aldous y venderle dónde está Sar.',
-        efectos:{ creditos:+400, reputacion:-8, marcaVisto:'cd_vendio_sar', humano:{ disociacion:+9 } },
+        efectos:{ creditos:+400, reputacion:-8, marcas:['cd_vendio_sar','cd_hecho'], humano:{ disociacion:+9 } },
         resultado: 'Aldous paga muy bien por la dirección medio tachada, con esa sonrisa que ahora entiendes del todo. Cobras más de lo que has '
                  + 'visto junto en tu vida. No preguntas qué le pasará a Sar; ya lo sabes. Ni Renna ni el barrio vuelven a confiar en ti cuando '
                  + 'corre la voz, y corre. Hay dinero que compra semanas y cuesta años.', lleva:null }
@@ -210,7 +210,7 @@
          + 'que nadie de arriba quiere hablar, y que alguien pagó para que dejaras de mirar.',
     opciones: [
       { texto: 'Darle lo que tienes y ser honesto sobre lo que no.',
-        efectos:{ creditos:+50, reputacion:+2 },
+        efectos:{ creditos:+50, reputacion:+2, marcaVisto:'cd_hecho' },
         resultado: 'Renna te paga lo prometido pese a que no cerraste el caso. «Al menos sé que no me lo inventé», dice. Te vas con la mitad de '
                  + 'una verdad y la sensación fea de que Midbelt gana casi siempre por cansancio. Casi.' }
     ]

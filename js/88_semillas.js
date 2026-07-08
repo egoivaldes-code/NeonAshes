@@ -131,7 +131,7 @@
   // deuda pese antes de que Mara la cobre.
   'sem_deuda_mara': {
     entrada: true,
-    cond: { visto:'cg_deuda_mara', noVisto:'fac_p1' },
+    cond: { visto:'cg_deuda_mara', noVisto:'fac_hecho' },
     img: 'APT',
     texto: 'Un mensaje corto de Mara, de los que no esperan respuesta. Sin encargo, sin saludo.<br><br>'
          + '<span style="color:var(--magenta)">«No me he olvidado de lo del archivo. De la puerta que te abrí. Yo estas cosas las apunto.»</span><br><br>'

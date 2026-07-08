@@ -34,7 +34,8 @@
     // ---- ENTRADA: Mara te pasa el encargo, y se tuerce ----
     'mara2_p1': {
       entrada: true,
-      cond: { visto: 'mara2_ofrecida', noVisto: 'mara2_p1' },
+      repetible: true, // si se interrumpe a medias, vuelve a ofrecerse
+      cond: { visto: 'mara2_ofrecida', noVisto: 'mara2_hecha' },
       img: 'EXP_CALLEJON_NIVELES',
       texto: 'Un parpadeo cifrado te cruza la lente a media calle. Es ella. Sin saludo, como siempre.<br><br>'
            + '<span style="color:var(--magenta)">«Otro encargo. Un maletín, en el corredor muerto del mercado bajo. '
