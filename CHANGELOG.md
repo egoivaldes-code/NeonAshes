@@ -1,3 +1,9 @@
+## [0.156] - 2026-07-09
+### Added
+- Combate más táctico. Antes de que te peguen ves lo que se prepara a hacer el enemigo que va de lleno (el grandullón echa el brazo atrás, el rápido amaga en corto, el de rango te encara...), y ahora puedes ESQUIVAR además de cubrirte. Esquivar, si lees bien el golpe, evita por completo al que pega de lleno y su efecto; si fallas o lees mal, lo comes entero. Al rápido conviene esquivarlo, al bruto cuesta más (a veces no llegas a librarlo) y una bala no se esquiva.
+### Changed
+- Cubrirse ahora dura solo ese turno (antes duraba dos) y parte a la mitad el daño de todo el grupo. Así cada turno es una decisión real entre cubrirse (seguro, bueno contra varios) y esquivar (arriesgado, bueno contra uno).
+
 ## [0.155] - 2026-07-09
 ### Added
 - HELIX empieza a sentirse como lo que es: un sistema del que dependes, no un enemigo con cara. Aparece un anuncio de HELIX en el tránsito que recuerda que sin ellos no hay mañana, y llegan avisos administrativos fríos por el terminal. Además, dos consecuencias que solo le ocurren a quien se metió a fondo en el caso de la archivista: si te ficharon, un día tu credencial deja de reconocerte en el tren vertical, sin orden ni nadie a quien reclamar; y si destapaste el registro con la fecha imposible, descubres que tu propia ficha ha cambiado sola, sin firma, y Mara te avisa a su manera de que esas cosas se deciden mucho más arriba. Nada de esto toca la misión principal.
