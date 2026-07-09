@@ -154,6 +154,10 @@ function confirmarNombre(){
 // Transición a la primera escena del apartamento. Separada para poder
 // llamarla tanto si hay herencia (tras decidir) como si no la hay.
 function entrarAlApartamento(){
+  // v0.157: si este personaje hereda una misión en marcha, se restaura aquí y
+  // Mara vuelve a contactar. BLINDADO: si no hay misión heredable, no toca nada
+  // y el arranque queda idéntico a como era antes.
+  if(typeof restaurarMisionHeredada === 'function') restaurarMisionHeredada();
   cambiarEscena('nombre-escena','apartamento');
   setTimeout(()=>{ iniciarApartamento(); mostrarHUD(true); actualizarHUD(); iniciarRelojDiegético(); iniciarDecaimientoPasivo(); iniciarCobrosPeriódicos(); },800);
 }
