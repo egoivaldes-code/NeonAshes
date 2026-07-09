@@ -132,6 +132,7 @@
         resultado: 'No has llegado hasta el fondo para irte con las manos a medio llenar. Te quedas un minuto más de la cuenta. El guardián '
                  + 'termina de despertar justo cuando ibas a marcharte.',
         pelea: {
+          letal: true, // misión principal: caer aquí puede matar de verdad
           texto: 'No son personas. Son unidades de custodia viejas, lentas y pesadas, pero blindadas por dentro con siglos de olvido. No sienten, '
                + 'no dudan, y no paran hasta que la sección vuelve a estar en silencio.',
           integridad: 13,

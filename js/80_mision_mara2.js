@@ -51,6 +51,7 @@
           resultado: 'No hay dónde correr que no sea hacia ellos. Te echas la correa del maletín al hombro, '
                    + 'liberas las manos y avanzas. Si quieren la cosa, van a tener que quitártela.',
           pelea: {
+            letal: true, // misión principal: caer aquí puede matar de verdad
             texto: 'Son carroñeros, no soldados: rápidos, hambrientos, mal coordinados. Pero son tres, '
                  + 'y el corredor es estrecho. No tienes que matar a nadie. Tienes que salir con el maletín.',
             integridad: 11,

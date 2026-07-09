@@ -1,3 +1,7 @@
+## [0.158] - 2026-07-09
+### Changed
+- Las peleas de la misión principal ahora son mortales: caer en ellas ya no es solo un mal rato, puede costarte la vida. Si mueres ahí, otro ocupa tu lugar y hereda el hilo de la historia. Los trabajos y los casos sueltos del barrio siguen siendo KO (te recogen y te pasan la factura), no mortales.
+
 ## [0.157] - 2026-07-09
 ### Added
 - Caer en combate ahora tiene consecuencias de verdad y distintas según dónde estés. En trabajos y profesiones (seguridad, hackeo, rebusca de chatarra) ya no puedes morir: si te tumban, pierdes el conocimiento y despiertas en tu apartamento una semana después, con una factura de HELIX por estabilización y transporte. Esa factura escala: cada vez que te recogen es más cara y, a la tercera, HELIX te ficha y empiezan a fallarte permisos por la ciudad.

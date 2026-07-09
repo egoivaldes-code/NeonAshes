@@ -357,6 +357,7 @@ function _egResolverOpcion(op, onCerrar){
   const lanzarPelea = ()=>{
     if(pelea && typeof iniciarCombateDesdeEscena === 'function'){
       iniciarCombateDesdeEscena({
+        letal: pelea.letal, // v0.158: la escena decide si su pelea puede matar
         texto: pelea.texto,
         enemigos: pelea.enemigos,
         integridad: pelea.integridad || 10,

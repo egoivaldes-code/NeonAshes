@@ -65,6 +65,7 @@
         resultado: 'Se acabó la charla. Remy ve tu cara, entiende que no vas a irte sin ella, y comete la tontería de intentar impedirlo. '
                  + 'No está solo: un colega suyo sale de detrás de las taquillas con un tubo en la mano.',
         pelea: {
+          letal: true, // misión principal: caer aquí puede matar de verdad
           texto: 'No son profesionales. Son dos don nadie asustados defendiendo un encargo que les queda grande. Pero el miedo también pega, '
                + 'y en un pasillo estrecho un tubo hace el mismo daño lo lleve quien lo lleve.',
           integridad: 10,
