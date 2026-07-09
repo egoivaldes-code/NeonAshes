@@ -1,3 +1,7 @@
+## [0.155] - 2026-07-09
+### Added
+- HELIX empieza a sentirse como lo que es: un sistema del que dependes, no un enemigo con cara. Aparece un anuncio de HELIX en el tránsito que recuerda que sin ellos no hay mañana, y llegan avisos administrativos fríos por el terminal. Además, dos consecuencias que solo le ocurren a quien se metió a fondo en el caso de la archivista: si te ficharon, un día tu credencial deja de reconocerte en el tren vertical, sin orden ni nadie a quien reclamar; y si destapaste el registro con la fecha imposible, descubres que tu propia ficha ha cambiado sola, sin firma, y Mara te avisa a su manera de que esas cosas se deciden mucho más arriba. Nada de esto toca la misión principal.
+
 ## [0.154.1] - 2026-07-08
 ### Fixed
 - Corregido un fallo que podía dejar la misión principal bloqueada: si cerrabas el juego (o se recargaba la página) a mitad de un capítulo, ese capítulo se perdía para siempre y la historia se quedaba atascada. Ahora, si interrumpes un capítulo, vuelve a ofrecerse desde el principio la próxima vez que salgas, y solo desaparece cuando lo terminas de verdad. Mismo arreglo para los tres casos sueltos (el carnicero, la desaparición de Midbelt y el Aguador). Los recuerdos y las decisiones no se duplican.

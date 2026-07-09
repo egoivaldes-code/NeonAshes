@@ -497,6 +497,22 @@ const eventos = [
       {txt:'No es asunto tuyo. Seguir.', cambios:{humano:{aislamiento:+2}}, msg:'La dejas ahí, con la mano en el cristal apagado. En el Sistema Solar las voces cruzan mundos al instante, pero los abrazos siguen costando lo que no tienes. Sigues caminando.'},
     ]
   },
+  {
+    titulo: 'ANUNCIO DE HELIX',
+    narr: 'Una fachada entera se ilumina de golpe sobre el andén: azul HELIX, limpio, sin una mota. La voz llega calibrada, sin prisa y sin amenaza. «Su bloque ha superado otra jornada con suministro estable de agua, energía y soporte vital. HELIX no promete un futuro mejor. Garantiza que habrá un mañana. Es cuanto necesita.» Debajo, un contador silencioso de días de continuidad. Nadie lo mira. Todos dependen de él.',
+    opciones: [
+      {txt:'Seguir andando por debajo del anuncio.', cambios:{}, msg:'Pasas por debajo como se pasa por debajo del cielo: sin darle las gracias y sin poder quitarlo. Esa es toda su fuerza. No te pide que la quieras. Le basta con que la necesites.'},
+      {txt:'Quedarte un momento mirando el contador.', cambios:{humano:{disociacion:+1}}, msg:'Los días de continuidad suben de uno en uno, tranquilos. Y piensas, sin querer, en lo fácil que sería que ese número dejara de subir un día, solo para ti, sin que nadie firmara la orden.'},
+    ]
+  },
+  {
+    titulo: 'NOTIFICACIÓN SIN FIRMA',
+    narr: 'Te vibra el terminal en mitad del pasillo. No es un mensaje de nadie: es del sistema. «Recordatorio: la continuidad de sus servicios depende de mantener su situación administrativa en regla. Gracias por su colaboración.» No pedías nada. No has hecho nada. Pero el aviso llega igual, educado y frío, como quien te enseña una correa sin llegar a tirar de ella.',
+    opciones: [
+      {txt:'Archivar el aviso con los demás.', cambios:{}, msg:'Lo guardas con los otros. Se acumulan como gotas: ninguna importa, y todas juntas te recuerdan quién decide si mañana sigues teniendo agua caliente.'},
+      {txt:'Borrarlo, molesto.', cambios:{humano:{aislamiento:+1}}, msg:'Lo borras. Da igual: no era una pregunta ni un favor, era una forma de recordarte que existes dentro de una lista. Borrar el mensaje no te saca de la lista.'},
+    ]
+  },
 ];
 
 function intentarEventoAleatorio(callback){
