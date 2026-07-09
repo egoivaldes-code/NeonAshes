@@ -286,6 +286,7 @@
     opciones: [
       { texto: 'Ir a por ellos.',
         pelea: {
+          letal: true, // misión principal: caer aquí puede matar de verdad
           texto: 'El pasillo es estrecho y ellos avanzan en orden, cubriéndose. No hay dónde esconderse. Solo hacia delante, y rápido, '
                + 'antes de que lleguen más.',
           integridad: 14,
