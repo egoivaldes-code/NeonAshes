@@ -1,3 +1,8 @@
+## [0.157] - 2026-07-09
+### Added
+- Caer en combate ahora tiene consecuencias de verdad y distintas según dónde estés. En trabajos y profesiones (seguridad, hackeo, rebusca de chatarra) ya no puedes morir: si te tumban, pierdes el conocimiento y despiertas en tu apartamento una semana después, con una factura de HELIX por estabilización y transporte. Esa factura escala: cada vez que te recogen es más cara y, a la tercera, HELIX te ficha y empiezan a fallarte permisos por la ciudad.
+- Explorando la ciudad puedes morir de verdad. Si mueres, otra persona ocupa tu lugar: hereda parte de lo tuyo y, si dejaste una historia a medias, Mara vuelve a contactar para retomarla. La ciudad no se detiene por nadie.
+
 ## [0.156] - 2026-07-09
 ### Added
 - Combate más táctico. Antes de que te peguen ves lo que se prepara a hacer el enemigo que va de lleno (el grandullón echa el brazo atrás, el rápido amaga en corto, el de rango te encara...), y ahora puedes ESQUIVAR además de cubrirte. Esquivar, si lees bien el golpe, evita por completo al que pega de lleno y su efecto; si fallas o lees mal, lo comes entero. Al rápido conviene esquivarlo, al bruto cuesta más (a veces no llegas a librarlo) y una bala no se esquiva.

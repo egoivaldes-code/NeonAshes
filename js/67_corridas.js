@@ -220,6 +220,10 @@
   // está activo, el combate usa vida LOCAL (no toca tu fatiga real ni te mata
   // globalmente) y, al terminar, devuelve el control a la escena (ganar/perder).
   let _combateEscena = null;    // { onGana, onPierde, prev:{...contexto deriva...} }
+  // Letalidad del contexto (v0.157): false = caer es KO (trabajos); true = caer
+  // puede MATAR (exploración libre y misión principal). Por defecto NO letal.
+  let _letalActual = false;
+  window.egMarcarLetal = function(b){ _letalActual = !!b; };
 
   // Catálogo de armaduras conocido por el motor (espejo de 40_items.js).
   // El motor no depende de que el item exista, pero usa estos valores.
@@ -1598,6 +1602,15 @@
   //  DESENLACE — paga + progreso, o fracaso
   // ============================================================
   function _resolverDesenlace(exito){
+    // v0.157: caer en un combate se resuelve según el contexto. En trabajos
+    // (no letal) es un KO (apartamento + factura de Helix); en exploración
+    // libre o misión (letal) puede matar. La letalidad se consume al resolver.
+    const fueLetal = _letalActual;
+    _letalActual = false;
+    if(!exito){
+      if(fueLetal){ if(typeof muertePorCombate === 'function'){ muertePorCombate(); return; } }
+      else { if(typeof koPorCombate === 'function'){ koPorCombate(); return; } }
+    }
     const cfg = BANDOS[_bando];
     const c = _corrida;
     let paga = 0, progreso = 0, ascenso = null, paseEncontrado = false;
@@ -1855,6 +1868,7 @@
 
   // Arranca la deriva libre. Lo llama el botón "Explorar la ciudad".
   function iniciarDerivaLibre(volverA){
+    _letalActual = true; // explorar la ciudad puede matar (misión/exploración)
     _modoLibre = true;
     _bando = 'deriva';
     _profId = null;
@@ -2036,7 +2050,9 @@
       alerta: _alerta, estados: _estados, armadura: _armadura,
       nodoActual: _nodoActual, enConfrontacion: _enConfrontacion
     };
-    _combateEscena = { onGana: cfg.onGana, onPierde: cfg.onPierde, prev: prev };
+    _combateEscena = { onGana: cfg.onGana, onPierde: cfg.onPierde, prev: prev,
+                       letal: !!cfg.letal, letalPrev: _letalActual };
+    _letalActual = !!cfg.letal; // la escena decide si su pelea puede matar
     _modoLibre = false;                 // vida LOCAL: no toca fatiga ni mata global
     _corrida = { id: '__escena__', libre: true, rangoMin: cfg.rangoMin || 0 };
     _integridadMax = cfg.integridad || 10;
@@ -2118,8 +2134,14 @@
     _integridad = p.integridad; _integridadMax = p.integridadMax;
     _alerta = p.alerta; _estados = p.estados || {}; _armadura = p.armadura;
     _nodoActual = p.nodoActual; _enConfrontacion = null;
+    _letalActual = (typeof ce.letalPrev === 'boolean') ? ce.letalPrev : _letalActual;
     if(typeof egFijarContenedor === 'function') egFijarContenedor('corrida-wrap');
     _guardar();
+    // v0.157: caer en el combate de una escena. Letal -> muerte; si no -> KO.
+    if(!gano){
+      if(ce.letal){ if(typeof muertePorCombate === 'function'){ muertePorCombate(); return; } }
+      else { if(typeof koPorCombate === 'function'){ koPorCombate(); return; } }
+    }
     if(gano){ if(typeof ce.onGana === 'function') ce.onGana(); }
     else { if(typeof ce.onPierde === 'function') ce.onPierde(); }
   }
@@ -2127,6 +2149,7 @@
 
   // Volver al apartamento. Conservas todo lo que encontraste (ya aplicado).
   function retirarDeriva(){
+    _letalActual = false; // fin de la deriva: la letalidad no se arrastra
     // Estado de ciudad (v0.136): si la deriva fue ruidosa (peleas, alarmas),
     // dejas calor en el distrito al volver.
     if(typeof subirNotoriedad === 'function' && _alerta > 0){
