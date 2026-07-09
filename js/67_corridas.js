@@ -69,6 +69,26 @@
       if(_estados[k] <= 0) delete _estados[k];
     });
   }
+
+  // ── LEER AL ENEMIGO (v0.156) ────────────────────────────
+  // Devuelve una frase corta con lo que se prepara a hacer el que pegará
+  // de lleno el próximo turno (el primer vivo que no esté aturdido). Sirve
+  // para que el jugador decida entre cubrirse y esquivar con criterio.
+  function _telegrafiaProxima(){
+    if(typeof _enemigosVivos !== 'function') return '';
+    const vivos = _enemigosVivos();
+    if(!vivos.length) return '';
+    const prox = vivos.find(e => !(e.aturdido > 0)) || vivos[0];
+    const n = prox.nombre || 'el enemigo';
+    switch(prox.tipo){
+      case 'bruto':   return n + ' echa el brazo atrás: se prepara para un golpe pesado.';
+      case 'rapido':  return n + ' amaga en corto, listo para soltarte una ráfaga.';
+      case 'rango':   return n + ' te encara y levanta el arma, buscando el ángulo.';
+      case 'lider':   return n + ' da órdenes; los demás se envalentonan.';
+      case 'cobarde': return n + ' pelea con un ojo puesto en la salida.';
+      default:        return n + ' aprieta los dientes y se dispone a entrar.';
+    }
+  }
   function _guardar(){ if(typeof guardarPartida === 'function') guardarPartida(); }
   function _creditos(){ return (typeof Estado === 'object' && typeof Estado.creditos === 'number') ? Estado.creditos : 0; }
   function _cobrar(n){ if(typeof Estado === 'object' && typeof Estado.creditos === 'number'){ Estado.creditos = Math.max(0, Estado.creditos - n); } }
@@ -686,6 +706,12 @@
     });
     html += '</div>';
 
+    // Leer al enemigo: qué se prepara a hacer el que pegará de lleno.
+    const _tel = _telegrafiaProxima();
+    if(_tel){
+      html += '<div class="corrida-narr corrida-narr-sub corrida-telegrafia">' + _tel + '</div>';
+    }
+
     // Si TÚ estás aturdido pierdes el ataque: aún puedes usar objetos y
     // cubrirte, pero no atacar ni elegir a quién golpear.
     const aturdidoJ = !!(_estados.aturdido && _estados.aturdido > 0);
@@ -752,10 +778,19 @@
     } // fin vías de ataque
 
     // ── VÍA CUBRIRSE (siempre): defensa pura ──
-    // No atacas, pero reduces el daño de los próximos golpes un par de turnos.
+    // No atacas, pero partes a la mitad TODO el daño de este turno (1 turno).
     html += _op('cubrir', 'CUBRIRSE',
-      'No atacas · reduces el daño que recibes un par de turnos',
+      'No atacas · partes a la mitad el daño de todo el grupo este turno',
       'corrida-op-util');
+
+    // ── VÍA ESQUIVAR (solo si no estás aturdido): lectura de alto riesgo ──
+    // No atacas. Si aciertas, evitas ENTERO al que pega de lleno (y su efecto);
+    // si fallas o lees mal, comes el golpe completo. No sirve contra rango.
+    if(!aturdidoJ){
+      html += _op('esquivar', 'ESQUIVAR',
+        'No atacas · si lees el golpe lo evitas entero; si fallas, lo comes completo',
+        'corrida-op-util');
+    }
 
     // ── VENDAJE: corta tu sangrado (si lo llevas y estás sangrando) ──
     if(_lleva('vendaje') && _estados.sangrando && _estados.sangrando > 0){
@@ -861,7 +896,7 @@
     // Objetivo: el único vivo, o el seleccionado.
     let objetivo = vivos.length === 1 ? vivos[0] : vivos.find(e => e.uid === cf._objetivo);
     // Vías que afectan al grupo entero no necesitan objetivo.
-    const viaGrupal = (via === 'justificar' || via === 'sobornar' || via === 'distraer' || via === 'amenazar' || via === 'curar' || via === 'estimulante' || via === 'adrenalina' || via === 'inhibidor' || via === 'humo' || via === 'cubrir' || via === 'aguantar' || via === 'vendaje');
+    const viaGrupal = (via === 'justificar' || via === 'sobornar' || via === 'distraer' || via === 'amenazar' || via === 'curar' || via === 'estimulante' || via === 'adrenalina' || via === 'inhibidor' || via === 'humo' || via === 'cubrir' || via === 'esquivar' || via === 'aguantar' || via === 'vendaje');
     if(!objetivo && !viaGrupal){
       // Falta elegir objetivo; repintar para que elija (según contexto).
       _repintarTurnoConfront();
@@ -969,10 +1004,14 @@
         + 'ceguera de todos para desaparecer. No has ganado la pelea: la has dejado atrás.';
       _fx('inv_papel', 0.5);
     } else if(via === 'cubrir'){
-      _estados.cubierto = 2; // este turno y el siguiente: menos daño
+      _estados.cubierto = 1; // solo este turno: menos daño de todo el grupo
       mensaje = 'Te pegas al muro, encajas los hombros y haces pequeño tu cuerpo. '
-        + 'No atacas, pero lo que venga te va a doler menos.';
+        + 'No atacas, pero lo que venga este turno te va a doler menos.';
       _fx('click_metal', 0.4);
+    } else if(via === 'esquivar'){
+      _estados.esquivando = 1; // solo este turno: intentas librar el golpe principal
+      mensaje = 'Aflojas las rodillas y no le quitas ojo, listo para apartarte en cuanto se lance.';
+      _fx('click_metal', 0.35);
     } else if(via === 'aguantar'){
       mensaje = 'Aprietas los dientes y esperas a que el mundo deje de dar vueltas.';
     } else if(via === 'acuchillar'){
@@ -1094,6 +1133,11 @@
     // potencia. El líder vivo sube la pegada de todos. La supresión y tu
     // cobertura la bajan. Tope por turno para que un grupo no te funda.
     const buffLider = quedan.some(e => e.tipo === 'lider') ? 1 : 0;
+    // ESQUIVAR (v0.156): intentas librar al que pega DE LLENO. Solo uno; los
+    // secundarios te alcanzan igual. No sirve contra rango, y el mandoble del
+    // bruto es difícil de librar (~1 de cada 4 falla).
+    const esquivando = !!(_estados.esquivando && _estados.esquivando > 0);
+    let esquivaResuelta = false;
     let heridaTotal = 0;
     let atacanteReal = 0;     // índice del que pega "de lleno"
     let huboSupresion = false;
@@ -1102,9 +1146,23 @@
       if(e.aturdido > 0){ e.aturdido--; return; }
       // Bruto: lento, a veces se le va el turno.
       if(e.tipo === 'bruto' && Math.random() < 0.25){ return; }
+      const esPrimario = (atacanteReal === 0);
       let golpe = Math.max(1, Math.round((e.fuerza + buffLider) / 2));
       if(cf.suprimido > 0){ golpe = Math.max(1, golpe - 1); huboSupresion = true; }
-      const dano = (atacanteReal === 0) ? golpe : Math.max(1, Math.round(golpe / 2));
+      let dano = esPrimario ? golpe : Math.max(1, Math.round(golpe / 2));
+      // Esquiva: solo contra el atacante principal.
+      if(esquivando && esPrimario && !esquivaResuelta){
+        esquivaResuelta = true;
+        const fallaEsquiva = (e.tipo === 'rango') || (e.tipo === 'bruto' && Math.random() < 0.25);
+        if(!fallaEsquiva){
+          dano = 0; // evitado entero (y con dano 0 no dispara su efecto)
+          avisoEstado += ' Lees el golpe y te apartas: esquivas a ' + e.nombre + ' limpio.';
+        } else {
+          avisoEstado += (e.tipo === 'rango')
+            ? ' Una bala no se esquiva: ' + e.nombre + ' te alcanza igual.'
+            : ' El mandoble de ' + e.nombre + ' pesa demasiado, no llegas a librarlo.';
+        }
+      }
       heridaTotal += dano;
       atacanteReal++;
       // Efectos al alcanzarte: el rápido te hace sangrar; el bruto te aturde.
