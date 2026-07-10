@@ -46,7 +46,7 @@
 
   // ---- HUB de investigación en la torre de Midbelt ----
   'cd_hub': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'La torre de Sar es Midbelt puro: suelos que brillan, luz cálida falsa, silencio de dinero prestado. Nadie te echa. Simplemente cada '
          + 'persona con la que hablas tarda un segundo de más en decidir que no sabe nada. Aquí no se miente gritando. Se miente con una sonrisa '
          + 'y un «no sabría decirle».',
@@ -64,7 +64,7 @@
 
   // ---- Conserje: la mentira administrativa ----
   'cd_conserje': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'El conserje es un hombre pulcro con una sonrisa entrenada. «La señorita Nevin solicitó un traslado voluntario. Todo en regla, '
          + 'firmado y sellado.» Cuando le pides ver la fecha de la solicitud, la sonrisa no se mueve pero sus dedos sí: teclea, borra, teclea. '
          + '«El sistema va lento hoy.»',
@@ -84,7 +84,7 @@
 
   // ---- Vecina: el miedo educado (da la entrada al piso) ----
   'cd_vecina': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'La vecina te recibe con la cadena echada y una taza de té que no te ofrece. Habla en voz muy baja. «Sar era encantadora. Discreta. '
          + 'Últimamente… discutían. Él y ella. Nunca gritos, eso aquí no se hace. Pero se oye igual. Se oye más, incluso, cuando no gritan.» '
          + 'Mira el pasillo antes de seguir.',
@@ -103,7 +103,7 @@
 
   // ---- Prometido: el encanto frío (empujarlo demasiado tiene precio) ----
   'cd_prometido': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Aldous te recibe como si te esperara: traje bueno, whisky de verdad, una calma que cuesta dinero. «Sar necesitaba aire. Se fue a '
          + 'una residencia de descanso. Frágil, ¿sabe? Siempre lo fue.» Lo dice con cariño de escaparate. En la repisa, una foto de los dos; '
          + 'la sonrisa de ella no llega a los ojos.',
@@ -122,7 +122,7 @@
 
   // ---- Combate evitable (solo si acusas a Aldous de frente) ----
   'cd_combate': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Seguridad privada de Midbelt: limpios, correctos, entrenados para «acompañar a la salida» a quien sobra sin dejar marcas que den '
          + 'papeleo. No quieren matarte. Solo borrarte del edificio y de la investigación.',
     opciones: [
@@ -166,7 +166,7 @@
 
   // ---- El piso de Sar: la verdad (está viva, huyó) ----
   'cd_piso': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'La unidad de Sar está demasiado ordenada, como una foto de catálogo. Pero las cosas hablan si sabes mirarlas. Falta el cepillo de '
          + 'dientes y sobra la ropa cara: quien se fue eligió lo práctico, no lo valioso. En un cajón, bajo un forro, un cuaderno de papel con '
          + 'fechas, cifras y una frase repetida como quien se convence: «Puedo hacerlo sola.» Y una dirección tachada, pero no del todo, en un '

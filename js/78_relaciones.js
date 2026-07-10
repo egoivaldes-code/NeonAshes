@@ -323,7 +323,7 @@
   'rel_kestrel_intro': {
     entrada:true,
     cond:{ franja:['anochecer','noche','madrugada'], npcNoConocido:'kestrel' },
-    img:'EXP_ALMACEN_ZONA',
+    img:'EXP_ALMACEN_ZONA7',
     texto:'En un almacén reconvertido, una jaula de combate clandestino y un corro que apuesta y grita. El olor a sudor y sangre tapa el de la lluvia. Apartada de todo, una mujer con porte de soldado observa las salidas más que la pelea, '
         + 'como quien nunca termina de estar fuera de servicio. Te ve mirar las puertas igual que ella, y algo en su cara se afloja un grado.',
     opciones:[
@@ -335,7 +335,7 @@
     ]
   },
   'rel_kestrel_tras': {
-    img:'EXP_ALMACEN_ZONA',
+    img:'EXP_ALMACEN_ZONA7',
     texto:'Kestrel te acompaña fuera, donde el aire no apesta a jaula. Enciende un cigarrillo con la calma de quien ha visto cosas peores que esta noche. No hay coqueteo de manual; hay reconocimiento, que entre supervivientes pesa más. '
         + '"No prometo nada bonito —dice—. Pero sé estar al lado de alguien sin clavarle nada. En esta ciudad, eso ya es una oferta."',
     opciones:[
@@ -350,7 +350,7 @@
   'rel_kestrel_quedar': {
     entrada:true, repetible:true,
     cond:{ franja:['anochecer','noche','madrugada'], npcConocido:'kestrel', vinculoMin:{ id:'kestrel', n:1 } },
-    img:'EXP_ALMACEN_ZONA',
+    img:'EXP_ALMACEN_ZONA7',
     texto:'El refugio de Kestrel tiene la luz de servicio encendida: señal, en su idioma, de que estás invitado. Te abre antes de que llames, porque te oyó tres pasillos atrás. Siempre te oye.',
     opciones:[
       { texto:'Dejar que te abastezca para la calle.',
@@ -362,7 +362,7 @@
     ]
   },
   'rel_kestrel_charla_fin': {
-    img:'EXP_ALMACEN_ZONA',
+    img:'EXP_ALMACEN_ZONA7',
     texto:'Limpiáis armas que no vais a usar esta noche, hablando poco, contando salidas por costumbre. Es una intimidad rara, de cuartel, pero es real. Con Kestrel, bajar la guardia es el regalo más caro que sabe hacer.',
     opciones:[
       { texto:'Quedarte hasta que afloje la noche.', efectos:{ vinculo:{ id:'kestrel', mas:1 }, aislamiento:-6, disociacion:-3 },
@@ -422,7 +422,7 @@
   'rel_tov_intro': {
     entrada:true,
     cond:{ franja:['anochecer','noche','madrugada'], npcNoConocido:'tov' },
-    img:'EXP_PUERTO_ORBITAL_',
+    img:'EXP_PUERTO_ORBITAL_1',
     texto:'En el filo del puerto orbital, lejos de las grúas, un estibador fuma sentado sobre una caja viendo despegar las lanzaderas. No espera ninguna; solo mira, con esa devoción callada de quien le reza a un cielo que no le va a contestar. '
         + 'Te hace sitio en la caja con un gesto, sin preguntar, como si llevara toda la noche guardándotelo.',
     opciones:[
@@ -432,7 +432,7 @@
     ]
   },
   'rel_tov_tras': {
-    img:'EXP_PUERTO_ORBITAL_',
+    img:'EXP_PUERTO_ORBITAL_1',
     texto:'Tov resulta ser fácil de estar al lado: cálido sin pesar, de paso sin frialdad. Comparte su cigarrillo, su silencio y, al final, su mochila de provisiones de muelle. No hay drama en lo que ofrece: '
         + '"Comer caliente y no estar solo. Es lo que tengo. En Marte nos enseñaron que eso ya es bastante para una noche."',
     opciones:[
@@ -447,7 +447,7 @@
   'rel_tov_quedar': {
     entrada:true, repetible:true,
     cond:{ franja:['anochecer','noche','madrugada'], npcConocido:'tov', vinculoMin:{ id:'tov', n:1 } },
-    img:'EXP_PUERTO_ORBITAL_',
+    img:'EXP_PUERTO_ORBITAL_1',
     texto:'Encuentras a Tov en su caja de siempre, en el filo del muelle, con la mochila térmica ya medio abierta. Te ve llegar y sonríe como quien reconoce un buen presagio en una noche cualquiera.',
     opciones:[
       { texto:'Dejar que te abastezca y comer con él.',
@@ -459,7 +459,7 @@
     ]
   },
   'rel_tov_charla_fin': {
-    img:'EXP_PUERTO_ORBITAL_',
+    img:'EXP_PUERTO_ORBITAL_1',
     texto:'Habláis de Marte, del Arrabal, de los mares de los anuncios y de los que nadie ha pisado. Tov cuenta su tierra sin nostalgia tonta, con el orgullo seco de los suyos. El cielo del muelle, por una vez, no parece tan lejos.',
     opciones:[
       { texto:'Quedarte hasta el último despegue de la madrugada.', efectos:{ vinculo:{ id:'tov', mas:1 }, aislamiento:-6, fatiga:-2 },

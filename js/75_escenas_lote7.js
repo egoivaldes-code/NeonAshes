@@ -367,7 +367,7 @@
   },
   'sol_pintora': {
     entrada: true,
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Una chica pinta un mural enorme en un muro ciego: una ventana abierta a un campo que no existe, con un cielo limpio que en las Pilas nadie ha visto. Trabaja rápido, mirando de reojo, '
          + 'porque pintar sin permiso es "deterioro de propiedad de HELIX" y se paga. "Lo van a tapar mañana —dice sin parar—. Por eso lo pinto hoy."',
     opciones: [
@@ -535,7 +535,7 @@
   },
   'amb_andamio': {
     entrada: true, repetible: true,
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Operarios con exoesqueletos baratos descargan vigas toda la noche, en turnos que no acaban, levantando algo que nunca verán terminado y que no será para ellos. Una grúa chirría arriba. '
          + 'Uno de ellos te mira pasar con la envidia mansa del que trabaja hacia el de la calle que, al menos, anda libre.',
     opciones: [
@@ -562,7 +562,7 @@
   // ── CADENA 'protesico' — "EL QUE PONE BRAZOS A PLAZOS" ────
   'pro_1': {
     entrada: true, cadena:'protesico',
-    img: 'EXP_TALLER_PROTESIS_',
+    img: 'EXP_TALLER_PROTESIS_1',
     texto: 'Un taller estrecho lleno de prótesis usadas colgando del techo como reses: brazos, manos, una pierna con la pintura saltada. El dueño, manco él mismo de una, ajusta un gancho a un cliente que paga "a plazos". '
          + '"Aquí nadie se queda sin mano por no tener crédito —dice—. Otra cosa es de quién era la mano antes." Lo dice sin dramatismo, como quien explica el horario.',
     opciones: [
@@ -573,7 +573,7 @@
     ]
   },
   'pro_2': {
-    img: 'EXP_TALLER_PROTESIS_',
+    img: 'EXP_TALLER_PROTESIS_1',
     texto: '"De los que no terminan de pagar —responde, sin que le tiemble el pulso—. HELIX recupera el implante como recupera el piso. Yo se lo compro al desguace, lo limpio, lo vuelvo a poner. '
          + 'Una mano hace tres o cuatro dueños antes de jubilarse." Señala un brazo del techo. "Ese lo he montado yo cuatro veces. Buen brazo. Mala suerte sus dueños."',
     opciones: [
@@ -725,7 +725,7 @@
   },
   'sol_puerto': {
     entrada: true,
-    img: 'EXP_PUERTO_ORBITAL_',
+    img: 'EXP_PUERTO_ORBITAL_1',
     texto: 'Desde una pasarela ves el puerto de carga: grúas automatizadas apilando contenedores en lanzaderas que subirán a los muelles orbitales y de ahí a quién sabe dónde. Un estibador viejo, apoyado en la barandilla a tu lado, '
          + 'mira lo mismo. "Cuarenta años cargando cajas que van a sitios que no veré —dice—. Mi nombre estará en el manifiesto de medio Sistema Solar y yo no he salido nunca de este barrio."',
     opciones: [
@@ -737,7 +737,7 @@
   },
   'sol_correo_orbital': {
     entrada: true,
-    img: 'EXP_PUERTO_ORBITAL_',
+    img: 'EXP_PUERTO_ORBITAL_1',
     texto: 'Una mujer espera frente a la ventanilla de correo orbital con la paciencia de quien lleva esperando mucho. "Mi hijo se enroló en una estación del Cinturón —te cuenta, porque necesita contárselo a alguien—. '
          + 'Manda una cápsula cada pocos meses. Tarda tanto en llegar que, cuando la escucho, ya no sé si la voz que oigo sigue ahí arriba. Hablo con un hijo que igual es de hace medio año. O de más." Aprieta la cápsula vacía de la última.',
     opciones: [

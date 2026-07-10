@@ -121,7 +121,7 @@
   'prof_scav_b1': {
     entrada: true,
     cond: { profesion: 'scavenger' },
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Un cubículo vaciado por impago, listo para el siguiente inquilino. Los demás ya lo han repasado y no han visto nada. Tú sí: '
          + 'el colchón pesa raro. Lo abres de un tajo y, entre la espuma, hay un hombre pequeño y muy muerto, momificado por el aire seco '
          + 'de los conductos, abrazado a una bolsa. Llevaba aquí meses, escondido de algo, hasta que se le acabó el esconderse.',
@@ -135,7 +135,7 @@
     ]
   },
   'prof_scav_b2': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'En la bolsa: un módulo de datos de gama alta, de los que no se ven por aquí, y una carta de papel —papel de verdad— doblada '
          + 'mil veces, dirigida a un nombre de mujer, sin dirección, sin sello, imposible de enviar. La escribió y la guardó, sabiendo '
          + 'que nunca saldría de este colchón.',
@@ -191,7 +191,7 @@
   'prof_segu_b1': {
     entrada: true,
     cond: { profesion: 'seguridad' },
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Turno de noche vigilando un almacén de repuestos médicos de una subcontrata de HELIX. Ocho horas, buen dinero, aburrimiento '
          + 'garantizado. A las tres, un ruido. En la cámara: alguien ha forzado una rejilla y llena una mochila con cajas de analgésicos y '
          + 'antibióticos. No es un profesional. Se mueve como quien roba por primera vez, con las manos temblando.',
@@ -203,7 +203,7 @@
     ]
   },
   'prof_segu_reduce': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Vas directo. Pero el miedo de un padre pega fuerte, y lo que iba a ser un trámite se tuerce: forcejeáis entre las estanterías, '
          + 'caen cajas, y el tipo pelea como quien no tiene nada que perder.',
     opciones: [
@@ -217,7 +217,7 @@
     ]
   },
   'prof_segu_gana': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Lo inmovilizas contra el suelo, jadeando los dos. La subcontrata te felicitará y a él le hará pagar con años que no le quedan lo '
          + 'que no tiene. Tienes su muñeca en tu mano y su vida en tu decisión.',
     opciones: [
@@ -230,7 +230,7 @@
     ]
   },
   'prof_segu_pierde': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'El desesperado te estrella contra una estantería con un empujón de los que solo da quien no tiene salida, y sale por la rejilla con '
          + 'su mochila. Cuando te levantas, dolorido, ya no está. Solo quedan cajas por el suelo y un turno que explicar.',
     opciones: [
@@ -240,7 +240,7 @@
     ]
   },
   'prof_segu_decide': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'El hombre no se mueve. Espera tu decisión con la foto todavía en alto, como un escudo que sabe que no protege de nada.',
     opciones: [
       { texto: 'Dejarle llenar la mochila y desaparecer.', efectos:{ creditos:+60, reputacion:+3, humano:{ aislamiento:-2 } },

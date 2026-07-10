@@ -98,7 +98,7 @@
   // MOVIMIENTO 3 — EL ACCESO (varias vías)
   // ============================================================
   'ag_base': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'La base del Aguador es una vieja estación de filtrado que HELIX abandonó y él resucitó: tuberías reparadas mil veces, depósitos '
          + 'enormes goteando, y hombres armados que no parecen matones de alquiler, sino vecinos a los que Kessler dio de comer. Se entra por '
          + 'varios sitios. Ninguno gratis.',
@@ -134,7 +134,7 @@
   // MOVIMIENTO 4 — EL ENCUENTRO Y LA DECISIÓN
   // ============================================================
   'ag_dentro': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Kessler, el Aguador, no es lo que esperabas. Un hombre mayor, flaco, con las manos manchadas de cal y óxido de arreglar bombas él '
          + 'mismo. No hay trono, no hay lujo: hay un catre junto a un depósito y una lista de racionamiento pegada a la pared, con nombres tachados.<br><br>'
          + '«Vienes por la vieja del bloque siete. Tose sangre, ¿no?» No espera respuesta. «Puedo darle el agua y la medicina hoy mismo. Pero '
@@ -160,7 +160,7 @@
   },
 
   'ag_pillado': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Los guardias te rodean entre los depósitos, linternas en la cara. No disparan: esperan orden. Kessler aparece, sin prisa, secándose '
          + 'las manos en un trapo. «Por los conductos. Como las ratas.» No parece enfadado. Parece decepcionado, que es peor.',
     opciones: [
@@ -170,7 +170,7 @@
   },
 
   'ag_combate': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'No son mercenarios. Son padres, hijos, vecinos a los que Kessler dio agua cuando nadie más lo hacía, y ahora se la devuelven '
          + 'poniéndose entre él y tú. Pelean torpe, pero pelean con lo que da el miedo a volver a tener sed. Que no sean profesionales no '
          + 'significa que no puedan matarte.',
@@ -195,7 +195,7 @@
   },
 
   'ag_tras': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Cuando cae el último, el recinto queda en silencio salvo por el goteo de los depósitos y algún gemido. Kessler no ha huido. Está de '
          + 'pie junto a su lista de racionamiento, viejo y sin miedo, esperándote. «Ya está. ¿Y ahora qué? Me matas, y el agua corre gratis una '
          + 'semana, hasta que el nodo se rompa o venga otro peor que yo a cogerlo. Tú decides. Como decidía yo.»',
@@ -209,7 +209,7 @@
   },
 
   'ag_malherido': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Son demasiados y pelean por algo que para ellos es la vida. Acabas en el suelo, entre charcos, y unas manos te arrastran fuera del '
          + 'recinto y te dejan en la calle. No te rematan: Kessler no mata a quien ya no es problema. Lo último que oyes dentro es el goteo de '
          + 'los depósitos, intacto.',

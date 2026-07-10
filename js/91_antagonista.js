@@ -37,7 +37,7 @@
   'ant_voz_helix': {
     entrada: true,
     cond: { noVisto:'ant_voz_helix' },
-    img: 'TRANSITO',
+    img: 'TREN',
     texto: 'En la pared del andén, entre dos anuncios muertos, una pantalla de HELIX se enciende sola al pasar tú. No vende nada. '
          + 'Solo informa, con esa voz plana que no pide permiso:<br><br>'
          + '<span style="color:var(--magenta)">«HELIX mantiene su bloque operativo. Agua, luz, tránsito y soporte médico, sin interrupción, '
@@ -60,7 +60,7 @@
   'ant_permiso': {
     entrada: true,
     cond: { visto:'ca_fichado', noVisto:'ant_permiso' },
-    img: 'TRANSITO',
+    img: 'TREN',
     texto: 'Vas a subir por el tren vertical como cualquier otro día. Pasas la credencial por el lector y no ocurre nada. La pasas otra vez. '
          + 'El lector parpadea en ámbar y muestra un mensaje sin firma:<br><br>'
          + '<span style="color:var(--magenta)">«Acceso no reconocido. Consulte su situación administrativa. Expediente en revisión.»</span><br><br>'

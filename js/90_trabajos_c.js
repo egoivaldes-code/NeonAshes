@@ -22,7 +22,7 @@
   'prof_inv_c1': {
     entrada: true,
     cond: { profesion:'investigador' },
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Una mujer, Nerza, te para con un miedo raro en la cara. «Mi vecino de toda la vida, el viejo Bel. Sigue ahí, con su cara, pero no '
          + 'es él. No recuerda cosas que vivimos. Anda distinto. Me sonríe distinto.» Baja la voz. «¿Y si le han hecho algo? ¿Y si le cambiaron '
          + 'por dentro?» Te paga lo poco que tiene por que averigües qué le pasa a Bel.',
@@ -38,7 +38,7 @@
     ]
   },
   'prof_inv_c2': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Abres la puerta de Bel y dentro no hay ningún monstruo: hay un chaval de dieciséis años, escapado de algo peor, muerto de miedo, que '
          + 'aprendió los gestos del viejo viéndolo por la ventana antes de que muriera. «No le robé nada. Solo su nombre. Sin el nombre me echan, '
          + 'y sin sitio, a mí me pasa lo que le pasa a los de mi edad ahí fuera.» No miente. Tienes que decidir qué le cuentas a Nerza.',
@@ -146,7 +146,7 @@
   'prof_hack_c1': {
     entrada: true,
     cond: { profesion:'hacker' },
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'El sistema de ventilación y filtrado de agua de un bloque pobre se está muriendo: el firmware es tan viejo que ya falla solo, y si '
          + 'para del todo, cien familias respiran veneno y beben barro. Un comité de vecinos junta lo que puede —una miseria— para que se lo '
          + 'arregles. Mientras trabajas, ves lo fácil que sería dejarte una puerta trasera en un sistema del que dependen cien casas.',

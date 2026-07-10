@@ -183,7 +183,7 @@
     ]
   },
   'A_cmb_win': {
-    img:'EXP_PUERTO_ORBITAL_',
+    img:'EXP_PUERTO_ORBITAL_1',
     texto:'Cuando los últimos operativos te rebasan, ya es tarde para ellos: el contenedor con Tomás y su hija sube por el elevador de carga hacia la lanzadera, fuera de su alcance, rumbo a una bodega anónima con destino Selene. '
         + 'El sargento te mira desde abajo, sabiendo lo que has hecho y sabiendo que no puede probarlo. "Solo era carga", le dices, jadeando. Él anota algo en su tablilla. Para HELIX, todo acaba siendo una anotación.',
     opciones:[
@@ -221,7 +221,7 @@
     ]
   },
   'A_a3_3': {
-    img:'EXP_PUERTO_ORBITAL_',
+    img:'EXP_PUERTO_ORBITAL_1',
     texto:'Dentro hay una sola cosa: una cápsula de mensaje, de las del correo orbital, ya escuchada, con una etiqueta de origen: SELENE TERMINAL · KILÓMETRO CERO. Y una nota de Sela: "Llegaron. La niña no para de hablar de las cúpulas. '
         + 'Tomás dice que arriba, entre tanto extraño, por fin nadie le mira como a un agujero. Gracias por los ojos que pusiste aquella noche. No volveremos. Es mejor así."',
     opciones:[
@@ -290,7 +290,7 @@
     ]
   },
   'B_b1_5': {
-    img:'EXP_ALMACEN_ZONA',
+    img:'EXP_ALMACEN_ZONA7',
     texto:'"Legal es lo que HELIX no persigue —dice él—. Y a mí no me persigue: le ahorro asistencia social." Pero al guardar la pantalla, algo te llama la atención: un recibo antiguo, traspapelado, '
         + 'de un pago grande que Doria hizo hace meses y que NO figura en el saldo. El Contable "perdió" ese abono. Si recuperaras ese recibo, probarías que la deuda está inflada con un pago borrado.',
     opciones:[
@@ -339,7 +339,7 @@
     ]
   },
   'B_b2_3': {
-    img:'EXP_ALMACEN_ZONA',
+    img:'EXP_ALMACEN_ZONA7',
     texto:'Consigues lo que buscabas: una copia limpia del libro real de cuentas del Contable, con el pago borrado de Doria y, de regalo, el mismo truco repetido en decenas de fichas más. No es solo la trampa de una mujer: '
         + 'es un patrón, un sistema, un fraude con cientos de nombres. Tienes en la mano algo que pesa mucho más que la deuda de Doria. Tienes la correa entera.',
     opciones:[
@@ -357,7 +357,7 @@
     ]
   },
   'B_b2_5': {
-    img:'EXP_ALMACEN_ZONA',
+    img:'EXP_ALMACEN_ZONA7',
     texto:'Sales sabiendo dos cosas: que tienes con qué hundir al Contable, y que ya no te va a dejar caminar tranquilo. La copia hay que hacerla pública —colgarla donde el barrio entero la vea— antes de que sus cobradores te la quiten del cuerpo. '
         + 'Quedas con Doria en el viejo tablón de la plaza, al anochecer. Sabes que no vas a llegar solo hasta allí.',
     opciones:[
@@ -431,7 +431,7 @@
     ]
   },
   'B_b3_3': {
-    img:'EXP_ALMACEN_ZONA',
+    img:'EXP_ALMACEN_ZONA7',
     texto:'No todo es victoria. Sin la deuda, pero también sin el "trabajo" que el aval garantizaba, Doria y su hijo siguen siendo pobres en un sitio que castiga la pobreza. "No nos has hecho ricos —dice ella, leyéndote la cara—. '
         + 'Nos has devuelto el derecho a serlo a nuestra manera, sin una correa al cuello. Es más de lo que nadie nos había dado." Te ofrece un té que sabe a poco y a mucho.',
     opciones:[
