@@ -26,29 +26,52 @@ let _enfoqueAbierto = null;
 // oficios; 'scavenger'/'investigador'/... = dentro de ese oficio (v0.101).
 let _profAbierta = null;
 
+// v0.159: la pestaña TRABAJOS muestra DIRECTAMENTE las profesiones. Se
+// eliminan las subpestañas Encargos/Profesiones: los jugadores nuevos caían
+// en un "Encargos" vacío ("SIN TRABAJOS DISPONIBLES") y no encontraban los
+// oficios. Lo único útil que vivía en Encargos —el botón para arrancar la
+// misión de Mara— se conserva arriba, y solo aparece cuando procede.
 function renderTrabajos(){
   // Antes de pintar, comprobar si el paso del tiempo ha despedido de
   // alguna profesión por inactividad (>= 7 días de juego sin ejercer).
   if(typeof comprobarDespidosProfesion === 'function'){
     try { comprobarDespidosProfesion(); } catch(e){}
   }
-  const sub = (_subtabTrabajos === 'oficio') ? 'oficio' : 'encargos';
-  const cuerpo = (sub === 'oficio') ? renderTrabajosOficio() : renderEncargos();
-  const clsE = sub === 'encargos' ? 'cp-tab activa' : 'cp-tab';
-  const clsO = sub === 'oficio'   ? 'cp-tab activa' : 'cp-tab';
-  // Badge "!" en PROFESIONES mientras el jugador no haya entrado nunca
-  // a verlas (Estado.memoria.profesionesVistas === false). Guía la
-  // navegación hasta el sistema de oficios al empezar la partida.
+  // Abrir TRABAJOS ya cuenta como ver las profesiones (limpia el aviso "!").
+  if(Estado.memoria){
+    Estado.memoria.profesionesVistas = true;
+    if(typeof actualizarBadgesTerminal === 'function') actualizarBadgesTerminal();
+  }
+  return _encargoMaraCard() + renderTrabajosOficio();
+}
+
+// Único resto útil de la antigua subpestaña ENCARGOS: la tarjeta con el
+// botón "SALIR AL OBJETIVO" que arranca la misión de Mara. Devuelve '' salvo
+// que el encargo esté aceptado, la misión no haya arrancado ni terminado, y
+// estés en el apartamento (misma condición que tenía antes).
+function _encargoMaraCard(){
   const m = Estado.memoria || {};
-  const badgeProf = (m.profesionesVistas === false)
-    ? ' <span class="cp-tab-badge">!</span>'
-    : '';
-  return ''
-    + '<div class="cp-tabs" style="margin-bottom:0.8rem;">'
-    +   '<button class="'+clsE+'" onclick="cambiarSubtabTrabajos(\'encargos\')">ENCARGOS</button>'
-    +   '<button class="'+clsO+'" onclick="cambiarSubtabTrabajos(\'oficio\')">PROFESIONES'+badgeProf+'</button>'
-    + '</div>'
-    + '<div id="trabajos-subcuerpo">' + cuerpo + '</div>';
+  const misionHecha = Estado.mision === 'volvioApartamento' || Estado.mision === 'completada';
+  const misionEnCurso = Estado.mision === 'enRuta' || Estado.mision === 'enCasillero' ||
+    Estado.mision === 'paqueteCerrado' || Estado.mision === 'paqueteAbierto' ||
+    Estado.mision === 'paqueteRobado' || Estado.mision === 'volviendo';
+  const apt = document.getElementById('apartamento');
+  const enApartamento = apt && apt.classList.contains('activa');
+  const puedeSalir = !misionHecha && !misionEnCurso && (m.aceptoEncargo === true) && enApartamento;
+  if(!puedeSalir) return '';
+  return `
+    <div class="trabajo-tarjeta" style="margin-bottom:1rem;">
+      <div class="trabajo-header">
+        <span class="trabajo-titulo">RECOGIDA · NIVEL 4</span>
+        <span class="trabajo-estado aceptado">aceptado</span>
+      </div>
+      <div class="trabajo-cliente">CLIENTE: MARA VEX</div>
+      <div class="trabajo-descripcion">Recoger un paquete del Nivel 4, corredor oeste, casillero 218. Entregar sin abrir, sin preguntar, sin testigos.</div>
+      <div style="margin-top:1rem;text-align:center;">
+        <button class="btn-terminal" style="border-color:rgba(255,0,110,0.4);color:var(--magenta);margin-top:0.5rem;" onclick="iniciarMisionDesdeTrabajos()">SALIR AL OBJETIVO →</button>
+      </div>
+    </div>
+  `;
 }
 
 // Alterna entre las dos subpestañas reinyectando solo el cuerpo de
