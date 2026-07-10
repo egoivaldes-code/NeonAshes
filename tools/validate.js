@@ -12,6 +12,8 @@
  *   3. Caracteres raros / mojibake en js y css
  *   4. Integridad de datos de combate (corridas, deriva)
  *   5. Integridad de las cadenas con pelea (motor de escenas)
+ *   6. Recetas de profesión (ingredientes y producto)
+ *   7. Referencias de imágenes (ASSETS, escenas y disco)
  *
  * No depende de paquetes externos. Pensado para que lo corra
  * tanto el desarrollo como el agente de despliegue.
@@ -208,6 +210,63 @@ else {
   });
   ok(recetas + ' recetas revisadas');
 }
+
+// ── 7) REFERENCIAS DE IMÁGENES ──────────────────────────────
+// Cruza las claves de imagen definidas en ASSETS contra las usadas en
+// las escenas (img:/key:), comprueba que los archivos existen en disco,
+// y avisa de formatos pesados, duplicados y huérfanas. (añadido v0.160)
+seccion('7. Referencias de imágenes (ASSETS ↔ escenas ↔ disco)');
+(function(){
+  const crypto = require('crypto');
+  const recursos = fs.readFileSync(path.join(ROOT,'js','01_recursos.js'),'utf8');
+  const assetKeys = {};                       // clave -> ruta (imagen o audio bajo assets/)
+  const reAsset = /([A-Z0-9_]+)\s*:\s*["'](assets\/[^"']+)["']/g;
+  let m; while((m = reAsset.exec(recursos))){ assetKeys[m[1]] = m[2]; }
+  const IMG_EXT = /\.(webp|jpg|jpeg|png)$/i;
+
+  // 7a) toda clave usada como imagen (img:/key: en MAYÚSCULAS) existe en ASSETS
+  let refsRotas = 0, refsOk = 0;
+  for(const f of jsFiles){
+    if(f.endsWith('01_recursos.js')) continue;
+    fs.readFileSync(f,'utf8').split('\n').forEach((ln, i) => {
+      const t = ln.trim();
+      if(t.startsWith('//') || t.startsWith('*') || t.startsWith('/*')) return; // ignora comentarios
+      const rr = /\b(?:img|key)\s*:\s*["']([A-Z0-9_]+)["']/g; let mm;
+      while((mm = rr.exec(ln))){
+        if(assetKeys[mm[1]]) refsOk++;
+        else { err('imagen inexistente "'+mm[1]+'" usada en '+path.basename(f)+':'+(i+1)); refsRotas++; }
+      }
+    });
+  }
+  if(refsRotas === 0) ok(refsOk + ' referencias de imagen (img:/key:) apuntan a claves válidas');
+
+  // 7b) toda imagen declarada en ASSETS existe en disco
+  const imgs = Object.entries(assetKeys).filter(([k,r]) => IMG_EXT.test(r));
+  let faltan = 0;
+  imgs.forEach(([k,r]) => { if(!fs.existsSync(path.join(ROOT,r))){ err('archivo de imagen ausente: '+r+' (clave '+k+')'); faltan++; } });
+  if(faltan === 0) ok(imgs.length + ' imágenes declaradas existen en disco');
+
+  // 7c) formato pesado (aviso, no bloquea)
+  imgs.forEach(([k,r]) => { if(!/\.webp$/i.test(r)) aviso('formato no-WEBP: '+r+' (más peso en móvil)'); });
+
+  // 7d) duplicados por contenido (aviso)
+  const porHash = {};
+  imgs.forEach(([k,r]) => {
+    const abs = path.join(ROOT,r); if(!fs.existsSync(abs)) return;
+    const h = crypto.createHash('md5').update(fs.readFileSync(abs)).digest('hex');
+    (porHash[h] = porHash[h] || []).push(r);
+  });
+  Object.values(porHash).forEach(l => { if(l.length > 1) aviso('imágenes idénticas (mismo contenido): ' + l.join(' = ')); });
+
+  // 7e) imágenes en disco sin clave en ASSETS (aviso)
+  const usadas = new Set(imgs.map(([k,r]) => path.basename(r)));
+  const dirImg = path.join(ROOT,'assets','images');
+  if(fs.existsSync(dirImg)){
+    fs.readdirSync(dirImg).filter(f=>IMG_EXT.test(f)).forEach(f => {
+      if(!usadas.has(f)) aviso('imagen huérfana (en disco, sin clave en ASSETS): assets/images/'+f);
+    });
+  }
+})();
 
 // ── RESUMEN ─────────────────────────────────────────────────
 console.log('\n' + '='.repeat(50));

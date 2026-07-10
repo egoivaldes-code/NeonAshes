@@ -39,7 +39,7 @@
     ]
   },
   'prof_scav_2': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Vacías el contenedor en el suelo del pantalán. Componentes industriales, cobre limpio, una placa de '
          + 'control casi intacta. Y al fondo, fuera de inventario, una caja personal: la de algún estibador que '
          + 'metió aquí lo que le importaba y nunca volvió a por ella.',
@@ -237,7 +237,7 @@
   'prof_scav_p1': {
     entrada: true,
     cond: { profesion: 'scavenger' },
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'El generador volcado es una mina: cobre, células, medio motor recuperable. Pero no eres el único ojo que lo ha visto. '
          + 'Dos chatarreros de otra cuadrilla aparecen por el otro lado, y por la forma de plantarse no vienen a repartir. El grande coge una llave de tubo. El flaco se queda medio paso atrás, calculando la huida.',
     opciones: [
@@ -255,7 +255,7 @@
     ]
   },
   'prof_scav_p_win': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'El grande se retira cojeando y el flaco ya hace rato que no está. El pecio es tuyo. Lo desguazas con calma, '
          + 'con el pulso aún alto, y cargas con lo que vale. Una victoria pequeña y sucia, de las que no se cuentan a nadie.',
     opciones: [
@@ -267,7 +267,7 @@
     ]
   },
   'prof_scav_p_lose': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'La llave de tubo te alcanza el costado y el suelo sube a recibirte. Cuando te incorporas, el pecio ya no está '
          + 'y ellos tampoco. Te queda el barro, el dolor y una caja vacía donde iba a estar la cena.',
     opciones: [

@@ -1,3 +1,11 @@
+## [0.160] - 2026-07-10
+### Fixed
+- 56 escenas pedían un fondo que no existía y se quedaban en silencio con la imagen de la escena anterior. Ahora cada una carga el fondo que le toca.
+### Added
+- El validador del proyecto ahora vigila las imágenes: comprueba que toda escena apunte a una imagen que existe de verdad, que los archivos estén en su sitio, y avisa de imágenes duplicadas o de formatos que pesan de más.
+### Changed
+- Las 26 imágenes que seguían en JPG pasan a WEBP, con el mismo aspecto pero un 62% menos de peso (de 7,6 a 2,9 MB), para que el juego cargue más ligero en el móvil.
+
 ## [0.159] - 2026-07-10
 ### Added
 - El mundo recoge tres decisiones que antes se quedaban sin consecuencia: si humillaste a Doggo por el pozo de cobre, si te dejaste una puerta trasera en el pulmón de un bloque, o si vendiste a Renke, cada una vuelve a buscarte y te pasa su cuenta (en créditos, en conciencia o en reputación).

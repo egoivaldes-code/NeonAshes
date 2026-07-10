@@ -63,7 +63,7 @@
 
   // ---- LA CLÍNICA: cómo entras ----
   'caso_clinica': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Detrás de las lavadoras hay una puerta con cerradura buena, demasiado buena. Por las juntas se escapa un frío de cámara y un olor '
          + 'a antiséptico barato que no tapa lo de debajo. Ahí dentro está. La cuestión es cómo entras.',
     opciones: [
@@ -85,7 +85,7 @@
 
   // ---- DENTRO: el horror y la encrucijada moral ----
   'caso_dentro': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'La cámara es un quirófano hecho con lo que se pudo robar: focos de obra, una mesa de acero con canales para que escurra, neveras '
          + 'de órganos zumbando en fila. En la mesa hay alguien. Vivo. Sedado a medias, con un brazo ya abierto y separado con pinzas, '
          + 'los dedos temblándole solos. Es joven. Podría ser el hermano de Dvora.<br><br>'
@@ -106,7 +106,7 @@
 
   // ---- PILLADO al colarte ----
   'caso_pillado': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Sales de la trampilla directo a la luz del quirófano, con medio cuerpo aún enganchado. El captador ya te espera con un bisturí, '
          + 'y detrás, en la mesa, el carnicero ni levanta la vista de lo que está haciendo. «Termina con eso», dice, tranquilo. «Que gotee poco.»',
     opciones: [
@@ -121,7 +121,7 @@
 
   // ---- COMBATE ----
   'caso_combate': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'El captador va por delante, rápido y sucio; el carnicero, detrás, deja las pinzas y coge una sierra de hueso con la misma calma '
          + 'con que cogería un bolígrafo. Ninguno grita. Pelear con gente que no se altera es lo peor: no puedes contar con que fallen por miedo.',
     opciones: [
@@ -146,7 +146,7 @@
 
   // ---- GANASTE: el destino del carnicero y de la víctima ----
   'caso_tras': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Cuando se acaba, el suelo del quirófano tiene más de lo que ya tenía. El captador no se mueve. El carnicero sí, arrinconado contra '
          + 'sus neveras, sujetándose un brazo, mirándote sin una gota de miedo, solo con fastidio, como quien calcula pérdidas.<br><br>'
          + 'En la mesa, el chico respira. Le paras la hemorragia del brazo con lo que hay a mano; vivirá, con una cicatriz enorme y suerte. '
@@ -186,7 +186,7 @@
 
   // ---- PERDISTE EL COMBATE ----
   'caso_malherido': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'El pulso de cirujano no falla ni en una pelea. Acabas en el suelo del quirófano, entre las bandejas, viendo cómo la sierra se acerca '
          + 'y se aleja. No te rematan: no mereces la pena como pieza, dañado. El captador te arrastra por los pies y te tira a la calle como a '
          + 'una bolsa. Lo último que ves dentro es al carnicero volviendo, tranquilo, a la mesa donde el chico ya no se mueve.',

@@ -206,7 +206,7 @@
     ]
   },
   'dc_taller': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'El taller de Ottol es un santuario del objeto perdido: estanterías hasta el techo, cada cosa con una etiqueta escrita a mano —un '
          + 'nombre, un lugar, una fecha—. Un anillo. Unas gafas. Un juguete quemado. «Todo tiene dueño —dice—. La gente cree que pierde cosas. '
          + 'No las pierde: las cosas se apartan un tiempo y esperan.» Te mira demasiado rato. «Tú perdiste algo más que una baratija junto a ese '
@@ -227,7 +227,7 @@
     ]
   },
   'dc_decision': {
-    img: 'EXP_ALMACEN_ZONA',
+    img: 'EXP_ALMACEN_ZONA7',
     texto: 'Ottol vuelve a lo suyo, etiquetando, como si tú fueras un objeto más que tarde o temprano encontrará su sitio. En estas estanterías '
          + 'hay cosas que valen dinero de verdad. Y hay, también, un hombre solo que sabe demasiado y no se lo cuenta a nadie.',
     opciones: [
