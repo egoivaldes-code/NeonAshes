@@ -1,3 +1,10 @@
+## [0.159] - 2026-07-10
+### Added
+- El mundo recoge tres decisiones que antes se quedaban sin consecuencia: si humillaste a Doggo por el pozo de cobre, si te dejaste una puerta trasera en el pulmón de un bloque, o si vendiste a Renke, cada una vuelve a buscarte y te pasa su cuenta (en créditos, en conciencia o en reputación).
+- Tres casos nuevos del barrio, autoconclusivos y no mortales: "El inquilino de arriba" (un vecino, una deuda y la letra pequeña que mata en silencio), "La niña que memoriza" (una cría que carga un recado peligroso y alguien que la quiere callada) y "El que devuelve cosas" (un hombre que sabe demasiado de lo que todos han perdido). Cada uno deja huella y siembra una decisión que el mundo podrá recordar más adelante.
+### Fixed
+- Las profesiones estaban escondidas en una subpestaña dentro de Trabajos, detrás de un "Encargos" que a los jugadores nuevos les aparecía vacío y les hacía creer que no había nada que hacer. Ahora la pestaña TRABAJOS muestra las profesiones directamente, sin subpestañas.
+
 ## [0.158] - 2026-07-09
 ### Changed
 - Las peleas de la misión principal ahora son mortales: caer en ellas ya no es solo un mal rato, puede costarte la vida. Si mueres ahí, otro ocupa tu lugar y hereda el hilo de la historia. Los trabajos y los casos sueltos del barrio siguen siendo KO (te recogen y te pasan la factura), no mortales.
