@@ -1,3 +1,10 @@
+## [0.162] - 2026-07-11
+### Added
+- Treinta fondos nuevos: variedad para la deriva y el explorar, y arte propio para varias zonas (Arrabal Carmesi, Distrito Ferro, Nodo IA, Santuario, oficina de HELIX y planta de procesado).
+### Changed
+- Los fondos que mas se repetian (cibercafe, callejon, almacen, plaza, calles del Sector 7, comedor) ahora rotan al azar entre tres versiones, para que no se vea siempre la misma imagen.
+- La bolsa de fondos de la deriva incorpora los nuevos ambientes, asi que el paseo por la ciudad se ve mucho mas variado.
+
 ## [0.161] - 2026-07-10
 ### Added
 - Tanda "deriva": cinco sucesos de ambiente nuevos, tres casos (El censo, La viuda de nadie, El turno de noche), una escena de explorar (un piso en reinicio) y tres trabajos de profesion (hacker, contrabandista, seguridad).
