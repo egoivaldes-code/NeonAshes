@@ -1,3 +1,8 @@
+## [0.161] - 2026-07-10
+### Added
+- Tanda "deriva": cinco sucesos de ambiente nuevos, tres casos (El censo, La viuda de nadie, El turno de noche), una escena de explorar (un piso en reinicio) y tres trabajos de profesion (hacker, contrabandista, seguridad).
+- Las noticias ahora reaccionan a treinta decisiones del jugador (diecisiete nuevas y trece anteriores) con titulares en tono HELIX y un "eco de calle" en las mas fuertes. El aviso de noticia nueva se enciende al tomar esas decisiones.
+
 ## [0.160] - 2026-07-10
 ### Fixed
 - 56 escenas pedían un fondo que no existía y se quedaban en silencio con la imagen de la escena anterior. Ahora cada una carga el fondo que le toca.

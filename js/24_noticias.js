@@ -183,6 +183,69 @@ const NOTICIAS_ECOS_CALLE = {
 };
 
 // Devuelve un array de titulares reactivas que correspondan al estado actual del jugador.
+// ============================================================
+// REACTIVAS POR DECISIÓN (v0.161)
+// Cada bandera de decisión (las que el motor guarda en
+// Estado.momentosVistos con marcaVisto/marcas) puede disparar un
+// titular. Tono HELIX: corporativo amable, nunca admite el daño;
+// el "eco" es la voz de la calle que cuenta la otra versión.
+// El aviso (badge) lo enciende el motor de efectos (js/44) al
+// poner una de estas banderas, usando marcaGeneraNoticia().
+// ============================================================
+const NOTICIAS_POR_MARCA = [
+  // ── Tanda 0.161 ──
+  { marca:'censo_restaure', cat:'HELIX', txt:'Un "error de sincronización" en el registro del Sector C queda resuelto. HELIX agradece "la colaboración anónima" y recuerda que alterar asientos oficiales constituye delito.',
+    eco:{ cat:'PILAS', txt:'En la planta siete vuelve a correr el agua. Nadie sabe quién movió los papeles, y nadie pregunta demasiado alto.' } },
+  { marca:'censo_abandone', cat:'PILAS', txt:'Una planta del bloque C figura ya como "sin residentes" a todos los efectos. Trámite completado sin incidencias.' },
+  { marca:'censo_vendi', cat:'INFO', txt:'Circula en foros restringidos un método para "depurar cuotas de ocupación" de un sector. HELIX niega tajantemente que tal procedimiento exista.' },
+  { marca:'viuda_verdad', cat:'VIDA', txt:'Servicios funerarios HELIX tramitan un certificado "tras aclararse la situación registral del finado". La deuda asociada "sigue su curso habitual".' },
+  { marca:'viuda_piedad', cat:'INFO', txt:'Un expediente se archiva por "inexistencia acreditada del sujeto". HELIX recuerda que solo lo registrado es, a efectos legales, real.' },
+  { marca:'viuda_menti', cat:'VIDA', txt:'Aumentan las consultas al servicio de "personas no localizadas". La corporación pide paciencia y "plena confianza en el sistema".' },
+  { marca:'turno_verdad', cat:'PILAS', txt:'Baja voluntaria en una planta de recuperación de materia orgánica del Sector 7. "Rotación normal de personal", informa HELIX.',
+    eco:{ cat:'INFO', txt:'Un operario de la nocturna dejó de fichar después de hacer preguntas sobre un cuerpo. Sus compañeros no comentan.' } },
+  { marca:'turno_menti', cat:'HELIX', txt:'La división de recuperación de recursos celebra "cero incidencias" en su turno de noche. La eficiencia, subrayan, es cosa de todos.' },
+  { marca:'reinicio_foto', cat:'VIDA', txt:'Objetos personales sin reclamar se acumulan en unidades "en regularización". HELIX ofrece un servicio de retirada "rápido y discreto".' },
+  { marca:'hkd_borre', cat:'INFO', txt:'Un descuadre menor en la facturación de servicios post-mortem se atribuye a "un fallo puntual del sistema". Sin mayores consecuencias.' },
+  { marca:'hkd_backdoor', cat:'INFO', txt:'HELIX refuerza "de forma rutinaria" la seguridad de sus nodos de facturación. "No hay motivo de alarma", insisten.',
+    eco:{ cat:'INFO', txt:'Corre el rumor de que alguien dejó una llave abierta en las tripas de facturación de HELIX. Solo un rumor, dicen.' } },
+  { marca:'cxa_calle', cat:'PILAS', txt:'Descarga nocturna "sin novedad" en el puerto de carga. Las inspecciones "se ajustaron a protocolo en todo momento".' },
+  { marca:'cxa_supe', cat:'INFO', txt:'Repunte de envíos "sin manifiesto" en los muelles. HELIX recuerda que transportar material no declarado es delito grave.' },
+  { marca:'cxa_desvie', cat:'PILAS', txt:'Un porteador incumple una entrega pactada en los muelles. En ciertos círculos "eso se recuerda", comentan sin dar nombres.',
+    eco:{ cat:'INFO', txt:'Nadie confirma qué viajaba en aquella caja templada. Todos coinciden en que es mejor no saberlo.' } },
+  { marca:'scl_cumpli', cat:'HELIX', txt:'Jornada de "revisión de residencia" concluida con "ejemplar civismo". HELIX agradece la colaboración de su personal de orden.',
+    eco:{ cat:'PILAS', txt:'Una anciana se quedó sin ración tras un control. "Yo estoy en regla", repetía. No la escuchó nadie.' } },
+  { marca:'scl_deje', cat:'HELIX', txt:'HELIX detecta "inconsistencias menores" en un punto de revisión y recuerda que el orden "depende de cada eslabón de la cadena".' },
+  { marca:'scl_falsifique', cat:'INFO', txt:'Auditoría rutinaria de sellos de conformidad en curso. "Cualquier irregularidad quedará registrada junto a su responsable", advierte HELIX.' },
+
+  // ── Atraso (contenido anterior sin conectar) ──
+  { marca:'__clinica_abierta__', cat:'VIDA', txt:'Una clínica informal del Sector 7 "reabre por iniciativa vecinal". HELIX recuerda que la atención no autorizada corre "por cuenta y riesgo del paciente".' },
+  { marca:'mano_roja_muerta', cat:'PILAS', txt:'Silencio en el Arrabal Carmesí tras un ajuste de cuentas. El Loto "lamenta los malentendidos" y da el asunto por cerrado.',
+    eco:{ cat:'PILAS', txt:'En el Carmesí ya nadie pronuncia el nombre de la Mano Roja. Como si nunca hubiera estado.' } },
+  { marca:'mano_roja_perdonada', cat:'PILAS', txt:'El Loto anuncia "una semana de buena fortuna" en el Carmesí. Las deudas, dicen, "se saldaron a satisfacción de todas las partes".' },
+  { marca:'ca_fichado', cat:'HELIX', txt:'HELIX incorpora nuevos perfiles a su registro de "ciudadanos de interés". "Es por su propia seguridad", subraya la corporación.',
+    eco:{ cat:'INFO', txt:'Si tu ficha empieza a abrir puertas que antes ni tocabas, no es suerte: es que te están mirando.' } },
+  { marca:'ca_verdad_fecha', cat:'INFO', txt:'Una discrepancia de fechas en archivos antiguos se declara "error de digitalización". El expediente queda cerrado y sellado.' },
+  { marca:'caso_carnicero_muerto', cat:'PILAS', txt:'Hallado un cuerpo en un local clausurado del mercado. "Sin relevancia", dictamina el forense automático de HELIX.' },
+  { marca:'cap_agua_muerto', cat:'PILAS', txt:'Un altercado por el suministro de agua termina "sin heridos que consten", según el parte oficial del sector.' },
+  { marca:'cap_agua_pacto', cat:'PILAS', txt:'Vecinos del Sector 7 alcanzan "un acuerdo informal" sobre el reparto de agua. HELIX "toma nota" del nuevo punto de distribución.' },
+  { marca:'ia_saqueaste', cat:'INFO', txt:'Reportan un acceso no autorizado a una unidad domótica en desuso. "Daños materiales menores", archiva HELIX.' },
+  { marca:'nm_expusiste', cat:'INFO', txt:'HELIX felicita a un "colaborador anónimo" por alertar de un uso indebido de memoria. La menor implicada "recibirá seguimiento".',
+    eco:{ cat:'PILAS', txt:'Se llevaron a la cría que lo memorizaba todo. "Seguimiento", lo llamaron.' } },
+  { marca:'nm_protegiste', cat:'INFO', txt:'Una alerta sobre "almacenamiento no autorizado de datos" se cierra sin caso. HELIX agradece igualmente "la colaboración ciudadana".' },
+  { marca:'dc_destapaste', cat:'INFO', txt:'Sale a la luz una red que "devolvía objetos extraviados" con fines no aclarados. HELIX investiga "el trasfondo del asunto".' },
+  { marca:'dc_robaste', cat:'PILAS', txt:'Repunte de pequeños hurtos en el Sector 7. HELIX recuerda que "la honradez también es una forma de productividad".' }
+];
+if(typeof window !== 'undefined') window.NOTICIAS_POR_MARCA = NOTICIAS_POR_MARCA;
+
+// ¿Esta bandera genera un titular reactivo? La usa el motor de efectos
+// (js/44) para encender el aviso justo cuando tomas la decisión.
+function marcaGeneraNoticia(m){
+  if(!m || typeof NOTICIAS_POR_MARCA === 'undefined') return false;
+  for(let i=0;i<NOTICIAS_POR_MARCA.length;i++){ if(NOTICIAS_POR_MARCA[i].marca === m) return true; }
+  return false;
+}
+if(typeof window !== 'undefined') window.marcaGeneraNoticia = marcaGeneraNoticia;
+
 function generarNoticiasReactivas(){
   const m = Estado.memoria || {};
   const h = Estado.humano || {};
@@ -365,6 +428,15 @@ function generarNoticiasReactivas(){
     // Vaciar la cola: ya se han "publicado".
     m.ecosProfesion = [];
   }
+
+  // ── Titulares por decisión tomada (banderas en momentosVistos) v0.161 ──
+  const _vistosNot = (Estado.momentosVistos || []);
+  (typeof NOTICIAS_POR_MARCA !== 'undefined' ? NOTICIAS_POR_MARCA : []).forEach(function(n){
+    if(_vistosNot.indexOf(n.marca) !== -1){
+      reactivas.push({ cat:n.cat, txt:n.txt });
+      if(n.eco) reactivas.push({ cat:n.eco.cat, txt:n.eco.txt });
+    }
+  });
 
   return reactivas;
 }
