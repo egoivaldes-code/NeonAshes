@@ -49,7 +49,7 @@
     ]
   },
   'censo_registro': {
-    img: 'EXP_CIBERCAFE',
+    img: 'HELIX_REGULARIZACION',
     texto: 'El terminal de registro público está en un cubículo que huele a plástico caliente. Buscas «planta 7, bloque C». La ficha existe, '
          + 'pero encima lleva una etiqueta gris: «Reasignada — sin residentes». Un funcionario joven, con ojeras de tres turnos, te ve leer y '
          + 'baja la voz sin que se lo pidas. «No fue un error», murmura. «Había que cuadrar una cuota de ocupación del sector. Alguien decidió '
@@ -169,7 +169,7 @@
     ]
   },
   'turno_planta': {
-    img: 'EXP_PUERTO_CARGA',
+    img: 'PLANTA_PROCESADO',
     texto: 'Dentro, el horror no grita: cuenta. Todo es limpio, frío, numerado. Los cuerpos entran como lotes, salen como referencias de '
          + 'catálogo. Encuentras el del crío en el manifiesto sin esfuerzo, porque aquí todo está anotado: «LOTE 44-C. Destino: reclamación de '
          + 'garantía.» Lo lees dos veces. Sus piezas estaban vendidas antes de que muriera. Un préstamo que su familia firmó años atrás dejaba '

@@ -258,11 +258,12 @@ function reproducirEscenaGuion(id, onCerrar){
   }
 
   // imagen de fondo de la escena (clave de ASSETS) con destello/transición
-  if(e.img && typeof setBgEscenaExplorar === 'function'){
-    setBgEscenaExplorar(e.img);
-  } else if(e.img && typeof ASSETS !== 'undefined' && ASSETS[e.img]){
+  const _imgFondo = (e.img && typeof fondoConVariante === 'function') ? fondoConVariante(e.img) : e.img;
+  if(_imgFondo && typeof setBgEscenaExplorar === 'function'){
+    setBgEscenaExplorar(_imgFondo);
+  } else if(_imgFondo && typeof ASSETS !== 'undefined' && ASSETS[_imgFondo]){
     const capa = document.getElementById('explorar-fondo');
-    if(capa) capa.style.backgroundImage = `url('${ASSETS[e.img]}')`;
+    if(capa) capa.style.backgroundImage = `url('${ASSETS[_imgFondo]}')`;
   }
 
   const cont = document.getElementById(_egCont);

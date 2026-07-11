@@ -8,7 +8,7 @@
 
 // Versión actual del juego. ACTUALIZAR EN CADA ENTREGA.
 // Se muestra en el panel de depuración (Ctrl+D / tap arriba-izquierda).
-const JUEGO_VERSION = "0.161";
+const JUEGO_VERSION = "0.162";
 window.JUEGO_VERSION = JUEGO_VERSION;
 
 // ------------------------------------------------------------
@@ -34,6 +34,37 @@ window.JUEGO_VERSION = JUEGO_VERSION;
 })();
 
 const ASSETS = {
+  // — fondos nuevos v0.162 (tandas A/B/C) —
+  CIBERCAFE_02: "assets/images/cibercafe_02.webp",
+  CIBERCAFE_03: "assets/images/cibercafe_03.webp",
+  CALLEJON_NIVELES_02: "assets/images/callejon_niveles_02.webp",
+  CALLEJON_NIVELES_03: "assets/images/callejon_niveles_03.webp",
+  ALMACEN_OKUPA_02: "assets/images/almacen_okupa_02.webp",
+  ALMACEN_OKUPA_03: "assets/images/almacen_okupa_03.webp",
+  PLAZA_OLVIDADOS_02: "assets/images/plaza_olvidados_02.webp",
+  PLAZA_OLVIDADOS_03: "assets/images/plaza_olvidados_03.webp",
+  SECTOR7_CALLES_02: "assets/images/sector7_calles_02.webp",
+  SECTOR7_CALLES_03: "assets/images/sector7_calles_03.webp",
+  COMEDOR_SECTORB_02: "assets/images/comedor_sectorb_02.webp",
+  COMEDOR_SECTORB_03: "assets/images/comedor_sectorb_03.webp",
+  DERIVA_LLUVIA_INTENSA: "assets/images/deriva_lluvia_intensa.webp",
+  DERIVA_MADRUGADA: "assets/images/deriva_madrugada.webp",
+  DERIVA_APAGON: "assets/images/deriva_apagon.webp",
+  DERIVA_CANAL_NOCHE: "assets/images/deriva_canal_noche.webp",
+  DERIVA_PLAZA_VACIA_MEGAFONIA: "assets/images/deriva_plaza_vacia_megafonia.webp",
+  DERIVA_MERCADO_CERRANDO: "assets/images/deriva_mercado_cerrando.webp",
+  DERIVA_COLA_RACION: "assets/images/deriva_cola_racion.webp",
+  DERIVA_PASARELA_INDUSTRIAL: "assets/images/deriva_pasarela_industrial.webp",
+  DERIVA_CONTROL_HELIX: "assets/images/deriva_control_helix.webp",
+  DERIVA_AZOTEA_TENDEDEROS: "assets/images/deriva_azotea_tendederos.webp",
+  CARMESI_CALLE: "assets/images/carmesi_calle.webp",
+  CARMESI_INTERIOR: "assets/images/carmesi_interior.webp",
+  FERRO_ACERIA: "assets/images/ferro_aceria.webp",
+  FERRO_TALLER: "assets/images/ferro_taller.webp",
+  NODO_IA_SERVIDORES: "assets/images/nodo_ia_servidores.webp",
+  SANTUARIO_INTERIOR: "assets/images/santuario_interior.webp",
+  HELIX_REGULARIZACION: "assets/images/helix_regularizacion.webp",
+  PLANTA_PROCESADO: "assets/images/planta_procesado.webp",
   APPROACH_SECTOR7: "assets/images/approach_sector7.webp",
   ARRIVAL_SECTOR7: "assets/images/arrival_sector7.webp",
   DOCK_ACCESS_TUNNEL: "assets/images/dock_access_tunnel.webp",
@@ -148,6 +179,24 @@ const ASSETS = {
   TRANSITO_HOSPITAL_2: "assets/images/transito_hospital_2.webp",
   TRANSITO_HOSPITAL_3: "assets/images/transito_hospital_3.webp"
 };
+
+// v0.162 — Rotador de variantes de fondo: cuando una escena pide uno de estos
+// fondos muy repetidos, el juego elige al azar entre el original y sus versiones.
+const VARIANTES_FONDO = {
+  'EXP_CIBERCAFE':        ['EXP_CIBERCAFE','CIBERCAFE_02','CIBERCAFE_03'],
+  'EXP_CALLEJON_NIVELES': ['EXP_CALLEJON_NIVELES','CALLEJON_NIVELES_02','CALLEJON_NIVELES_03'],
+  'EXP_ALMACEN_OKUPA':    ['EXP_ALMACEN_OKUPA','ALMACEN_OKUPA_02','ALMACEN_OKUPA_03'],
+  'EXP_PLAZA_OLVIDADOS':  ['EXP_PLAZA_OLVIDADOS','PLAZA_OLVIDADOS_02','PLAZA_OLVIDADOS_03'],
+  'SECTOR7_STREETS':      ['SECTOR7_STREETS','SECTOR7_CALLES_02','SECTOR7_CALLES_03'],
+  'EXP_COMEDOR_SECTORB':  ['EXP_COMEDOR_SECTORB','COMEDOR_SECTORB_02','COMEDOR_SECTORB_03']
+};
+function fondoConVariante(k){
+  const arr = VARIANTES_FONDO && VARIANTES_FONDO[k];
+  if(arr && arr.length) return arr[Math.floor(Math.random()*arr.length)];
+  return k;
+}
+if(typeof window !== 'undefined'){ window.VARIANTES_FONDO = VARIANTES_FONDO; window.fondoConVariante = fondoConVariante; }
+
 
 // Apply backgrounds
 
