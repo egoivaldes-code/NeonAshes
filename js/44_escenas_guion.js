@@ -161,13 +161,22 @@ function _egAplicarEfectos(ef){
       const v = _egAsegurarVistos();
       if(v.indexOf(ef.marcaVisto) === -1) v.push(ef.marcaVisto);
       if(typeof guardarEstado === 'function') guardarEstado();
+      // v0.161: si la decisión genera titular, enciende el aviso de NOTICIAS.
+      if(typeof marcaGeneraNoticia === 'function' && marcaGeneraNoticia(ef.marcaVisto)
+         && typeof marcarNoticiasActualizadas === 'function') marcarNoticiasActualizadas();
     }
     // marcas: varias banderas de una vez (p.ej. una semilla + "capítulo hecho"),
     // porque un bloque de efectos solo lleva un marcaVisto.
     if(Array.isArray(ef.marcas)){
       const v = _egAsegurarVistos();
-      ef.marcas.forEach(m=>{ if(m && v.indexOf(m) === -1) v.push(m); });
+      let _hayNoticia = false;
+      ef.marcas.forEach(m=>{
+        if(m && v.indexOf(m) === -1) v.push(m);
+        if(typeof marcaGeneraNoticia === 'function' && marcaGeneraNoticia(m)) _hayNoticia = true;
+      });
       if(typeof guardarEstado === 'function') guardarEstado();
+      // v0.161: si alguna de las marcas genera titular, enciende el aviso.
+      if(_hayNoticia && typeof marcarNoticiasActualizadas === 'function') marcarNoticiasActualizadas();
     }
     // NPCs recurrentes: conocer a alguien y/o estrechar el vínculo.
     if(ef.conocer && typeof marcarNpcVisto === 'function') marcarNpcVisto(ef.conocer);

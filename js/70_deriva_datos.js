@@ -501,7 +501,41 @@ const EVENTOS_DERIVA = [
   { id:'der_lore_chatarra_orbital', tipo:'narrativo',
     texto:'Entre los desechos de un taller, una placa de blindaje con la curvatura inconfundible de un casco de nave y marcas de micrometeoritos. Chatarra caída del cielo, literalmente: restos de algo que orbitó y dejó de hacerlo. '
         + 'La recoges. Aquí abajo, hasta los pedazos del espacio acaban valiendo por su peso en metal.',
-    item:'chatarra', disociacion:2 }
+    item:'chatarra', disociacion:2 },
+
+  // ══ Tanda "deriva" (v0.161): sucesos de ambiente nuevos ══
+  { id:'der_raciones_duelo', tipo:'narrativo',
+    texto:'Una expendedora de HELIX, empotrada junto a un tanatorio automático, reparte «raciones de duelo»: un pack gris con una barrita, un '
+        + 'té y una tarjeta impresa que dice «HELIX lamenta su pérdida» sin firmar. Se activan solas cuando detectan a un recién enlutado por la '
+        + 'cara. Un hombre acaba de coger la suya y, sin mirarte, te tiende la otra que ha caído de más. La aceptas. El duelo, aquí, también '
+        + 'viene envasado y con código de lote.',
+    item:'racion_deshidratada', disociacion:2 },
+
+  { id:'der_clinica_cerrada', tipo:'narrativo',
+    texto:'Frente a una clínica de barrio que cerró hace años, con las persianas soldadas por el óxido, hay una cola. Ocho, diez personas, en '
+        + 'silencio, a la hora exacta en la que antes abría. Nadie les avisó de que ya no hay médico. Siguen viniendo porque venir es lo que se '
+        + 'hacía, y dejar de hacerlo sería admitir que tampoco eso les queda. Te pones al final un momento, sin pensarlo, antes de acordarte de '
+        + 'que tú sí tienes a dónde ir.',
+    alerta:2, disociacion:2 },
+
+  { id:'der_crio_recuerdos', tipo:'narrativo',
+    texto:'Un crío vende «recuerdos» sobre una manta: chips baratos recuperados de los muertos, cada uno con un rato bueno de una vida que ya '
+        + 'no la usa. «Este es una tarde de playa», dice, «y este una boda.» No sabe leer lo que vende; lo memorizó de oírlo. Le compras uno al '
+        + 'azar por unas monedas. En las Pilas hasta la felicidad ajena se vende de segunda mano, y aun así te la llevas.',
+    item:'chip_datos_corrupto', disociacion:2 },
+
+  { id:'der_palomas_drones', tipo:'narrativo',
+    texto:'Un viejo echa migas a las palomas en una plaza gris. Solo que no son palomas: son drones de censo de HELIX, chatarra voladora que '
+        + 'cuenta cabezas y lee fichas al vuelo. Él lo sabe, se le nota. Les tira las migas igual, con cuidado, una a una. «Alguien tiene que '
+        + 'darles de comer», dice al verte mirar, y se encoge de hombros. No sabrías decir si es locura o la cordura más tozuda que has visto hoy.',
+    alerta:1, disociacion:1 },
+
+  { id:'der_muro_fichas', tipo:'narrativo',
+    texto:'Un muro entero cubierto de fichas de identidad: las de los desaparecidos, pegadas por quien los busca, con una fecha y a veces una '
+        + 'palabra. Cada madrugada un dron de limpieza de HELIX las raspa, porque «afean el sector». Cada mañana alguien vuelve a pegarlas. '
+        + 'Llevan años en esa guerra callada, el dron y las manos, y las manos no piensan rendirse aunque nunca ganen. Añades con la vista una '
+        + 'cara a la lista de las que no vas a olvidar.',
+    alerta:3, aislamiento:1 }
 
 ];
 
