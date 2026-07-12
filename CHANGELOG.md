@@ -1,3 +1,10 @@
+## [0.163] - 2026-07-11
+### Added
+- Once fondos nuevos: tres de hospital de HELIX (consulta, sala de espera y box), un callejon para las peleas, un anden de tren, un interior de trato y dos estados de ciudad (disturbios y toque de queda).
+### Changed
+- El almacen de expedicion (el fondo del chatarrero, muy repetido) ahora rota entre tres versiones.
+- La bolsa medica pasa de dos a cinco fondos, y la bolsa de la deriva incorpora los nuevos ambientes.
+
 ## [0.162] - 2026-07-11
 ### Added
 - Treinta fondos nuevos: variedad para la deriva y el explorar, y arte propio para varias zonas (Arrabal Carmesi, Distrito Ferro, Nodo IA, Santuario, oficina de HELIX y planta de procesado).

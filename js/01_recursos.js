@@ -8,7 +8,7 @@
 
 // Versión actual del juego. ACTUALIZAR EN CADA ENTREGA.
 // Se muestra en el panel de depuración (Ctrl+D / tap arriba-izquierda).
-const JUEGO_VERSION = "0.162";
+const JUEGO_VERSION = "0.163";
 window.JUEGO_VERSION = JUEGO_VERSION;
 
 // ------------------------------------------------------------
@@ -34,6 +34,18 @@ window.JUEGO_VERSION = JUEGO_VERSION;
 })();
 
 const ASSETS = {
+  // — fondos v0.163 (tanda D, sin apt) —
+  HOSPITAL_CONSULTA: "assets/images/hospital_consulta.webp",
+  HOSPITAL_ESPERA: "assets/images/hospital_espera.webp",
+  HOSPITAL_BOX: "assets/images/hospital_box.webp",
+  ALMACEN_ZONA_02: "assets/images/almacen_zona_02.webp",
+  ALMACEN_ZONA_03: "assets/images/almacen_zona_03.webp",
+  TRATO_INTERIOR_01: "assets/images/trato_interior_01.webp",
+  TRATO_INTERIOR_02: "assets/images/trato_interior_02.webp",
+  CONFRONTACION_CALLEJON: "assets/images/confrontacion_callejon.webp",
+  TREN_ANDEN: "assets/images/tren_anden.webp",
+  CIUDAD_DISTURBIOS: "assets/images/ciudad_disturbios.webp",
+  CIUDAD_TOQUE_QUEDA: "assets/images/ciudad_toque_queda.webp",
   // — fondos nuevos v0.162 (tandas A/B/C) —
   CIBERCAFE_02: "assets/images/cibercafe_02.webp",
   CIBERCAFE_03: "assets/images/cibercafe_03.webp",
@@ -183,6 +195,7 @@ const ASSETS = {
 // v0.162 — Rotador de variantes de fondo: cuando una escena pide uno de estos
 // fondos muy repetidos, el juego elige al azar entre el original y sus versiones.
 const VARIANTES_FONDO = {
+  'EXP_ALMACEN_ZONA7':    ['EXP_ALMACEN_ZONA7','ALMACEN_ZONA_02','ALMACEN_ZONA_03'],
   'EXP_CIBERCAFE':        ['EXP_CIBERCAFE','CIBERCAFE_02','CIBERCAFE_03'],
   'EXP_CALLEJON_NIVELES': ['EXP_CALLEJON_NIVELES','CALLEJON_NIVELES_02','CALLEJON_NIVELES_03'],
   'EXP_ALMACEN_OKUPA':    ['EXP_ALMACEN_OKUPA','ALMACEN_OKUPA_02','ALMACEN_OKUPA_03'],
