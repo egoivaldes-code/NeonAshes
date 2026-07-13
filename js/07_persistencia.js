@@ -35,6 +35,8 @@ function guardarPartida(){
       ultimoDiaCobrado: Estado.ultimoDiaCobrado || null,
       terminalPendientes: Estado.terminalPendientes || [],
       helixAmenazaEnviada: Estado.helixAmenazaEnviada || false,
+      generacion: Estado.generacion || 0,
+      regularizacionEjecutada: Estado.regularizacionEjecutada || false,
       creditos: Estado.creditos || 0,
       reputacion: Estado.reputacion || 0,
       inventario: Estado.inventario || [],
