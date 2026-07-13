@@ -1,3 +1,9 @@
+## [0.164] - 2026-07-13
+### Added
+- Mensaje de ambientacion al crear un personaje nuevo: despiertas en tu apartamento con una sensacion extraña, un escalofrio y una voz que no es la tuya. No aparece al continuar partida.
+- Espina personal ligada al hogar. Si acumulas impagos de alquiler, HELIX regulariza tu unidad: la pierdes y te reasignan a algo peor, con un golpe de aislamiento y disociacion. Pagar la asegura. Ocurre una sola vez por vida, no es una espiral.
+- Al morir y heredar, el nuevo personaje arranca en la misma unidad 273-19A, con el nombre del anterior aun en el buzon, y carga una fraccion de su deuda de alquiler como recibo impagado. Esa fraccion mengua con cada generacion.
+
 ## [0.163] - 2026-07-11
 ### Added
 - Once fondos nuevos: tres de hospital de HELIX (consulta, sala de espera y box), un callejon para las peleas, un anden de tren, un interior de trato y dos estados de ciudad (disturbios y toque de queda).
@@ -154,7 +160,7 @@
 
 ## [0.136] - 2026-06-26
 ### Added
-- Estado de ciudad reactivo: Las Pilas alterna entre Calma, Toque de queda, Redada de HELIX, Apagón y Disturbios. El estado cambia con los días y con tu notoriedad (las corridas y derivas ruidosas atraen a HELIX), y afecta al peligro de la deriva, los precios del mercado, el cierre de puestos (mercado y clandestino) y los ingresos por trabajar. Indicador diegético del estado en el mapa.
+- Estado de ciudad reactivo: Las Pilas alterna entre Calma, Toque de queda, Redada de HELIX, Apagón y Disturbios. El estado cambia con los días y con tu notoriedad (las corridas and derivas ruidosas atraen a HELIX), y afecta al peligro de la deriva, los precios del mercado, el cierre de puestos (mercado y clandestino) y los ingresos por trabajar. Indicador diegético del estado en el mapa.
 
 ## [0.135.1] - 2026-06-25
 ### Fixed
@@ -223,7 +229,7 @@
 ## [0.128] - 2026-06-21
 ### Added
 - Cuatro corridas nuevas diseñadas en torno al combate: "El cuello de botella" y "No hagas ruido" (contrabando), "El enjambre" y "El que da las órdenes" (seguridad).
-- Tres encuentros nuevos en la deriva libre que estrenan los estados (sangrado, líder con refuerzos por ruido, pareja bruto+cobarde).
+- Tres encuentros nuevos en la deriva libre que estrenan los estados (sangrado, líder con refuerzos por ruido, pareja brute+cobarde).
 ### Changed
 - Muchos enemigos del banco de corridas y de la deriva ahora tienen comportamiento (bruto, rápido, líder, cobarde), de modo que las peleas existentes también usan el sistema nuevo.
 
@@ -748,7 +754,7 @@
 - El fondo del apartamento en móvil ahora se ve completo (menos zoom).
 - El apartamento muestra una sola acción ambiental al entrar, elegida según el estado del jugador.
 ### Added
-- El panel ESTADO incluye pestañas CONTACTOS y TRABAJOS, consultables fuera del apartamento en solo lectura. Salir a un objetivo sigue restringido al apartamento.
+- Panel ESTADO incluye pestañas CONTACTOS y TRABAJOS, consultables fuera del apartamento en solo lectura. Salir a un objetivo sigue restringido al apartamento.
 ### Fixed
 - El texto de las acciones del apartamento ya no se sustituye al instante por el texto inicial de la lluvia ácida.
 
@@ -827,7 +833,7 @@
 
 ## [0.74.3] - 2026-05-31
 ### Fixed
-- El texto de la intro ahora se desvanece de forma suave entre frase y frase, en vez de cortarse de golpe; la última frase también se atenúa antes de aparecer el logo.
+- Texto de la intro ahora se desvanece de forma suave entre frase y frase, en vez de cortarse de golpe; la última frase también se atenúa antes de aparecer el logo.
 - El sonido ambiente (lluvia, gente, industrial) ya suena durante el juego; antes intentaba arrancar una sola vez en una pantalla en silencio y se quedaba mudo para siempre.
 - Al terminar o saltar la intro ahora arranca el Main Theme del juego; antes el audio quedaba en pausa.
 ### Changed
@@ -994,7 +1000,7 @@
 
 ## [0.66] - 2026-05-26
 ### Fixed
-- Estructura del repo: los fixes de v0.64 y v0.65 estaban dentro de la subcarpeta neon-ashes-modular/, mientras que GitHub Pages servía la versión vieja monolítica desde la raíz. Ahora la versión modular es la única, en la raíz.
+- Estructura del repo: los fixes de v0.64 and v0.65 estaban dentro de la subcarpeta neon-ashes-modular/, mientras que GitHub Pages servía la versión vieja monolítica desde la raíz. Ahora la versión modular es la única, en la raíz.
 ### Removed
 - index.html monolítico viejo de la raíz del repo.
 - Carpetas y archivos basura del entorno de Replit: artifacts/, attached_assets/, lib/, scripts/, package.json, pnpm-lock.yaml, pnpm-workspace.yaml, tsconfig.json, tsconfig.base.json, .npmrc, replit.md.
@@ -1231,7 +1237,7 @@
 ## v32 — Bug del botón CONTINUAR colgado
 
 - El velo oscuro (`.transito-overlay`) interceptaba los toques sobre el botón en la escena de tránsito de Mara.
-- Arreglado with `pointer-events:none` en el velo and `z-index:5` al contenedor `#tarjetas-loc-mision`.
+- Arreglado con `pointer-events:none` en el velo y `z-index:5` al contenedor `#tarjetas-loc-mision`.
 
 ## v31 — Rediseño del flujo del apartamento
 
@@ -1244,7 +1250,7 @@
 
 ## v1–v30 — Prehistoria del proyecto (no documentada)
 
-No hay registro detallado de estas versiones en el historial accesible. Cuando empieza la documentation (mayo 2026), el proyecto ya estaba en v31 con un vertical slice funcional. Lo que ya existía:
+No hay registro detallado de estas versiones en el historial accesible. Cuando empieza la documentación (mayo 2026), el proyecto ya estaba en v31 con un vertical slice funcional. Lo que ya existía:
 
 - Flujo completo: intro cinematográfica (5 frames) → carga → pantalla de nombre → apartamento → terminal con mensaje cifrado → tránsito al bar → diálogo con Mara Vex → aparición de Cero-Ocho.
 - HUD con créditos (1200 iniciales), reputación, inventario.

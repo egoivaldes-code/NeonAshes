@@ -80,6 +80,10 @@ function registrarMuerto(causa){
     causa: causa, // 'fatiga' | 'aislamiento' | 'hambre' | 'disociacion'
     creditosAlMorir: Estado.creditos || 0,
     hambreAlMorir: Math.round(h.hambre || 0),
+    // v0.164: deuda de alquiler impagada al morir y generación, para que
+    // el heredero cargue una fracción menguante de lo que se debía.
+    deudaAlMorir: (Estado.recibos || []).filter(r => !r.pagado).reduce((s,r)=>s+(r.importe||0),0),
+    generacionPrevia: Estado.generacion || 0,
     decisiones: {
       aceptoEncargo: m.aceptoEncargo,
       vioFragmentoCero: m.vioFragmentoCero || false,
@@ -170,13 +174,22 @@ function aplicarHerencia(){
   const mismoApellido = !!apellidoNuevo && !!ultimo.apellido &&
                         apellidoNuevo.toLowerCase() === ultimo.apellido.toLowerCase();
 
+  // v0.164: deuda heredada = fracción de la deuda del muerto, que MENGUA
+  // cada generación (la ciudad olvida rápido). Es un peso, nunca una trampa.
+  const genPrev = ultimo.generacionPrevia || 0;
+  const fraccionDeuda = 0.5 * Math.pow(0.6, genPrev); // 50%, 30%, 18%...
+  const deudaHeredada = Math.round((ultimo.deudaAlMorir || 0) * fraccionDeuda);
+  const generacionNueva = genPrev + 1;
+
   return {
     nombreAnterior: ultimo.nombre,
     apellidoAnterior: ultimo.apellido,
     creditosHeredados: creditosHeredados,
     fatigaHeredada: fatigaHeredada,
     mismoApellido: mismoApellido,
-    causaMuerte: ultimo.causa
+    causaMuerte: ultimo.causa,
+    deudaHeredada: deudaHeredada,
+    generacionNueva: generacionNueva
   };
 }
 
@@ -187,10 +200,25 @@ function aplicarHerencia(){
 // vuelve a ofrecer hasta que muera otro personaje.
 function resolverHerencia(info, aceptar){
   const archivo = cargarArchivoMundo();
+  // v0.164: la generación avanza SIEMPRE que hay herencia: este personaje
+  // nace de una muerte anterior, acepte o no lo que le dejaron.
+  if(info && typeof info.generacionNueva === 'number') Estado.generacion = info.generacionNueva;
   if(aceptar && info){
     Estado.creditos = (Estado.creditos || 0) + (info.creditosHeredados || 0);
     if(Estado.humano){
       Estado.humano.fatiga = Math.min(100, (Estado.humano.fatiga || 0) + (info.fatigaHeredada || 0));
+    }
+    // v0.164: la deuda del anterior te cae encima como un recibo impagado.
+    // Se suma a la presión de regularización de tu unidad.
+    if(info.deudaHeredada && info.deudaHeredada > 0){
+      Estado.recibos = Estado.recibos || [];
+      Estado.recibos.unshift({
+        fecha: (new Date()).toISOString(),
+        concepto: 'DEUDA HEREDADA · UNIDAD 273-19A',
+        importe: info.deudaHeredada,
+        pagado: false,
+        saldoTras: Estado.creditos || 0
+      });
     }
   }
   // Quemar la herencia en cualquier caso (aceptada o rechazada).
@@ -218,15 +246,15 @@ function textoEntradaConHerencia(info){
     cabecera = 'El bloque es tuyo ahora.<br>' +
                'La unidad 273-19A queda a tu nombre, como pidió la familia.';
     cierre = info.nombreAnterior
-      ? `Lo que dejó <span style="color:var(--cyan)">${info.nombreAnterior}</span> pasa a ti. No es mucho, pero es algo.`
+      ? `Lo que dejó <span style="color:var(--cyan)">${info.nombreAnterior}</span> pasa a ti. No es mucho, pero es algo. El buzón todavía lleva su nombre; no has tenido tiempo, ni valor, de rasparlo.`
       : 'Lo que dejaron pasa a ti. No es mucho, pero es algo.';
   } else {
     // Apellido no coincide → realquilo / reasignación burocrática.
     cabecera = 'Reasignación de unidad 273-19A.<br>' +
                'La burocracia de HELIX no pregunta por qué.';
     cierre = info.nombreAnterior
-      ? `Lo que quedó de <span style="color:var(--cyan)">${info.nombreAnterior}</span> pasa a ti.`
-      : 'Lo que quedó del anterior inquilino pasa a ti.';
+      ? `Lo que quedó de <span style="color:var(--cyan)">${info.nombreAnterior}</span> pasa a ti: el buzón con su nombre, una foto que nadie descolgó, y sus deudas.`
+      : 'Lo que quedó del anterior inquilino pasa a ti, deudas incluidas.';
   }
 
   // Bloque del papeleo. Construido como un pequeño "albarán" diegético.
@@ -237,6 +265,9 @@ function textoEntradaConHerencia(info){
   }
   if(info.fatigaHeredada && info.fatigaHeredada > 0){
     papeleo.push(`<span style="color:rgba(255,200,200,0.7)">+${info.fatigaHeredada} fatiga</span> · papeleo, funerales, noches sin dormir`);
+  }
+  if(info.deudaHeredada && info.deudaHeredada > 0){
+    papeleo.push(`<span style="color:rgba(255,150,150,0.85)">deuda de alquiler: ${info.deudaHeredada} CR</span> · impagos del anterior, ahora a tu nombre`);
   }
   if(info.causaMuerte){
     papeleo.push(`<span style="color:rgba(200,216,224,0.5);font-style:italic">causa registrada: ${info.causaMuerte}</span>`);
@@ -320,6 +351,8 @@ function aplicarPartidaCargada(datos){
   Estado.ultimoDiaCobrado = datos.ultimoDiaCobrado || null;
   Estado.terminalPendientes = datos.terminalPendientes || [];
   Estado.helixAmenazaEnviada = datos.helixAmenazaEnviada || false;
+  Estado.generacion = datos.generacion || 0;
+  Estado.regularizacionEjecutada = datos.regularizacionEjecutada || false;
   if(typeof datos.creditos === 'number') Estado.creditos = datos.creditos;
   if(typeof datos.reputacion === 'number') Estado.reputacion = datos.reputacion;
   if(Array.isArray(datos.inventario)) Estado.inventario = datos.inventario;

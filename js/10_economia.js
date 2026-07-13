@@ -110,6 +110,50 @@ function cobrarAlquiler(){
     Estado.terminalPendientes.push({ tipo: 'amenaza' });
     Estado.helixAmenazaEnviada = true;
   }
+  // v0.164 — REGULARIZACIÓN DE UNIDAD (espina "puedes perder la casa").
+  // Si la deuda de alquiler se dispara, HELIX reasigna tu unidad. Golpe
+  // humano fuerte, la deuda de alquiler queda "saldada" (se quedan la casa),
+  // y te reasignan a algo peor. Una sola vez por vida (no es una espiral).
+  if(impagados >= 7 && !Estado.regularizacionEjecutada){
+    Estado.regularizacionEjecutada = true;
+    Estado.recibos.forEach(r => {
+      if(!r.pagado && /ALQUILER/.test(r.concepto || '')){ r.pagado = true; r.saldoTras = Estado.creditos || 0; }
+    });
+    if(Estado.humano){
+      Estado.humano.aislamiento = Math.min(100, (Estado.humano.aislamiento || 0) + 15);
+      Estado.humano.disociacion = Math.min(100, (Estado.humano.disociacion || 0) + 8);
+    }
+    Estado.helixAmenazaEnviada = false; // el ciclo puede reiniciarse en la nueva unidad
+    if(typeof guardarPartida === 'function') guardarPartida();
+    if(typeof actualizarHUD === 'function') actualizarHUD();
+    if(typeof mostrarRegularizacion === 'function') mostrarRegularizacion();
+  }
+}
+
+// v0.164 — Overlay a pantalla completa cuando HELIX regulariza tu unidad.
+// Autocontenido y blindado: si algo falla, no rompe el cobro.
+function mostrarRegularizacion(){
+  try{
+    if(document.getElementById('overlay-regularizacion')) return;
+    const ov = document.createElement('div');
+    ov.id = 'overlay-regularizacion';
+    ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#05070b;display:flex;align-items:center;justify-content:center;padding:2rem 1.6rem;opacity:0;transition:opacity 1s ease;';
+    ov.innerHTML = `
+      <div style="max-width:640px;color:#c3ccd6;font-size:1rem;line-height:1.7;">
+        <p style="color:#6fd6d6;font-size:0.8rem;letter-spacing:0.1em;margin:0 0 1rem;">HELIX · AVISO DE REGULARIZACIÓN</p>
+        <p style="margin:0 0 1rem;">Un aviso pegado en la puerta, sin firma: «Unidad 273-19A regularizada por impago reiterado.» No hay discusión, ni juicio, ni tiempo para recoger.</p>
+        <p style="margin:0 0 1rem;">Te reasignan más abajo: una unidad más húmeda, más pequeña, de las que nadie quiere. Tus deudas de alquiler quedan «saldadas» —se han quedado con tu casa a cambio—. Lo que dejaste dentro ya no es tuyo.</p>
+        <div style="text-align:center;margin-top:1.6rem;">
+          <button id="btn-regularizacion" class="btn-confirmar" style="padding:0.7rem 1.8rem;">Recoger lo poco que queda</button>
+        </div>
+      </div>`;
+    document.body.appendChild(ov);
+    requestAnimationFrame(()=>{ ov.style.opacity = '1'; });
+    ov.querySelector('#btn-regularizacion').addEventListener('click', ()=>{
+      ov.style.opacity = '0';
+      setTimeout(()=>{ if(ov.parentNode) ov.parentNode.removeChild(ov); }, 800);
+    });
+  }catch(e){}
 }
 
 // Suma o resta créditos al jugador de forma centralizada. Es la única

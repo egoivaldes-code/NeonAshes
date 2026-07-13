@@ -124,6 +124,8 @@ function empezarDeNuevo(){
   Estado.ultimoDiaCobrado = null;
   Estado.terminalPendientes = [];
   Estado.helixAmenazaEnviada = false;
+  Estado.regularizacionEjecutada = false;
+  Estado.generacion = Estado.generacion || 0;
   Estado.mision = null;
   // Refrescar la pantalla
   prepararPantallaIdentidad();
@@ -151,6 +153,34 @@ function confirmarNombre(){
   }
 }
 
+// v0.164 — Mensaje de ambientación al crear personaje. Se muestra a pantalla
+// completa justo antes de entrar al apartamento, solo en personaje nuevo (no en
+// "continuar partida"). Autocontenido: si algo falla, entra igual al juego.
+function mostrarAmbientacionInicio(cb){
+  try{
+    const ov = document.createElement('div');
+    ov.id = 'ambientacion-inicio';
+    ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#05070b;display:flex;align-items:center;justify-content:center;padding:2rem 1.6rem;opacity:0;transition:opacity 1.2s ease;';
+    ov.innerHTML = `
+      <div style="max-width:640px;color:#c3ccd6;font-size:1rem;line-height:1.7;text-align:left;">
+        <p style="margin:0 0 1rem;">Despiertas en tu apartamento. La ciudad ya zumba al otro lado del cristal, gris y húmeda, como cada día. Y aun así algo va un pelín torcido: un frío que no es de la habitación, la sensación de haber olvidado algo que ni siquiera sabes nombrar.</p>
+        <p style="margin:0 0 1rem;">Por un segundo, entre el sueño y el techo manchado, crees oír una voz que no es la tuya:</p>
+        <p style="margin:0 0 1.4rem;color:#6fd6d6;font-style:italic;text-align:center;">«¿Esto es el comienzo, o el final?»</p>
+        <p style="margin:0 0 2rem;">Cuando abres bien los ojos, ya no está. La ciudad no espera. Tú tampoco puedes.</p>
+        <div style="text-align:center;">
+          <button id="btn-ambientacion" class="btn-confirmar" style="padding:0.7rem 1.8rem;">Despertar</button>
+        </div>
+      </div>`;
+    document.body.appendChild(ov);
+    requestAnimationFrame(()=>{ ov.style.opacity = '1'; });
+    const cerrar = ()=>{
+      ov.style.opacity = '0';
+      setTimeout(()=>{ if(ov.parentNode) ov.parentNode.removeChild(ov); if(typeof cb === 'function') cb(); }, 1000);
+    };
+    ov.querySelector('#btn-ambientacion').addEventListener('click', cerrar);
+  }catch(e){ if(typeof cb === 'function') cb(); }
+}
+
 // Transición a la primera escena del apartamento. Separada para poder
 // llamarla tanto si hay herencia (tras decidir) como si no la hay.
 function entrarAlApartamento(){
@@ -158,8 +188,11 @@ function entrarAlApartamento(){
   // Mara vuelve a contactar. BLINDADO: si no hay misión heredable, no toca nada
   // y el arranque queda idéntico a como era antes.
   if(typeof restaurarMisionHeredada === 'function') restaurarMisionHeredada();
-  cambiarEscena('nombre-escena','apartamento');
-  setTimeout(()=>{ iniciarApartamento(); mostrarHUD(true); actualizarHUD(); iniciarRelojDiegético(); iniciarDecaimientoPasivo(); iniciarCobrosPeriódicos(); },800);
+  // v0.164: mensaje de ambientación primero; al pulsar "Despertar", entra al juego.
+  mostrarAmbientacionInicio(function(){
+    cambiarEscena('nombre-escena','apartamento');
+    setTimeout(()=>{ iniciarApartamento(); mostrarHUD(true); actualizarHUD(); iniciarRelojDiegético(); iniciarDecaimientoPasivo(); iniciarCobrosPeriódicos(); },800);
+  });
 }
 
 // Construye y muestra la ventana de herencia con el desglose noir y los
